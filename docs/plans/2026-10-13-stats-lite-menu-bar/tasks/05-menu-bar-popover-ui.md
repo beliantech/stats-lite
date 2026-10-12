@@ -14,7 +14,7 @@ Dependencies already exist from tasks 02–04: `SystemMonitor` (@Observable, sna
 3. `MetricCardView`: reusable card per blueprint (title/icon/color/valueText, 8 pt continuous radius, 0.5 pt border, controlBackgroundColor 0.65 fill).
 4. `CPUCard`: total %, "User: X% · System: Y%" subtitle (store user/system split in snapshot from task 02's CPUMetrics if needed — extend `CPUMetrics` with userPercent/systemPercent in this task if absent), 38 pt sparkline (blue, amber when sustained >80%), disclosure row "Cores Breakdown (N Cores)" with chevron; expanded grid of per-core bars (2-column grid, bar + %), 200 ms animation, fits 280 pt.
 5. `RAMCard`: "RAM Used  6.2 / 16.0 GB" (unit-aware), 8 pt segmented bar (App blue / Wired purple / Compressed orange / Free quaternary, 4 pt clip), 38 pt sparkline, breakdown line App/Wired/Compressed values.
-6. `SparklineChartView` + `SegmentedBarView` + `CoreUsageBarView` per blueprint skeletons (SwiftUI Charts, hidden axes, y domain 0...1 or 0...100 as appropriate).
+6. `SparklineChartView` + `SegmentedBarView` + `CoreUsageBarView` per blueprint **visual spec** (38 pt height, hidden axes, gradient fill, y domain 0...1 or 0...100). **Implementation override**: draw the sparkline with `Canvas`/`Path`, NOT `SwiftUI Charts` — the ISC footprint budget forbids `import Charts`. Same visuals: 1.5 pt monotone-ish line, 0.25→0.02 gradient fill, no axis lines/ticks.
 7. Wire `StatsLiteApp`: `MenuBarExtra` label = `MenuBarLabelView`, `.menuBarExtraStyle(.window)`; `monitor.start(intervalSeconds: prefs.refreshInterval)` on launch; restart on interval change. `Settings` scene left as placeholder (task 06).
 8. History duration and sparkline windowing respect `PreferencesStore.historyDuration`.
 
@@ -25,6 +25,7 @@ Build and run the app on this Mac (`open .derivedData/Build/Products/Debug/Stats
 - `xcodebuild build` clean (no new warnings).
 - `xcodebuild test` still green.
 - VAC-1..11, 13 checked off in your report.
+- **Memory check (ISC AC-10)**: run the app, open the popover once, wait 60 s, record `ps -o rss= -p <pid>`. Report the number. If ≥ 50 MB, profile with `footprint`, fix the top consumer, re-measure.
 
 ## Commit(s) (max 2)
 `feat(ui): add menu bar label, popover metric cards, and sparkline views`

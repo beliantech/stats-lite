@@ -24,6 +24,7 @@ Build and run; open settings from the popover gear. Screenshot the settings wind
 - `xcodebuild build` clean; `xcodebuild test` green.
 - All settings controls verified live.
 - All 13 VAC rows from the ISC now Met.
+- **Footprint (ISC AC-10/11)**: final RSS measurement after 60 s idle with default settings (report number); `xcodebuild -configuration Release` build and `du -sk` of `StatsLite.app` under 50 MB (report number).
 
 ## Commit(s) (max 2)
 `feat(settings): add settings window with live preferences and launch-at-login`

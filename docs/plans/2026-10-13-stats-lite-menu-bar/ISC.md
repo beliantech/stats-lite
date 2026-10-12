@@ -15,6 +15,7 @@ Greenfield repo (`/Users/jonathan/beliantech/stats-lite` is empty). Build a nati
 - **UI**: `MenuBarExtra` with `.menuBarExtraStyle(.window)`; separate `Settings` scene. Settings opened from popover must call `NSApplication.shared.activate(ignoringOtherApps: true)` before `openSettings()` (LSUIElement apps otherwise open the window behind active apps).
 - **Settings persistence**: `@AppStorage`/UserDefaults via a small `PreferencesStore`. Launch-at-login via `SMAppService.mainApp` with status checks (`.requiresApproval` must not loop retries) and error handling.
 - **Swift 6 strict concurrency**: `Sendable` value-type snapshots (`CoreTickSample`, `CPUMetrics`, `MemoryMetrics`, `SystemSnapshot`); no shared mutable state outside the actor.
+- **Footprint budget (< 50 MB)**: draw sparklines with `Canvas`/`Path` (no `import Charts`); no image assets or preview resources in the bundle; history ring buffers stay capped (task 04); one timer, one actor, no Combine pipelines; avoid per-second view invalidation outside menu bar label. Target is measured on the built app, not assumed.
 
 ## Design Authority
 
@@ -40,6 +41,8 @@ The Design Blueprint (5-part, from `designer`) is in `docs/plans/2026-10-13-stat
 7. No Mach port or VM deallocation leaks: all `defer` cleanups present per Architecture section; verified by code review.
 8. Every VAC item below marked "Met" in the coder's report and verified visually (screenshot) where possible.
 9. Two or fewer intermediate commits per task; conventional commit messages.
+10. **Memory: resident size (RSS) < 50 MB** measured with `ps -o rss= -p <pid>` after launch, popover opened once, and 60 s idle (samples at 2 s interval). If a reading exceeds 50 MB, profile (`footprint`), fix the top consumer, re-measure, and report before closing.
+11. **Bundle: release `xcodebuild -configuration Release` app bundle < 50 MB** (`du -sk StatsLite.app`).
 
 ## Visual Acceptance Checklist (from Design Blueprint)
 
