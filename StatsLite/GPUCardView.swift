@@ -31,8 +31,12 @@ struct GPUCardView: View {
                 Text("Integrated Graphics")
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
-                SparklineView(values: monitor.gpuHistory.values, tintColor: .teal)
-                    .equatable()
+                SparklineView(
+                    values: monitor.gpuHistory.values,
+                    tintColor: .teal,
+                    capacity: monitor.sparklineCapacity
+                )
+                .equatable()
             } else {
                 Text("Unavailable")
                     .font(.system(size: 10))

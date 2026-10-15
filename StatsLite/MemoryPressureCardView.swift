@@ -40,8 +40,12 @@ struct MemoryPressureCardView: View {
             gaugeBar
                 .accessibilityHidden(true)
 
-            SparklineView(values: monitor.memoryPressureHistory.values, tintColor: state.levelColor)
-                .equatable()
+            SparklineView(
+                values: monitor.memoryPressureHistory.values,
+                tintColor: state.levelColor,
+                capacity: monitor.sparklineCapacity
+            )
+            .equatable()
 
             Text(usedLine)
                 .font(.system(size: 11).monospacedDigit())

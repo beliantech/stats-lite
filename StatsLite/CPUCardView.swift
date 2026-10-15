@@ -36,8 +36,12 @@ struct CPUCardView: View {
                 .font(.system(size: 10))
                 .foregroundStyle(.tertiary)
 
-            SparklineView(values: monitor.cpuHistory.values, tintColor: sparkTint)
-                .equatable()
+            SparklineView(
+                values: monitor.cpuHistory.values,
+                tintColor: sparkTint,
+                capacity: monitor.sparklineCapacity
+            )
+            .equatable()
 
             if preferences.showCoreBreakdown {
                 disclosure

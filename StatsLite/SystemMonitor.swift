@@ -31,6 +31,13 @@ final class SystemMonitor {
     /// `restartSampling()`.
     var historyDuration: TimeInterval = 60.0
 
+    /// Effective sparkline sample count in steady state: the history
+    /// window divided by the refresh interval, with a floor of 2.
+    /// Mirrors the preference access in `recordHistory` below.
+    var sparklineCapacity: Int {
+        Swift.max(Int(historyDuration) / Swift.max(Int(refreshInterval), 1), 2)
+    }
+
     /// Sparkline data, oldest first, one point per sampling pass.
     /// Buffers stay capped by `HistoryBuffer`.
     private(set) var cpuHistory = HistoryBuffer()
