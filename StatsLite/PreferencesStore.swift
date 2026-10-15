@@ -68,13 +68,6 @@ final class PreferencesStore {
 
     // MARK: - Display options
 
-    var showLabels: Bool = true {
-        didSet {
-            guard !isSeeding else { return }
-            showLabelsStorage = showLabels
-        }
-    }
-
     var showCoreBreakdown: Bool = true {
         didSet {
             guard !isSeeding else { return }
@@ -113,7 +106,6 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("showGPU") private var showGPUStorage: Bool = true
     @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 2
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
-    @ObservationIgnored @AppStorage("showLabels") private var showLabelsStorage: Bool = true
     @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
 
     /// Seeds the observable state from UserDefaults while `isSeeding`
@@ -125,7 +117,6 @@ final class PreferencesStore {
         showGPU = showGPUStorage
         refreshInterval = refreshIntervalStorage
         historyDuration = historyDurationStorage
-        showLabels = showLabelsStorage
         showCoreBreakdown = showCoreBreakdownStorage
         isSeeding = false
 

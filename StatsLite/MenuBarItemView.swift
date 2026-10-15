@@ -73,7 +73,9 @@ struct MenuBarItemView: View {
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
-            showLabels: preferences.showLabels,
+            // Category labels are always on. The legacy builder input
+            // stays until the stacked view replaces this one.
+            showLabels: true,
             cpuPercent: snapshot?.cpu?.totalUsage,
             usedPercent: snapshot?.memory?.usedPercentage,
             pressure: pressureState,
