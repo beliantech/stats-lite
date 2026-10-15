@@ -33,5 +33,12 @@ Spec: plan Deliverables Phase 4 + Appendix A Part 2 component skeleton VERBATIM 
 Verification hooks: AC-9 + AC-10 tests green; full suite green; build Release clean.
 Commit: feat(sparkline): fixed-step right-anchored geometry, preference-derived capacity
 
-## Final (planner-run, after Task 4): VAC + AC-1/AC-4/AC-6 evidence
-VAC-1..11 and AC-1 (Instruments CPU), AC-4 (pixel diff), AC-6 (footprint) are planner/tester verification with screenshots and profiling, recorded in the plan's verification ledger. Not a coder task.
+## Task 5 — Phase 5: Menu bar redraw-churn fix (revision 2)
+Objective: eliminate ~205 CGDrawingLayer.draw/s; AC-11/AC-12.
+Files: StatsLite/MenuBarStackedItemView.swift (remove .contentTransition(.numericText()) and .animation(.easeInOut(duration:0.2), value: block.valueText)), StatsLite/StatusItemController.swift (PassthroughHostingView sizingOptions = []; frame-based layout: translatesAutoresizingMask = true, autoresizingMask [.width,.height], frame = button.bounds), AGENTS.md (rule: no .animation/.contentTransition on status item path), tests (assert no contentTransition/animation modifiers on the status item view; keep existing 146 green).
+Verification hooks: xcodebuild suite green; Release build; re-measure AC-11 (breakpoint/trace zero draws) and AC-12 (CPU <0.1%, footprint <50MB) after merge.
+Commit: fix(menubar): remove digit-roll animation, pin hosting view sizing
+
+## Final (planner-run, after Task 5): AC-1/AC-6/AC-11/AC-12 re-measurement
+Redraw-count, 5-min idle CPU, 15-min footprint protocol, plus spot VAC re-check (static visuals must stay byte-identical — only the transition animation is gone). Recorded in the plan's verification ledger.
+
