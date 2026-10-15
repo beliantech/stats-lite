@@ -193,6 +193,17 @@ struct SystemSnapshot: Sendable, Equatable {
     var memoryPressure: MemoryPressureMetrics?
     var gpu: GPUMetrics?
 
+    /// Equality covers the metric payload only. `timestamp` changes on
+    /// every tick, so it must not take part: `.onChange(of:)` fires only
+    /// when an enabled metric value actually changed (AC-7).
+    static func == (lhs: SystemSnapshot, rhs: SystemSnapshot) -> Bool {
+        lhs.enabled == rhs.enabled
+            && lhs.cpu == rhs.cpu
+            && lhs.memory == rhs.memory
+            && lhs.memoryPressure == rhs.memoryPressure
+            && lhs.gpu == rhs.gpu
+    }
+
     init(
         timestamp: Date = Date(),
         enabled: EnabledMetrics,

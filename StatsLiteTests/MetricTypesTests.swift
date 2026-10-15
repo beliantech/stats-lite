@@ -170,6 +170,73 @@ final class MetricTypesTests: XCTestCase {
         XCTAssertNil(snapshot.gpu)
     }
 
+    // MARK: AC-7 snapshot equality (timestamp excluded)
+
+    func testSnapshotEqualityIgnoresTimestamp() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var later = baseline
+        later.timestamp = Date(timeIntervalSince1970: 1_700_000_002)
+
+        XCTAssertNotEqual(baseline.timestamp, later.timestamp)
+        XCTAssertEqual(baseline, later)
+    }
+
+    func testSnapshotInequalityWhenEnabledChanges() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var changed = baseline
+        changed.enabled = [.cpu]
+
+        XCTAssertNotEqual(changed, baseline)
+    }
+
+    func testSnapshotInequalityWhenCPUChanges() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var changed = baseline
+        changed.cpu = CPUMetrics(totalUsage: 0.9, perCore: [0.9])
+
+        XCTAssertNotEqual(changed, baseline)
+    }
+
+    func testSnapshotInequalityWhenMemoryChanges() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var changed = baseline
+        changed.memory = MemoryMetrics(
+            usedBytes: 9, totalBytes: 10, appMemoryBytes: 5, wiredBytes: 2, compressedBytes: 2
+        )
+
+        XCTAssertNotEqual(changed, baseline)
+    }
+
+    func testSnapshotInequalityWhenMemoryPressureChanges() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var changed = baseline
+        changed.memoryPressure = MemoryPressureMetrics(state: .critical, pressurePercentage: 0.95)
+
+        XCTAssertNotEqual(changed, baseline)
+    }
+
+    func testSnapshotInequalityWhenGPUChanges() {
+        let baseline = Self.makeFullSnapshot(timestamp: Date(timeIntervalSince1970: 1_700_000_000))
+        var changed = baseline
+        changed.gpu = GPUMetrics(deviceUtilization: 0.95, rendererUtilization: 0.9, tilerUtilization: nil)
+
+        XCTAssertNotEqual(changed, baseline)
+    }
+
+    /// Snapshot with every metric enabled and every member populated.
+    private static func makeFullSnapshot(timestamp: Date) -> SystemSnapshot {
+        SystemSnapshot(
+            timestamp: timestamp,
+            enabled: .all,
+            cpu: CPUMetrics(totalUsage: 0.25, perCore: [0.25]),
+            memory: MemoryMetrics(
+                usedBytes: 1, totalBytes: 2, appMemoryBytes: 1, wiredBytes: 0, compressedBytes: 0
+            ),
+            memoryPressure: MemoryPressureMetrics(state: .normal, pressurePercentage: 0.15),
+            gpu: GPUMetrics(deviceUtilization: 0.5, rendererUtilization: 0.4, tilerUtilization: nil)
+        )
+    }
+
     // MARK: Sendable (Swift 6 strict concurrency)
 
     func testDomainTypesConformToSendable() {
