@@ -8,8 +8,10 @@
 //  status item never resizes. Blocks come from MenuBarBlockBuilder —
 //  the single source of truth for text, tint, and width. The MEM block
 //  carries a 4 pt pressure dot left of the label. No frame height:
-//  the controller centers the hosting view with a centerY constraint.
-//  Value-bound animation only, never bound to the snapshot timestamp.
+//  the controller centers the hosting view inside the status
+//  button. No .animation and no .contentTransition anywhere on the
+//  status item path: transitions stay discrete so RenderBox never
+//  re-rasterizes glyphs between ticks (AC-11).
 //
 
 import SwiftUI
@@ -33,7 +35,6 @@ struct MenuBarStackedItemView: View {
             }
         }
         .padding(.horizontal, MenuBarLayout.padding)
-        .contentTransition(.numericText())
         .accessibilityHidden(true)
         .onAppear { monitor.apply(preferences) }
         .onChange(of: preferences.enabledMetrics) {
@@ -70,7 +71,8 @@ struct MenuBarStackedItemView: View {
 
 /// One metric block: category label on line 1, value on line 2.
 /// Width pins to block.width so text changes never resize the item.
-private struct MenuBarBlockView: View {
+/// Internal so redraw-churn tests can walk its body tree.
+struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
     var body: some View {
@@ -92,7 +94,6 @@ private struct MenuBarBlockView: View {
                 .lineLimit(1)
         }
         .frame(width: block.width)
-        .animation(.easeInOut(duration: 0.2), value: block.valueText)
     }
 
     private var valueColor: Color {

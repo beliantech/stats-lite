@@ -5,9 +5,11 @@
 //  Custom NSStatusItem replaces MenuBarExtra, which flattens its
 //  label into the status button title and cannot render the stacked
 //  block layout. The button hosts a hitTest-nil NSHostingView with
-//  MenuBarStackedItemView, pinned by leading, centerY, and a
-//  priority-999 trailing constraint against statusItem.length — no
-//  top/bottom pins, no hardcoded height. Clicks toggle a transient
+//  MenuBarStackedItemView. The hosting view pins with frame-based
+//  layout, not constraints: sizingOptions = [] and an autoresizing
+//  mask of [.width, .height] track button.bounds, so a
+//  statusItem.length change on a metric toggle resizes the view
+//  with no clipping and no per-tick constraint churn. Clicks toggle a transient
 //  NSPopover with the unchanged PopoverContentView. A 0.25 s
 //  debounce on popoverDidClose stops the transient-reopen race: the
 //  popover closes on the button's own click before the action fires,
@@ -36,7 +38,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     /// ignores clicks inside the debounce window.
     private var lastCloseTimestamp: TimeInterval = 0
 
-    private var button: NSStatusBarButton? { statusItem.button }
+    /// Internal so layout tests can inspect the hosting view.
+    var button: NSStatusBarButton? { statusItem.button }
 
     init(monitor: SystemMonitor, preferences: PreferencesStore) {
         self.monitor = monitor
@@ -70,18 +73,16 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             }
         )
         let hostingView = PassthroughHostingView(rootView: rootView)
-        hostingView.translatesAutoresizingMaskIntoConstraints = false
+        // Frame-based layout only. sizingOptions = [] keeps the
+        // hosting view from resizing to its intrinsic content; the
+        // autoresizing mask follows button.bounds, so a
+        // statusItem.length change resizes the view with no clipping
+        // and no per-tick constraint churn (AC-11).
+        hostingView.sizingOptions = []
+        hostingView.translatesAutoresizingMaskIntoConstraints = true
+        hostingView.autoresizingMask = [.width, .height]
+        hostingView.frame = button.bounds
         button.addSubview(hostingView)
-
-        let trailing = hostingView.trailingAnchor.constraint(
-            equalTo: button.trailingAnchor
-        )
-        trailing.priority = NSLayoutConstraint.Priority(999)
-        NSLayoutConstraint.activate([
-            hostingView.leadingAnchor.constraint(equalTo: button.leadingAnchor),
-            trailing,
-            hostingView.centerYAnchor.constraint(equalTo: button.centerYAnchor),
-        ])
 
         button.target = self
         button.action = #selector(togglePopover(_:))

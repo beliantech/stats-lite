@@ -1,0 +1,1 @@
+- Status item views must not use `.animation` or `.contentTransition`. Transitions stay discrete.
