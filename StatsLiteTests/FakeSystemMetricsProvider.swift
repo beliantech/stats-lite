@@ -15,6 +15,12 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     var gpu: GPUMetrics?
     var pressure: MemoryPressureMetrics
 
+    // Sampling counters: the sampler tests assert which metrics were read.
+    private(set) var cpuSampleCount = 0
+    private(set) var memorySampleCount = 0
+    private(set) var gpuSampleCount = 0
+    private(set) var pressureSampleCount = 0
+
     init(
         cpuTicks: CPUTicks? = nil,
         memory: MemoryMetrics? = nil,
@@ -30,8 +36,23 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
         self.pressure = pressure
     }
 
-    func sampleCPUTicks() -> CPUTicks? { cpuTicks }
-    func sampleMemory() -> MemoryMetrics? { memory }
-    func sampleGPU() -> GPUMetrics? { gpu }
-    func sampleMemoryPressure() -> MemoryPressureMetrics { pressure }
+    func sampleCPUTicks() -> CPUTicks? {
+        cpuSampleCount += 1
+        return cpuTicks
+    }
+
+    func sampleMemory() -> MemoryMetrics? {
+        memorySampleCount += 1
+        return memory
+    }
+
+    func sampleGPU() -> GPUMetrics? {
+        gpuSampleCount += 1
+        return gpu
+    }
+
+    func sampleMemoryPressure() -> MemoryPressureMetrics {
+        pressureSampleCount += 1
+        return pressure
+    }
 }

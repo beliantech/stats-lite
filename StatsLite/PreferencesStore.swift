@@ -1,0 +1,130 @@
+//
+//  PreferencesStore.swift
+//  StatsLite
+//
+//  Persisted Settings state. Observable stored properties drive SwiftUI,
+//  @AppStorage properties hold the UserDefaults keys. The last-one-
+//  enabled guard re-enables a toggle that would leave zero metrics on,
+//  and init repairs a corrupted all-false state.
+//
+
+import Foundation
+import Observation
+import SwiftUI
+
+@MainActor
+@Observable
+final class PreferencesStore {
+
+    /// True while init seeds the observable state from storage. The
+    /// @Observable macro routes init assignments through the computed
+    /// setter, so didSet fires during seeding. The flag keeps the guard
+    /// and the storage write out of that phase.
+    @ObservationIgnored private var isSeeding = true
+
+    // MARK: - Visible metrics (last-one-enabled guard)
+
+    var showCPU: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            if !showCPU && activeMetricCount == 0 { showCPU = true }
+            showCPUStorage = showCPU
+        }
+    }
+
+    var showRAM: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            if !showRAM && activeMetricCount == 0 { showRAM = true }
+            showRAMStorage = showRAM
+        }
+    }
+
+    var showGPU: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            if !showGPU && activeMetricCount == 0 { showGPU = true }
+            showGPUStorage = showGPU
+        }
+    }
+
+    // MARK: - Sampling and history
+
+    /// Refresh interval in seconds. The picker offers 1, 2, and 5.
+    var refreshInterval: Int = 2 {
+        didSet {
+            guard !isSeeding else { return }
+            refreshIntervalStorage = refreshInterval
+        }
+    }
+
+    /// Sparkline window in seconds. The picker offers 30 and 60.
+    var historyDuration: Int = 60 {
+        didSet {
+            guard !isSeeding else { return }
+            historyDurationStorage = historyDuration
+        }
+    }
+
+    // MARK: - Display options
+
+    var showLabels: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            showLabelsStorage = showLabels
+        }
+    }
+
+    var showCoreBreakdown: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            showCoreBreakdownStorage = showCoreBreakdown
+        }
+    }
+
+    // MARK: - Derived state
+
+    /// Number of visible metrics. The guard uses this value; the
+    /// Settings UI disables the sole ON toggle at 1.
+    var activeMetricCount: Int {
+        (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
+    }
+
+    /// Toggle set handed to the sampler.
+    var enabledMetrics: EnabledMetrics {
+        var enabled: EnabledMetrics = []
+        if showCPU { enabled.insert(.cpu) }
+        if showRAM { enabled.insert(.memory) }
+        if showGPU { enabled.insert(.gpu) }
+        return enabled
+    }
+
+    // MARK: - Persistence
+
+    @ObservationIgnored @AppStorage("showCPU") private var showCPUStorage: Bool = true
+    @ObservationIgnored @AppStorage("showRAM") private var showRAMStorage: Bool = true
+    @ObservationIgnored @AppStorage("showGPU") private var showGPUStorage: Bool = true
+    @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 2
+    @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
+    @ObservationIgnored @AppStorage("showLabels") private var showLabelsStorage: Bool = true
+    @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
+
+    /// Seeds the observable state from UserDefaults while `isSeeding`
+    /// suppresses the didSet bodies. When all three keys are false,
+    /// the repair after seeding turns showCPU back on.
+    init() {
+        showCPU = showCPUStorage
+        showRAM = showRAMStorage
+        showGPU = showGPUStorage
+        refreshInterval = refreshIntervalStorage
+        historyDuration = historyDurationStorage
+        showLabels = showLabelsStorage
+        showCoreBreakdown = showCoreBreakdownStorage
+        isSeeding = false
+
+        if activeMetricCount == 0 {
+            showCPU = true
+            showCPUStorage = true
+        }
+    }
+}
