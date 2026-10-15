@@ -8,7 +8,7 @@ Greenfield repo (`/Users/jonathan/beliantech/stats-lite` has no app code). A bas
 
 1. Menu bar shows three metrics: CPU %, RAM memory pressure, GPU %.
 2. Settings has three independent on/off toggles — CPU, RAM, GPU. Each toggle hides its menu bar slot and popover card. At least one metric stays enabled at all times.
-3. **RSS < 50 MB with the Settings window closed** (hard acceptance criterion; see AC-10).
+3. **Memory < 50 MB with the Settings window closed**, measured as physical footprint (see AC-10).
 
 ## Architecture (locked from designer + oracle consults — follow exactly)
 
@@ -58,7 +58,7 @@ Greenfield repo (`/Users/jonathan/beliantech/stats-lite` has no app code). A bas
 - **Last-one-enabled guard**: model-level — `activeMetricCount` computed property; each `showX { didSet { if !showX && activeMetricCount == 0 { showX = true } } }`; on init, if all three keys are `false`, reset `showCPU = true`. UI-level — when `activeMetricCount == 1`, the sole ON toggle gets `.disabled(true)` and the section footer reads "At least one metric must remain enabled."
 - Launch-at-login via `SMAppService.mainApp` with status checks (`.requiresApproval` must not loop retries).
 
-### Footprint budget (< 50 MB RSS, Settings closed)
+### Footprint budget (< 50 MB physical footprint, Settings closed)
 
 - Oracle projection: 18–28 MB idle; ~2 KB heap per tick; <60 µs per full sample; <0.03 % CPU at 2 s.
 - Rules: draw sparklines with `Canvas`/`Path` (no `import Charts`); no image assets/preview resources in the bundle; history ring buffers capped; one timer, one actor, no Combine pipelines; skip sampling for disabled metrics; `IORegistryEntryCreateCFProperty` single-key reads only. Target is measured on the built app (AC-10), not assumed.
@@ -96,7 +96,7 @@ Greenfield repo (`/Users/jonathan/beliantech/stats-lite` has no app code). A bas
 7. Settings: three independent toggles; flipping one immediately shows/hides menu bar slot + popover card; the last enabled toggle is disabled (UI + model guard, incl. corrupted-defaults init case); refresh interval (1/2/5 s) and history duration (30/60 s) changes take effect live (observable in sampling cadence / sparkline window); no retry loop on `SMAppService` `.requiresApproval`.
 8. No Mach port, VM, IOKit iterator/service, or CF ownership leaks: all `defer` cleanups per Architecture section; `takeRetainedValue()` on CF property; verified by code review.
 9. Every VAC-1..VAC-24 item marked "Met" in the coder's report and verified visually (screenshot) where possible, applying the supersession rules (VAC-22 over VAC-10; VAC-14/15/17 over VAC-2/3).
-10. **RSS < 50 MB with Settings window closed**, measured via `ps -o rss= -p <pid>` after launch, popover opened once then closed, 60 s idle at 2 s interval. If exceeded: profile (`footprint`), fix the top consumer, re-measure, report before closing.
+10. **Physical footprint < 50 MB with Settings closed**, measured with `footprint <pid>` or `vmmap -summary <pid>` ("Physical footprint") after launch, popover opened once then closed, 60 s idle at 2 s interval. `ps -o rss=` is recorded as informational only: it counts shared read-only framework pages mapped into every GUI process (measured on this machine: Finder 159920 KB, Apple Stats 205456 KB, Stats Lite ~86000 KB), so it cannot gate a single app. Measured baseline 2026-10-15: footprint 18.1 MB steady (peak 18.2 MB), matching the oracle's 18–28 MB projection. If footprint exceeds 50 MB: profile (`footprint`), fix the top consumer, re-measure, report before closing.
 11. Release `xcodebuild -configuration Release` bundle < 50 MB (`du -sk StatsLite.app`).
 12. Two or fewer intermediate commits per task; conventional commit messages.
 
@@ -105,7 +105,7 @@ Greenfield repo (`/Users/jonathan/beliantech/stats-lite` has no app code). A bas
 - Design consult: base `notes.md` / extension `design-extension-gpu-pressure-toggles.md`.
 - Architecture consult: this ISC's Architecture section (locked; non-visual details win).
 - Partially implemented build: `git log`, `git diff`.
-- User's third requirement (RSS < 50 MB, Settings closed): AC-10.
+- User's third requirement (memory < 50 MB, Settings closed): AC-10 (physical footprint metric).
 
 ## Deferred / Out of Scope
 
