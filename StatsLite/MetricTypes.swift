@@ -25,6 +25,30 @@ struct CoreTickSample: Sendable, Equatable {
     var busy: UInt64 { user + system + nice }
 }
 
+/// One `host_processor_info` sample: one tick entry per core plus the
+/// sum across cores. The sampler uses `aggregate` for the total CPU %
+/// and `perCore` for the per-core breakdown.
+struct CPUTicks: Sendable, Equatable {
+    /// One `CoreTickSample` per core, in kernel order.
+    var perCore: [CoreTickSample]
+
+    /// Sum of `perCore` across all cores.
+    var aggregate: CoreTickSample
+
+    /// Builds a sample and computes the aggregate sum.
+    init(perCore: [CoreTickSample]) {
+        self.perCore = perCore
+        var sum = CoreTickSample(user: 0, system: 0, idle: 0, nice: 0)
+        for core in perCore {
+            sum.user += core.user
+            sum.system += core.system
+            sum.idle += core.idle
+            sum.nice += core.nice
+        }
+        self.aggregate = sum
+    }
+}
+
 /// CPU usage. Both values are fractions in 0...1, clamped at init.
 struct CPUMetrics: Sendable, Equatable {
     /// Usage across all cores, 0...1.
