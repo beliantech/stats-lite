@@ -2,10 +2,14 @@
 //  MenuBarItemView.swift
 //  StatsLite
 //
-//  3-slot menu bar label. Only enabled slots render. Per COMB width
-//  table: 4 pt container padding, 14 pt per separator, monospaced
-//  digits, fixedSize, one line. The RAM slot is a 6 pt pressure dot
-//  plus used percent. GPU shows --% when the sample is nil.
+//  Menu bar label as ONE single Text with attributed runs (blueprint
+//  Path A). MenuBarExtra extracts only the first Text from its label
+//  closure into the NSStatusBarButton title, so a multi-view HStack
+//  drops every sibling view. One Text carries the whole label:
+//  "CPU 14% · RAM ● 62% · GPU 28%" on one line. The RAM dot is a
+//  U+25CF run tinted by pressure level. GPU shows --% when the
+//  sample is nil. Runs come from MenuBarLabelBuilder; the composite
+//  VoiceOver label comes from MenuBarAccessibility.
 //
 
 import SwiftUI
@@ -48,104 +52,72 @@ struct MenuBarItemView: View {
     private var snapshot: SystemSnapshot? { monitor.latestSnapshot }
 
     var body: some View {
-        HStack(spacing: 4) {
-            if preferences.showCPU {
-                cpuSlot
-                if preferences.showRAM || preferences.showGPU {
-                    separator
-                }
-            }
-            if preferences.showRAM {
-                ramSlot
-                if preferences.showGPU {
-                    separator
-                }
-            }
-            if preferences.showGPU {
-                gpuSlot
-            }
-        }
-        .padding(.horizontal, 4)
-        .lineLimit(1)
-        .fixedSize()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(compositeLabel)
-        .onAppear { monitor.apply(preferences) }
-        .onChange(of: preferences.enabledMetrics) { monitor.apply(preferences) }
-        .onChange(of: preferences.refreshInterval) { monitor.apply(preferences) }
-        .onChange(of: preferences.historyDuration) { monitor.apply(preferences) }
-    }
-
-    // MARK: - Slots
-
-    private var cpuSlot: some View {
-        HStack(spacing: 2) {
-            if preferences.showLabels {
-                categoryLabel("CPU")
-            }
-            let value = snapshot?.cpu?.totalUsage
-            valueText(MetricFormatters.percent(value), color: usageColor(value))
-        }
-    }
-
-    private var ramSlot: some View {
-        HStack(spacing: 3) {
-            if preferences.showLabels {
-                categoryLabel("RAM")
-            }
-            Circle()
-                .fill(pressureState.levelColor)
-                .frame(width: 6, height: 6)
-                .help("Memory Pressure: \(pressureState.displayName)")
-                .accessibilityLabel("Memory pressure is \(pressureState.displayName.lowercased())")
-            let used = snapshot?.memory?.usedPercentage
-            valueText(MetricFormatters.percent(used), color: used == nil ? tertiaryLabel : .primary)
-        }
-    }
-
-    private var gpuSlot: some View {
-        HStack(spacing: 2) {
-            if preferences.showLabels {
-                categoryLabel("GPU")
-            }
-            let value = snapshot?.gpu?.deviceUtilization
-            valueText(MetricFormatters.percent(value), color: usageColor(value))
-        }
-    }
-
-    private func categoryLabel(_ text: String) -> some View {
-        Text(text)
-            .font(.system(size: 10, weight: .semibold))
-            .foregroundStyle(.secondary)
-    }
-
-    private func valueText(_ text: String, color: Color) -> some View {
-        Text(text)
-            .font(.system(size: 11.5, weight: .medium).monospacedDigit())
-            .foregroundStyle(color)
+        Text(attributedLabel)
+            .lineLimit(1)
+            .fixedSize()
+            .padding(.horizontal, 4)
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(compositeLabel)
             .contentTransition(.numericText())
-            .animation(.easeInOut(duration: 0.2), value: text)
+            .animation(.easeInOut(duration: 0.2), value: attributedLabel)
+            .onAppear { monitor.apply(preferences) }
+            .onChange(of: preferences.enabledMetrics) { monitor.apply(preferences) }
+            .onChange(of: preferences.refreshInterval) { monitor.apply(preferences) }
+            .onChange(of: preferences.historyDuration) { monitor.apply(preferences) }
     }
 
-    private var separator: some View {
-        Text("·")
-            .font(.system(size: 10, weight: .bold))
-            .foregroundStyle(.tertiary)
+    // MARK: - Attributed label
+
+    private var labelInput: MenuBarLabelInput {
+        MenuBarLabelInput(
+            showCPU: preferences.showCPU,
+            showRAM: preferences.showRAM,
+            showGPU: preferences.showGPU,
+            showLabels: preferences.showLabels,
+            cpuPercent: snapshot?.cpu?.totalUsage,
+            usedPercent: snapshot?.memory?.usedPercentage,
+            pressure: pressureState,
+            gpuPercent: snapshot?.gpu?.deviceUtilization
+        )
+    }
+
+    /// One AttributedString for the whole label. Each run keeps the
+    /// blueprint typography: 10 pt semibold secondary category
+    /// labels, 11.5 pt medium monospacedDigit values, a pressure-tinted
+    /// dot, and 10 pt bold tertiary separators.
+    private var attributedLabel: AttributedString {
+        var result = AttributedString()
+        for run in MenuBarLabelBuilder.runs(labelInput) {
+            var piece = AttributedString(run.text)
+            switch run.style {
+            case .category:
+                piece.font = .system(size: 10, weight: .semibold)
+                piece.foregroundColor = .secondary
+            case .value(let tint):
+                piece.font = .system(size: 11.5, weight: .medium).monospacedDigit()
+                piece.foregroundColor = valueColor(tint)
+            case .ramDot(let state):
+                piece.font = .system(size: 8, weight: .bold)
+                piece.foregroundColor = state.levelColor
+            case .separator:
+                piece.font = .system(size: 10, weight: .bold)
+                piece.foregroundColor = Color(nsColor: .tertiaryLabelColor)
+            }
+            result.append(piece)
+        }
+        return result
+    }
+
+    private func valueColor(_ tint: MenuBarValueTint) -> Color {
+        switch tint {
+        case .primary: .primary
+        case .tertiary: Color(nsColor: .tertiaryLabelColor)
+        case .warning: Color(nsColor: .systemOrange)
+        case .critical: Color(nsColor: .systemRed)
+        }
     }
 
     // MARK: - Derived state
-
-    /// Warning tint on usage values. Unavailable numerals render
-    /// tertiary, per extension §2. RAM used % stays primary: the dot
-    /// carries the RAM health signal.
-    private func usageColor(_ value: Double?) -> Color {
-        guard let value else { return tertiaryLabel }
-        if value >= 0.95 { return .red }
-        if value >= 0.80 { return .orange }
-        return .primary
-    }
-
-    private var tertiaryLabel: Color { Color(nsColor: .tertiaryLabelColor) }
 
     private var pressureState: MemoryPressureState {
         let pressure = snapshot?.memoryPressure

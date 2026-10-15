@@ -4,8 +4,9 @@
 //
 //  Popover panel: fixed 280 pt width, .regularMaterial background,
 //  header with Settings and Quit, cards for enabled metrics only,
-//  footer. Height adapts to the enabled metric count and the CPU
-//  core expansion state with 200 ms ease-in-out transitions.
+//  footer. The window sizes to its content via fixedSize; height is
+//  never clamped, so the GPU card and the footer stay visible. 200 ms
+//  ease-in-out transitions on metric and core-toggle changes.
 //
 
 import AppKit
@@ -46,16 +47,15 @@ struct PopoverContentView: View {
             }
             .padding(.horizontal, 10)
             .padding(.top, 5)
-
-            Spacer(minLength: 0)
+            .padding(.bottom, 8)
 
             Divider()
                 .padding(.horizontal, 10)
-                .padding(.top, 5)
 
             footer
         }
-        .frame(minWidth: 280, maxWidth: 280, minHeight: targetHeight, alignment: .top)
+        .frame(width: 280)
+        .fixedSize(horizontal: true, vertical: true)
         .background(.regularMaterial)
         .animation(.easeInOut(duration: 0.2), value: preferences.activeMetricCount)
         .animation(.easeInOut(duration: 0.2), value: coresExpanded)
@@ -119,21 +119,5 @@ struct PopoverContentView: View {
         .padding(.horizontal, 12)
         .padding(.top, 5)
         .padding(.bottom, 8)
-    }
-
-    // MARK: - Dynamic height (VAC-22)
-
-    /// Blueprint targets: 390/300/210 pt collapsed for 3/2/1 cards,
-    /// +80 pt when the CPU core grid is expanded. The frame sets a
-    /// minimum; content that runs taller wins so nothing clips.
-    private var targetHeight: CGFloat {
-        let collapsed: CGFloat
-        switch preferences.activeMetricCount {
-        case 3: collapsed = 390
-        case 2: collapsed = 300
-        default: collapsed = 210
-        }
-        let expanded = preferences.showCPU && coresExpanded ? 80 : 0
-        return collapsed + CGFloat(expanded)
     }
 }

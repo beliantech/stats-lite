@@ -17,6 +17,18 @@ struct StatsLiteApp: App {
     @State private var preferences = PreferencesStore()
     @State private var launchAtLogin = LaunchAtLoginService()
 
+    /// MenuBarExtra extracts the label text into the status button
+    /// title and can skip label onAppear. Start the sampling loop at
+    /// launch so the first snapshot does not wait for the popover.
+    init() {
+        let monitor = SystemMonitor()
+        let preferences = PreferencesStore()
+        _monitor = State(initialValue: monitor)
+        _preferences = State(initialValue: preferences)
+        _launchAtLogin = State(initialValue: LaunchAtLoginService())
+        monitor.apply(preferences)
+    }
+
     var body: some Scene {
         MenuBarExtra {
             PopoverContentView(monitor: monitor, preferences: preferences)
