@@ -90,6 +90,13 @@ final class PreferencesStore {
         (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
     }
 
+    /// True when `isOn` reports the state of the only enabled metric
+    /// toggle. The Settings UI renders that toggle disabled in the
+    /// ON position (VAC-24).
+    func isToggleLocked(_ isOn: Bool) -> Bool {
+        activeMetricCount == 1 && isOn
+    }
+
     /// Toggle set handed to the sampler.
     var enabledMetrics: EnabledMetrics {
         var enabled: EnabledMetrics = []
