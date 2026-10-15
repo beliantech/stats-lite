@@ -179,21 +179,32 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         XCTAssertEqual(gpuTint(nil), .tertiary)
     }
 
-    func testMEMValueTintEscalatesWithPressureState() {
+    func testMEMValueTintStaysPrimaryInAllPressureStates() {
+        // The MEM number keeps the menu bar text color in every
+        // pressure state. The dot owns the state colors, not the
+        // number. Only a missing percent renders tertiary.
         XCTAssertEqual(
-            memTint(pressurePercent: 0.25, pressureState: .normal), .green
+            memTint(pressurePercent: 0.25, pressureState: .normal), .primary
         )
         XCTAssertEqual(
-            memTint(pressurePercent: 0.0, pressureState: .normal), .green
+            memTint(pressurePercent: 0.0, pressureState: .normal), .primary
         )
         XCTAssertEqual(
-            memTint(pressurePercent: 0.68, pressureState: .warning), .warning
+            memTint(pressurePercent: 0.68, pressureState: .warning), .primary
         )
         XCTAssertEqual(
-            memTint(pressurePercent: 0.88, pressureState: .critical), .critical
+            memTint(pressurePercent: 0.88, pressureState: .critical), .primary
         )
         XCTAssertEqual(
-            memTint(pressurePercent: 1.0, pressureState: .critical), .critical
+            memTint(pressurePercent: 1.0, pressureState: .critical), .primary
+        )
+        // Unknown state with a percent present.
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.42, pressureState: .unknown), .primary
+        )
+        // Missing state with a percent present.
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.42, pressureState: nil), .primary
         )
     }
 
@@ -307,7 +318,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
                 label: "MEM",
                 dotState: .normal,
                 valueText: "62%",
-                valueTint: .green,
+                valueTint: .primary,
                 width: 34
             )
         )

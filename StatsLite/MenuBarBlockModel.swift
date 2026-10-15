@@ -14,10 +14,8 @@ import Foundation
 
 /// Tint of a block value. Maps to Color in the stacked views.
 enum MenuBarValueTint: Equatable {
-    /// Normal usage. Values render primary.
+    /// Normal usage and every MEM pressure state. Values render primary.
     case primary
-    /// Normal memory pressure value. Renders systemGreen.
-    case green
     /// Unavailable (nil) value. Renders tertiary.
     case tertiary
     /// Usage at or above 80 %. Renders orange.
@@ -111,9 +109,10 @@ enum MenuBarBlockBuilder {
                     label: "MEM",
                     dotState: resolvedState,
                     valueText: MetricFormatters.percent(pressurePercent),
-                    valueTint: pressureTint(
-                        percent: pressurePercent, state: resolvedState
-                    ),
+                    // The number keeps the menu bar text color in
+                    // every pressure state. The dot owns the state
+                    // colors. Only a missing percent renders tertiary.
+                    valueTint: pressurePercent == nil ? .tertiary : .primary,
                     width: MenuBarLayout.blockWidth
                 )
             )
@@ -142,19 +141,5 @@ enum MenuBarBlockBuilder {
         if value >= 0.95 { return .critical }
         if value >= 0.80 { return .warning }
         return .primary
-    }
-
-    /// Value tint for memory pressure: green for normal, orange for
-    /// warning, red for critical. Unavailable values render tertiary.
-    private static func pressureTint(
-        percent: Double?,
-        state: MemoryPressureState
-    ) -> MenuBarValueTint {
-        guard percent != nil else { return .tertiary }
-        switch state {
-        case .critical: return .critical
-        case .warning: return .warning
-        case .normal, .unknown: return .green
-        }
     }
 }

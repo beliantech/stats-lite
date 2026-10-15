@@ -98,7 +98,6 @@ private struct MenuBarBlockView: View {
     private var valueColor: Color {
         switch block.valueTint {
         case .primary: .primary
-        case .green: Color(nsColor: .systemGreen)
         case .tertiary: Color(nsColor: .tertiaryLabelColor)
         case .warning: Color(nsColor: .systemOrange)
         case .critical: Color(nsColor: .systemRed)
