@@ -1,0 +1,211 @@
+# Verification Report: Reduce StatsLite View-Layer Weight
+
+Date: 2026-10-15
+Plan: `.pi/plans/2026-10-15-stats-lite-view-weight.md`
+Commit verified: `de33eab` on `feat/2026-10-15-stats-lite-view-weight`
+Baseline for pixel comparison: `f27eff3` (detached worktree, removed after AC-4)
+Scope of this pass: Success Criteria AC-1, AC-4, AC-5 (VAC-1 to VAC-11) and AC-6.
+Verification only. No code was changed to make any check pass.
+
+---
+
+## Result summary
+
+| AC | Verdict | Measured value against target |
+| :--- | :--- | :--- |
+| AC-1 idle CPU | **FAIL** | SparklineView.body while closed: 0 executions (target 0, sub-check PASS). Idle process CPU: 3.77 % average (target < 0.1 %, sub-check FAIL). |
+| AC-4 pixel equivalence | **PASS** | 0 differing pixels in light and dark at 240 pt (target 0). |
+| AC-5 VAC ledger | **PASS** | 11 of 11 VAC items pass. 120 pixel checks, 0 failures. |
+| AC-6 footprint | **FAIL** | 208 MB footprint (target < 50 MB). |
+
+---
+
+## Method
+
+1. A temporary XCTest harness renders `SparklineView` through `ImageRenderer` at
+   scale 2, which produces 2x pixel buffers (240 pt renders as 480 px wide).
+   The harness sets `.environment(\.colorScheme, ...)` for light and dark mode.
+   The harness asserts that light output differs from dark output, so a broken
+   appearance override fails the run instead of producing wrong evidence.
+2. The fixed synthetic series for all renders:
+   `v_i = clamp(0.15 + 0.55 * i/30 + 0.12 * sin(1.7 * i), 0.02, 0.98)` for i = 0 to 30.
+   AC-4 uses the first 30 values, so N = capacity = 30.
+3. Pixel diffs and geometry checks use Python with Pillow. The full check log is
+   `vac-analysis.txt`: 120 checks, 0 failures.
+4. A first attempt overrode appearance with `NSAppearance.performAsCurrentDrawingAppearance`.
+   That produced byte-identical light and dark files, so the override had no effect.
+   The method changed to the environment colorScheme override and the harness kept
+   the light-versus-dark inequality assertion.
+5. The designer reference images are still in `/tmp/designer/`. The harness renders
+   show the same geometry: right-anchored newest point, empty left region in warm-up,
+   full-width stroke at N = 30. A pixel diff against the designer images is not valid
+   because the designer used a different synthetic series.
+
+---
+
+## AC-1: idle CPU with the popover closed — FAIL
+
+Protocol: a Release build of `de33eab` with temporary print hooks (removed before
+this commit). The app launched at 20:55. A launch argument opened the popover at
++3 s and closed it at +8 s. `top -l 41 -s 10 -pid <pid>` sampled the process from
+20:57:24 to 21:04:08, which is 40 interval samples over 6 m 44 s.
+
+Sub-check A: `SparklineView.body` never executes while the popover is closed — **PASS**.
+
+- The body-eval log shows 12 evaluations between the open marker and the close
+  marker (9 while open, 3 during the close animation) and 0 evaluations after
+  `VERIFY POPOVER DID CLOSE (controller released)`.
+- The zero-evaluation window runs from 20:55:47 to the last capture at 21:11,
+  which is about 15 minutes with the popover closed.
+- Structural basis: `StatusItemController.swift` references
+  `contentViewController` only at line 107 (lazy mount inside `togglePopover`,
+  line 94) and line 128 (release inside `popoverDidClose`, line 122).
+  `init` sets no content controller, so no popover view exists at launch.
+- `StatusItemControllerPopoverTests` passed in the same test run.
+- Evidence: `ac1-popover-cycle-body-eval.log`.
+
+Sub-check B: main-thread idle CPU below 0.1 % — **FAIL**.
+
+| Measurement | Window | Average process CPU |
+| :--- | :--- | :--- |
+| This instrumented instance (PID 87113), `top -l 41 -s 10` | 20:57:24 to 21:04:08 | **3.77 %** (min 1.3 %, max 6.2 %) |
+| Same instance, quiet-machine re-measure | 21:06:49 to 21:08:53 | **2.92 %** |
+| User's uninstrumented instance (PID 6497), same quiet window | 21:06:49 to 21:08:53 | **3.20 %** |
+
+- Both instances agree within 0.3 percentage points, so the instrumentation does
+  not cause the cost. The user's instance runs the same commit without any hook.
+- A 4-second `sample` of PID 87113 shows the main thread blocked in `mach_msg`
+  for 2,900 of 2,966 samples. The busy samples sit in `CA::Transaction::flush`
+  and AutoLayout `systemLayoutSizeFittingSize` for the status item view.
+- The popover path is idle, so the residual CPU comes from the menu bar item.
+  The allocation evidence in AC-6 locates the same path.
+- Evidence: `ac1-idle-cpu.txt`.
+
+Measurement caveat: the user's instance PID 6497 had to stay alive, so two
+instances ran at the same time. Each instance was measured separately and both
+agree, so the caveat does not change the verdict.
+
+---
+
+## AC-4: pixel equivalence at full buffer — PASS
+
+Protocol: a detached worktree of `f27eff3` at `../baseline-f27eff3`. The same
+harness ran in both checkouts and rendered the fixed series at N = capacity = 30,
+240 pt width, light and dark, scale 2. Pillow computed the RGBA difference.
+
+| Appearance | Buffer size | Diff bounding box | Differing pixels |
+| :--- | :--- | :--- | :--- |
+| Light | 480 x 76 px | None | **0** |
+| Dark | 480 x 76 px | None | **0** |
+
+The result is empirical and not an algebraic argument. The buffers are identical
+pixel for pixel in both appearances. The baseline worktree was removed after the check.
+
+Evidence: `ac4-pixel-diff.txt`, `renders/ac4_baseline_w240_light.png`,
+`renders/ac4_baseline_w240_dark.png`, `renders/ac4_current_w240_light.png`,
+`renders/ac4_current_w240_dark.png`.
+
+---
+
+## AC-5: VAC-1 to VAC-11 ledger — PASS (11 of 11)
+
+Renders: 30 files for N = 0, 1, 5, 15, 30 at 240 / 375 / 768 pt in light and dark,
+in `renders/`, with per-item copies in `vac-1/` to `vac-11/`.
+Pixel analysis: `vac-analysis.txt`, 120 checks, 0 failures.
+
+| ID | Verdict | Evidence | Justification |
+| :--- | :--- | :--- | :--- |
+| VAC-1 | **PASS** | `vac-1/n0_w{240,375,768}_{light,dark}.png`, `vac-analysis.txt` rows `VAC-1` | All six N = 0 renders have an alpha bounding box of None, so they contain zero stroke and zero fill. Height is 38 pt through `.frame(height: 38)` at `SparklineView.swift:85`. |
+| VAC-2 | **PASS** | `vac-2/n1_w*.png`, `vac-analysis.txt` rows `VAC-2` | At N = 1 the drawn width is at most 5 px (a 3 px dot plus antialiasing) at every width and mode, so no horizontal flat line crosses the card. |
+| VAC-3 | **PASS** | `vac-3/n1_w*.png`, `vac-analysis.txt` rows `VAC-3` | The dot right edge sits within 2.5 px of `x = width - 1.5 pt` at all six renders, and the dot vertical center matches the value formula within 3 px. |
+| VAC-4 | **PASS** | `vac-4/n{5,15}_w240_*.png`, `vac-analysis.txt` rows `VAC-4` | For N = 5 and N = 15 at 240 pt the stroke right edge matches `x = width - 1.5 pt` plus the round cap within 3 px, so the newest point anchors at the right edge. |
+| VAC-5 | **PASS** | `vac-5/n{5,15}_w*.png`, `vac-analysis.txt` rows `VAC-5`, `SparklineViewTests` | Every rendered warm-up span equals `(N-1) * dx` right-anchored within 3 px AA tolerance at all widths, and `testWarmupSpansRightAnchoredWithFixedStep` asserts the exact `dx` step. |
+| VAC-6 | **PASS** | `vac-6/n{5,15}_w*.png`, `vac-analysis.txt` rows `VAC-6` | Every pixel column left of the stroke is fully transparent, and the area fill reaches the bottom row inside the span, so the fill closes beneath the line and leaves the left region empty. |
+| VAC-7 | **PASS** | `vac-7/n30_w*.png`, `vac-analysis.txt` rows `VAC-7` | At N = 30 the stroke spans x = 1.5 pt to x = width - 1.5 pt within 1 px at all six renders. |
+| VAC-8 | **PASS** | `vac-8/vac8_dx_shift.txt`, `SparklineViewTests` | Two sequential renders on a full buffer (N = 29 then N = 30) shift all 29 shared samples left by exactly dx within 1e-9. The shift holds at 240, 375 and 768 pt, the step stays rigid, and y never moves. `SparklineViewTests` repeats the fixed-step assertions at unit level. |
+| VAC-9 | **PASS** | `vac-9/n{5,15,30}_w*.png`, `vac-analysis.txt` rows `VAC-9` | Per-width absolute spans match `(N-1) * dx` within the AA tolerance at 240, 375 and 768 pt with no clipping, and dx scales with plotWidth (8.1724 / 12.8276 / 26.3793 pt). |
+| VAC-10 | **PASS** | `vac-10/` full matrix, `vac-analysis.txt` rows `VAC-10` | Light and dark differ in every state (max channel delta up to 255). The stroke uses the adaptive system blue: RGB(0,135,255) in light and RGB(0,145,255) in dark. Fill alpha falls from 23 below the line to 7 near the bottom, which matches the 0.25 to 0.02 gradient. No pixel falls outside the expected geometry in either mode, so no stale pixels exist. |
+| VAC-11 | **PASS** | `vac-11/vac-11-evidence.txt` | `SparklineView.swift:86` carries `.accessibilityHidden(true)`. Cards expose complete spoken summaries at `CPUCardView.swift:57`, `MemoryPressureCardView.swift:64`, `GPUCardView.swift:53`. `MenuBarAccessibilityTests` passed, and the full suite ran 148 tests with 0 failures. |
+
+Note on VAC-9: the first analysis compared span ratios between widths. The ratio
+metric is unstable because the AA bounding box rounds to integer pixels and the
+240 pt span is short. The check changed to a per-width absolute span comparison
+against the exact `(N-1) * dx` geometry. The per-width numbers pass with margin.
+
+---
+
+## AC-6: footprint after idle — FAIL
+
+Protocol: the same idle Release instance (PID 87113). The popover opened once and
+closed at 20:55:47. `footprint` ran at 21:09, which is more than 60 s after close.
+
+| Process | Age at measurement | Footprint | Malloc Small dirty | RSS (`ps`) |
+| :--- | :--- | :--- | :--- | :--- |
+| PID 87113 (this verification instance) | 13 min after close | **208 MB** | 192 MB in 58 regions | 279,472 KB (273 MB) |
+| PID 6497 (user's instance, uninstrumented) | 25 min | **243 MB** | 225 MB in 78 regions | 365,632 KB (357 MB) |
+| Fresh probe, popover never opened | 4.5 min | **92.1 MB** | (stack logging active) | n/a |
+
+Target: < 50 MB dirty. The fresh probe passes 50 MB within the first minutes
+while its popover never opens, so the growth starts at launch with the popover closed.
+
+Root-cause lead for the planner (not fixed here, verification is report-only):
+
+- `heap 87113 -sortBySize` at 14 minutes: 293,735 live nodes, 189,010,853 bytes.
+  251,522 non-object nodes hold 181,455,889 bytes. Largest node counts are 16 B
+  (100,141 nodes), 2.5 KB (35,590), 2 KB (35,927), 32 B (21,866), 192 B (18,548).
+- `malloc_history <pid> -callTree` on the fresh probe (stack logging on,
+  popover never opened): 97,176 allocations, 57.8 MB in 271 s. Of that total,
+  55,530 calls and 50.9 MB (88 %) sit under `@objc CGDrawingLayer.draw(in:)`
+  (SwiftUI) into RenderBox display list rendering and glyph rasterization
+  (`CGGlyphBuilderLockBitmaps`, `CGGlyphBitmapCreate`). That is about 205 SwiftUI
+  layer redraws per second.
+- AC-1 and AC-6 plausibly share one cause: the menu bar SwiftUI view redraws per
+  display frame instead of per 2 s tick. The next step for the planner is an
+  Instruments Time Profiler plus Allocations run on one idle instance to find what
+  invalidates the menu bar view per frame.
+
+Evidence: `ac6-footprint.txt`, `ac6-heap-histogram-87113.txt`,
+`ac6-allocation-calltree.txt` (trimmed excerpt of a 129,771-line call tree).
+
+---
+
+## Failures back to the planner
+
+1. AC-1 sub-check B fails. Idle process CPU with the popover closed measures
+   2.9 % to 3.8 % against a target below 0.1 %. Two instances agree, and the
+   popover view path provably does not execute. The cost sits in the always-on
+   menu bar item.
+2. AC-6 fails. Footprint is 208 MB against a target below 50 MB, and a fresh
+   instance reaches 92 MB in 4.5 minutes without opening the popover.
+3. Both failures point at one path: about 205 SwiftUI `CGDrawingLayer.draw`
+   calls per second with the popover closed, which burn CPU and grow the heap.
+
+No code was changed in this pass. All instrumentation was removed before the commit.
+
+---
+
+## Cleanup record
+
+- Temporary print hooks reverted in `SparklineView.swift`, `StatusItemController.swift`,
+  `StatsLiteApp.swift`. `rg VERIFY StatsLite/` finds nothing.
+- Temporary harness files removed: `StatsLiteTests/TemporaryVACHarnessTests.swift`
+  in this worktree and `TemporaryBaselineHarnessTests.swift` in the baseline.
+- The baseline worktree `../baseline-f27eff3` was removed.
+- Probe and test processes terminated. The user's instance PID 6497 keeps running.
+- `git status` shows only this evidence directory as new.
+
+## Evidence files
+
+| File | Content |
+| :--- | :--- |
+| `verification-report.md` | This report with the AC and VAC ledgers. |
+| `ac4-pixel-diff.txt` | AC-4 Pillow RGBA diff result for light and dark. |
+| `ac1-idle-cpu.txt` | AC-1 `top` samples, averages and verdict. |
+| `ac1-popover-cycle-body-eval.log` | Instrumented launch log with body-eval markers. |
+| `ac6-footprint.txt` | `footprint` output for both instances plus `ps` RSS. |
+| `ac6-heap-histogram-87113.txt` | `heap -sortBySize` excerpt for the 14-minute instance. |
+| `ac6-allocation-calltree.txt` | `malloc_history -callTree` header and draw branch. |
+| `vac-analysis.txt` | 120 pixel checks across all VAC items, 0 failures. |
+| `vac8_dx_shift.txt` | N = 29 to N = 30 exact dx shift at three widths. |
+| `renders/` | 30 state-matrix renders plus 4 AC-4 pair renders. |
+| `vac-1/` to `vac-11/` | Per-VAC screenshot copies and the VAC-11 text evidence. |

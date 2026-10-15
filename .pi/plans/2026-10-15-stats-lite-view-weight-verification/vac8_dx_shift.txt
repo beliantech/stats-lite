@@ -1,0 +1,4 @@
+VAC-8 per-tick shift check (N = 29 -> N = 30, full buffer)
+width 240 pt: dx = 8.1724137931 pt, 29 shared samples each shifted exactly dx: PASS
+width 375 pt: dx = 12.8275862069 pt, 29 shared samples each shifted exactly dx: PASS
+width 768 pt: dx = 26.3793103448 pt, 29 shared samples each shifted exactly dx: PASS

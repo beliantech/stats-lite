@@ -1,0 +1,122 @@
+PASS VAC-1 n0 w240 light: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-1 n0 w240 dark: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-1 n0 w375 light: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-1 n0 w375 dark: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-1 n0 w768 light: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-1 n0 w768 dark: non-transparent bbox=None, height=76px (expect 76px)
+PASS VAC-2 n1 w240 light: drawn width 5px (dot 3px + AA), card 480px: no flat line
+PASS VAC-3 n1 w240 light: dot right edge px 479, expected center 477.0px (+/- AA)
+PASS VAC-3 n1 w240 light vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-2 n1 w240 dark: drawn width 5px (dot 3px + AA), card 480px: no flat line
+PASS VAC-3 n1 w240 dark: dot right edge px 479, expected center 477.0px (+/- AA)
+PASS VAC-3 n1 w240 dark vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-2 n1 w375 light: drawn width 5px (dot 3px + AA), card 750px: no flat line
+PASS VAC-3 n1 w375 light: dot right edge px 749, expected center 747.0px (+/- AA)
+PASS VAC-3 n1 w375 light vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-2 n1 w375 dark: drawn width 5px (dot 3px + AA), card 750px: no flat line
+PASS VAC-3 n1 w375 dark: dot right edge px 749, expected center 747.0px (+/- AA)
+PASS VAC-3 n1 w375 dark vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-2 n1 w768 light: drawn width 5px (dot 3px + AA), card 1536px: no flat line
+PASS VAC-3 n1 w768 light: dot right edge px 1535, expected center 1533.0px (+/- AA)
+PASS VAC-3 n1 w768 light vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-2 n1 w768 dark: drawn width 5px (dot 3px + AA), card 1536px: no flat line
+PASS VAC-3 n1 w768 dark: dot right edge px 1535, expected center 1533.0px (+/- AA)
+PASS VAC-3 n1 w768 dark vertical: dot center y 62.5px, expected 62.5px
+PASS VAC-5 n5 w240 light span: stroke x span [410,479]px, expected [410.1,478.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w240 light right-anchor: newest point at right edge px 479, expected 478.5px
+PASS VAC-6 n5 w240 light left-empty: all columns left of px 408 are fully transparent
+PASS VAC-6 n5 w240 light fill-under-line: bottom-row alpha at mid-span px 444: 6 (fill closes to y=size.height)
+PASS VAC-5 n5 w240 dark span: stroke x span [410,479]px, expected [410.1,478.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w240 dark right-anchor: newest point at right edge px 479, expected 478.5px
+PASS VAC-6 n5 w240 dark left-empty: all columns left of px 408 are fully transparent
+PASS VAC-6 n5 w240 dark fill-under-line: bottom-row alpha at mid-span px 444: 6 (fill closes to y=size.height)
+PASS VAC-5 n5 w375 light span: stroke x span [642,749]px, expected [642.9,748.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w375 light right-anchor: newest point at right edge px 749, expected 748.5px
+PASS VAC-6 n5 w375 light left-empty: all columns left of px 640 are fully transparent
+PASS VAC-6 n5 w375 light fill-under-line: bottom-row alpha at mid-span px 695: 6 (fill closes to y=size.height)
+PASS VAC-5 n5 w375 dark span: stroke x span [642,749]px, expected [642.9,748.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w375 dark right-anchor: newest point at right edge px 749, expected 748.5px
+PASS VAC-6 n5 w375 dark left-empty: all columns left of px 640 are fully transparent
+PASS VAC-6 n5 w375 dark fill-under-line: bottom-row alpha at mid-span px 695: 6 (fill closes to y=size.height)
+PASS VAC-5 n5 w768 light span: stroke x span [1320,1535]px, expected [1320.5,1534.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w768 light right-anchor: newest point at right edge px 1535, expected 1534.5px
+PASS VAC-6 n5 w768 light left-empty: all columns left of px 1318 are fully transparent
+PASS VAC-6 n5 w768 light fill-under-line: bottom-row alpha at mid-span px 1427: 6 (fill closes to y=size.height)
+PASS VAC-5 n5 w768 dark span: stroke x span [1320,1535]px, expected [1320.5,1534.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n5 w768 dark right-anchor: newest point at right edge px 1535, expected 1534.5px
+PASS VAC-6 n5 w768 dark left-empty: all columns left of px 1318 are fully transparent
+PASS VAC-6 n5 w768 dark fill-under-line: bottom-row alpha at mid-span px 1427: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w240 light span: stroke x span [246,479]px, expected [246.7,478.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w240 light right-anchor: newest point at right edge px 479, expected 478.5px
+PASS VAC-6 n15 w240 light left-empty: all columns left of px 244 are fully transparent
+PASS VAC-6 n15 w240 light fill-under-line: bottom-row alpha at mid-span px 362: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w240 dark span: stroke x span [246,479]px, expected [246.7,478.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w240 dark right-anchor: newest point at right edge px 479, expected 478.5px
+PASS VAC-6 n15 w240 dark left-empty: all columns left of px 244 are fully transparent
+PASS VAC-6 n15 w240 dark fill-under-line: bottom-row alpha at mid-span px 362: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w375 light span: stroke x span [386,749]px, expected [386.3,748.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w375 light right-anchor: newest point at right edge px 749, expected 748.5px
+PASS VAC-6 n15 w375 light left-empty: all columns left of px 384 are fully transparent
+PASS VAC-6 n15 w375 light fill-under-line: bottom-row alpha at mid-span px 567: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w375 dark span: stroke x span [386,749]px, expected [386.3,748.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w375 dark right-anchor: newest point at right edge px 749, expected 748.5px
+PASS VAC-6 n15 w375 dark left-empty: all columns left of px 384 are fully transparent
+PASS VAC-6 n15 w375 dark fill-under-line: bottom-row alpha at mid-span px 567: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w768 light span: stroke x span [792,1535]px, expected [792.9,1534.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w768 light right-anchor: newest point at right edge px 1535, expected 1534.5px
+PASS VAC-6 n15 w768 light left-empty: all columns left of px 790 are fully transparent
+PASS VAC-6 n15 w768 light fill-under-line: bottom-row alpha at mid-span px 1163: 6 (fill closes to y=size.height)
+PASS VAC-5 n15 w768 dark span: stroke x span [792,1535]px, expected [792.9,1534.5]px => (N-1)*dx right-anchored
+PASS VAC-4 n15 w768 dark right-anchor: newest point at right edge px 1535, expected 1534.5px
+PASS VAC-6 n15 w768 dark left-empty: all columns left of px 790 are fully transparent
+PASS VAC-6 n15 w768 dark fill-under-line: bottom-row alpha at mid-span px 1163: 6 (fill closes to y=size.height)
+PASS VAC-7 n30 w240 light: stroke x span [1,479]px of 480px; expected start ~1.5px (x=1.5pt), end ~478px (x=w-1.5pt)
+PASS VAC-10 n30 w240 light gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-7 n30 w240 dark: stroke x span [1,479]px of 480px; expected start ~1.5px (x=1.5pt), end ~478px (x=w-1.5pt)
+PASS VAC-10 n30 w240 dark gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-7 n30 w375 light: stroke x span [1,749]px of 750px; expected start ~1.5px (x=1.5pt), end ~748px (x=w-1.5pt)
+PASS VAC-10 n30 w375 light gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-7 n30 w375 dark: stroke x span [1,749]px of 750px; expected start ~1.5px (x=1.5pt), end ~748px (x=w-1.5pt)
+PASS VAC-10 n30 w375 dark gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-7 n30 w768 light: stroke x span [1,1535]px of 1536px; expected start ~1.5px (x=1.5pt), end ~1534px (x=w-1.5pt)
+PASS VAC-10 n30 w768 light gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-7 n30 w768 dark: stroke x span [1,1535]px of 1536px; expected start ~1.5px (x=1.5pt), end ~1534px (x=w-1.5pt)
+PASS VAC-10 n30 w768 dark gradient: fill alpha below line 23 > near-bottom 7 (0.25 -> 0.02 tint)
+PASS VAC-10 n1 w240 light-vs-dark: max channel delta 10 between light and dark renders
+PASS VAC-10 n1 w240 light stroke-color: stroke pixel at (476,61) = RGB(0,135,255) a=249: blue-family adaptive color
+PASS VAC-10 n1 w240 dark stroke-color: stroke pixel at (476,61) = RGB(0,144,255) a=249: blue-family adaptive color
+PASS VAC-10 n1 w375 light-vs-dark: max channel delta 10 between light and dark renders
+PASS VAC-10 n1 w375 light stroke-color: stroke pixel at (746,61) = RGB(0,135,255) a=249: blue-family adaptive color
+PASS VAC-10 n1 w375 dark stroke-color: stroke pixel at (746,61) = RGB(0,144,255) a=249: blue-family adaptive color
+PASS VAC-10 n1 w768 light-vs-dark: max channel delta 10 between light and dark renders
+PASS VAC-10 n1 w768 light stroke-color: stroke pixel at (1532,61) = RGB(0,135,255) a=249: blue-family adaptive color
+PASS VAC-10 n1 w768 dark stroke-color: stroke pixel at (1532,61) = RGB(0,144,255) a=249: blue-family adaptive color
+PASS VAC-10 n15 w240 light-vs-dark: max channel delta 255 between light and dark renders
+PASS VAC-10 n15 w240 light stroke-color: stroke pixel at (476,51) = RGB(0,136,255) a=255: blue-family adaptive color
+PASS VAC-10 n15 w240 dark stroke-color: stroke pixel at (476,51) = RGB(0,145,255) a=255: blue-family adaptive color
+PASS VAC-10 n15 w375 light-vs-dark: max channel delta 63 between light and dark renders
+PASS VAC-10 n15 w375 light stroke-color: stroke pixel at (746,51) = RGB(0,136,255) a=253: blue-family adaptive color
+PASS VAC-10 n15 w375 dark stroke-color: stroke pixel at (746,51) = RGB(0,145,255) a=253: blue-family adaptive color
+PASS VAC-10 n15 w768 light-vs-dark: max channel delta 255 between light and dark renders
+PASS VAC-10 n15 w768 light stroke-color: stroke pixel at (1532,51) = RGB(0,135,255) a=243: blue-family adaptive color
+PASS VAC-10 n15 w768 dark stroke-color: stroke pixel at (1532,51) = RGB(0,145,255) a=243: blue-family adaptive color
+PASS VAC-10 n30 w240 light-vs-dark: max channel delta 85 between light and dark renders
+PASS VAC-10 n30 w240 light stroke-color: stroke pixel at (476,31) = RGB(0,136,255) a=255: blue-family adaptive color
+PASS VAC-10 n30 w240 dark stroke-color: stroke pixel at (476,31) = RGB(0,145,255) a=255: blue-family adaptive color
+PASS VAC-10 n30 w375 light-vs-dark: max channel delta 85 between light and dark renders
+PASS VAC-10 n30 w375 light stroke-color: stroke pixel at (746,31) = RGB(0,136,255) a=255: blue-family adaptive color
+PASS VAC-10 n30 w375 dark stroke-color: stroke pixel at (746,31) = RGB(0,145,255) a=255: blue-family adaptive color
+PASS VAC-10 n30 w768 light-vs-dark: max channel delta 255 between light and dark renders
+PASS VAC-10 n30 w768 light stroke-color: stroke pixel at (1532,31) = RGB(0,136,255) a=255: blue-family adaptive color
+PASS VAC-10 n30 w768 dark stroke-color: stroke pixel at (1532,31) = RGB(0,145,255) a=255: blue-family adaptive color
+PASS VAC-9 n5 w240 proportional span: span [410,479]px vs expected [410.1,478.5]px (dx=8.1724pt scales with plotWidth=237pt), no clipping
+PASS VAC-9 n5 w375 proportional span: span [642,749]px vs expected [642.9,748.5]px (dx=12.8276pt scales with plotWidth=372pt), no clipping
+PASS VAC-9 n5 w768 proportional span: span [1320,1535]px vs expected [1320.5,1534.5]px (dx=26.3793pt scales with plotWidth=765pt), no clipping
+PASS VAC-9 n15 w240 proportional span: span [246,479]px vs expected [246.7,478.5]px (dx=8.1724pt scales with plotWidth=237pt), no clipping
+PASS VAC-9 n15 w375 proportional span: span [386,749]px vs expected [386.3,748.5]px (dx=12.8276pt scales with plotWidth=372pt), no clipping
+PASS VAC-9 n15 w768 proportional span: span [792,1535]px vs expected [792.9,1534.5]px (dx=26.3793pt scales with plotWidth=765pt), no clipping
+PASS VAC-9 n30 w240 proportional span: span [1,479]px vs expected [1.5,478.5]px (dx=8.1724pt scales with plotWidth=237pt), no clipping
+PASS VAC-9 n30 w375 proportional span: span [1,749]px vs expected [1.5,748.5]px (dx=12.8276pt scales with plotWidth=372pt), no clipping
+PASS VAC-9 n30 w768 proportional span: span [1,1535]px vs expected [1.5,1534.5]px (dx=26.3793pt scales with plotWidth=765pt), no clipping
+
+TOTAL: 120 checks, 0 failures

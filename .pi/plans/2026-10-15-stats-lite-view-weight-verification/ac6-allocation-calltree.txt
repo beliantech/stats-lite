@@ -1,0 +1,95 @@
+malloc_history Report Version:  2.0
+Process:         StatsLite [82080]
+Path:            /private/tmp/*/StatsLite.app/Contents/MacOS/StatsLite
+Load Address:    0x100a9c000
+Identifier:      com.beliantech.statslite
+Version:         1.0 (1)
+Code Type:       ARM64
+Platform:        macOS
+Parent Process:  launchd [1]
+Target Type:     live task
+
+Date/Time:       2026-10-15 21:23:06.929 +0800
+Launch Time:     2026-10-15 21:18:35.135 +0800
+OS Version:      macOS 27.0.1 (26A434)
+Report Version:  7
+Analysis Tool:   /usr/bin/malloc_history
+
+Physical footprint:         92.1M
+Physical footprint (peak):  92.1M
+Idle exit:                  untracked
+----
+
+VM region sizes shown as dirty + swapped/compressed - purgableVolatile.
+
+Stack logging was dynamically enabled in target process after it was launched so no backtraces are available for earlier allocations.
+Stack logging was enabled for 271.0 seconds, which is 99.7% of the process's total lifetime of 271.8 seconds.
+
+Malloc blocks with no stack:   5685   total size: 200K
+   VM regions with no stack:     24   total size: 1808K
+
+Call graph:
+    97176 (57.8M) << TOTAL >>
+      92018 (57.2M) start  (in dyld) + 6688  [0x1878e7e80]
+# --- Branch: SwiftUI menu bar layer redraw (lines 55-115 of the full tree) ---
+      + ! : | + ! : | + !     : | + !             57472 (51.3M) CA::Transaction::flush()  (in QuartzCore) + 84  [0x192403370]
+      + ! : | + ! : | + !     : | + !               55871 (51.1M) CA::Transaction::commit()  (in QuartzCore) + 652  [0x1924037d4]
+      + ! : | + ! : | + !     : | + !               : 55804 (51.1M) CA::Context::commit_transaction(CA::Transaction*, double, double*)  (in QuartzCore) + 684  [0x1925fed30]
+      + ! : | + ! : | + !     : | + !               : | 55803 (51.1M) CA::Layer::display_if_needed(CA::Transaction*)  (in QuartzCore) + 788  [0x1924233e8]
+      + ! : | + ! : | + !     : | + !               : | + 55530 (50.9M) -[CALayer _display]  (in QuartzCore) + 2300  [0x1924245f8]
+      + ! : | + ! : | + !     : | + !               : | + ! 55530 (50.9M) @objc CGDrawingLayer.draw(in:)  (in SwiftUI) + 332  [0x1c13a1b58]
+      + ! : | + ! : | + !     : | + !               : | + !   55530 (50.9M) PlatformDrawableContent.draw(in:size:contentsScale:state:)  (in SwiftUICore) + 592  [0x22c164d60]
+      + ! : | + ! : | + !     : | + !               : | + !     55456 (50.9M) -[RBInterpolatedDisplayListContents renderInContext:options:]  (in RenderBox) + 100  [0x1aed6b30c]
+      + ! : | + ! : | + !     : | + !               : | + !     : 55456 (50.9M) -[RBMovedDisplayListContents renderInContext:options:]  (in RenderBox) + 52  [0x1aed6adb0]
+      + ! : | + ! : | + !     : | + !               : | + !     :   55456 (50.9M) render_contents(CGContext*, NSDictionary*, RB::DisplayList::Contents const&, RB::XML::Document const*)  (in RenderBox) + 428  [0x1aed64214]
+      + ! : | + ! : | + !     : | + !               : | + !     :     54926 (50.9M) RB::DisplayList::render(RB::DisplayList::Contents const&, RB::CGContext&, void*)  (in RenderBox) + 572  [0x1aee493e8]
+      + ! : | + ! : | + !     : | + !               : | + !     :     | 54926 (50.9M) RB::DisplayList::render(RB::DisplayList::Contents const&, RB::CGContext&, void*)  (in RenderBox) + 348  [0x1aee49308]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |   54926 (50.9M) RB::DisplayList::Layer::render_items(RB::CGContext&, void*) const  (in RenderBox) + 416  [0x1aee489f4]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     54817 (50.8M) RB::DisplayList::LayerItem::render(RB::CGContext&) const  (in RenderBox) + 180  [0x1aee49730]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + 54796 (50.8M) RB::DisplayList::Layer::render(RB::CGContext&, RB::DisplayList::Layer::Effect, bool) const  (in RenderBox) + 148  [0x1aee4958c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! 54794 (50.8M) RB::DisplayList::Layer::make_cgimage(RB::CGContext&, RB::Rect&, RB::DisplayList::Layer::Effect, bool, void*) const  (in RenderBox) + 1056  [0x1aee48e3c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! : 54794 (50.8M) RB::DisplayList::Layer::render_items(RB::CGContext&, void*) const  (in RenderBox) + 416  [0x1aee489f4]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   53396 (50.0M) RB::DisplayList::LayerItem::render(RB::CGContext&) const  (in RenderBox) + 180  [0x1aee49730]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   | 53396 (50.0M) RB::DisplayList::Layer::render(RB::CGContext&, RB::DisplayList::Layer::Effect, bool) const  (in RenderBox) + 148  [0x1aee4958c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |   53396 (50.0M) RB::DisplayList::Layer::make_cgimage(RB::CGContext&, RB::Rect&, RB::DisplayList::Layer::Effect, bool, void*) const  (in RenderBox) + 1056  [0x1aee48e3c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |     53396 (50.0M) RB::DisplayList::Layer::render_items(RB::CGContext&, void*) const  (in RenderBox) + 416  [0x1aee489f4]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |       53396 (50.0M) RB::DisplayList::GenericItem1<RB::Coverage::Glyphs, RB::Fill::Color>::render(RB::CGContext&) const  (in RenderBox) + 220  [0x1aed7cf50]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |         53396 (50.0M) RB::Coverage::Glyphs::show(RB::CGContext&, bool) const  (in RenderBox) + 316  [0x1aed2c0ec]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |           53396 (50.0M) draw_glyphs.19830  (in CoreGraphics) + 540  [0x18f055cb0]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |             53396 (50.0M) CGContextDelegateDrawGlyphs  (in CoreGraphics) + 336  [0x18eb43f9c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |               53396 (50.0M) ripc_DrawGlyphs  (in CoreGraphics) + 1580  [0x18eb4480c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                 53396 (50.0M) draw_glyph_bitmaps  (in CoreGraphics) + 880  [0x18eb44c4c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                   53396 (50.0M) render_glyphs  (in CoreGraphics) + 296  [0x18eb454a8]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     9678 (23.6M) CGGlyphBuilderLockBitmaps  (in CoreGraphics) + 228  [0x18eb45674]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     + 9678 (23.6M) _malloc_type_calloc_outlined  (in libsystem_malloc.dylib) + 88  [0x187ac3e38]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   9678 (23.6M) _malloc_zone_calloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 132  [0x187ae4820]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     9678 (23.6M) CGGlyphBuilderLockBitmaps  (in CoreGraphics) + 3472  [0x18eb46320]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     + 9678 (23.6M) _malloc_type_calloc_outlined  (in libsystem_malloc.dylib) + 88  [0x187ac3e38]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   9678 (23.6M) _malloc_zone_calloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 132  [0x187ae4820]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     12289 (1.80M) CGGlyphBuilderLockBitmaps  (in CoreGraphics) + 3096  [0x18eb461a8]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     + 12289 (1.80M) CGGlyphBitmapsInfillWithPathAndDilation_8(std::span<CGGlyphIdentifierPathBitmap const, 18446744073709551615ul>, CGFont*, unsigned int, CGSize, CGAffineTransform const*)  (in CoreGraphics) + 1040  [0x18eebe748]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   12071 (1.78M) _dispatch_apply_with_attr_f  (in libdispatch.dylib) + 1436  [0x187b10ad4]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   ! 12071 (1.78M) _dispatch_sync_function_invoke  (in libdispatch.dylib) + 52  [0x187b02f6c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !   12071 (1.78M) _dispatch_client_callout  (in libdispatch.dylib) + 16  [0x187b165a0]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !     12071 (1.78M) _dispatch_apply_serial  (in libdispatch.dylib) + 144  [0x187b1145c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !       12071 (1.78M) <deduplicated_symbol>  (in libdispatch.dylib) + 16  [0x187b165d0]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !         12071 (1.78M) CGRunner::run<CGGlyphBitmapsInfillWithPathAndDilation_8(std::span<CGGlyphIdentifierPathBitmap const, 18446744073709551615ul>, CGFont*, unsigned int, CGSize, CGAffineTransform const*)::$_0>(unsigned long, std::optional<unsigned long>, CGGlyphBitmapsInfillWithPathAndDilation_8(std::span<CGGlyphIdentifierPathBitmap const, 18446744073709551615ul>, CGFont*, unsigned int, CGSize, CGAffineTransform const*)::$_0&&)::'lambda'(void*, unsigned long, unsigned long)::__invoke(void*, unsigned long, unsigned long)  (in CoreGraphics) + 116  [0x18eebf92c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !           12071 (1.78M) CGGlyphBitmapCreateWithPathAndDilation_8(CGPath const*, CGGlyphIdentifier, int, CGFontAutohinter*, unsigned int, CGSize, CGAffineTransform const*, CGRunner*, std::span<clipper_t, 18446744073709551615ul>, std::optional<unsigned long>)  (in CoreGraphics) + 1208  [0x18eebee10]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !             12071 (1.78M) CGGlyphBitmapCreate  (in CoreGraphics) + 260  [0x18eb4b970]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !               12071 (1.78M) _malloc_type_calloc_outlined  (in libsystem_malloc.dylib) + 88  [0x187ac3e38]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   !                 12071 (1.78M) _malloc_zone_calloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 132  [0x187ae4820]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   218 (17.0K) _dispatch_apply_with_attr_f  (in libdispatch.dylib) + 1376  [0x187b10a98]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +     218 (17.0K) _dispatch_continuation_alloc_from_heap  (in libdispatch.dylib) + 88  [0x187b2fef0]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +       218 (17.0K) _malloc_type_calloc_outlined  (in libsystem_malloc.dylib) + 88  [0x187ac3e38]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +         218 (17.0K) _malloc_zone_calloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 132  [0x187ae4820]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     12071 (377K) CGGlyphBuilderLockBitmaps  (in CoreGraphics) + 3520  [0x18eb46350]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     + 12071 (377K) _malloc_type_malloc_outlined  (in libsystem_malloc.dylib) + 96  [0x187ac3dd0]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   12071 (377K) _malloc_zone_malloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 152  [0x187ae4630]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     2 (320K) CGGlyphBuilderLockBitmaps  (in CoreGraphics) + 344  [0x18eb456e8]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     + 2 (320K) CFDictionarySetValue  (in CoreFoundation) + 212  [0x187d02d18]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +   2 (320K) __CFBasicHashAddValue  (in CoreFoundation) + 104  [0x187d02fdc]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +     1 (160K) __CFBasicHashRehash  (in CoreFoundation) + 304  [0x187d03468]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +     ! 1 (160K) _malloc_type_zone_calloc_outlined  (in libsystem_malloc.dylib) + 64  [0x187ac4014]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +     !   1 (160K) _malloc_zone_calloc_instrumented_or_legacy  (in libsystem_malloc.dylib) + 132  [0x187ae4820]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +     1 (160K) __CFBasicHashRehash  (in CoreFoundation) + 468  [0x187d0350c]
+      + ! : | + ! : | + !     : | + !               : | + !     :     |     + ! :   |                     +       1 (160K) _malloc_type_zone_calloc_outlined  (in libsystem_malloc.dylib) + 64  [0x187ac4014]

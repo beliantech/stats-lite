@@ -1,0 +1,9 @@
+AC-4 pixel equivalence: baseline f27eff3 vs current de33eab
+Fixed synthetic series, N = capacity = 30, 240 pt width, ImageRenderer scale 2.
+
+light: size (480, 76), diff bbox = None, differing pixels = 0
+light: VERDICT = 0 differing pixels (byte-identical RGBA buffers)
+
+dark: size (480, 76), diff bbox = None, differing pixels = 0
+dark: VERDICT = 0 differing pixels (byte-identical RGBA buffers)
+

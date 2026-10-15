@@ -1,0 +1,23 @@
+VAC-11 evidence: accessibility of the sparkline canvas and its parent cards
+Date: 2026-10-15, commit verified: de33eab
+
+No screenshot applies to this item. The invariant is code-level.
+
+1. The canvas element is hidden from VoiceOver.
+   StatsLite/SparklineView.swift:86
+       .accessibilityHidden(true)
+
+2. Parent cards provide complete spoken metric summaries.
+   StatsLite/CPUCardView.swift:57            .accessibilityLabel(cpuSummary)
+   StatsLite/MemoryPressureCardView.swift:64 .accessibilityLabel(summary)
+   StatsLite/GPUCardView.swift:53            .accessibilityLabel(summary)
+   Summary text includes value, unit and context, for example:
+   "CPU usage is 42 percent across 8 cores."
+   "GPU usage is 12 percent on Integrated Graphics."
+
+3. Test evidence (full suite run 2026-10-15, 21:01, commit de33eab):
+   Test Suite 'MenuBarAccessibilityTests' passed.
+   Test Suite 'StatsLiteTests' passed: 148 tests, 0 failures.
+   MenuBarAccessibilityTests covers the composite label for all
+   metric permutations, unavailable-metric fallbacks, pressure
+   state derivation and percent rounding.

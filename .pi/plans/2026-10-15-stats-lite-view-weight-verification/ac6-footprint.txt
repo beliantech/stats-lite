@@ -1,0 +1,72 @@
+# footprint 87113 (instrumented Release instance, popover opened once at +3 s and
+# closed at +8 s, measured 21:09, >60 s after close):
+======================================================================
+StatsLite [87113]: 64-bit    Footprint: 208 MB (16384 bytes per page)
+======================================================================
+
+  Dirty      Clean  Reclaimable    Regions    Category
+    ---        ---          ---        ---    ---
+ 192 MB        0 B          0 B         58    Malloc Small
+2464 KB        0 B          0 B         14    Malloc Metadata
+2448 KB        0 B          0 B          5    IOSurface
+2429 KB        0 B          0 B        939    __DATA_DIRTY
+2308 KB        0 B          0 B       1060    __DATA
+1664 KB        0 B          0 B         22    Owned physical footprint (unmapped) (graphics)
+1232 KB        0 B      4656 KB         54    IOAccelerator (graphics)
+ 794 KB        0 B          0 B        698    __AUTH
+ 737 KB        0 B          0 B          1    page table
+ 550 KB        0 B          0 B       2841    unused dyld shared cache area
+ 528 KB        0 B       128 KB         24    Untagged
+ 272 KB        0 B          0 B          1    Malloc Tiny
+ 240 KB        0 B          0 B         10    Stack
+ 128 KB        0 B          0 B          1    Accelerate Framework
+ 128 KB        0 B          0 B          8    CoreAnimation
+ 128 KB        0 B          0 B          4    __TPRO_CONST
+ 112 KB        0 B          0 B          1    CoreUI Image Data
+  64 KB        0 B          0 B          2    IOAccelerator
+  64 KB        0 B          0 B          4    IOKit
+  48 KB        0 B          0 B          3    CoreGraphics
+  47 KB        0 B          0 B          1    __OBJC_RW
+  32 KB        0 B          0 B          1    Activity Tracing
+  32 KB        0 B          0 B          1    Malloc Nano
+  16 KB        0 B          0 B          1    Deferred Reclaim
+  16 KB        0 B          0 B          1    OS Alloc Once
+  16 KB        0 B          0 B          1    Foundation
+  16 KB        0 B          0 B          1    ColorSync
+  16 KB        0 B          0 B         13    Owned physical footprint (unmapped)
+    0 B      13 MB          0 B         43    mapped file
+    0 B     272 KB          0 B       1143    __TEXT
+    0 B     208 KB          0 B          3    __LINKEDIT
+    0 B      16 KB          0 B       1056    __DATA_CONST
+    0 B        0 B          0 B          1    __OBJC_RO
+    0 B        0 B          0 B          1    __LLVM_COV
+    0 B        0 B          0 B          1    __FONT_DATA
+    0 B        0 B          0 B          1    __CTF
+    0 B        0 B          0 B       1050    __AUTH_CONST
+    ---        ---          ---        ---    ---
+ 208 MB      14 MB      4784 KB       9071    TOTAL
+
+Auxiliary data:
+    phys_footprint: 208 MB
+    phys_footprint_peak: 212 MB
+
+
+# footprint 6497 (user's uninstrumented Release instance, measured 21:26):
+======================================================================
+StatsLite [6497]: 64-bit    Footprint: 240 MB (16384 bytes per page)
+======================================================================
+
+  Dirty      Clean  Reclaimable    Regions    Category
+    ---        ---          ---        ---    ---
+ 221 MB        0 B        83 MB         86    Malloc Small
+3216 KB        0 B          0 B          6    IOSurface
+2912 KB        0 B          0 B         15    Malloc Metadata
+2429 KB        0 B          0 B        939    __DATA_DIRTY
+2260 KB        0 B          0 B       1058    __DATA
+2048 KB        0 B          0 B         22    Owned physical footprint (unmapped) (graphics)
+
+# ps RSS:
+  PID    RSS      VSZ COMMAND
+87113 279472 489100768 /tmp/vac-derived/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite -VerifyPopoverCycle
+  PID    RSS ELAPSED
+ 6497 365632   25:24

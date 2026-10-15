@@ -1,0 +1,24 @@
+# Output of: heap 87113 -sortBySize
+# Captured 2026-10-15 21:10:14 +0800, process age 14 min, popover closed since 20:55:47.
+# Transcribed from the captured tool output of this verification session.
+
+Physical footprint:         212.8M
+Physical footprint (peak):  212.9M
+
+All zones: 293735 nodes malloced - Sizes: 640KB[2] 144KB[1] 96KB[1] 48KB[7] 32KB[1] 28KB[1] 24KB[5] 20KB[4] 16KB[87] 14KB[6] 12KB[4] 10KB[23] 8KB[39] 7KB[12] 6KB[12] 5KB[45] 4KB[95] 3.5KB[55] 3KB[127] 2.5KB[35590] 2KB[35927] 1.75KB[87] 1.5KB[36] 1.25KB[120] 1KB[215] 896[97] 768[157] 640[553] 512[221] 488[3] 448[192] 428[1] 384[629] 348[1] 344[1] 336[1] 320[14811] 272[8] 268[3] 256[1867] 232[3] 228[1] 224[2153] 215[1] 212[1] 208[3] 200[1] 192[18548] 190[1] 188[4] 176[1] 172[3] 171[1] 168[1] 167[1] 164[1] 160[10083] 159[11] 158[1] 156[2] 152[3] 151[1] 148[1] 144[5] 142[1] 140[4] 136[6] 128[5434] 124[1] 120[5] 116[3] 112[10998] 110[1] 108[11] 107[1] 106[1] 104[44] 103[1] 101[1] 100[3] 97[1] 96[2095] 92[17] 88[39] 87[1] 84[37] 81[1] 80[3177] 79[3] 78[1] 76[24] 75[4] 74[3] 72[69] 71[17] 70[1] 69[1] 68[79] 66[1] 65[8] 64[12709] 63[2] 60[20] 59[1] 58[1] 57[2] 56[56] 55[10] 52[49] 51[4] 49[11] 48[12898] 47[3] 46[1] 45[1] 44[19] 41[3] 40[182] 39[12] 38[1] 37[1] 36[74] 35[2] 34[2] 33[1] 32[21866] 31[43] 30[2] 29[6] 28[395] 27[8] 26[1] 25[4] 24[162] 23[6] 22[2] 21[2] 20[55] 19[6] 18[15] 17[19] 16[100141] 15[4] 13[50] 12[168] 11[5] 10[2] 9[17] 8[430] 5[4] 4[228] 2[1] 1[38]
+
+All zones: 293735 nodes (189010853 bytes)
+
+   COUNT      BYTES       AVG   CLASS_NAME                                        TYPE    BINARY
+   =====      =====       ===   ==========                                        ====    ======
+  251522  181455889     721.4   non-object
+      83    1250368   15064.7   Swift Metadata                                    C       libswiftCore.dylib
+     190     804352   4233.4   CFDictionary (Value Storage)                       C       CoreFoundation
+     102     726576   7123.3   CFDictionary (Key Storage)                        C       CoreFoundation
+    1696     563520    332.3   Class.methodCache._buckets (bucket_t)              C       libobjc.A.dylib
+     6036     314544     52.1   CFString                                          ObjC    CoreFoundation
+     845     264224    312.7   NSMutableDictionary (Storage)                      C       CoreFoundation
+
+Note: 251522 live non-object nodes hold 181 MB of the 189 MB heap total.
+      The largest node counts are 16 B (100141 nodes), 32 B (21866), 2 KB (35927),
+      2.5 KB (35590), 192 B (18548), 320 B (14811), 48 B (12898), 64 B (12709).
