@@ -1,0 +1,18 @@
+Revision 2 VAC spot: status item view (MenuBarStackedItemView) ImageRenderer pair.
+Same synthetic values in both builds: cpu=10.000000%, memory pressure=15.000000% (Normal),
+gpu=42.000000%, all three metrics enabled, scale=2, colorScheme env light/dark.
+Baseline: commit 274756e (pre-Phase-5), extracted with git archive.
+Method: Pillow RGBA per-pixel difference, base_* vs head_*.
+
+status item light: HEAD 068441e vs pre-Phase-5 274756e: size=(228, 48) differing_pixels=0 bbox=None max_delta=0
+status item dark: HEAD 068441e vs pre-Phase-5 274756e: size=(228, 48) differing_pixels=0 bbox=None max_delta=0
+spark n0_w240_light HEAD vs 274756e: differing_pixels=0
+spark n0_w240_dark HEAD vs 274756e: differing_pixels=0
+spark n1_w240_light HEAD vs 274756e: differing_pixels=0
+spark n1_w240_dark HEAD vs 274756e: differing_pixels=0
+spark n5_w240_light HEAD vs 274756e: differing_pixels=0
+spark n5_w240_dark HEAD vs 274756e: differing_pixels=0
+spark n15_w240_light HEAD vs 274756e: differing_pixels=0
+spark n15_w240_dark HEAD vs 274756e: differing_pixels=0
+spark n30_w240_light HEAD vs 274756e: differing_pixels=0
+spark n30_w240_dark HEAD vs 274756e: differing_pixels=0

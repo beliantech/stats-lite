@@ -1,0 +1,268 @@
+(lldb) process attach --pid 40638
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+Executable binary set to "/private/tmp/statslite-r2-dd/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite".
+Architecture set to: arm64-apple-macosx-.
+(lldb) breakpoint set -r 'RBInterpolatedDisplayListContents.*renderInContext'
+Breakpoint 1: where = RenderBox`-[RBInterpolatedDisplayListContents renderInContext:options:], address = 0x00000001aed6b2a8
+(lldb) breakpoint set -r 'CGDrawingLayer\.draw'
+Breakpoint 2: 3 locations.
+(lldb) breakpoint set -r 'StatsLite\.StatusItemController\.updateAccessibility'
+Breakpoint 3: where = StatsLite`StatusItemController.updateAccessibility() + 20 at StatusItemController.swift:149:32, address = 0x0000000102d77d94
+(lldb) breakpoint command add -o continue -- 1
+(lldb) breakpoint command add -o continue -- 2
+(lldb) breakpoint command add -o continue -- 3
+(lldb) script import time; print('WINDOW START', time.strftime('%H:%M:%S'))
+WINDOW START 23:49:42
+(lldb) process continue
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+(lldb)  continue
+Process 40638 resuming
+Command #1 'continue' continued the target.
+Process 40638 resuming
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+(lldb) script print('WINDOW END', time.strftime('%H:%M:%S'))
+WINDOW END 23:51:00
+(lldb) breakpoint list
+Current breakpoints:
+1: regex = 'RBInterpolatedDisplayListContents.*renderInContext', locations = 1, resolved = 1, hit count = 0
+    Breakpoint commands:
+      continue
+
+  1.1: where = RenderBox`-[RBInterpolatedDisplayListContents renderInContext:options:], address = 0x00000001aed6b2a8, resolved, hit count = 0 
+
+2: regex = 'CGDrawingLayer\.draw', locations = 3, resolved = 3, hit count = 26
+    Breakpoint commands:
+      continue
+
+  2.1: where = SwiftUI`@objc CGDrawingLayer.draw(in:), address = 0x00000001c13a1a0c, resolved, hit count = 26 
+  2.2: where = SwiftUICore`CGDrawingLayer.drawForTesting(in:), address = 0x000000022b97d464, resolved, hit count = 0 
+  2.3: where = SwiftUICore`@objc CGDrawingLayer.draw(in:), address = 0x000000022b97d510, resolved, hit count = 0 
+
+3: regex = 'StatsLite\.StatusItemController\.updateAccessibility', locations = 1, resolved = 1, hit count = 38
+    Breakpoint commands:
+      continue
+
+  3.1: where = StatsLite`StatusItemController.updateAccessibility() + 20 at StatusItemController.swift:149:32, address = 0x0000000102d77d94, resolved, hit count = 38 
+
+(lldb) process detach
+Process 40638 detached
+
+SUMMARY (recorded after the run):
+Window: 23:49:42 - 23:51:00 (78 s), idle, popover closed, PID 40638.
+Method: lldb batch session with three auto-continue breakpoints. The
+blocked `process continue` command ended by an external SIGSTOP, after
+which lldb printed hit counts and detached (detach resumes the target).
+  Breakpoint 1  RenderBox -[RBInterpolatedDisplayListContents renderInContext:options:]  hits = 0   <- AC-11a target
+  Breakpoint 2  CGDrawingLayer.draw family  hits = 26 (all at SwiftUI @objc CGDrawingLayer.draw(in:))
+  Breakpoint 3  StatusItemController.updateAccessibility  hits = 38
+Breakpoint 3 confirms the counting pipeline was live for the whole
+window: 38 hits in 78 s is one hit per 2 s tick. The target process
+state after detach was S (running).

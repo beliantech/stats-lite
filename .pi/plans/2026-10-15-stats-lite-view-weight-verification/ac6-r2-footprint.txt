@@ -1,0 +1,123 @@
+AC-6 revision 2 footprint, instance PID 40638 (fresh Release build of 068441e,
+launched 23:33:08). The single popover cycle: opened 00:07:05 (lldb expression),
+close called 00:08:42, popoverDidClose path completed on resume at 00:08:43.
+T0 (cycle close) = 00:08:43.
+
+Reading 1 - captured 00:10:28, T0 + 105 s (target: ~60 s after close).
+Output from this verification session (footprint 40638 + ps):
+  StatsLite [40638]: 64-bit  Footprint: 31 MB (16384 bytes per page)
+  Dirty by category (top rows):
+    19 MB   0 B   16 regions  Malloc Small
+    2445 KB 0 B  939 regions  __DATA_DIRTY
+    2244 KB 0 B 1058 regions  __DATA
+    1552 KB 0 B   12 regions  Malloc Metadata
+    1232 KB 0 B   54 regions  IOAccelerator (graphics)
+    1040 KB 0 B    5 regions  IOSurface
+    TOTAL line: 31 MB dirty (full table in the session transcript of 00:10:28)
+  ps RSS at 00:10:28: RSS 132256 KB (129 MB)
+
+00:14:47
+--- live reading:
+======================================================================
+StatsLite [40638]: 64-bit    Footprint: 31 MB (16384 bytes per page)
+======================================================================
+
+  Dirty      Clean  Reclaimable    Regions    Category
+    ---        ---          ---        ---    ---
+  19 MB        0 B          0 B         16    Malloc Small
+2445 KB        0 B          0 B        939    __DATA_DIRTY
+2244 KB        0 B          0 B       1058    __DATA
+1552 KB        0 B          0 B         12    Malloc Metadata
+1232 KB        0 B      2496 KB         54    IOAccelerator (graphics)
+1040 KB        0 B          0 B          5    IOSurface
+ 832 KB        0 B       128 KB         43    Untagged
+ 778 KB        0 B          0 B        698    __AUTH
+ 753 KB        0 B          0 B          1    page table
+ 640 KB        0 B          0 B         11    Owned physical footprint (unmapped) (graphics)
+ 550 KB        0 B          0 B       2844    unused dyld shared cache area
+ 272 KB        0 B          0 B          1    Malloc Tiny
+ 240 KB        0 B          0 B         10    Stack
+ 112 KB        0 B          0 B          7    CoreAnimation
+ 112 KB        0 B          0 B          4    __TPRO_CONST
+  80 KB     192 KB          0 B       1179    __TEXT
+  64 KB        0 B          0 B          2    IOAccelerator
+  64 KB        0 B          0 B          4    IOKit
+  48 KB        0 B          0 B          2    Malloc Nano
+  47 KB        0 B          0 B          1    __OBJC_RW
+  32 KB        0 B          0 B          1    Activity Tracing
+  32 KB        0 B          0 B          2    CoreGraphics
+  16 KB        0 B          0 B          1    Deferred Reclaim
+  16 KB        0 B          0 B          1    OS Alloc Once
+  16 KB        0 B          0 B          1    Foundation
+  16 KB        0 B          0 B          1    ColorSync
+    0 B      15 MB          0 B         42    mapped file
+    0 B     208 KB          0 B          3    __LINKEDIT
+    0 B      16 KB          0 B       1056    __DATA_CONST
+    0 B        0 B          0 B          1    __OBJC_RO
+    0 B        0 B          0 B          1    __LLVM_COV
+    0 B        0 B          0 B          1    __FONT_DATA
+    0 B        0 B          0 B          1    __CTF
+    0 B        0 B          0 B       1050    __AUTH_CONST
+    0 B        0 B          0 B          6    Owned physical footprint (unmapped)
+    ---        ---          ---        ---    ---
+  31 MB      16 MB      2624 KB       9061    TOTAL
+
+Auxiliary data:
+    phys_footprint: 32 MB
+    phys_footprint_peak: 199 MB
+
+  PID    RSS
+40638 132272
+
+Reading 3 - T0 + 15 minutes, captured 2026-10-16 00:23:55:
+---
+======================================================================
+StatsLite [40638]: 64-bit    Footprint: 31 MB (16384 bytes per page)
+======================================================================
+
+  Dirty      Clean  Reclaimable    Regions    Category
+    ---        ---          ---        ---    ---
+  19 MB        0 B          0 B         16    Malloc Small
+2445 KB        0 B          0 B        939    __DATA_DIRTY
+2244 KB        0 B          0 B       1058    __DATA
+1552 KB        0 B          0 B         12    Malloc Metadata
+1232 KB        0 B      2496 KB         54    IOAccelerator (graphics)
+1040 KB        0 B          0 B          5    IOSurface
+ 832 KB        0 B       128 KB         43    Untagged
+ 778 KB        0 B          0 B        698    __AUTH
+ 753 KB        0 B          0 B          1    page table
+ 640 KB        0 B          0 B         11    Owned physical footprint (unmapped) (graphics)
+ 550 KB        0 B          0 B       2844    unused dyld shared cache area
+ 272 KB        0 B          0 B          1    Malloc Tiny
+ 240 KB        0 B          0 B         10    Stack
+ 112 KB        0 B          0 B          7    CoreAnimation
+ 112 KB        0 B          0 B          4    __TPRO_CONST
+  80 KB     192 KB          0 B       1179    __TEXT
+  64 KB        0 B          0 B          2    IOAccelerator
+  64 KB        0 B          0 B          4    IOKit
+  48 KB        0 B          0 B          2    Malloc Nano
+  47 KB        0 B          0 B          1    __OBJC_RW
+  32 KB        0 B          0 B          1    Activity Tracing
+  32 KB        0 B          0 B          2    CoreGraphics
+  16 KB        0 B          0 B          1    Deferred Reclaim
+  16 KB        0 B          0 B          1    OS Alloc Once
+  16 KB        0 B          0 B          1    Foundation
+  16 KB        0 B          0 B          1    ColorSync
+    0 B      15 MB          0 B         42    mapped file
+    0 B     208 KB          0 B          3    __LINKEDIT
+    0 B      16 KB          0 B       1056    __DATA_CONST
+    0 B        0 B          0 B          1    __OBJC_RO
+    0 B        0 B          0 B          1    __LLVM_COV
+    0 B        0 B          0 B          1    __FONT_DATA
+    0 B        0 B          0 B          1    __CTF
+    0 B        0 B          0 B       1050    __AUTH_CONST
+    0 B        0 B          0 B          6    Owned physical footprint (unmapped)
+    ---        ---          ---        ---    ---
+  31 MB      16 MB      2624 KB       9061    TOTAL
+
+Auxiliary data:
+    phys_footprint: 32 MB
+    phys_footprint_peak: 199 MB
+
+  PID    RSS
+40638 132288

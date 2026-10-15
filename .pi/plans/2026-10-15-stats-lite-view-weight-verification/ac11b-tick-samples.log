@@ -1,0 +1,119 @@
+AC-11b / AC-6 cycle session, PID 40638, started 2026-10-16 00:05:20
+(lldb) process attach --pid 40638
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+Executable binary set to "/private/tmp/statslite-r2-dd/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite".
+Architecture set to: arm64-apple-macosx-.
+(lldb) script exec(open('/tmp/r2_sessionB.py').read())
+warning: StatsLite was compiled with optimization - stepping may behave oddly; variables may not be available.
+Process 40638 detached
+R2B 00:05:32 resolved: tick=1 popoverBody=1 popoverWitness=4 menubarBody=1 menubarWitness=4
+R2B 00:05:32 pass-through stop at protocol witness for SwiftUI.View.body.getter : τ_0_0.Body in conformance StatsLite.MenuBarStackedItemView : SwiftUI.View in StatsLite
+R2B 00:05:32 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2B end at 00:05:32 state: 9
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+  File "<string>", line 68, in <module>
+  File "<string>", line 22, in label_sample
+  File "<string>", line 12, in ev
+AttributeError: 'SBValue' object has no attribute 'GetValueObject'
+
+--- attempt 2 after SBValue API fix, 2026-10-16 00:06:53 ---
+(lldb) process attach --pid 40638
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+Executable binary set to "/private/tmp/statslite-r2-dd/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite".
+Architecture set to: arm64-apple-macosx-.
+(lldb) script exec(open('/tmp/r2_sessionB.py').read())
+warning: StatsLite was compiled with optimization - stepping may behave oddly; variables may not be available.
+Process 40638 detached
+R2B 00:07:04 resolved: tick=1 popoverBody=1 popoverWitness=4 menubarBody=1 menubarWitness=4
+R2B 00:07:04 pass-through stop at protocol witness for SwiftUI.View.body.getter : τ_0_0.Body in conformance StatsLite.MenuBarStackedItemView : SwiftUI.View in StatsLite
+R2B 00:07:05 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2B SAMPLE 1 (popover closed) at 00:07:05 | label="Stats Lite: CPU 14 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.13844801258618297 pressure=0.12 gpu=0
+R2B end at 00:07:05 state: 9
+Traceback (most recent call last):
+  File "<input>", line 1, in <module>
+  File "<string>", line 74, in <module>
+AttributeError: 'SBValue' object has no attribute 'GetSuccess'
+
+--- session C, 2026-10-16 00:08:30 ---
+(lldb) process attach --pid 40638
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+Executable binary set to "/private/tmp/statslite-r2-dd/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite".
+Architecture set to: arm64-apple-macosx-.
+(lldb) script exec(open('/tmp/r2_sessionC.py').read())
+warning: StatsLite was compiled with optimization - stepping may behave oddly; variables may not be available.
+Process 40638 detached
+R2C 00:08:42 resolved: tick=1 popBody=1 popWitness=4 mbBody=1 mbWitness=4
+R2C 00:08:42 pass-through stop at protocol witness for SwiftUI.View.body.getter : τ_0_0.Body in conformance StatsLite.MenuBarStackedItemView : SwiftUI.View in StatsLite
+R2C 00:08:42 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2C initial state at 00:08:42: popover.isShown=true contentViewControllerReleased=false
+R2C popover already open at 00:08:42 (opened by attempt 2's executed expression)
+R2C SAMPLE open-1 at 00:08:42 | label="Stats Lite: CPU 12 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.11919584954604411 pressure=0.12 gpu=0
+R2C SAMPLE open-2 at 00:08:42 | label="Stats Lite: CPU 12 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.11919584954604411 pressure=0.12 gpu=0
+R2C POPOVER CLOSE CALLED at 00:08:42
+R2C SAMPLE after-close-1 at 00:08:43 | label="Stats Lite: CPU 12 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.11919584954604411 pressure=0.12 gpu=0
+R2C after close at 00:08:43: isShown=true contentViewControllerReleased=false
+R2C SAMPLE after-close-2 at 00:08:43 | label="Stats Lite: CPU 12 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.11919584954604411 pressure=0.12 gpu=0
+R2C final at 00:08:43: isShown=true contentViewControllerReleased=false
+R2C hit counts: updateAccessibility=1 PopoverContentView.body=0 PopoverContentView.witness=0 MenuBarStackedItemView.body=1 MenuBarStackedItemView.witness=1
+R2C T_CLOSE=00:08:42
+R2C end at 00:08:43 state: 9
+
+--- session D (consecutive ticks), 2026-10-16 00:13:45 ---
+(lldb) process attach --pid 40638
+Process 40638 stopped
+* thread #1, queue = 'com.apple.main-thread', stop reason = signal SIGSTOP
+       frame #0: 0x0000000187c78c20 libsystem_kernel.dylib`mach_msg2_trap + 8
+libsystem_kernel.dylib`mach_msg2_trap:
+->  0x187c78c20 <+8>: ret    
+
+libsystem_kernel.dylib`macx_swapon:
+    0x187c78c24 <+0>: mov    x16, #-0x30               ; =-48 
+    0x187c78c28 <+4>: svc    #0x80
+    0x187c78c2c <+8>: ret    
+Target 0: (StatsLite) stopped.
+Executable binary set to "/private/tmp/statslite-r2-dd/Build/Products/Release/StatsLite.app/Contents/MacOS/StatsLite".
+Architecture set to: arm64-apple-macosx-.
+(lldb) script exec(open('/tmp/r2_sessionD.py').read())
+warning: StatsLite was compiled with optimization - stepping may behave oddly; variables may not be available.
+Process 40638 detached
+R2D 00:13:51 resolved: tick=1 mbBody=1
+R2D 00:13:51 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2D popover state at 00:13:51: isShown=false contentViewControllerReleased=true
+R2D SAMPLE tick-1 at 00:13:51 | label="Stats Lite: CPU 17 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.17093784078516902 pressure=0.12 gpu=0
+R2D 00:13:53 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2D SAMPLE tick-2 at 00:13:53 | label="Stats Lite: CPU 9 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.092890503373118841 pressure=0.12 gpu=0
+R2D 00:13:55 pass-through stop at StatsLite.MenuBarStackedItemView.body.getter : some
+R2D SAMPLE tick-3 at 00:13:55 | label="Stats Lite: CPU 10 percent, Memory Pressure Normal at 12 percent, GPU 0 percent" | cpu=0.096721311475409841 pressure=0.12 gpu=0
+R2D hit counts over window: updateAccessibility=3 MenuBarStackedItemView.body=4
+R2D end at 00:13:57 state: 9

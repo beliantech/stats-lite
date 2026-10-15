@@ -1,0 +1,18 @@
+synthetic snapshot: cpu=0.100000 pressure=0.150000 gpu=0.420000
+base_menu_light.png: 228x48 px
+base_menu_dark.png: 228x48 px
+
+xcodebuild test stdout excerpt (R2RENDER lines):
+R2RENDER synthetic snapshot: cpu=0.100000 pressure=0.150000 gpu=0.420000
+R2RENDER base_menu_light.png: 228x48 px
+R2RENDER base_menu_dark.png: 228x48 px
+R2RENDER base_spark_n0_w240_light.png: 480x76 px
+R2RENDER base_spark_n0_w240_dark.png: 480x76 px
+R2RENDER base_spark_n1_w240_light.png: 480x76 px
+R2RENDER base_spark_n1_w240_dark.png: 480x76 px
+R2RENDER base_spark_n5_w240_light.png: 480x76 px
+R2RENDER base_spark_n5_w240_dark.png: 480x76 px
+R2RENDER base_spark_n15_w240_light.png: 480x76 px
+R2RENDER base_spark_n15_w240_dark.png: 480x76 px
+R2RENDER base_spark_n30_w240_light.png: 480x76 px
+R2RENDER base_spark_n30_w240_dark.png: 480x76 px

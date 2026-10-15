@@ -209,3 +209,94 @@ No code was changed in this pass. All instrumentation was removed before the com
 | `vac8_dx_shift.txt` | N = 29 to N = 30 exact dx shift at three widths. |
 | `renders/` | 30 state-matrix renders plus 4 AC-4 pair renders. |
 | `vac-1/` to `vac-11/` | Per-VAC screenshot copies and the VAC-11 text evidence. |
+
+---
+
+# Revision 2: re-measurement after Phase 5
+
+Date: 2026-10-16
+Commit verified: `068441e` (fix(menubar): remove digit-roll animation, pin hosting view sizing) on `feat/2026-10-15-stats-lite-view-weight`.
+Measurement instance: PID 40638, fresh Release build of `068441e`, launched 23:33:08. The user's old-build instance PID 6497 was left untouched.
+Scope: AC-11a, AC-11b, AC-1, AC-6, and the VAC spot re-check. Verification only. No source code was changed. The temporary render harness was deleted before commit.
+
+## Result summary (revision 2)
+
+| AC | Verdict | Measured value against target |
+| :--- | :--- | :--- |
+| AC-11a redraw churn | **PASS** | 0 hits on `-[RBInterpolatedDisplayListContents renderInContext:options:]` over 78 s idle with the popover closed (target 0 over >= 60 s). |
+| AC-11b 2 s tick | **PASS** | The accessibility label re-armed 38 times in 78 s (one per 2 s tick). Three consecutive ticks sampled 2 s apart change the label: "CPU 17 percent" then "CPU 9 percent" then "CPU 10 percent". One popover open/close cycle ran and the release was verified. |
+| AC-1 idle CPU | **FAIL** | 0.1477 % average over 315.0 s (target < 0.1 %). Two corroborating windows read 0.1606 % and 0.1538 %; `ps` TIME and `top` agree. Round 1 measured 2.9 % to 3.8 %, so Phase 5 gives about a 25x reduction, but the target is not met. |
+| AC-6 footprint | **PASS** | 31 MB dirty at T0+105 s, 31 MB at T0+6 min, 32 MB at T0+15 min after one popover cycle (target < 50 MB). RSS 129 MB to 129.6 MB. Footprint peak 199 MB since launch, information. |
+| VAC spot re-check | **PASS** | 0 differing pixels in every comparison: 10 of 10 sparkline renders against the committed matrix, 2 of 2 status item renders against the pre-Phase-5 build. |
+
+AC-12 requires AC-1 and AC-6 to pass. AC-12 fails on the AC-1 component.
+
+## Revision 2 method
+
+1. No source changes. A temporary XCTest render harness (`TemporaryR2RenderTests.swift`, ImageRenderer at scale 2) was added, run, and deleted before this commit, as in round 1. The baseline renders came from a `git archive` extraction of `274756e` into `/tmp`, not from a second git worktree.
+2. The app has no launch arguments. The agent host has no Accessibility and no Screen Recording permission, so UI scripting and screenshots are unavailable. The popover cycle and the tick samples therefore run through lldb: a Python SBAPI script attaches, sets breakpoints, resumes the process, polls the process state, evaluates Swift expressions in the stopped frame, and detaches. `self.togglePopover(nil)` opens and closes the popover in-process.
+3. AC-11a uses an lldb batch session with auto-continue breakpoints. The blocked `process continue` command ends on an external SIGSTOP sent to the target, after which lldb prints hit counts and detaches. A third breakpoint on `StatusItemController.updateAccessibility` acts as a pipeline sanity counter.
+4. AC-1 uses two instruments: `top -l 37 -s 10` for 360 s, and `proc_pidinfo` (PROC_PIDTASKINFO) counters around a 315 s idle stretch. The counters are mach absolute time units, not nanoseconds: `mach_timebase_info` returns numer=125 denom=3, so 1 unit = 41.6667 ns. The first interpretation in `ac1-r2-idle-cpu.txt` treats them as nanoseconds. The file keeps that error and appends the correction, the recomputed value, and two corroborating windows. The `ps -o time` delta over the same window agrees with the corrected arithmetic.
+
+## AC-11a: redraw churn eliminated - PASS
+
+- Target: `RBInterpolatedDisplayListContents renderInContext:` count = 0 over >= 60 s idle, popover closed.
+- Measured: 0 hits on `-[RBInterpolatedDisplayListContents renderInContext:options:]` over 78 s (23:49:42 to 23:51:00).
+- Secondary counter: the `CGDrawingLayer.draw` family hit 26 times in the same window, all at `@objc CGDrawingLayer.draw(in:)`, that is 0.33 calls per second. Round 1's allocation trace implied about 205 draw-layer renders per second. What remains are content-driven redraws on the tick, not per-frame churn.
+- Sanity counter: `StatusItemController.updateAccessibility` hit 38 times in 78 s, one hit per 2 s tick. The counting pipeline was live for the whole window.
+- Evidence: `ac11a-redraw-window.log`.
+
+## AC-11b: status item still updates on the 2 s tick - PASS
+
+- Three consecutive tick stops 2 s apart (00:13:51, 00:13:53, 00:13:55) show changing live values in the accessibility label and in the raw snapshot:
+  - tick 1: label "Stats Lite: CPU 17 percent, Memory Pressure Normal at 12 percent, GPU 0 percent", raw cpu = 0.17093784078516902;
+  - tick 2: label "Stats Lite: CPU 9 percent, ...", raw cpu = 0.092890503373118841;
+  - tick 3: label "Stats Lite: CPU 10 percent, ...", raw cpu = 0.096721311475409841.
+- `MenuBarStackedItemView.body` evaluated once per tick in that window (4 hits over the 3-tick window including one initial invalidation), and `updateAccessibility` hit once per tick.
+- One popover open/close cycle ran: opened 00:07:05, close called 00:08:42, verified at 00:13:51 with `popover.isShown == false` and `contentViewController` released.
+- The log also contains two earlier scripted attempts with recoverable harness API errors. They are kept in `ac11b-tick-samples.log` as history. The first executed expression opened the popover; the controlled close in session C completes the single cycle.
+- Evidence: `ac11b-tick-samples.log`.
+
+## AC-1: idle CPU with the popover closed - FAIL
+
+- Target: < 0.1 % over >= 5 minutes, popover closed.
+- Instrument 1: `top -l 37 -s 10 -pid 40638 -stats pid,cpu`, 00:15:19 to 00:21:19. 36 interval samples after the cumulative first sample is excluded. Every sample reads 0.1 % at top's 1-decimal resolution (average/min/max 0.1 % / 0.1 % / 0.1 %).
+- Instrument 2: `proc_pidinfo` counter window 00:30:11 to 00:35:26, wall 315.0 s, cpu delta 465.4 ms after the timebase correction. Average 0.1477 %.
+- Corroboration: a 45.2 s window read 0.1606 % while top sampled the same process; a 60.0 s window read 0.1538 %; the `ps -o time` delta over that 60 s is +90 ms, that is 0.150 %.
+- Verdict: average idle CPU is about 0.15 %, above the 0.1 % target. AC-1 fails. The value is about 25x below round 1's 2.9 % to 3.8 %, but the plan's target is not met.
+- Residual-cost lead for the planner: the 26 content-driven `CGDrawingLayer.draw(in:)` calls per 78 s plus the per-tick sampling and label path plausibly account for the residual 0.15 %.
+- Evidence: `ac1-r2-idle-cpu.txt`.
+
+## AC-6: footprint after one popover cycle - PASS
+
+- Protocol: exactly one popover open/close cycle on instance 40638 (open 00:07:05, close 00:08:42 to 00:08:43). `footprint` readings at T0+105 s, T0+6 min, and T0+15 min.
+- Measured dirty footprint: 31 MB, 31 MB, and 32 MB. Malloc Small stays at 19 MB in 16 regions at all three readings. There is no growth, so no vmmap was needed.
+- RSS: 129 MB (132256 KB) at T0+105 s, 129.6 MB (132288 KB) at T0+15 min. Footprint peak since launch is 199 MB (information; the peak dates from launch and popover activity, the steady state is 31 MB).
+- Verdict: 32 MB at the 15-minute reading, under the 50 MB target.
+- Evidence: `ac6-r2-footprint.txt`.
+
+## VAC spot re-check - PASS
+
+- Popover visuals: SparklineView rendered at HEAD with the committed-matrix parameters (the plan's series formula, N in {0, 1, 5, 15, 30}, capacity 30, 240 pt, scale 2, tint `.blue`, light and dark). Pillow per-pixel RGBA diff against the committed round-1 renders: 0 differing pixels in all 10 comparisons.
+- Status item visuals: MenuBarStackedItemView rendered at HEAD and at pre-Phase-5 commit `274756e` with identical synthetic values (CPU 10 %, memory pressure 15 % Normal, GPU 42 %, all metrics enabled), light and dark. Per-pixel diff: 0 differing pixels in both comparisons. Both pairs are 228x48 px.
+- Harness guards: light and dark renders differ in both view families, so a broken appearance override would fail the run. Both builds report the same synthetic snapshot values in `vac-r2-render-log-*.txt`.
+- Evidence: `vac-r2-pixel-diff-spark.txt`, `vac-r2-pixel-diff-menubar.txt`, `vac-r2-render-log-head.txt`, `vac-r2-render-log-base.txt`, `vac-r2-renders/`.
+
+## Revision 2 cleanup record
+
+- The measurement instance PID 40638 was killed after the measurements. The user's instance PID 6497 keeps running.
+- The temporary harness `StatsLiteTests/TemporaryR2RenderTests.swift` was deleted. `git status` shows only this evidence directory as new.
+- The baseline extraction at `/tmp/statslite-r2-baseline` and the build products under `/tmp/statslite-r2-dd` and `/tmp/statslite-r2-bdd` were removed after the measurements.
+
+## New evidence files (revision 2)
+
+| File | Content |
+| :--- | :--- |
+| `ac11a-redraw-window.log` | Full lldb session log of the 78 s redraw window, hit counts, summary. |
+| `ac11b-tick-samples.log` | Tick samples, label strings, popover state checks, hit counts. |
+| `ac1-r2-idle-cpu.txt` | `top` samples, counter windows, unit correction, verdict. |
+| `ac6-r2-footprint.txt` | Three `footprint` readings plus RSS after the popover cycle. |
+| `vac-r2-pixel-diff-spark.txt` | Sparkline render diff against the committed matrix: 10 of 10 zero. |
+| `vac-r2-pixel-diff-menubar.txt` | Status item render diff against `274756e`, sparkline HEAD vs baseline diff: all zero. |
+| `vac-r2-render-log-head.txt`, `vac-r2-render-log-base.txt` | Harness logs: synthetic values, render dimensions. |
+| `vac-r2-renders/` | 24 render PNGs: sparkline head and base, status item head and base, light and dark. |

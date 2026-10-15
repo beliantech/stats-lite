@@ -1,0 +1,15 @@
+Revision 2 VAC spot: SparklineView renders at HEAD (068441e) vs committed round-1 renders
+Parameters: series v_i=clamp(0.15+0.55*i/30+0.12*sin(1.7*i),0.02,0.98), N in {0,1,5,15,30},
+capacity=30, width=240pt, scale=2, tintColor=.blue, colorScheme env light/dark.
+Method: Pillow RGBA per-pixel difference.
+
+n0_w240_light: differing_pixels=0 bbox=None max_delta=0
+n0_w240_dark: differing_pixels=0 bbox=None max_delta=0
+n1_w240_light: differing_pixels=0 bbox=None max_delta=0
+n1_w240_dark: differing_pixels=0 bbox=None max_delta=0
+n5_w240_light: differing_pixels=0 bbox=None max_delta=0
+n5_w240_dark: differing_pixels=0 bbox=None max_delta=0
+n15_w240_light: differing_pixels=0 bbox=None max_delta=0
+n15_w240_dark: differing_pixels=0 bbox=None max_delta=0
+n30_w240_light: differing_pixels=0 bbox=None max_delta=0
+n30_w240_dark: differing_pixels=0 bbox=None max_delta=0
