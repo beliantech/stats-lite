@@ -19,7 +19,6 @@ private let settingsPreferencesKeys = [
     "showGPU",
     "refreshInterval",
     "historyDuration",
-    "showLabels",
     "showCoreBreakdown",
 ]
 
@@ -82,6 +81,52 @@ final class SettingsWindowTests: XCTestCase {
         XCTAssertFalse(store.isToggleLocked(store.showCPU))
         XCTAssertFalse(store.isToggleLocked(store.showRAM))
         XCTAssertFalse(store.isToggleLocked(store.showGPU))
+    }
+
+    // MARK: - No Show Category Labels toggle (showLabels removed)
+
+    /// Every String stored anywhere in a SwiftUI view value tree,
+    /// found via Mirror. Toggle labels are LocalizedStringKeys whose
+    /// key Strings the reflection exposes.
+    private func collectViewStrings(_ root: Any) -> [String] {
+        var result: [String] = []
+
+        func walk(_ value: Any, depth: Int) {
+            guard depth < 40 else { return }
+            if let string = value as? String {
+                result.append(string)
+            }
+            for child in Mirror(reflecting: value).children {
+                walk(child.value, depth: depth + 1)
+            }
+        }
+
+        walk(root, depth: 0)
+        return result
+    }
+
+    func testSettingsViewHasNoShowCategoryLabelsToggle() {
+        let view = SettingsView(
+            preferences: PreferencesStore(),
+            monitor: SystemMonitor(),
+            launchAtLogin: LaunchAtLoginService()
+        )
+        let strings = collectViewStrings(view.body)
+
+        // Sanity checks: the reflection must find known strings or
+        // the absence check below passes vacuously.
+        XCTAssertTrue(
+            strings.contains("Show Per-Core CPU Breakdown"),
+            "View introspection failed: no known Display Options toggle found."
+        )
+        XCTAssertTrue(
+            strings.contains("Visible Metrics"),
+            "View introspection failed: no known section header found."
+        )
+        XCTAssertFalse(
+            strings.contains("Show Category Labels"),
+            "The Show Category Labels toggle was removed with showLabels."
+        )
     }
 
     // MARK: - Version footer

@@ -19,7 +19,6 @@ private let preferencesKeys = [
     "showGPU",
     "refreshInterval",
     "historyDuration",
-    "showLabels",
     "showCoreBreakdown",
 ]
 
@@ -54,7 +53,6 @@ final class PreferencesStoreGuardTests: XCTestCase {
         XCTAssertEqual(store.enabledMetrics, .all)
         XCTAssertEqual(store.refreshInterval, 2)
         XCTAssertEqual(store.historyDuration, 60)
-        XCTAssertTrue(store.showLabels)
         XCTAssertTrue(store.showCoreBreakdown)
     }
 
