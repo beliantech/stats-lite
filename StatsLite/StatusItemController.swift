@@ -137,8 +137,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         button?.setAccessibilityLabel(compositeLabel)
     }
 
-    /// "Stats Lite: CPU 14 percent, Memory Pressure Normal with 62
-    /// percent used, GPU 28 percent" from the latest snapshot.
+    /// "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25
+    /// percent, GPU 28 percent" from the latest snapshot.
     private var compositeLabel: String {
         let snapshot = monitor.latestSnapshot
         let pressure = snapshot?.memoryPressure
@@ -148,8 +148,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
-            cpuPercent: snapshot?.cpu?.totalUsage ?? 0,
-            usedPercent: snapshot?.memory?.usedPercentage ?? 0,
+            cpuPercent: snapshot?.cpu?.totalUsage,
+            pressurePercent: pressure?.pressurePercentage,
             pressure: pressureState,
             gpuPercent: snapshot?.gpu?.deviceUtilization
         )

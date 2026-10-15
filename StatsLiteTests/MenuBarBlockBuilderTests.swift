@@ -3,10 +3,11 @@
 //  StatsLiteTests
 //
 //  Red-phase tests for the stacked menu bar block model (plan
-//  2026-10-15-menubar-stacked-fixed-width, Task 1/3). Targets
-//  MenuBarBlock and MenuBarBlockBuilder.blocks, which do not exist
-//  yet. The category label is always present: the builder takes no
-//  showLabels input at all. No RAM dot exists anywhere.
+//  2026-10-15-mem-pressure-dot, Task 1/3). Targets the MEM label,
+//  the memory-pressure percent value, the MEM dot state, and the
+//  pressure value tint. The builder takes pressurePercent and
+//  pressureState in place of usedPercent. CPU and GPU blocks keep
+//  dotState nil and their existing behavior.
 //
 
 import XCTest
@@ -22,7 +23,8 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         showRAM: Bool = true,
         showGPU: Bool = true,
         cpuPercent: Double? = 0.20,
-        usedPercent: Double? = 0.50,
+        pressurePercent: Double? = 0.50,
+        pressureState: MemoryPressureState? = .normal,
         gpuPercent: Double? = 0.30
     ) -> [MenuBarBlock] {
         MenuBarBlockBuilder.blocks(
@@ -30,7 +32,8 @@ final class MenuBarBlockBuilderTests: XCTestCase {
             showRAM: showRAM,
             showGPU: showGPU,
             cpuPercent: cpuPercent,
-            usedPercent: usedPercent,
+            pressurePercent: pressurePercent,
+            pressureState: pressureState,
             gpuPercent: gpuPercent
         )
     }
@@ -40,7 +43,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testAllThreeEnabledProducesThreeBlocksWithLabels() {
         let result = blocks()
         XCTAssertEqual(result.count, 3)
-        XCTAssertEqual(result.map(\.label), ["CPU", "RAM", "GPU"])
+        XCTAssertEqual(result.map(\.label), ["CPU", "MEM", "GPU"])
         XCTAssertEqual(result.map(\.kind), [.cpu, .ram, .gpu])
     }
 
@@ -51,7 +54,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
 
         let ramOnly = blocks(showCPU: false, showRAM: true, showGPU: false)
         XCTAssertEqual(ramOnly.count, 1)
-        XCTAssertEqual(ramOnly.map(\.label), ["RAM"])
+        XCTAssertEqual(ramOnly.map(\.label), ["MEM"])
 
         let gpuOnly = blocks(showCPU: false, showRAM: false, showGPU: true)
         XCTAssertEqual(gpuOnly.count, 1)
@@ -59,7 +62,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     }
 
     func testEveryEnabledCombinationProducesCorrectCountAndOrder() {
-        // All 8 on/off combinations, CPU → RAM → GPU order.
+        // All 8 on/off combinations, CPU → MEM → GPU order.
         let cases: [(cpu: Bool, ram: Bool, gpu: Bool, expected: [MenuBarBlockKind])] = [
             (false, false, false, []),
             (true, false, false, [.cpu]),
@@ -116,11 +119,20 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         )
     }
 
-    func testRAMValueFormatsAsWholePercent() {
-        let ram = blocks(showCPU: false, showGPU: false, usedPercent: 0.62)
-        XCTAssertEqual(ram[0].valueText, "62%")
+    func testMEMValueFormatsPressurePercent() {
+        let mem = blocks(
+            showCPU: false, showGPU: false, pressurePercent: 0.25
+        )
+        XCTAssertEqual(mem[0].valueText, "25%")
 
-        let missing = blocks(showCPU: false, showGPU: false, usedPercent: nil)
+        let full = blocks(
+            showCPU: false, showGPU: false, pressurePercent: 1.0
+        )
+        XCTAssertEqual(full[0].valueText, "100%")
+
+        let missing = blocks(
+            showCPU: false, showGPU: false, pressurePercent: nil
+        )
         XCTAssertEqual(missing[0].valueText, "--%")
     }
 
@@ -132,6 +144,19 @@ final class MenuBarBlockBuilderTests: XCTestCase {
 
     private func gpuTint(_ value: Double?) -> MenuBarValueTint {
         blocks(showCPU: false, showRAM: false, gpuPercent: value)[0].valueTint
+    }
+
+    private func memTint(
+        pressurePercent: Double?,
+        pressureState: MemoryPressureState?
+    ) -> MenuBarValueTint {
+        blocks(
+            showCPU: false,
+            showRAM: true,
+            showGPU: false,
+            pressurePercent: pressurePercent,
+            pressureState: pressureState
+        )[0].valueTint
     }
 
     func testCPUValueTintThresholds() {
@@ -154,24 +179,40 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         XCTAssertEqual(gpuTint(nil), .tertiary)
     }
 
-    func testRAMValueTintStaysPrimaryRegardlessOfOccupancy() {
-        let high = blocks(
-            showCPU: false, showGPU: false, usedPercent: 0.99
+    func testMEMValueTintEscalatesWithPressureState() {
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.25, pressureState: .normal), .green
         )
-        XCTAssertEqual(high[0].valueTint, .primary)
-
-        let warningBand = blocks(
-            showCPU: false, showGPU: false, usedPercent: 0.85
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.0, pressureState: .normal), .green
         )
-        XCTAssertEqual(warningBand[0].valueTint, .primary)
-
-        let missing = blocks(
-            showCPU: false, showGPU: false, usedPercent: nil
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.68, pressureState: .warning), .warning
         )
-        XCTAssertEqual(missing[0].valueTint, .tertiary)
+        XCTAssertEqual(
+            memTint(pressurePercent: 0.88, pressureState: .critical), .critical
+        )
+        XCTAssertEqual(
+            memTint(pressurePercent: 1.0, pressureState: .critical), .critical
+        )
     }
 
-    // MARK: - Pinned width and no-dot amendments
+    func testMEMValueTintIsTertiaryWhenPercentMissing() {
+        XCTAssertEqual(
+            memTint(pressurePercent: nil, pressureState: .normal), .tertiary
+        )
+        XCTAssertEqual(
+            memTint(pressurePercent: nil, pressureState: .warning), .tertiary
+        )
+        XCTAssertEqual(
+            memTint(pressurePercent: nil, pressureState: .critical), .tertiary
+        )
+        XCTAssertEqual(
+            memTint(pressurePercent: nil, pressureState: nil), .tertiary
+        )
+    }
+
+    // MARK: - Pinned width
 
     func testEveryBlockHasPinnedWidth() {
         let result = blocks()
@@ -182,20 +223,91 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         XCTAssertTrue(empty.isEmpty)
     }
 
-    /// The RAM block carries the percent value only. MenuBarBlock has
-    /// no dot state: this expected value is built from kind, label,
-    /// valueText, valueTint, and width, and must compare equal. A dot
-    /// field on the struct breaks this test at compile time.
-    func testRAMBlockHasNoDotState() {
-        let ram = blocks(showCPU: false, showGPU: false, usedPercent: 0.62)
+    // MARK: - Dot state
+
+    func testCPUGPUBlocksHaveNoDotState() {
+        let result = blocks()
+        XCTAssertNil(result[0].dotState)
+        XCTAssertNil(result[2].dotState)
+    }
+
+    func testMEMDotStateUsesPressureStateWhenKnown() {
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.25, pressureState: .normal
+            )[0].dotState,
+            .normal
+        )
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.68, pressureState: .warning
+            )[0].dotState,
+            .warning
+        )
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.88, pressureState: .critical
+            )[0].dotState,
+            .critical
+        )
+    }
+
+    func testMEMDotStateDerivesFromPercentWhenStateMissing() {
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.25, pressureState: nil
+            )[0].dotState,
+            .normal
+        )
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.70, pressureState: nil
+            )[0].dotState,
+            .warning
+        )
+        XCTAssertEqual(
+            blocks(
+                showCPU: false, showGPU: false,
+                pressurePercent: 0.90, pressureState: nil
+            )[0].dotState,
+            .critical
+        )
+    }
+
+    func testMEMDotStateNeverNil() {
+        // With both inputs missing no pressure data exists, so the
+        // dot resolves to .unknown (systemGray), not .normal
+        // (green). The dot stays present.
+        let empty = blocks(
+            showCPU: false, showGPU: false,
+            pressurePercent: nil, pressureState: nil
+        )
+        XCTAssertEqual(empty.count, 1)
+        XCTAssertNotNil(empty[0].dotState)
+        XCTAssertEqual(empty[0].dotState, .unknown)
+    }
+
+    // MARK: - Full MEM block equality
+
+    func testMEMBlockCarriesLabelValueTintAndDotTogether() {
+        let ram = blocks(
+            showCPU: false, showGPU: false,
+            pressurePercent: 0.62, pressureState: .normal
+        )
         XCTAssertEqual(ram.count, 1)
         XCTAssertEqual(
             ram[0],
             MenuBarBlock(
                 kind: .ram,
-                label: "RAM",
+                label: "MEM",
+                dotState: .normal,
                 valueText: "62%",
-                valueTint: .primary,
+                valueTint: .green,
                 width: 34
             )
         )

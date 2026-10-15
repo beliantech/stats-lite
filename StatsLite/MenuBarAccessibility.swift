@@ -16,19 +16,27 @@ enum MenuBarAccessibility {
         showCPU: Bool,
         showRAM: Bool,
         showGPU: Bool,
-        cpuPercent: Double,
-        usedPercent: Double,
+        cpuPercent: Double?,
+        pressurePercent: Double?,
         pressure: MemoryPressureState,
         gpuPercent: Double?
     ) -> String {
         var parts: [String] = []
         if showCPU {
-            parts.append("CPU \(wholePercent(cpuPercent)) percent")
+            if let cpuPercent {
+                parts.append("CPU \(wholePercent(cpuPercent)) percent")
+            } else {
+                parts.append("CPU unavailable")
+            }
         }
         if showRAM {
-            parts.append(
-                "Memory Pressure \(pressure.displayName) with \(wholePercent(usedPercent)) percent used"
-            )
+            if let pressurePercent {
+                parts.append(
+                    "Memory Pressure \(pressure.displayName) at \(wholePercent(pressurePercent)) percent"
+                )
+            } else {
+                parts.append("Memory Pressure unavailable")
+            }
         }
         if showGPU {
             parts.append(gpuPercent.map { "GPU \(wholePercent($0)) percent" } ?? "GPU unavailable")

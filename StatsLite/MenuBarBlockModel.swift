@@ -16,6 +16,8 @@ import Foundation
 enum MenuBarValueTint: Equatable {
     /// Normal usage. Values render primary.
     case primary
+    /// Normal memory pressure value. Renders systemGreen.
+    case green
     /// Unavailable (nil) value. Renders tertiary.
     case tertiary
     /// Usage at or above 80 %. Renders orange.
@@ -31,12 +33,13 @@ enum MenuBarBlockKind: Hashable {
     case gpu
 }
 
-/// One stacked menu bar block. The label is always present and the
-/// struct carries no dot state: kind, label, value text, value tint,
-/// and pinned width only.
+/// One stacked menu bar block. dotState carries the memory pressure
+/// state for the MEM block, so its dot always renders. CPU and GPU
+/// blocks keep dotState nil.
 struct MenuBarBlock: Equatable {
     var kind: MenuBarBlockKind
     var label: String
+    var dotState: MemoryPressureState?
     var valueText: String
     var valueTint: MenuBarValueTint
     var width: CGFloat
@@ -69,7 +72,7 @@ enum MenuBarLayout {
     }
 }
 
-/// Builds the visible blocks in CPU, RAM, GPU order. Nil and
+/// Builds the visible blocks in CPU, MEM, GPU order. Nil and
 /// non-finite values become "--%" with a tertiary tint.
 /// Out-of-range values clamp through MetricFormatters.percent.
 enum MenuBarBlockBuilder {
@@ -79,7 +82,8 @@ enum MenuBarBlockBuilder {
         showRAM: Bool,
         showGPU: Bool,
         cpuPercent: Double?,
-        usedPercent: Double?,
+        pressurePercent: Double?,
+        pressureState: MemoryPressureState?,
         gpuPercent: Double?
     ) -> [MenuBarBlock] {
         var blocks: [MenuBarBlock] = []
@@ -89,6 +93,7 @@ enum MenuBarBlockBuilder {
                 MenuBarBlock(
                     kind: .cpu,
                     label: "CPU",
+                    dotState: nil,
                     valueText: MetricFormatters.percent(cpuPercent),
                     valueTint: usageTint(cpuPercent),
                     width: MenuBarLayout.blockWidth
@@ -97,13 +102,18 @@ enum MenuBarBlockBuilder {
         }
 
         if showRAM {
+            let resolvedState = pressurePercent.map {
+                (pressureState ?? .unknown).displayState(pressure: $0)
+            } ?? .unknown
             blocks.append(
                 MenuBarBlock(
                     kind: .ram,
-                    label: "RAM",
-                    valueText: MetricFormatters.percent(usedPercent),
-                    valueTint:
-                        usedPercent == nil ? .tertiary : .primary,
+                    label: "MEM",
+                    dotState: resolvedState,
+                    valueText: MetricFormatters.percent(pressurePercent),
+                    valueTint: pressureTint(
+                        percent: pressurePercent, state: resolvedState
+                    ),
                     width: MenuBarLayout.blockWidth
                 )
             )
@@ -114,6 +124,7 @@ enum MenuBarBlockBuilder {
                 MenuBarBlock(
                     kind: .gpu,
                     label: "GPU",
+                    dotState: nil,
                     valueText: MetricFormatters.percent(gpuPercent),
                     valueTint: usageTint(gpuPercent),
                     width: MenuBarLayout.blockWidth
@@ -131,5 +142,19 @@ enum MenuBarBlockBuilder {
         if value >= 0.95 { return .critical }
         if value >= 0.80 { return .warning }
         return .primary
+    }
+
+    /// Value tint for memory pressure: green for normal, orange for
+    /// warning, red for critical. Unavailable values render tertiary.
+    private static func pressureTint(
+        percent: Double?,
+        state: MemoryPressureState
+    ) -> MenuBarValueTint {
+        guard percent != nil else { return .tertiary }
+        switch state {
+        case .critical: return .critical
+        case .warning: return .warning
+        case .normal, .unknown: return .green
+        }
     }
 }

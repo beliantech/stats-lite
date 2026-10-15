@@ -6,10 +6,10 @@
 //  category label sits on line 1, the percent value on line 2, and
 //  every block pins its width to MenuBarLayout.blockWidth, so the
 //  status item never resizes. Blocks come from MenuBarBlockBuilder —
-//  the single source of truth for text, tint, and width. No RAM dot.
-//  No frame height: the controller centers the hosting view with a
-//  centerY constraint. Value-bound animation only, never bound to
-//  the snapshot timestamp.
+//  the single source of truth for text, tint, and width. The MEM block
+//  carries a 4 pt pressure dot left of the label. No frame height:
+//  the controller centers the hosting view with a centerY constraint.
+//  Value-bound animation only, never bound to the snapshot timestamp.
 //
 
 import SwiftUI
@@ -61,7 +61,8 @@ struct MenuBarStackedItemView: View {
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
             cpuPercent: snapshot?.cpu?.totalUsage,
-            usedPercent: snapshot?.memory?.usedPercentage,
+            pressurePercent: snapshot?.memoryPressure?.pressurePercentage,
+            pressureState: snapshot?.memoryPressure?.state,
             gpuPercent: snapshot?.gpu?.deviceUtilization
         )
     }
@@ -74,9 +75,17 @@ private struct MenuBarBlockView: View {
 
     var body: some View {
         VStack(alignment: .center, spacing: 1) {
-            Text(block.label)
-                .font(.system(size: 8, weight: .bold))
-                .foregroundStyle(.secondary)
+            HStack(alignment: .center, spacing: 2) {
+                if let dotState = block.dotState {
+                    Circle()
+                        .fill(dotState.levelColor)
+                        .frame(width: 4, height: 4)
+                        .offset(y: -0.5)
+                }
+                Text(block.label)
+                    .font(.system(size: 8, weight: .bold))
+                    .foregroundStyle(.secondary)
+            }
             Text(block.valueText)
                 .font(.system(size: 10.5, weight: .medium).monospacedDigit())
                 .foregroundStyle(valueColor)
@@ -89,6 +98,7 @@ private struct MenuBarBlockView: View {
     private var valueColor: Color {
         switch block.valueTint {
         case .primary: .primary
+        case .green: Color(nsColor: .systemGreen)
         case .tertiary: Color(nsColor: .tertiaryLabelColor)
         case .warning: Color(nsColor: .systemOrange)
         case .critical: Color(nsColor: .systemRed)
