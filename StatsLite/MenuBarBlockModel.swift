@@ -12,8 +12,20 @@
 
 import Foundation
 
+/// Tint of a block value. Maps to Color in the stacked views.
+enum MenuBarValueTint: Equatable {
+    /// Normal usage. Values render primary.
+    case primary
+    /// Unavailable (nil) value. Renders tertiary.
+    case tertiary
+    /// Usage at or above 80 %. Renders orange.
+    case warning
+    /// Usage at or above 95 %. Renders red.
+    case critical
+}
+
 /// Metric category a block represents.
-enum MenuBarBlockKind: Equatable {
+enum MenuBarBlockKind: Hashable {
     case cpu
     case ram
     case gpu

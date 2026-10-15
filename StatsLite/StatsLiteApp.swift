@@ -33,7 +33,7 @@ struct StatsLiteApp: App {
         MenuBarExtra {
             PopoverContentView(monitor: monitor, preferences: preferences)
         } label: {
-            MenuBarItemView(monitor: monitor, preferences: preferences)
+            MenuBarStackedItemView(monitor: monitor, preferences: preferences)
         }
         .menuBarExtraStyle(.window)
 
