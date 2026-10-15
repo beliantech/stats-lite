@@ -27,11 +27,45 @@ final class SystemMonitor {
     /// Seconds between passes. Set it, then call `restartSampling()`.
     var refreshInterval: TimeInterval = 2.0
 
+    /// Seconds of sparkline history kept per metric. Set it, then call
+    /// `restartSampling()`.
+    var historyDuration: TimeInterval = 60.0
+
+    /// Sparkline data, oldest first, one point per sampling pass.
+    /// Buffers stay capped by `HistoryBuffer`.
+    private(set) var cpuHistory = HistoryBuffer()
+    private(set) var memoryPressureHistory = HistoryBuffer()
+    private(set) var gpuHistory = HistoryBuffer()
+
     private let sampler: MetricSamplerActor
     private var samplingTask: Task<Void, Never>?
 
+    /// True while the sampling loop runs.
+    var isSampling: Bool { samplingTask != nil }
+
     init(provider: any SystemMetricsProvider = LiveSystemMetricsProvider()) {
         self.sampler = MetricSamplerActor(provider: provider)
+    }
+
+    /// Copies the toggle set, interval, and history window from the
+    /// preferences store. Restarts the loop when a value changed or no
+    /// loop runs. Safe to call on every appear and settings change.
+    func apply(_ preferences: PreferencesStore) {
+        let newEnabled = preferences.enabledMetrics
+        let newInterval = TimeInterval(preferences.refreshInterval)
+        let newHistory = TimeInterval(preferences.historyDuration)
+        let changed =
+            newEnabled != enabledMetrics
+            || newInterval != refreshInterval
+            || newHistory != historyDuration
+
+        enabledMetrics = newEnabled
+        refreshInterval = newInterval
+        historyDuration = newHistory
+
+        if changed || !isSampling {
+            restartSampling()
+        }
     }
 
     /// Cancels the current loop and starts a new one. The new loop
@@ -54,6 +88,7 @@ final class SystemMonitor {
                 )
                 guard !Task.isCancelled else { return }
                 self.latestSnapshot = snapshot
+                self.recordHistory(snapshot)
 
                 do {
                     try await clock.sleep(
@@ -72,5 +107,37 @@ final class SystemMonitor {
     func stop() {
         samplingTask?.cancel()
         samplingTask = nil
+    }
+
+    /// Appends one point per enabled metric. The age window and the
+    /// count cap come from `historyDuration` and `HistoryBuffer`.
+    private func recordHistory(_ snapshot: SystemSnapshot) {
+        let age = Swift.max(historyDuration, 1)
+        let capacity = Swift.max(Int(historyDuration) * 2, 16)
+
+        if let cpu = snapshot.cpu {
+            cpuHistory.append(
+                cpu.totalUsage,
+                at: snapshot.timestamp,
+                maxAge: age,
+                capacity: capacity
+            )
+        }
+        if let pressure = snapshot.memoryPressure {
+            memoryPressureHistory.append(
+                pressure.pressurePercentage,
+                at: snapshot.timestamp,
+                maxAge: age,
+                capacity: capacity
+            )
+        }
+        if let gpu = snapshot.gpu {
+            gpuHistory.append(
+                gpu.deviceUtilization,
+                at: snapshot.timestamp,
+                maxAge: age,
+                capacity: capacity
+            )
+        }
     }
 }
