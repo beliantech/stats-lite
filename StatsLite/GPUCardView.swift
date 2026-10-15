@@ -32,6 +32,7 @@ struct GPUCardView: View {
                     .font(.system(size: 10))
                     .foregroundStyle(.tertiary)
                 SparklineView(values: monitor.gpuHistory.values, tintColor: .teal)
+                    .equatable()
             } else {
                 Text("Unavailable")
                     .font(.system(size: 10))

@@ -37,6 +37,7 @@ struct CPUCardView: View {
                 .foregroundStyle(.tertiary)
 
             SparklineView(values: monitor.cpuHistory.values, tintColor: sparkTint)
+                .equatable()
 
             if preferences.showCoreBreakdown {
                 disclosure

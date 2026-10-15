@@ -8,8 +8,11 @@
 
 import SwiftUI
 
-struct SparklineView: View {
+struct SparklineView: View, Equatable {
     /// Point values, oldest first. Each value is a fraction in 0...1.
+    /// Synthesized equality compares values, tintColor, and domainMax,
+    /// so `.equatable()` at the call sites skips redraws on ticks that
+    /// change none of them.
     let values: [Double]
 
     /// Line and gradient tint.
