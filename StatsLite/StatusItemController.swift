@@ -28,7 +28,9 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     private let monitor: SystemMonitor
     private let preferences: PreferencesStore
     private let statusItem: NSStatusItem
-    private let popover: NSPopover
+
+    /// Internal so popover lifecycle tests can inspect the mount.
+    let popover: NSPopover
 
     /// systemUptime of the last popover close. togglePopover()
     /// ignores clicks inside the debounce window.
@@ -49,9 +51,6 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
         let popover = NSPopover()
         popover.behavior = .transient
-        popover.contentViewController = NSHostingController(
-            rootView: PopoverContentView(monitor: monitor, preferences: preferences)
-        )
         self.popover = popover
 
         super.init()
@@ -102,6 +101,17 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         }
         guard let button else { return }
         button.isHighlighted = true
+        // Mount only when about to show and no controller is held.
+        // Keeps the hosting controller out of init so no popover
+        // view evaluates while the popover stays closed.
+        if popover.contentViewController == nil {
+            popover.contentViewController = NSHostingController(
+                rootView: PopoverContentView(
+                    monitor: monitor,
+                    preferences: preferences
+                )
+            )
+        }
         popover.show(
             relativeTo: button.bounds,
             of: button,
@@ -112,6 +122,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     func popoverDidClose(_ notification: Notification) {
         lastCloseTimestamp = ProcessInfo.processInfo.systemUptime
         button?.isHighlighted = false
+        // Release the controller so no popover view evaluates while
+        // closed. @State in PopoverContentView (coresExpanded) resets
+        // on close by design.
+        popover.contentViewController = nil
     }
 
     // MARK: - Observation targets (plan Task 6)
