@@ -2,47 +2,48 @@
 //  StatsLiteApp.swift
 //  StatsLite
 //
-//  Menu bar agent entry point. One MenuBarExtra (.window style) bound
-//  to the monitor and the preferences store, plus the Settings scene.
-//  LSUIElement in Info.plist
-//  keeps the app out of the Dock. Escape and outside clicks close the
-//  popover natively.
+//  Menu bar agent entry point. MenuBarExtra is gone: it flattens its
+//  label into NSStatusBarButton.title and cannot render the stacked
+//  block layout. AppDelegate owns the shared SystemMonitor,
+//  PreferencesStore, and the StatusItemController that manages the
+//  NSStatusItem and the popover. LSUIElement in Info.plist keeps the
+//  app out of the Dock. The Settings scene is unchanged.
 //
 
 import SwiftUI
 
 @main
 struct StatsLiteApp: App {
-    @State private var monitor = SystemMonitor()
-    @State private var preferences = PreferencesStore()
-    @State private var launchAtLogin = LaunchAtLoginService()
-
-    /// MenuBarExtra extracts the label text into the status button
-    /// title and can skip label onAppear. Start the sampling loop at
-    /// launch so the first snapshot does not wait for the popover.
-    init() {
-        let monitor = SystemMonitor()
-        let preferences = PreferencesStore()
-        _monitor = State(initialValue: monitor)
-        _preferences = State(initialValue: preferences)
-        _launchAtLogin = State(initialValue: LaunchAtLoginService())
-        monitor.apply(preferences)
-    }
+    @NSApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
 
     var body: some Scene {
-        MenuBarExtra {
-            PopoverContentView(monitor: monitor, preferences: preferences)
-        } label: {
-            MenuBarStackedItemView(monitor: monitor, preferences: preferences)
-        }
-        .menuBarExtraStyle(.window)
-
         Settings {
             SettingsView(
-                preferences: preferences,
-                monitor: monitor,
-                launchAtLogin: launchAtLogin
+                preferences: appDelegate.preferences,
+                monitor: appDelegate.monitor,
+                launchAtLogin: appDelegate.launchAtLogin
             )
         }
+    }
+}
+
+/// Owns the app-lifetime singletons and the menu bar status item.
+/// Sampling starts at launch so the first snapshot does not wait for
+/// a popover open.
+@MainActor
+final class AppDelegate: NSObject, NSApplicationDelegate {
+
+    let monitor = SystemMonitor()
+    let preferences = PreferencesStore()
+    let launchAtLogin = LaunchAtLoginService()
+
+    private var statusItemController: StatusItemController?
+
+    func applicationDidFinishLaunching(_ notification: Notification) {
+        monitor.apply(preferences)
+        statusItemController = StatusItemController(
+            monitor: monitor,
+            preferences: preferences
+        )
     }
 }
