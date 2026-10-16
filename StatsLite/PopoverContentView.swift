@@ -69,7 +69,7 @@ struct PopoverContentView: View {
             Image(systemName: "gauge.with.needle")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.tint)
-            Text("Stats Lite")
+            Text("StatsLite")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.primary)
 
@@ -98,7 +98,7 @@ struct PopoverContentView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help("Quit Stats Lite")
+            .help("Quit StatsLite")
         }
         .padding(.horizontal, 12)
         .padding(.top, 4)

@@ -56,7 +56,7 @@ enum MenuBarAccessibility {
                 parts.append("Network unavailable")
             }
         }
-        return "Stats Lite: " + parts.joined(separator: ", ")
+        return "StatsLite: " + parts.joined(separator: ", ")
     }
 
     private static func wholePercent(_ value: Double) -> Int {

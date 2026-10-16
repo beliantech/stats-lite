@@ -155,6 +155,6 @@ struct SettingsView: View {
     static func versionLabel(bundle: Bundle = .main) -> String {
         let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0"
         let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
-        return "Stats Lite v\(version) (Build \(build))"
+        return "StatsLite v\(version) (Build \(build))"
     }
 }
