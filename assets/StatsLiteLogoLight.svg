@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="StatsLite Logo">
+  <title>StatsLite Logo</title>
+  <rect width="512" height="512" fill="#FFFFFF"/>
+  <!-- Outer Gauge Arc: stroke-width 44 -->
+  <path d="M 124.47 387.53 A 186 186 0 1 1 387.53 387.53"
+        fill="none" stroke="#1D1D1F" stroke-width="44" stroke-linecap="round"/>
+  <!-- Left Telemetry Bar (Base Load): stroke-width 44 -->
+  <line x1="216" y1="258" x2="216" y2="334"
+        stroke="#1D1D1F" stroke-width="44" stroke-linecap="round"/>
+  <!-- Right Telemetry Bar (Peak Metric): stroke-width 44 -->
+  <line x1="296" y1="192" x2="296" y2="334"
+        stroke="#007AFF" stroke-width="44" stroke-linecap="round"/>
+</svg>

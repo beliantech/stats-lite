@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="StatsLite Logo">
+  <title>StatsLite Logo</title>
+  <path d="M 124.47 387.53 A 186 186 0 1 1 387.53 387.53"
+        fill="none" stroke="currentColor" stroke-width="44" stroke-linecap="round"/>
+  <line x1="216" y1="258" x2="216" y2="334"
+        stroke="currentColor" stroke-width="44" stroke-linecap="round"/>
+  <line x1="296" y1="192" x2="296" y2="334"
+        stroke="currentColor" stroke-width="44" stroke-linecap="round"/>
+</svg>
