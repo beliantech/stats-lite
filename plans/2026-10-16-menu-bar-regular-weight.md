@@ -4,6 +4,11 @@ Date: 2026-10-16
 Plan name: `2026-10-16-menu-bar-regular-weight`
 Risk class: **R2** (UI work — zero-tolerance visual policy applies; visual defects are blocking).
 Status: Design gate **PASS** (`artifacts/01a143cf-718b-7279-886c-fadd0072d585/design-gate-report-menu-bar-font-2026-10-16.md`, re-gate on 2026-10-16). Clarity adjustment pass applied 2026-10-16 after `run_plan` (wording and procedure only — ISC checks, Design Blueprint, scope, and tasks unchanged). Awaiting `[plan-review]`.
+**Complete 2026-10-16:** reviewer verdict GO (`subagent_done`, `[code-review]`); branch
+rebased onto `1833810` (plans move) and merged fast-forward to `main` at SHA `6000441`;
+red `51141da` (rebased from `5e2a97c`), green `6000441` (rebased from `b1e27cc`).
+The gate report at `artifacts/01a143cf-.../design-gate-report-menu-bar-font-2026-10-16.md`
+was later removed together with that session's artifacts directory.
 **Scope change 2026-10-16 (user authority):** all menu bar strip / screenshot captures
 waived — this session has no Screen Recording permission; user waived visual capture and
 ordered proceed to merge + app launch. Test-based ISC checks remain binding.
@@ -391,7 +396,7 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1` … unique; `FM*` = failur
 - [x] **T2** — red typography test (marker `[red]`). red PASS (SHA `5e2a97c`, only FM1 fails) · green n/a · review ⏳
 - [x] **T3** — green one-token change. red n/a · green PASS (SHA `b1e27cc`, 203/203) · review ⏳
 - [x] **T4** — VAC ledger: test ICs pass, visual ICs waived (user authority). ledger DONE (`artifacts/2026-10-16-menu-bar-regular-weight/vac-ledger.md`).
-- [ ] **T5** — reviewer code review, merge, worktree cleanup. review ⏳ · merge ⏳
+- [x] **T5** — reviewer code review, merge, worktree cleanup. review GO (`9170891a`) · merge ff to `main` = `6000441`
 
 ## Phase 1 — Baseline (before the first code edit)
 
@@ -480,7 +485,7 @@ spawn `cwd` to it.
 
 ## Phase 5 — Review, merge, cleanup
 
-- [ ] **T5** — Spawn `reviewer` with `[code-review]`, plan name
+- [x] **T5** — Spawn `reviewer` with `[code-review]`, plan name
   `2026-10-16-menu-bar-regular-weight`, `cwd` = worktree, against
   `git -C worktrees/menu-bar-regular-weight diff main...HEAD`. Checks: red commit is
   test-only, green commit implements the Blueprint token, no scope tokens changed,
