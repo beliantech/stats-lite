@@ -1,5 +1,15 @@
 # Add Network Usage Chart (mirrored dual-series card)
 
+## Task ledger
+
+- [x] Task 1 — implement mirrored network usage card (data + views + registration + tests)
+  - Plan approved: 2026-10-16
+  - Branch: `feat/2026-10-16-add-network-usage-chart` (commits `a52bf82`, `ed005f9`, `3429828`, `e31ece1`)
+  - Review: GO (evidence-backed, 2026-10-16)
+  - Merged: squash → `main` at `1cb9e7e`
+  - Receipts: `artifacts/2026-10-16-add-network-usage-chart/` (VAC ledger, baseline/after
+    screenshots, footprint before/after). Full suite 218/218 green; footprint neutral.
+
 ## Goal
 
 Add a Network Usage card to the popover: a **mirrored** dual-series chart — upload filled
