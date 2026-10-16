@@ -44,11 +44,24 @@ final class SystemMonitor {
         Swift.max(Int(historyDuration) / Swift.max(Int(refreshInterval), 1), 2)
     }
 
+    /// Network sparkline sample count: the network loop ticks once
+    /// per second regardless of `refreshInterval`, so the per-second
+    /// density makes capacity equal the history window in seconds.
+    var networkSparklineCapacity: Int {
+        Swift.max(Int(historyDuration), 16)
+    }
+
     /// Sparkline data, oldest first, one point per sampling pass.
     /// Buffers stay capped by `HistoryBuffer`.
     private(set) var cpuHistory = HistoryBuffer()
     private(set) var memoryPressureHistory = HistoryBuffer()
     private(set) var gpuHistory = HistoryBuffer()
+
+    /// Network rate history, oldest first, one point per 1 s network
+    /// tick. Trimmed per second (capacity equals the window in
+    /// seconds) and cleared when the network loop stops.
+    private(set) var networkUploadHistory = HistoryBuffer()
+    private(set) var networkDownloadHistory = HistoryBuffer()
 
     private let sampler: MetricSamplerActor
     private var samplingTask: Task<Void, Never>?
@@ -177,6 +190,30 @@ final class SystemMonitor {
                 // the rate, and a late write would resurrect it.
                 guard !Task.isCancelled else { return }
                 self.latestNetwork = metrics
+
+                // One point per tick, only for real rates. Nil
+                // passes (first tick, rollback, timing
+                // discontinuity) skip the append; no gaps, no fake
+                // zeros. Trim follows the `recordHistory` pattern:
+                // age window from `historyDuration`, capacity at
+                // per-second density.
+                if let metrics {
+                    let age = Swift.max(self.historyDuration, 1)
+                    let capacity = Swift.max(Int(self.historyDuration), 16)
+                    let now = Date()
+                    self.networkUploadHistory.append(
+                        metrics.uploadBytesPerSecond,
+                        at: now,
+                        maxAge: age,
+                        capacity: capacity
+                    )
+                    self.networkDownloadHistory.append(
+                        metrics.downloadBytesPerSecond,
+                        at: now,
+                        maxAge: age,
+                        capacity: capacity
+                    )
+                }
             }
         }
     }
@@ -188,6 +225,8 @@ final class SystemMonitor {
         networkSamplingTask?.cancel()
         networkSamplingTask = nil
         latestNetwork = nil
+        networkUploadHistory = HistoryBuffer()
+        networkDownloadHistory = HistoryBuffer()
         Task { await self.sampler.clearNetworkBase() }
     }
 

@@ -177,4 +177,162 @@ final class SystemMonitorNetworkTests: XCTestCase {
 
         monitor.stop()
     }
+
+    // MARK: - Per-tick history appends
+
+    func testEachNetworkTickAppendsOnePointToBothBuffers() async throws {
+        let (monitor, _, preferences) = makeMonitor()
+        monitor.apply(preferences)
+        XCTAssertTrue(monitor.networkUploadHistory.isEmpty)
+        XCTAssertTrue(monitor.networkDownloadHistory.isEmpty)
+
+        // The first pass anchors (nil, no point); the second pass
+        // publishes a rate and appends one point to each buffer.
+        let firstPoint = try await waitUntil(timeout: 5) {
+            !monitor.networkUploadHistory.isEmpty
+                && !monitor.networkDownloadHistory.isEmpty
+        }
+        XCTAssertTrue(firstPoint, "the first published rate appends to both buffers")
+
+        // One point per 1 s tick: the next tick grows both buffers by
+        // one, and the two buffers stay in lockstep.
+        let secondPoint = try await waitUntil(timeout: 4) {
+            monitor.networkUploadHistory.values.count >= 2
+        }
+        XCTAssertTrue(secondPoint, "each tick appends exactly one point per series")
+        XCTAssertEqual(
+            monitor.networkUploadHistory.values.count,
+            monitor.networkDownloadHistory.values.count,
+            "both series append once per tick and stay equal"
+        )
+
+        monitor.stop()
+    }
+
+    // MARK: - Nil passes skip the append (no fake zeros)
+
+    func testNilNetworkPassSkipsAppendAndKeepsLastRealSample() async throws {
+        let (monitor, provider, preferences) = makeMonitor()
+        monitor.apply(preferences)
+
+        let published = try await waitUntil(timeout: 5) {
+            !monitor.networkUploadHistory.isEmpty
+        }
+        XCTAssertTrue(published, "seed: at least one real sample")
+
+        // A failed read makes sampleNetwork return nil (FM5). From
+        // here on every pass publishes nil and must not append.
+        provider.networkBytes = nil
+        let nilPublished = try await waitUntil(timeout: 5) {
+            monitor.latestNetwork == nil
+        }
+        XCTAssertTrue(nilPublished, "the failed-read pass publishes nil")
+
+        let uploadCount = monitor.networkUploadHistory.values.count
+        let downloadCount = monitor.networkDownloadHistory.values.count
+
+        // Two more failed passes must leave both buffers untouched.
+        let reads = provider.networkSampleCount
+        let moreReads = try await waitUntil(timeout: 5) {
+            provider.networkSampleCount >= reads + 2
+        }
+        XCTAssertTrue(moreReads, "the loop keeps reading through failed passes")
+        try await Task.sleep(nanoseconds: 200_000_000)
+
+        XCTAssertEqual(
+            monitor.networkUploadHistory.values.count, uploadCount,
+            "nil passes must not append fake zeros to the upload buffer"
+        )
+        XCTAssertEqual(
+            monitor.networkDownloadHistory.values.count, downloadCount,
+            "nil passes must not append fake zeros to the download buffer"
+        )
+
+        monitor.stop()
+    }
+
+    // MARK: - Off-state contract: stop clears both buffers
+
+    func testNetworkOffClearsBothHistoryBuffers() async throws {
+        let (monitor, _, preferences) = makeMonitor()
+        monitor.apply(preferences)
+
+        let hasPoints = try await waitUntil(timeout: 5) {
+            !monitor.networkUploadHistory.isEmpty
+                && !monitor.networkDownloadHistory.isEmpty
+        }
+        XCTAssertTrue(hasPoints, "seed: buffers hold real samples")
+
+        preferences.showNetwork = false
+        monitor.apply(preferences)
+
+        XCTAssertTrue(
+            monitor.networkUploadHistory.isEmpty,
+            "stopNetworkSampling clears the upload buffer"
+        )
+        XCTAssertTrue(
+            monitor.networkDownloadHistory.isEmpty,
+            "stopNetworkSampling clears the download buffer"
+        )
+        XCTAssertNil(monitor.latestNetwork, "the published rate clears alongside")
+
+        // PreferencesStore persists to UserDefaults.standard, which
+        // every test shares. Restore the on state so the next test
+        // seeds a network loop (the class contract).
+        preferences.showNetwork = true
+        monitor.stop()
+    }
+
+    // MARK: - Capacity trim: per-second density, capacity == seconds
+
+    func testNetworkBuffersRespectCapacityAndAgeTrim() async throws {
+        let (monitor, _, preferences) = makeMonitor()
+        preferences.historyDuration = 16
+        monitor.apply(preferences)
+        XCTAssertEqual(
+            monitor.networkSparklineCapacity, 16,
+            "capacity = max(Int(historyDuration), 16)"
+        )
+
+        // 16 points need 17 passes (the first anchors): ~18 s.
+        let filled = try await waitUntil(timeout: 30) {
+            monitor.networkUploadHistory.values.count >= 16
+        }
+        XCTAssertTrue(filled, "the buffer fills to capacity at 1 point per second")
+
+        // Three more ticks must not grow either buffer past capacity.
+        try await Task.sleep(nanoseconds: 4_000_000_000)
+        XCTAssertEqual(
+            monitor.networkUploadHistory.values.count, 16,
+            "the upload buffer never exceeds max(Int(historyDuration), 16)"
+        )
+        XCTAssertEqual(
+            monitor.networkDownloadHistory.values.count, 16,
+            "the download buffer never exceeds max(Int(historyDuration), 16)"
+        )
+
+        // Restore the shared persisted preference: the trim window is
+        // test-local, and UserDefaults.standard is shared by every
+        // test in the suite.
+        preferences.historyDuration = 60
+        monitor.stop()
+    }
+
+    // MARK: - Per-second view capacity for the card
+
+    func testNetworkSparklineCapacityForHistoryWindows() {
+        let monitor = SystemMonitor(provider: FakeSystemMetricsProvider())
+
+        monitor.historyDuration = 30
+        XCTAssertEqual(monitor.networkSparklineCapacity, 30, "30 s window = 30 samples")
+        monitor.historyDuration = 60
+        XCTAssertEqual(monitor.networkSparklineCapacity, 60, "60 s window = 60 samples")
+        monitor.historyDuration = 300
+        XCTAssertEqual(monitor.networkSparklineCapacity, 300, "300 s window = 300 samples")
+        monitor.historyDuration = 5
+        XCTAssertEqual(
+            monitor.networkSparklineCapacity, 16,
+            "small windows keep the floor of 16 samples"
+        )
+    }
 }

@@ -44,6 +44,10 @@ struct PopoverContentView: View {
                     GPUCardView(monitor: monitor)
                         .transition(.opacity)
                 }
+                if preferences.showNetwork {
+                    NetworkCardView(monitor: monitor)
+                        .transition(.opacity)
+                }
             }
             .padding(.horizontal, 10)
             .padding(.top, 5)
@@ -58,6 +62,7 @@ struct PopoverContentView: View {
         .fixedSize(horizontal: true, vertical: true)
         .background(.regularMaterial)
         .animation(.easeInOut(duration: 0.2), value: preferences.activeMetricCount)
+        .animation(.easeInOut(duration: 0.2), value: preferences.showNetwork)
         .animation(.easeInOut(duration: 0.2), value: coresExpanded)
         .onAppear { monitor.apply(preferences) }
     }
