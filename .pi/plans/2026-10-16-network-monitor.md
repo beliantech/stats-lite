@@ -523,6 +523,12 @@ Wording corrections carried with this round: plan intent line, blueprint legend 
 
 T5 verifies VAC-C1/C4/C10, VAC-N1…N5, F11, and re-checks VAC-3, VAC-5, VAC-8, VAC-9, FM9 against the new width.
 
+Fix-round receipts:
+
+- [x] **T4** — red `8cd7b02` (test-only, 13 failing cases mapped to VAC-C*/VAC-N*/F11) · green `fa37567` (5 scoped files) · suite 198 tests / 0 failures, build clean · review GO
+- [x] **T5** — PASS, 0 defects · suite re-run 198 / 0 · live menu-bar captures NOT-TESTABLE (session locked, `CGSSessionScreenIsLocked=1`); fallback = offscreen 1x+2x renders of the real view across 5 states: VAC-C1/C4 (measured RGB 255,56,60 / 0,136,255), VAC-N2 (gap 9.50 pt @2x for a `10 KB/s`-class string, leading and trailing deltas 0.00 pt), VAC-N1/N5/FM9 (constant 50 pt, `999 MB/s` uncut at 1x and 2x), VAC-N3/F11 (`95 MB/s` from 94.9 MiB/s), VAC-N4 (168/54/92/114), VAC-C10 (unit evidence), VAC-3/5/8/9 re-checked
+- Open follow-up from round 0 still stands: F10 / FM8 / FM12 interactive clicks need an unlocked session; live menu-bar photo of the swap likewise.
+
 ## Verification (overall)
 
 - Test suite green, build clean, every ISC item yes with evidence.
