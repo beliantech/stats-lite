@@ -245,14 +245,29 @@ final class SparklineViewTests: XCTestCase {
 
     func testSparklineCapacityForEveryHistoryAndIntervalCombination() {
         // historyDuration x refreshInterval -> expected capacity.
+        // The table covers all 5 history windows x 4 intervals.
         // 60 s at 1 s must stay 60: no silent truncation to 30.
         let expected: [(history: Int, interval: Int, capacity: Int)] = [
             (30, 1, 30),
             (30, 2, 15),
+            (30, 3, 10),
             (30, 5, 6),
             (60, 1, 60),
             (60, 2, 30),
+            (60, 3, 20),
             (60, 5, 12),
+            (120, 1, 120),
+            (120, 2, 60),
+            (120, 3, 40),
+            (120, 5, 24),
+            (180, 1, 180),
+            (180, 2, 90),
+            (180, 3, 60),
+            (180, 5, 36),
+            (300, 1, 300),
+            (300, 2, 150),
+            (300, 3, 100),
+            (300, 5, 60),
         ]
 
         for combo in expected {

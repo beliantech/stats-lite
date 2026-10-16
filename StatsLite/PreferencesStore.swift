@@ -50,7 +50,7 @@ final class PreferencesStore {
 
     // MARK: - Sampling and history
 
-    /// Refresh interval in seconds. The picker offers 1, 2, and 5.
+    /// Refresh interval in seconds. The picker offers 1, 2, 3, and 5.
     var refreshInterval: Int = 2 {
         didSet {
             guard !isSeeding else { return }
@@ -58,7 +58,7 @@ final class PreferencesStore {
         }
     }
 
-    /// Sparkline window in seconds. The picker offers 30 and 60.
+    /// Sparkline window in seconds. The picker offers 30, 60, 120, 180, and 300.
     var historyDuration: Int = 60 {
         didSet {
             guard !isSeeding else { return }

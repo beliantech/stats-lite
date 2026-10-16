@@ -48,6 +48,7 @@ struct SettingsView: View {
             Picker("Refresh Interval", selection: $preferences.refreshInterval) {
                 Text("1 s").tag(1)
                 Text("2 s").tag(2)
+                Text("3 s").tag(3)
                 Text("5 s").tag(5)
             }
 
@@ -92,7 +93,10 @@ struct SettingsView: View {
             Toggle("Show Per-Core CPU Breakdown", isOn: $preferences.showCoreBreakdown)
             Picker("History Duration", selection: $preferences.historyDuration) {
                 Text("30 s").tag(30)
-                Text("60 s").tag(60)
+                Text("1 min").tag(60)
+                Text("2 min").tag(120)
+                Text("3 min").tag(180)
+                Text("5 min").tag(300)
             }
         }
     }
