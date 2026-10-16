@@ -49,8 +49,8 @@ enum MenuBarAccessibility {
             // together or the block reads "unavailable".
             if let downloadRate, let uploadRate {
                 parts.append(
-                    "Network Download \(MetricFormatters.networkRate(downloadRate)), "
-                        + "Upload \(MetricFormatters.networkRate(uploadRate))"
+                    "Network Upload \(MetricFormatters.networkRate(uploadRate)), "
+                        + "Download \(MetricFormatters.networkRate(downloadRate))"
                 )
             } else {
                 parts.append("Network unavailable")

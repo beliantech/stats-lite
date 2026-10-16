@@ -35,7 +35,7 @@ enum MenuBarBlockKind: Hashable {
 /// One stacked menu bar block. dotState carries the memory pressure
 /// state for the MEM block, so its dot always renders. CPU and GPU
 /// blocks keep dotState nil. The network block carries a second line:
-/// secondaryValueText holds the upload rate below the download rate.
+/// secondaryValueText holds the download rate below the upload rate.
 struct MenuBarBlock: Equatable {
     var kind: MenuBarBlockKind
     var label: String
@@ -53,9 +53,10 @@ enum MenuBarLayout {
     /// Pinned width of every block. "100%" at the value font fits
     /// with clearance.
     static let blockWidth: CGFloat = 34
-    /// Pinned width of the two-line network block. Fits every rate
-    /// string from "0 KB/s" up to "1.2 GB/s" with margin.
-    static let networkBlockWidth: CGFloat = 58
+    /// Pinned width of the two-line network block. Fits the widest
+    /// truncated rate string "999 MB/s" (42.91 pt) plus the 6 pt dot
+    /// with 1.09 pt clearance (appendix B §1).
+    static let networkBlockWidth: CGFloat = 50
     /// Gap between adjacent blocks.
     static let gap: CGFloat = 4
     /// Outer padding: leading 2 pt plus trailing 2 pt.
@@ -146,19 +147,19 @@ enum MenuBarBlockBuilder {
         }
 
         if showNetwork {
-            // The network block owns its red download dot and blue
-            // upload dot in the view, so dotState stays nil and the
+            // The network block owns its red upload dot and blue
+            // download dot in the view, so dotState stays nil and the
             // label stays empty. Only a missing rate renders tertiary.
             blocks.append(
                 MenuBarBlock(
                     kind: .network,
                     label: "",
                     dotState: nil,
-                    valueText: MetricFormatters.networkRate(downloadRate),
-                    valueTint: downloadRate == nil ? .tertiary : .primary,
+                    valueText: MetricFormatters.networkRate(uploadRate),
+                    valueTint: uploadRate == nil ? .tertiary : .primary,
                     width: MenuBarLayout.networkBlockWidth,
-                    secondaryValueText: MetricFormatters.networkRate(uploadRate),
-                    secondaryValueTint: uploadRate == nil ? .tertiary : .primary
+                    secondaryValueText: MetricFormatters.networkRate(downloadRate),
+                    secondaryValueTint: downloadRate == nil ? .tertiary : .primary
                 )
             )
         }

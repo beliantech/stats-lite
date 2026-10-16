@@ -140,7 +140,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         XCTAssertEqual(MemoryPressureState.normal.displayState(pressure: 0.95), .normal)
     }
 
-    // MARK: - Network segment (VAC-10)
+    // MARK: - Network segment (VAC-C10)
 
     func testCompositeLabelWithNetworkRates() {
         let label = MenuBarAccessibility.compositeLabel(
@@ -158,7 +158,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         XCTAssertEqual(
             label,
             "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
-                + "GPU 28 percent, Network Download 720 KB/s, Upload 10 KB/s"
+                + "GPU 28 percent, Network Upload 10 KB/s, Download 720 KB/s"
         )
     }
 
@@ -197,7 +197,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: Network Download 1.6 MB/s, Upload 22 KB/s"
+            "Stats Lite: Network Upload 22 KB/s, Download 1.6 MB/s"
         )
     }
 
@@ -216,7 +216,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 50 percent, Network Download 720 KB/s, Upload 10 KB/s"
+            "Stats Lite: CPU 50 percent, Network Upload 10 KB/s, Download 720 KB/s"
         )
     }
 

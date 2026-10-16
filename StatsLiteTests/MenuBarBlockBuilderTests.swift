@@ -334,10 +334,12 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     // MARK: - Network block
 
     func testNetworkBlockAppendsAfterGPUWithEmptyLabelAndPinnedWidth() {
+        let downloadRate = 720 * 1024.0
+        let uploadRate = 10 * 1024.0
         let result = blocks(
             showNetwork: true,
-            downloadRate: 720 * 1024,
-            uploadRate: 10 * 1024
+            downloadRate: downloadRate,
+            uploadRate: uploadRate
         )
 
         XCTAssertEqual(
@@ -348,10 +350,22 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         let network = result[3]
         XCTAssertEqual(network.kind, .network)
         XCTAssertEqual(network.label, "", "the reference network block carries no label text")
-        XCTAssertEqual(network.width, 58, "the network block pins to networkBlockWidth")
+        XCTAssertEqual(network.width, 50, "the network block pins to networkBlockWidth")
         XCTAssertNil(network.dotState, "the network block owns its dots, not the pressure dot")
-        XCTAssertEqual(network.valueText, "720 KB/s")
-        XCTAssertEqual(network.secondaryValueText, "10 KB/s")
+        // Line 1 (valueText) carries the upload rate; line 2
+        // (secondaryValueText) carries the download rate (VAC-C1).
+        XCTAssertEqual(
+            network.valueText,
+            MetricFormatters.networkRate(uploadRate),
+            "valueText == networkRate(uploadRate)"
+        )
+        XCTAssertEqual(
+            network.secondaryValueText,
+            MetricFormatters.networkRate(downloadRate),
+            "secondaryValueText == networkRate(downloadRate)"
+        )
+        XCTAssertEqual(network.valueText, "10 KB/s")
+        XCTAssertEqual(network.secondaryValueText, "720 KB/s")
     }
 
     func testNetworkOnlyProducesSingleNetworkBlock() {
@@ -363,9 +377,9 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].kind, .network)
         XCTAssertEqual(result[0].label, "")
-        XCTAssertEqual(result[0].width, 58)
-        XCTAssertEqual(result[0].valueText, "1.6 MB/s")
-        XCTAssertEqual(result[0].secondaryValueText, "22 KB/s")
+        XCTAssertEqual(result[0].width, 50)
+        XCTAssertEqual(result[0].valueText, "22 KB/s")
+        XCTAssertEqual(result[0].secondaryValueText, "1.6 MB/s")
     }
 
     func testNetworkOffProducesNoNetworkBlock() {
@@ -386,8 +400,26 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         )
 
         XCTAssertEqual(result.count, 1)
-        XCTAssertEqual(result[0].valueText, "-- KB/s", "a missing download rate renders the placeholder")
-        XCTAssertEqual(result[0].secondaryValueText, "-- KB/s", "a missing upload rate renders the placeholder")
+        XCTAssertEqual(result[0].valueText, "-- KB/s", "a missing upload rate renders the placeholder on line 1")
+        XCTAssertEqual(result[0].secondaryValueText, "-- KB/s", "a missing download rate renders the placeholder on line 2")
+    }
+
+    func testNetworkBlockTintsKeyToTheirOwnRateNil() {
+        // Line 1 tint (red upload dot) follows the upload rate; line 2
+        // tint (blue download dot) follows the download rate (VAC-C4).
+        let uploadMissing = blocks(
+            showCPU: false, showRAM: false, showGPU: false, showNetwork: true,
+            downloadRate: 720 * 1024, uploadRate: nil
+        )[0]
+        XCTAssertEqual(uploadMissing.valueTint, .tertiary, "the upload line goes tertiary when the upload rate is missing")
+        XCTAssertEqual(uploadMissing.secondaryValueTint, .primary, "the download line stays primary when only the upload rate is missing")
+
+        let downloadMissing = blocks(
+            showCPU: false, showRAM: false, showGPU: false, showNetwork: true,
+            downloadRate: nil, uploadRate: 10 * 1024
+        )[0]
+        XCTAssertEqual(downloadMissing.valueTint, .primary, "the upload line stays primary when only the download rate is missing")
+        XCTAssertEqual(downloadMissing.secondaryValueTint, .tertiary, "the download line goes tertiary when the download rate is missing")
     }
 
     func testNetworkBlockOrderAcrossToggleSubsets() {

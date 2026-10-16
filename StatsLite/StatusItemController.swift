@@ -155,7 +155,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     }
 
     /// "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25
-    /// percent, GPU 28 percent, Network Download 720 KB/s, Upload 10
+    /// percent, GPU 28 percent, Network Upload 10 KB/s, Download 720
     /// KB/s" from the latest snapshot and network pass.
     private var compositeLabel: String {
         let snapshot = monitor.latestSnapshot
