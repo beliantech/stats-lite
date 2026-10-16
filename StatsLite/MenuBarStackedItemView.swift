@@ -109,7 +109,7 @@ struct MenuBarBlockView: View {
                         .offset(y: -0.5)
                 }
                 Text(block.label)
-                    .font(.system(size: 8, weight: .bold))
+                    .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
             }
             Text(block.valueText)
@@ -150,7 +150,7 @@ struct MenuBarNetworkBlockView: View {
                 Spacer(minLength: 1)
 
                 Text(block.valueText)
-                    .font(.system(size: 9, weight: .medium).monospacedDigit())
+                    .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(valueColor)
                     .lineLimit(1)
             }
@@ -164,7 +164,7 @@ struct MenuBarNetworkBlockView: View {
                 Spacer(minLength: 1)
 
                 Text(block.secondaryValueText ?? "-- KB/s")
-                    .font(.system(size: 9, weight: .medium).monospacedDigit())
+                    .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(secondaryValueColor)
                     .lineLimit(1)
             }
