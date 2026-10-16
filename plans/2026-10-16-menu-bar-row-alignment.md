@@ -6,11 +6,17 @@ Risk class: **R2** (UI work — zero-tolerance visual policy applies; visual def
 Status: Design gate **PASS** (`artifacts/2026-10-16-emulate-stats-layout/gate-report-alignment.md`,
 re-gate round 2, §10). The gate report is committed as `ee4ef04` on
 `ci/github-actions-dmg-build` only; **T5 cherry-picks it onto `main`**. Plan authored
-2026-10-16. Ready for execution: T1 → T5.
+2026-10-16. Post-`run_plan` clarity pass applied 2026-10-16: wording and procedure only
+— ISC semantics, the blueprint, scope, the task list, and the constant-folding
+adaptation (Approach item 3) are unchanged. No `[plan-review]` verdict is recorded in
+this file; do not invent one. Ready for execution: T1 → T5.
 Baseline suite: **227 tests, 0 failures** at `main` tip **5c67c21** (gate §5 measured;
 authoring scan `rg -c 'func test' StatsLiteTests/` = 227). The `ci` branch (`ee4ef04`)
 contains `main`, and `git diff 5c67c21 ee4ef04 -- StatsLite StatsLiteTests` is empty, so
-the workdir tree verifies every Swift citation below identically.
+the workdir tree verifies every Swift citation below identically. `main` advanced two
+docs-only commits after `5c67c21` (`4b35430` blueprint archive, `f40041d` plan;
+`git diff 5c67c21 f40041d -- StatsLite StatsLiteTests` empty at the clarity pass), so
+the 227-test baseline and every Swift citation hold at the current tip.
 Screenshot waiver: `artifacts/2026-10-16-emulate-stats-layout/waiver-note.md` (user
 authority, three recorded exit-1 probes). T1 records the carry-over for this plan;
 **no new probe** — the basis is unrefuted and this plan adds no new capture surface.
@@ -95,9 +101,15 @@ Six production edits across two files, one green commit. Nothing else moves: val
   `:118` `.lineLimit(1)`, `:153`/`:167` rate fonts, `:156`/`:170` HStack closes, `:172`
   network width frame; `MenuBarBlockModel.swift` `:59` `networkBlockWidth`, `:60` gap
   comment — all exact.
-- Zero-animation scan at authoring: `rg '\.animation|\.contentTransition'` over
-  `StatsLite/` — comment-only hits (`MenuBarStackedItemView.swift:14`, `:15`, `:138`);
-  never a modifier.
+- Zero-animation scan at authoring (re-verified at the clarity pass): `rg -n
+  '\.animation|\.contentTransition'` over the status-item files
+  (`StatsLite/MenuBarStackedItemView.swift`, `MenuBarBlockModel.swift`,
+  `StatusItemController.swift`, `MenuBarAccessibility.swift`) — comment-only hits
+  (`MenuBarStackedItemView.swift:14`, `:15`, `:138`); never a modifier.
+  `StatsLite/PopoverContentView.swift:64-66` carries `.animation` modifiers on the
+  popover path — pre-existing, outside the VAC-9 selector, untouched by this plan. A
+  directory-wide scan hits those popover lines, so IC-9 and the T4 ledger row scan the
+  four status-item files.
 
 ## ISC — binary checks (every item is yes/no)
 
@@ -109,9 +121,10 @@ Six production edits across two files, one green commit. Nothing else moves: val
 > no new probe runs. Visual ICs get a `waived` ledger row; test-based ICs stay binding.
 
 Citation rule: a bare `:N` means `StatsLite/MenuBarStackedItemView.swift:N`; a test-file
-citation names the file. Line numbers are as-at-`main` 5c67c21 (workdir tree verified
-identical). The red commit shifts test-file lines, so test-file citations are
-as-at-HEAD and the T2 order keeps each citation valid when used.
+citation names the file. Production line numbers are as-at-`main` 5c67c21 (workdir tree
+verified identical). Test-file citations are as-at the test file at the worktree base
+(current `main`); the red commit shifts test-file lines, so T2 applies its steps in the
+listed top-to-bottom order and each citation stays valid at the step that uses it.
 Widths: block widths are pinned (34.0 / 50.0 pt), so every geometry claim holds at all
 widths; under the waiver, layout claims verify from test evidence. Each IC ends with a
 `Widths:` line.
@@ -150,8 +163,11 @@ widths; under the waiver, layout claims verify from test evidence. Each IC ends 
   (`:172` frame); "999 MB/s" leaves 1.8916 pt ≥ 1.8; guard passes red and green.
   Widths: all.
 - [ ] **IC-9 (VAC-9, zero animation)** — `rg -n '\.animation|\.contentTransition'` over
-  `StatsLite/` finds comment-only hits and never a modifier;
-  `MenuBarRedrawChurnTests` passes. Widths: all runtimes.
+  the status-item files (`StatsLite/MenuBarStackedItemView.swift`,
+  `MenuBarBlockModel.swift`, `StatusItemController.swift`, `MenuBarAccessibility.swift`)
+  finds comment-only hits (`:14`, `:15`, `:138`) and never a modifier; the popover
+  `.animation` at `PopoverContentView.swift:64-66` is outside the VAC-9 selector and
+  stays untouched; `MenuBarRedrawChurnTests` passes. Widths: all runtimes.
 - [ ] **IC-10 (VAC-10, length contract)** — `MenuBarLayout.length` stays 168/114/92/76/54/38/4;
   Edit 1 adds a `static let` only, so `length(...)` is untouched; `MenuBarLayoutTests`
   passes. The 130 pt row stays unpinned (gate N7, recorded deferral). Widths: all.
@@ -1057,7 +1073,8 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
 
 - [ ] **T2** — `T2: [red]` Rewrite the guards in
   `StatsLiteTests/MenuBarValueTypographyTests.swift` first, then run the suite.
-  Test-only diff: touch no application code. All test-file citations are as-at-HEAD;
+  Test-only diff: touch no application code. All test-file citations are as-at the test
+  file at the worktree base (current `main`);
   the order below keeps each citation valid when it is used; apply the Appendix B items
   **by content** (gate note N10: the `import SwiftUI` insertion shifts later line
   references +1).
@@ -1129,8 +1146,9 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
 ## Phase 3 — Green (implementation, same worktree)
 
 - [ ] **T3** — Apply blueprint Appendix A edits 1–6 in one commit. Every production line
-  the mechanism touches, enumerated (citations as-at-HEAD; the gate re-verified each
-  "Current Code" quote character for character at `5c67c21`):
+  the mechanism touches, enumerated (production citations as-at the T3 base — the red
+  commit is test-only, so the production tree is still the `5c67c21` tree; the gate
+  re-verified each "Current Code" quote character for character at `5c67c21`):
   1. `StatsLite/MenuBarBlockModel.swift` — Edit 1: insert at `:60` (between
      `networkBlockWidth` at `:59` and the `/// Gap between adjacent blocks.` comment):
      ```swift
