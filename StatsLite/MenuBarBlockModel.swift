@@ -29,11 +29,13 @@ enum MenuBarBlockKind: Hashable {
     case cpu
     case ram
     case gpu
+    case network
 }
 
 /// One stacked menu bar block. dotState carries the memory pressure
 /// state for the MEM block, so its dot always renders. CPU and GPU
-/// blocks keep dotState nil.
+/// blocks keep dotState nil. The network block carries a second line:
+/// secondaryValueText holds the upload rate below the download rate.
 struct MenuBarBlock: Equatable {
     var kind: MenuBarBlockKind
     var label: String
@@ -41,6 +43,8 @@ struct MenuBarBlock: Equatable {
     var valueText: String
     var valueTint: MenuBarValueTint
     var width: CGFloat
+    var secondaryValueText: String? = nil
+    var secondaryValueTint: MenuBarValueTint? = nil
 }
 
 /// Layout constants shared by the block builder, MenuBarLayout, and
@@ -49,40 +53,50 @@ enum MenuBarLayout {
     /// Pinned width of every block. "100%" at the value font fits
     /// with clearance.
     static let blockWidth: CGFloat = 34
+    /// Pinned width of the two-line network block. Fits every rate
+    /// string from "0 KB/s" up to "1.2 GB/s" with margin.
+    static let networkBlockWidth: CGFloat = 58
     /// Gap between adjacent blocks.
     static let gap: CGFloat = 4
     /// Outer padding: leading 2 pt plus trailing 2 pt.
     static let padding: CGFloat = 2
 
     /// Total menu bar item length for the enabled metrics. Counts
-    /// blocks plus inter-block gaps plus outer padding. All metrics
-    /// off leaves the padding alone (4 pt).
+    /// blocks plus inter-block gaps plus outer padding. The network
+    /// block adds its own width. All metrics off leaves the padding
+    /// alone (4 pt).
     static func length(
         showCPU: Bool,
         showRAM: Bool,
-        showGPU: Bool
+        showGPU: Bool,
+        showNetwork: Bool = false
     ) -> CGFloat {
-        let count =
+        let metricCount =
             (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
-        let blocksLength = CGFloat(count) * blockWidth
-        let gapsLength = CGFloat(max(count - 1, 0)) * gap
-        return 2 * padding + blocksLength + gapsLength
+        let totalBlocks = metricCount + (showNetwork ? 1 : 0)
+        let metricLength = CGFloat(metricCount) * blockWidth
+        let networkLength = showNetwork ? networkBlockWidth : 0
+        let gapsLength = CGFloat(max(totalBlocks - 1, 0)) * gap
+        return 2 * padding + metricLength + networkLength + gapsLength
     }
 }
 
-/// Builds the visible blocks in CPU, MEM, GPU order. Nil and
-/// non-finite values become "--%" with a tertiary tint.
-/// Out-of-range values clamp through MetricFormatters.percent.
+/// Builds the visible blocks in CPU, MEM, GPU, NET order. Nil and
+/// non-finite values become "--%" or "-- KB/s" with a tertiary tint.
+/// Out-of-range values clamp through MetricFormatters.
 enum MenuBarBlockBuilder {
 
     static func blocks(
         showCPU: Bool,
         showRAM: Bool,
         showGPU: Bool,
+        showNetwork: Bool = false,
         cpuPercent: Double?,
         pressurePercent: Double?,
         pressureState: MemoryPressureState?,
-        gpuPercent: Double?
+        gpuPercent: Double?,
+        downloadRate: Double? = nil,
+        uploadRate: Double? = nil
     ) -> [MenuBarBlock] {
         var blocks: [MenuBarBlock] = []
 
@@ -127,6 +141,24 @@ enum MenuBarBlockBuilder {
                     valueText: MetricFormatters.percent(gpuPercent),
                     valueTint: usageTint(gpuPercent),
                     width: MenuBarLayout.blockWidth
+                )
+            )
+        }
+
+        if showNetwork {
+            // The network block owns its red download dot and blue
+            // upload dot in the view, so dotState stays nil and the
+            // label stays empty. Only a missing rate renders tertiary.
+            blocks.append(
+                MenuBarBlock(
+                    kind: .network,
+                    label: "",
+                    dotState: nil,
+                    valueText: MetricFormatters.networkRate(downloadRate),
+                    valueTint: downloadRate == nil ? .tertiary : .primary,
+                    width: MenuBarLayout.networkBlockWidth,
+                    secondaryValueText: MetricFormatters.networkRate(uploadRate),
+                    secondaryValueTint: uploadRate == nil ? .tertiary : .primary
                 )
             )
         }

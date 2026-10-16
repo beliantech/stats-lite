@@ -27,4 +27,8 @@ protocol SystemMetricsProvider: Sendable {
     /// Kernel memory pressure. Always returns a value. The state is
     /// `.unknown` and the percentage is 0 when both sysctl reads fail.
     func sampleMemoryPressure() -> MemoryPressureMetrics
+
+    /// Cumulative non-loopback interface byte counters. Returns `nil`
+    /// when the interface walk fails or when no usable interface exists.
+    func sampleNetworkBytes() -> NetworkBytes?
 }

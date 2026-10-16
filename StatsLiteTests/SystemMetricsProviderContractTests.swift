@@ -49,6 +49,24 @@ final class SystemMetricsProviderContractTests: XCTestCase {
         XCTAssertNil(provider.sampleGPU())
     }
 
+    // MARK: - Network byte counters
+
+    func testFakeReturnsConfiguredNetworkBytes() {
+        let network = NetworkBytes(bytesIn: 1_234, bytesOut: 5_678)
+        let provider = FakeSystemMetricsProvider(networkBytes: network)
+
+        XCTAssertEqual(provider.sampleNetworkBytes(), network)
+        XCTAssertEqual(provider.sampleNetworkBytes(), network)
+        XCTAssertEqual(provider.networkSampleCount, 2)
+    }
+
+    func testFakeDefaultNetworkBytesAreUnavailable() {
+        let provider = FakeSystemMetricsProvider()
+
+        XCTAssertNil(provider.sampleNetworkBytes())
+        XCTAssertEqual(provider.networkSampleCount, 1)
+    }
+
     // MARK: - Shared contract
 
     func testFakeProviderHonorsContract() throws {
@@ -174,6 +192,15 @@ final class SystemMetricsProviderContractTests: XCTestCase {
                 XCTAssertTrue((0...1).contains(tiler), file: file, line: line)
             }
         }
+
+        // Network: a nil read means the interface walk failed or no
+        // usable interface exists. A present sample exposes both
+        // counters, and a repeat read must not trap.
+        if let network = provider.sampleNetworkBytes() {
+            _ = network.bytesIn
+            _ = network.bytesOut
+        }
+        _ = provider.sampleNetworkBytes()
 
         let pressure = provider.sampleMemoryPressure()
         XCTAssertTrue(

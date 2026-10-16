@@ -14,12 +14,14 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     var memory: MemoryMetrics?
     var gpu: GPUMetrics?
     var pressure: MemoryPressureMetrics
+    var networkBytes: NetworkBytes?
 
     // Sampling counters: the sampler tests assert which metrics were read.
     private(set) var cpuSampleCount = 0
     private(set) var memorySampleCount = 0
     private(set) var gpuSampleCount = 0
     private(set) var pressureSampleCount = 0
+    private(set) var networkSampleCount = 0
 
     init(
         cpuTicks: CPUTicks? = nil,
@@ -28,12 +30,14 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
         pressure: MemoryPressureMetrics = MemoryPressureMetrics(
             state: .normal,
             pressurePercentage: 0.15
-        )
+        ),
+        networkBytes: NetworkBytes? = nil
     ) {
         self.cpuTicks = cpuTicks
         self.memory = memory
         self.gpu = gpu
         self.pressure = pressure
+        self.networkBytes = networkBytes
     }
 
     func sampleCPUTicks() -> CPUTicks? {
@@ -54,5 +58,10 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     func sampleMemoryPressure() -> MemoryPressureMetrics {
         pressureSampleCount += 1
         return pressure
+    }
+
+    func sampleNetworkBytes() -> NetworkBytes? {
+        networkSampleCount += 1
+        return networkBytes
     }
 }

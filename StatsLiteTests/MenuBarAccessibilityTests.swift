@@ -140,6 +140,105 @@ final class MenuBarAccessibilityTests: XCTestCase {
         XCTAssertEqual(MemoryPressureState.normal.displayState(pressure: 0.95), .normal)
     }
 
+    // MARK: - Network segment (VAC-10)
+
+    func testCompositeLabelWithNetworkRates() {
+        let label = MenuBarAccessibility.compositeLabel(
+            showCPU: true,
+            showRAM: true,
+            showGPU: true,
+            showNetwork: true,
+            cpuPercent: 0.14,
+            pressurePercent: 0.25,
+            pressure: .normal,
+            gpuPercent: 0.28,
+            downloadRate: 720 * 1024,
+            uploadRate: 10 * 1024
+        )
+        XCTAssertEqual(
+            label,
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
+                + "GPU 28 percent, Network Download 720 KB/s, Upload 10 KB/s"
+        )
+    }
+
+    func testCompositeLabelNetworkUnavailableWhenRatesMissing() {
+        let label = MenuBarAccessibility.compositeLabel(
+            showCPU: true,
+            showRAM: true,
+            showGPU: true,
+            showNetwork: true,
+            cpuPercent: 0.14,
+            pressurePercent: 0.25,
+            pressure: .normal,
+            gpuPercent: 0.28,
+            downloadRate: nil,
+            uploadRate: nil
+        )
+        XCTAssertEqual(
+            label,
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
+                + "GPU 28 percent, Network unavailable"
+        )
+    }
+
+    func testCompositeLabelNetworkOnly() {
+        let label = MenuBarAccessibility.compositeLabel(
+            showCPU: false,
+            showRAM: false,
+            showGPU: false,
+            showNetwork: true,
+            cpuPercent: nil,
+            pressurePercent: nil,
+            pressure: .normal,
+            gpuPercent: nil,
+            downloadRate: 1.6 * 1_048_576,
+            uploadRate: 22 * 1024
+        )
+        XCTAssertEqual(
+            label,
+            "Stats Lite: Network Download 1.6 MB/s, Upload 22 KB/s"
+        )
+    }
+
+    func testCompositeLabelNetworkFollowsCPUWhenOtherMetricsOff() {
+        let label = MenuBarAccessibility.compositeLabel(
+            showCPU: true,
+            showRAM: false,
+            showGPU: false,
+            showNetwork: true,
+            cpuPercent: 0.5,
+            pressurePercent: nil,
+            pressure: .normal,
+            gpuPercent: nil,
+            downloadRate: 720 * 1024,
+            uploadRate: 10 * 1024
+        )
+        XCTAssertEqual(
+            label,
+            "Stats Lite: CPU 50 percent, Network Download 720 KB/s, Upload 10 KB/s"
+        )
+    }
+
+    func testCompositeLabelIgnoresRatesWhenNetworkOff() {
+        let label = MenuBarAccessibility.compositeLabel(
+            showCPU: true,
+            showRAM: true,
+            showGPU: true,
+            showNetwork: false,
+            cpuPercent: 0.14,
+            pressurePercent: 0.25,
+            pressure: .normal,
+            gpuPercent: 0.28,
+            downloadRate: 720 * 1024,
+            uploadRate: 10 * 1024
+        )
+        XCTAssertEqual(
+            label,
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
+        )
+    }
+
     // MARK: - Card value formatter (one decimal percent)
 
     func testPercentTenthFormats() {

@@ -48,7 +48,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             withLength: MenuBarLayout.length(
                 showCPU: preferences.showCPU,
                 showRAM: preferences.showRAM,
-                showGPU: preferences.showGPU
+                showGPU: preferences.showGPU,
+                showNetwork: preferences.showNetwork
             )
         )
 
@@ -137,7 +138,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         statusItem.length = MenuBarLayout.length(
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
-            showGPU: preferences.showGPU
+            showGPU: preferences.showGPU,
+            showNetwork: preferences.showNetwork
         )
     }
 
@@ -153,7 +155,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     }
 
     /// "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25
-    /// percent, GPU 28 percent" from the latest snapshot.
+    /// percent, GPU 28 percent, Network Download 720 KB/s, Upload 10
+    /// KB/s" from the latest snapshot and network pass.
     private var compositeLabel: String {
         let snapshot = monitor.latestSnapshot
         let pressure = snapshot?.memoryPressure
@@ -163,10 +166,13 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
+            showNetwork: preferences.showNetwork,
             cpuPercent: snapshot?.cpu?.totalUsage,
             pressurePercent: pressure?.pressurePercentage,
             pressure: pressureState,
-            gpuPercent: snapshot?.gpu?.deviceUtilization
+            gpuPercent: snapshot?.gpu?.deviceUtilization,
+            downloadRate: monitor.latestNetwork?.downloadBytesPerSecond,
+            uploadRate: monitor.latestNetwork?.uploadBytesPerSecond
         )
     }
 }

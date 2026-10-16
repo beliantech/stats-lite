@@ -48,6 +48,15 @@ final class PreferencesStore {
         }
     }
 
+    /// Network block visibility (D3). Outside `enabledMetrics`: no
+    /// guard and no lock, so it never changes `activeMetricCount`.
+    var showNetwork: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            showNetworkStorage = showNetwork
+        }
+    }
+
     // MARK: - Sampling and history
 
     /// Refresh interval in seconds. The picker offers 1, 2, 3, and 5.
@@ -104,6 +113,7 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("showCPU") private var showCPUStorage: Bool = true
     @ObservationIgnored @AppStorage("showRAM") private var showRAMStorage: Bool = true
     @ObservationIgnored @AppStorage("showGPU") private var showGPUStorage: Bool = true
+    @ObservationIgnored @AppStorage("showNetwork") private var showNetworkStorage: Bool = true
     @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 2
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
     @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
@@ -115,6 +125,7 @@ final class PreferencesStore {
         showCPU = showCPUStorage
         showRAM = showRAMStorage
         showGPU = showGPUStorage
+        showNetwork = showNetworkStorage
         refreshInterval = refreshIntervalStorage
         historyDuration = historyDurationStorage
         showCoreBreakdown = showCoreBreakdownStorage

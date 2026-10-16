@@ -8,6 +8,15 @@
 
 import Foundation
 
+/// One interface row from the getifaddrs walk, mapped by the live
+/// provider. The byte counters come from `if_data` and stay optional
+/// because not every interface family carries them.
+struct NetworkInterfaceRow: Sendable, Equatable {
+    var isLoopback: Bool
+    var bytesIn: Int64?
+    var bytesOut: Int64?
+}
+
 enum SystemMetricsParsing {
 
     /// Maps raw sysctl reads to pressure metrics.
@@ -58,5 +67,36 @@ enum SystemMetricsParsing {
     private static func averageFraction(of percents: [Int]) -> Double {
         let total = percents.reduce(0.0) { $0 + Double($1) }
         return total / Double(percents.count) / 100.0
+    }
+
+    // MARK: - Network interface rows (loopback exclusion, F4)
+
+    /// Sums the non-loopback byte counters into `NetworkBytes`.
+    /// Returns `nil` when the row list is empty, when every row is
+    /// loopback, when any non-loopback row lacks a counter, when any
+    /// counter is negative, or when the sum overflows UInt64. The
+    /// sum runs in unsigned 64-bit, so two `Int64.max` rows do not
+    /// trap.
+    static func networkBytes(from rows: [NetworkInterfaceRow]) -> NetworkBytes? {
+        var bytesIn: UInt64 = 0
+        var bytesOut: UInt64 = 0
+        var counted = 0
+
+        for row in rows where !row.isLoopback {
+            guard let rowIn = row.bytesIn, let rowOut = row.bytesOut,
+                  rowIn >= 0, rowOut >= 0
+            else { return nil }
+
+            let (sumIn, overflowIn) = bytesIn.addingReportingOverflow(UInt64(rowIn))
+            let (sumOut, overflowOut) = bytesOut.addingReportingOverflow(UInt64(rowOut))
+            guard !overflowIn, !overflowOut else { return nil }
+
+            bytesIn = sumIn
+            bytesOut = sumOut
+            counted += 1
+        }
+
+        guard counted > 0 else { return nil }
+        return NetworkBytes(bytesIn: bytesIn, bytesOut: bytesOut)
     }
 }

@@ -79,4 +79,62 @@ final class MenuBarLayoutTests: XCTestCase {
             accuracy: accuracy
         )
     }
+
+    // MARK: - Network block (VAC-11)
+
+    func testNetworkBlockWidthIsPinnedTo58() {
+        XCTAssertEqual(MenuBarLayout.networkBlockWidth, 58, accuracy: accuracy)
+    }
+
+    func testAllFourMetricsTotal176() {
+        XCTAssertEqual(
+            MenuBarLayout.length(
+                showCPU: true,
+                showRAM: true,
+                showGPU: true,
+                showNetwork: true
+            ),
+            176,
+            accuracy: accuracy
+        )
+    }
+
+    func testNetworkOnlyTotal62() {
+        XCTAssertEqual(
+            MenuBarLayout.length(
+                showCPU: false,
+                showRAM: false,
+                showGPU: false,
+                showNetwork: true
+            ),
+            62,
+            accuracy: accuracy
+        )
+    }
+
+    func testCPUPlusNetworkTotal100() {
+        XCTAssertEqual(
+            MenuBarLayout.length(
+                showCPU: true,
+                showRAM: false,
+                showGPU: false,
+                showNetwork: true
+            ),
+            100,
+            accuracy: accuracy
+        )
+    }
+
+    func testNetworkOffKeepsThreeMetricTotal114() {
+        XCTAssertEqual(
+            MenuBarLayout.length(
+                showCPU: true,
+                showRAM: true,
+                showGPU: true,
+                showNetwork: false
+            ),
+            114,
+            accuracy: accuracy
+        )
+    }
 }

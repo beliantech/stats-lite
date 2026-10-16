@@ -2,8 +2,8 @@
 //  MetricTypes.swift
 //  StatsLite
 //
-//  Pure value types for the three metrics: CPU, memory (with pressure),
-//  and GPU. No IOKit/Mach calls here. Every type is Sendable so the
+//  Pure value types for the metrics: CPU, memory (with pressure), GPU,
+//  and network. No IOKit/Mach calls here. Every type is Sendable so the
 //  sampler actor can hand snapshots to the main actor safely.
 //
 
@@ -158,6 +158,21 @@ struct GPUMetrics: Sendable, Equatable {
     private static func clamp(_ value: Double) -> Double {
         min(max(value, 0), 1)
     }
+}
+
+/// Cumulative byte counters for one network sample: bytes received and
+/// bytes sent across all non-loopback interfaces. Like CPU ticks, the
+/// values only make sense as a delta against a previous sample.
+struct NetworkBytes: Sendable, Equatable {
+    var bytesIn: UInt64
+    var bytesOut: UInt64
+}
+
+/// Transfer rate in bytes per second, averaged over the measured
+/// interval between the two samples that produced the delta.
+struct NetworkMetrics: Sendable, Equatable {
+    var downloadBytesPerSecond: Double
+    var uploadBytesPerSecond: Double
 }
 
 /// Which metrics the user turned on in Settings. Pressure rides with memory.

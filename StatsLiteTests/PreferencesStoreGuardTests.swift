@@ -17,6 +17,7 @@ private let preferencesKeys = [
     "showCPU",
     "showRAM",
     "showGPU",
+    "showNetwork",
     "refreshInterval",
     "historyDuration",
     "showCoreBreakdown",
@@ -131,5 +132,73 @@ final class PreferencesStoreGuardTests: XCTestCase {
         let second = PreferencesStore()
         XCTAssertEqual(second.refreshInterval, 5)
         XCTAssertEqual(second.historyDuration, 30)
+    }
+
+    // MARK: - Network toggle (F2, F10)
+
+    func testShowNetworkDefaultsToTrue() {
+        let store = PreferencesStore()
+
+        XCTAssertTrue(
+            store.showNetwork,
+            "F2: NETWORK ships ON when the key is absent (fresh and existing installs)"
+        )
+        XCTAssertEqual(store.activeMetricCount, 3)
+    }
+
+    func testShowNetworkPersistsAcrossInstances() {
+        let first = PreferencesStore()
+        first.showNetwork = false
+
+        let second = PreferencesStore()
+        XCTAssertFalse(second.showNetwork, "F2: an opt-out survives a restart")
+
+        second.showNetwork = true
+
+        let third = PreferencesStore()
+        XCTAssertTrue(third.showNetwork)
+    }
+
+    func testShowNetworkDoesNotChangeActiveMetricCountOrEnabledMetrics() {
+        let store = PreferencesStore()
+        store.showNetwork = false
+
+        XCTAssertEqual(store.activeMetricCount, 3, "F10/D4: network never enters the count")
+        XCTAssertEqual(store.enabledMetrics, .all)
+
+        store.showRAM = false
+        store.showGPU = false
+        store.showNetwork = true
+
+        XCTAssertEqual(
+            store.activeMetricCount,
+            1,
+            "count still counts only CPU/RAM/GPU while network is ON"
+        )
+        XCTAssertEqual(store.enabledMetrics, [.cpu])
+    }
+
+    /// The lock helper counts only the three standard metrics, so the
+    /// network setting never changes a lock result. The sole standard
+    /// toggle keeps its lock (SettingsWindowTests pins that exact
+    /// assertion), and the network row carries no lock state: D7 gives
+    /// it no .disabled modifier at all (F10).
+    func testShowNetworkDoesNotAffectStandardToggleLock() {
+        let store = PreferencesStore()
+        store.showRAM = false
+        store.showGPU = false
+        XCTAssertEqual(store.activeMetricCount, 1)
+
+        store.showNetwork = true
+        XCTAssertTrue(store.isToggleLocked(store.showCPU), "the sole standard toggle stays locked")
+        XCTAssertFalse(store.isToggleLocked(store.showRAM))
+        XCTAssertFalse(store.isToggleLocked(store.showGPU))
+
+        store.showNetwork = false
+        XCTAssertTrue(
+            store.isToggleLocked(store.showCPU),
+            "flipping showNetwork changes no lock result"
+        )
+        XCTAssertFalse(store.isToggleLocked(store.showGPU))
     }
 }

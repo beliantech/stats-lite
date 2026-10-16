@@ -15,6 +15,10 @@ actor MetricSamplerActor {
     private let provider: any SystemMetricsProvider
     private var previousCPUTicks: CPUTicks?
 
+    /// Network delta base: the last accepted byte counters plus the
+    /// clock instant they were read at. Rate math needs both.
+    private var previousNetworkSample: (bytes: NetworkBytes, instant: ContinuousClock.Instant)?
+
     init(provider: any SystemMetricsProvider) {
         self.provider = provider
     }
@@ -56,6 +60,72 @@ actor MetricSamplerActor {
             memoryPressure: memoryPressure,
             gpu: gpu
         )
+    }
+
+    // MARK: - Network rate sampling
+
+    /// One network pass at instant `now`. Disabled returns nil and
+    /// clears the base without reading the provider. A failed read
+    /// returns nil and keeps the base. The first sample only anchors.
+    /// Elapsed time outside 0.001...2.5 s and a counter rollback
+    /// discard the delta, re-anchor, and return nil. Everything else
+    /// returns delta bytes divided by the measured elapsed seconds,
+    /// never a hard-coded 1.0 s (D5).
+    func sampleNetwork(
+        enabled: Bool,
+        now: ContinuousClock.Instant = .now
+    ) -> NetworkMetrics? {
+        guard enabled else {
+            // Disable drops the base, so a later re-enable starts from
+            // a fresh first sample and no gap spike can appear (FM6).
+            previousNetworkSample = nil
+            return nil
+        }
+
+        // A failed read returns nil and keeps the base: only one pass
+        // is lost, and the next good read still has its predecessor
+        // (FM5).
+        guard let current = provider.sampleNetworkBytes() else { return nil }
+
+        defer { previousNetworkSample = (current, now) }
+
+        guard let previous = previousNetworkSample else {
+            // First sample: a cumulative counter must never be divided
+            // by one second (FM2).
+            return nil
+        }
+
+        let elapsed = now - previous.instant
+        guard elapsed > .milliseconds(1), elapsed <= .seconds(2.5) else {
+            // Too close together, zero, negative, or a sleep/wake gap:
+            // re-anchor and emit no diluted or infinite rate (FM3, FM4).
+            // The 2.5 s cap is the ratified discontinuity threshold.
+            return nil
+        }
+
+        guard current.bytesIn >= previous.bytes.bytesIn,
+              current.bytesOut >= previous.bytes.bytesOut
+        else {
+            // Counter rollback (interface reset): re-anchor instead of
+            // wrapping an unsigned subtraction (FM1).
+            return nil
+        }
+
+        let components = elapsed.components
+        let elapsedSeconds = Double(components.seconds)
+            + Double(components.attoseconds) / 1e18
+        return NetworkMetrics(
+            downloadBytesPerSecond: Double(current.bytesIn - previous.bytes.bytesIn)
+                / elapsedSeconds,
+            uploadBytesPerSecond: Double(current.bytesOut - previous.bytes.bytesOut)
+                / elapsedSeconds
+        )
+    }
+
+    /// Drops the network delta base. The next enabled sample anchors
+    /// again and returns nil.
+    func clearNetworkBase() {
+        previousNetworkSample = nil
     }
 
     // MARK: - CPU delta

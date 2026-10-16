@@ -39,6 +39,7 @@ struct SettingsView: View {
         .onChange(of: preferences.enabledMetrics) { monitor.apply(preferences) }
         .onChange(of: preferences.refreshInterval) { monitor.apply(preferences) }
         .onChange(of: preferences.historyDuration) { monitor.apply(preferences) }
+        .onChange(of: preferences.showNetwork) { monitor.apply(preferences) }
     }
 
     // MARK: - General
@@ -79,6 +80,10 @@ struct SettingsView: View {
                 .disabled(preferences.isToggleLocked(preferences.showRAM))
             Toggle("GPU Utilization", isOn: $preferences.showGPU)
                 .disabled(preferences.isToggleLocked(preferences.showGPU))
+            // No .disabled on this row: isToggleLocked counts only
+            // the three standard metrics, so the network toggle must
+            // never inherit the lock (F10).
+            Toggle("Network Throughput", isOn: $preferences.showNetwork)
         } header: {
             Text("Visible Metrics")
         } footer: {

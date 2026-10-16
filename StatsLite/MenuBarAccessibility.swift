@@ -16,10 +16,13 @@ enum MenuBarAccessibility {
         showCPU: Bool,
         showRAM: Bool,
         showGPU: Bool,
+        showNetwork: Bool = false,
         cpuPercent: Double?,
         pressurePercent: Double?,
         pressure: MemoryPressureState,
-        gpuPercent: Double?
+        gpuPercent: Double?,
+        downloadRate: Double? = nil,
+        uploadRate: Double? = nil
     ) -> String {
         var parts: [String] = []
         if showCPU {
@@ -40,6 +43,18 @@ enum MenuBarAccessibility {
         }
         if showGPU {
             parts.append(gpuPercent.map { "GPU \(wholePercent($0)) percent" } ?? "GPU unavailable")
+        }
+        if showNetwork {
+            // latestNetwork is one optional pair: both rates arrive
+            // together or the block reads "unavailable".
+            if let downloadRate, let uploadRate {
+                parts.append(
+                    "Network Download \(MetricFormatters.networkRate(downloadRate)), "
+                        + "Upload \(MetricFormatters.networkRate(uploadRate))"
+                )
+            } else {
+                parts.append("Network unavailable")
+            }
         }
         return "Stats Lite: " + parts.joined(separator: ", ")
     }

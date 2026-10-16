@@ -5,8 +5,10 @@
 //  Main-actor UI state for the sampling loop. One task, one clock:
 //  `restartSampling()` cancels the running task and starts a new one
 //  that samples on tick zero, then sleeps at the configured interval.
-//  Call it after every toggle or interval change. No Combine, no
-//  AsyncStream, no second timer.
+//  A second task ticks the network every second on a fixed cadence
+//  that `refreshInterval` never touches. Call `apply` after every
+//  toggle or interval change. No Combine, no AsyncStream, no third
+//  timer.
 //
 
 import Foundation
@@ -19,6 +21,10 @@ final class SystemMonitor {
     /// Result of the latest sampling pass. A member outside
     /// `enabledMetrics` is nil in this snapshot.
     private(set) var latestSnapshot: SystemSnapshot?
+
+    /// Result of the latest network pass. nil while the network
+    /// block is off and before the second pass of a session (F5).
+    private(set) var latestNetwork: NetworkMetrics?
 
     /// Toggle set for the next pass. Set it, then call
     /// `restartSampling()`.
@@ -46,32 +52,60 @@ final class SystemMonitor {
 
     private let sampler: MetricSamplerActor
     private var samplingTask: Task<Void, Never>?
+    private var networkSamplingTask: Task<Void, Never>?
+    private var showNetwork = false
 
     /// True while the sampling loop runs.
     var isSampling: Bool { samplingTask != nil }
+
+    /// True while the 1 s network loop runs.
+    var isNetworkSampling: Bool { networkSamplingTask != nil }
+
+    /// Incremented each time `restartSampling()` starts a new
+    /// standard loop. The FM11 tests assert that a network-only flip
+    /// leaves this number untouched.
+    private(set) var standardLoopGeneration = 0
+
+    /// Number of network loops currently alive. The task increments
+    /// it on start and decrements it on exit. The FM7 tests assert
+    /// that rapid toggles settle at one, never higher.
+    private(set) var activeNetworkLoopCount = 0
 
     init(provider: any SystemMetricsProvider = LiveSystemMetricsProvider()) {
         self.sampler = MetricSamplerActor(provider: provider)
     }
 
-    /// Copies the toggle set, interval, and history window from the
-    /// preferences store. Restarts the loop when a value changed or no
-    /// loop runs. Safe to call on every appear and settings change.
+    /// Copies the toggle set, interval, history window, and network
+    /// flag from the preferences store. Standard properties restart
+    /// the standard loop when a value changed or no loop runs. A
+    /// network-only change starts or stops only the network loop, so
+    /// the standard loop and its delta bases survive (FM11). Safe to
+    /// call on every appear and settings change.
     func apply(_ preferences: PreferencesStore) {
         let newEnabled = preferences.enabledMetrics
         let newInterval = TimeInterval(preferences.refreshInterval)
         let newHistory = TimeInterval(preferences.historyDuration)
-        let changed =
+        let standardChanged =
             newEnabled != enabledMetrics
             || newInterval != refreshInterval
             || newHistory != historyDuration
+        let networkChanged = preferences.showNetwork != showNetwork
 
         enabledMetrics = newEnabled
         refreshInterval = newInterval
         historyDuration = newHistory
+        showNetwork = preferences.showNetwork
 
-        if changed || !isSampling {
+        if standardChanged || !isSampling {
             restartSampling()
+        }
+
+        if networkChanged || (showNetwork && !isNetworkSampling) {
+            if showNetwork {
+                startNetworkSampling()
+            } else {
+                stopNetworkSampling()
+            }
         }
     }
 
@@ -87,6 +121,7 @@ final class SystemMonitor {
             return
         }
 
+        standardLoopGeneration += 1
         samplingTask = Task {
             let clock = ContinuousClock()
             while !Task.isCancelled {
@@ -110,10 +145,59 @@ final class SystemMonitor {
         }
     }
 
-    /// Cancels the loop. The last snapshot stays available for the UI.
+    /// Starts the 1 s network loop. The loop sleeps first, then
+    /// samples and publishes, so the first pass only anchors and a
+    /// rate appears from the second pass on (F5). The cadence is
+    /// fixed on purpose: `refreshInterval` never applies here (D1).
+    /// A running loop is left alone, so repeated applies never
+    /// accumulate tasks (FM7).
+    private func startNetworkSampling() {
+        guard !isNetworkSampling else { return }
+
+        networkSamplingTask = Task {
+            self.activeNetworkLoopCount += 1
+            defer { self.activeNetworkLoopCount -= 1 }
+
+            let clock = ContinuousClock()
+            while !Task.isCancelled {
+                do {
+                    try await clock.sleep(
+                        for: .seconds(1),
+                        tolerance: .milliseconds(150)
+                    )
+                } catch {
+                    // Cancellation interrupts the sleep and ends the loop.
+                    return
+                }
+                guard !Task.isCancelled else { return }
+
+                let metrics = await self.sampler.sampleNetwork(enabled: true)
+                // A cancel during the read must not publish into a
+                // stopped state: stopNetworkSampling already cleared
+                // the rate, and a late write would resurrect it.
+                guard !Task.isCancelled else { return }
+                self.latestNetwork = metrics
+            }
+        }
+    }
+
+    /// Cancels the network loop, drops the published rate, and
+    /// clears the sampler delta base, so a later re-enable anchors
+    /// from scratch and no off-gap rate spike appears (F6).
+    private func stopNetworkSampling() {
+        networkSamplingTask?.cancel()
+        networkSamplingTask = nil
+        latestNetwork = nil
+        Task { await self.sampler.clearNetworkBase() }
+    }
+
+    /// Cancels both loops. The last snapshot stays available for the
+    /// UI.
     func stop() {
         samplingTask?.cancel()
         samplingTask = nil
+        networkSamplingTask?.cancel()
+        networkSamplingTask = nil
     }
 
     /// Appends one point per enabled metric. The age window and the

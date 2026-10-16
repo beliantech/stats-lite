@@ -22,19 +22,25 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         showCPU: Bool = true,
         showRAM: Bool = true,
         showGPU: Bool = true,
+        showNetwork: Bool = false,
         cpuPercent: Double? = 0.20,
         pressurePercent: Double? = 0.50,
         pressureState: MemoryPressureState? = .normal,
-        gpuPercent: Double? = 0.30
+        gpuPercent: Double? = 0.30,
+        downloadRate: Double? = nil,
+        uploadRate: Double? = nil
     ) -> [MenuBarBlock] {
         MenuBarBlockBuilder.blocks(
             showCPU: showCPU,
             showRAM: showRAM,
             showGPU: showGPU,
+            showNetwork: showNetwork,
             cpuPercent: cpuPercent,
             pressurePercent: pressurePercent,
             pressureState: pressureState,
-            gpuPercent: gpuPercent
+            gpuPercent: gpuPercent,
+            downloadRate: downloadRate,
+            uploadRate: uploadRate
         )
     }
 
@@ -323,5 +329,88 @@ final class MenuBarBlockBuilderTests: XCTestCase {
             )
         )
         XCTAssertFalse(ram[0].valueText.contains("●"))
+    }
+
+    // MARK: - Network block
+
+    func testNetworkBlockAppendsAfterGPUWithEmptyLabelAndPinnedWidth() {
+        let result = blocks(
+            showNetwork: true,
+            downloadRate: 720 * 1024,
+            uploadRate: 10 * 1024
+        )
+
+        XCTAssertEqual(
+            result.map(\.kind),
+            [.cpu, .ram, .gpu, .network],
+            "block order is CPU → MEM → GPU → NET"
+        )
+        let network = result[3]
+        XCTAssertEqual(network.kind, .network)
+        XCTAssertEqual(network.label, "", "the reference network block carries no label text")
+        XCTAssertEqual(network.width, 58, "the network block pins to networkBlockWidth")
+        XCTAssertNil(network.dotState, "the network block owns its dots, not the pressure dot")
+        XCTAssertEqual(network.valueText, "720 KB/s")
+        XCTAssertEqual(network.secondaryValueText, "10 KB/s")
+    }
+
+    func testNetworkOnlyProducesSingleNetworkBlock() {
+        let result = blocks(
+            showCPU: false, showRAM: false, showGPU: false, showNetwork: true,
+            downloadRate: 1.6 * 1_048_576, uploadRate: 22 * 1024
+        )
+
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].kind, .network)
+        XCTAssertEqual(result[0].label, "")
+        XCTAssertEqual(result[0].width, 58)
+        XCTAssertEqual(result[0].valueText, "1.6 MB/s")
+        XCTAssertEqual(result[0].secondaryValueText, "22 KB/s")
+    }
+
+    func testNetworkOffProducesNoNetworkBlock() {
+        let result = blocks(
+            showNetwork: false,
+            downloadRate: 720 * 1024,
+            uploadRate: 10 * 1024
+        )
+
+        XCTAssertFalse(result.contains { $0.kind == .network })
+        XCTAssertEqual(result.count, 3)
+    }
+
+    func testNetworkBlockRendersPlaceholderWhenRatesMissing() {
+        let result = blocks(
+            showCPU: false, showRAM: false, showGPU: false, showNetwork: true,
+            downloadRate: nil, uploadRate: nil
+        )
+
+        XCTAssertEqual(result.count, 1)
+        XCTAssertEqual(result[0].valueText, "-- KB/s", "a missing download rate renders the placeholder")
+        XCTAssertEqual(result[0].secondaryValueText, "-- KB/s", "a missing upload rate renders the placeholder")
+    }
+
+    func testNetworkBlockOrderAcrossToggleSubsets() {
+        let cases: [(cpu: Bool, ram: Bool, gpu: Bool, net: Bool, expected: [MenuBarBlockKind])] = [
+            (true, false, false, true, [.cpu, .network]),
+            (false, true, false, true, [.ram, .network]),
+            (false, false, true, true, [.gpu, .network]),
+            (false, true, true, true, [.ram, .gpu, .network]),
+            (true, false, true, false, [.cpu, .gpu]),
+        ]
+
+        for testCase in cases {
+            let result = blocks(
+                showCPU: testCase.cpu,
+                showRAM: testCase.ram,
+                showGPU: testCase.gpu,
+                showNetwork: testCase.net
+            )
+            XCTAssertEqual(
+                result.map(\.kind),
+                testCase.expected,
+                "Combination CPU:\(testCase.cpu) RAM:\(testCase.ram) GPU:\(testCase.gpu) NET:\(testCase.net)"
+            )
+        }
     }
 }

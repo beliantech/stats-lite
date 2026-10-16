@@ -185,4 +185,44 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
             availabilityLevel: availabilityRead
         )
     }
+
+    // MARK: - Network (getifaddrs)
+
+    /// Walks getifaddrs and sums the non-loopback interface byte
+    /// counters. Only AF_LINK rows carry an if_data record, so other
+    /// address families are skipped. The loopback exclusion and the
+    /// sum run in the pure SystemMetricsParsing rule. Returns nil
+    /// when the walk fails or when no usable row exists.
+    func sampleNetworkBytes() -> NetworkBytes? {
+        var listStart: UnsafeMutablePointer<ifaddrs>?
+        // freeifaddrs releases the whole list, including rows this
+        // walk skips, whatever path leaves the function.
+        guard getifaddrs(&listStart) == 0, let first = listStart else { return nil }
+        defer { freeifaddrs(listStart) }
+
+        var rows: [NetworkInterfaceRow] = []
+        var current: UnsafeMutablePointer<ifaddrs>? = first
+        while let entry = current {
+            let row = entry.pointee
+            current = row.ifa_next
+
+            // ifa_addr can be NULL on a detached interface, and only
+            // AF_LINK rows carry if_data byte counters.
+            guard let address = row.ifa_addr,
+                  address.pointee.sa_family == UInt8(AF_LINK),
+                  let data = row.ifa_data
+            else { continue }
+
+            let stats = data.assumingMemoryBound(to: if_data.self)
+            rows.append(
+                NetworkInterfaceRow(
+                    isLoopback: row.ifa_flags & UInt32(IFF_LOOPBACK) != 0,
+                    bytesIn: Int64(stats.pointee.ifi_ibytes),
+                    bytesOut: Int64(stats.pointee.ifi_obytes)
+                )
+            )
+        }
+
+        return SystemMetricsParsing.networkBytes(from: rows)
+    }
 }

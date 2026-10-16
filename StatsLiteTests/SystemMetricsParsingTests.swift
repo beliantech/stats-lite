@@ -158,4 +158,99 @@ final class SystemMetricsParsingTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(metrics.rendererUtilization), 1.0, accuracy: 1e-9)
         XCTAssertNil(metrics.tilerUtilization)
     }
+
+    // MARK: - Network interface rows (loopback exclusion, F4)
+
+    private func netRow(
+        isLoopback: Bool,
+        bytesIn: Int64?,
+        bytesOut: Int64?
+    ) -> NetworkInterfaceRow {
+        NetworkInterfaceRow(isLoopback: isLoopback, bytesIn: bytesIn, bytesOut: bytesOut)
+    }
+
+    func testNetworkBytesSumsAllNonLoopbackInterfaces() {
+        // F4: Wi-Fi and VPN traffic both count. Loopback counters
+        // never join the sum, even when they dominate the list.
+        let rows = [
+            netRow(isLoopback: true, bytesIn: 10_000_000_000, bytesOut: 10_000_000_000),
+            netRow(isLoopback: false, bytesIn: 1_000, bytesOut: 500),
+            netRow(isLoopback: false, bytesIn: 100, bytesOut: 200),
+            netRow(isLoopback: false, bytesIn: 0, bytesOut: 0),
+        ]
+
+        let bytes = SystemMetricsParsing.networkBytes(from: rows)
+
+        XCTAssertEqual(
+            bytes,
+            NetworkBytes(bytesIn: 1_100, bytesOut: 700),
+            "every non-loopback counter sums, loopback stays out"
+        )
+    }
+
+    func testNetworkBytesReturnsNilForEmptyInterfaceList() {
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: []),
+            "no interface rows means the read produced no sample"
+        )
+    }
+
+    func testNetworkBytesReturnsNilWhenEveryInterfaceIsLoopback() {
+        let rows = [netRow(isLoopback: true, bytesIn: 5_000, bytesOut: 5_000)]
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: rows),
+            "only loopback traffic means no measurable sample"
+        )
+    }
+
+    func testNetworkBytesReturnsNilWhenIfDataIsAbsent() {
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: [
+                netRow(isLoopback: false, bytesIn: 1_000, bytesOut: 500),
+                netRow(isLoopback: false, bytesIn: nil, bytesOut: 200),
+            ]),
+            "an absent if_data byte count fails the whole read"
+        )
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: [
+                netRow(isLoopback: false, bytesIn: 1_000, bytesOut: 500),
+                netRow(isLoopback: false, bytesIn: 100, bytesOut: nil),
+            ]),
+            "an absent if_data out-count fails the whole read"
+        )
+    }
+
+    func testNetworkBytesReturnsNilWhenCountersAreNegative() {
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: [
+                netRow(isLoopback: false, bytesIn: -1, bytesOut: 200),
+            ]),
+            "a negative in-counter means a corrupt read"
+        )
+        XCTAssertNil(
+            SystemMetricsParsing.networkBytes(from: [
+                netRow(isLoopback: false, bytesIn: 1_000, bytesOut: -1),
+            ]),
+            "a negative out-counter means a corrupt read"
+        )
+    }
+
+    func testNetworkBytesSumsWithoutSignedOverflowTrap() {
+        // Int64.max + Int64.max fits in UInt64. An Int64 accumulator
+        // would trap here, so the sum must run in unsigned 64-bit.
+        let rows = [
+            netRow(isLoopback: false, bytesIn: Int64.max, bytesOut: Int64.max),
+            netRow(isLoopback: false, bytesIn: Int64.max, bytesOut: Int64.max),
+        ]
+
+        let bytes = SystemMetricsParsing.networkBytes(from: rows)
+
+        XCTAssertEqual(
+            bytes,
+            NetworkBytes(
+                bytesIn: 18_446_744_073_709_551_614,
+                bytesOut: 18_446_744_073_709_551_614
+            )
+        )
+    }
 }
