@@ -113,7 +113,7 @@ struct MenuBarBlockView: View {
                     .foregroundStyle(.secondary)
             }
             Text(block.valueText)
-                .font(.system(size: 10.5, weight: .medium).monospacedDigit())
+                .font(.system(size: 10.5, weight: .regular).monospacedDigit())
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
         }
