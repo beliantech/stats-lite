@@ -2,15 +2,18 @@
 //  MenuBarValueTypographyTests.swift
 //  StatsLiteTests
 //
-//  Plan 2026-10-16-menu-bar-regular-weight, Phase 2 (red): pin the
-//  menu bar block typography tokens. FM1 (value font weight) fails
-//  at HEAD. Mechanism: a source-token check anchored on the value
-//  Text at MenuBarStackedItemView.swift:115-116 through #filePath.
-//  The check compares the literal font token in the source file
-//  that the compiler builds against the expected literal, so it
-//  cannot pass while that line carries weight: .medium. The tests
-//  for IC-2, IC-4, IC-10, and IC-3 are regression guards and pass
-//  at HEAD.
+//  Plan 2026-10-16-menu-bar-label-network-regular, Phase 2 (red):
+//  pin the menu bar block typography tokens to the blueprint
+//  targets. The red run fails on both production tokens: the label
+//  font at MenuBarStackedItemView.swift:112 carries .bold and the
+//  network rate fonts at :153 and :167 carry .medium. Mechanism: a
+//  source-token check anchored on the view source through
+//  #filePath. The check compares the literal font token in the
+//  source file that the compiler builds against the expected
+//  literal, so it cannot pass while those lines carry .bold or
+//  .medium. The value, monospaced-digit, and clearance tests (IC-1,
+//  IC-2, IC-3, IC-11, IC-12) are regression guards and pass at
+//  HEAD.
 //
 
 import AppKit
@@ -23,12 +26,12 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
     /// `.font(.system(size: 10.5, weight: .regular).monospacedDigit())`
     private let expectedValueFont = ".font(.system(size:10.5,weight:.regular).monospacedDigit())"
-    /// `.font(.system(size: 8, weight: .bold))`
-    private let expectedLabelFont = ".font(.system(size:8,weight:.bold))"
+    /// `.font(.system(size: 8, weight: .regular))`
+    private let expectedLabelFont = ".font(.system(size:8,weight:.regular))"
     /// `.foregroundStyle(.secondary)`
     private let expectedLabelStyle = ".foregroundStyle(.secondary)"
-    /// `.font(.system(size: 9, weight: .medium).monospacedDigit())`
-    private let expectedNetworkFont = ".font(.system(size:9,weight:.medium).monospacedDigit())"
+    /// `.font(.system(size: 9, weight: .regular).monospacedDigit())`
+    private let expectedNetworkFont = ".font(.system(size:9,weight:.regular).monospacedDigit())"
 
     // MARK: - Source loading helpers
 
@@ -179,9 +182,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-4: label stays 8 pt bold secondary
+    // MARK: - IC-4: label flips to 8 pt regular secondary
 
-    func testLabelFontStaysBoldSecondary() throws {
+    func testLabelFontIsEightPointRegularSecondary() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let labelStart = try XCTUnwrap(
@@ -200,22 +203,23 @@ final class MenuBarValueTypographyTests: XCTestCase {
         XCTAssertTrue(
             region.contains(expectedLabelFont),
             """
-            IC-4: the category label must keep \
-            .font(.system(size: 8, weight: .bold)); the source deviates.
+            IC-4: the category labels (CPU, MEM, GPU) must be 8 pt \
+            .regular with .foregroundStyle(.secondary) and no .bold \
+            weight; found label region \(region).
             """
         )
         XCTAssertTrue(
             region.contains(expectedLabelStyle),
             """
-            IC-4: the category label must keep \
-            .foregroundStyle(.secondary); the source deviates.
+            IC-4: the category label must be \
+            .foregroundStyle(.secondary); found label region \(region).
             """
         )
     }
 
-    // MARK: - IC-10: network stays 9 pt medium, value size stays 10.5
+    // MARK: - IC-10: network flips to 9 pt regular, value size stays 10.5
 
-    func testNetworkFontsStayMediumAndValueStaysSizeTenAndAHalf() throws {
+    func testNetworkFontsAreNinePointRegularAndValueStaysSizeTenAndAHalf() throws {
         let source = try loadSource()
 
         let blockScope = try declarationScope(of: "MenuBarBlockView", in: source)
@@ -239,26 +243,24 @@ final class MenuBarValueTypographyTests: XCTestCase {
             after: "Text(block.valueText)",
             in: networkScope
         )
-        XCTAssertEqual(
-            uploadToken,
-            expectedNetworkFont,
-            """
-            IC-10: the upload rate line at MenuBarStackedItemView.swift:153 \
-            must keep .font(.system(size: 9, weight: .medium).monospacedDigit()); \
-            found \(uploadToken).
-            """
-        )
         let downloadToken = try fontToken(
             after: "Text(block.secondaryValueText",
             in: networkScope
         )
+        // One compound assertion records one failure for the guard while
+        // still covering both lines: it fails unless :153 AND :167 both
+        // carry the flipped token, and the message quotes both found
+        // tokens, so the red output shows both production lines.
         XCTAssertEqual(
-            downloadToken,
-            expectedNetworkFont,
+            [uploadToken, downloadToken],
+            [expectedNetworkFont, expectedNetworkFont],
             """
-            IC-10: the download rate line at MenuBarStackedItemView.swift:167 \
-            must keep .font(.system(size: 9, weight: .medium).monospacedDigit()); \
-            found \(downloadToken).
+            IC-10: the upload rate line at MenuBarStackedItemView.swift:153 \
+            and the download rate line at MenuBarStackedItemView.swift:167 \
+            must each be \
+            .font(.system(size: 9, weight: .regular).monospacedDigit()), \
+            no .medium; found upload \(uploadToken), \
+            download \(downloadToken).
             """
         )
     }
@@ -297,6 +299,110 @@ final class MenuBarValueTypographyTests: XCTestCase {
             4.07,
             accuracy: 0.05,
             "expected 4.07 pt total clearance at the target font"
+        )
+    }
+
+    // MARK: - IC-11: label-row clearance at 8 pt regular
+
+    func testLabelRowClearanceForMemRowMeetsThreeAndAHalfPoints() {
+        let font = NSFont.systemFont(ofSize: 8, weight: .regular)
+        func width(of text: String) -> CGFloat {
+            (text as NSString).size(withAttributes: [.font: font]).width
+        }
+
+        XCTAssertEqual(
+            MenuBarLayout.blockWidth,
+            34.0,
+            accuracy: 0.0001,
+            "IC-11: the block width must stay 34.0 pt"
+        )
+
+        let memClearance = MenuBarLayout.blockWidth - (4.0 + 2.0 + width(of: "MEM"))
+        XCTAssertGreaterThanOrEqual(
+            memClearance,
+            3.5,
+            """
+            IC-11: total clearance for the MEM label row (4.0 pt dot + \
+            2.0 pt gap + "MEM" at 8 pt regular) must be at least 3.5 pt; \
+            got \(memClearance) pt.
+            """
+        )
+        XCTAssertEqual(
+            memClearance,
+            8.6406,
+            accuracy: 0.05,
+            "expected 8.6406 pt total clearance for the MEM label row"
+        )
+
+        let cpuClearance = MenuBarLayout.blockWidth - width(of: "CPU")
+        XCTAssertGreaterThanOrEqual(
+            cpuClearance,
+            16.0,
+            """
+            IC-11: total clearance for the CPU label must be at least \
+            16.0 pt; got \(cpuClearance) pt.
+            """
+        )
+        XCTAssertEqual(
+            cpuClearance,
+            16.6836,
+            accuracy: 0.05,
+            "expected 16.6836 pt total clearance for the CPU label"
+        )
+
+        let gpuClearance = MenuBarLayout.blockWidth - width(of: "GPU")
+        XCTAssertGreaterThanOrEqual(
+            gpuClearance,
+            16.0,
+            """
+            IC-11: total clearance for the GPU label must be at least \
+            16.0 pt; got \(gpuClearance) pt.
+            """
+        )
+        XCTAssertEqual(
+            gpuClearance,
+            16.4375,
+            accuracy: 0.05,
+            "expected 16.4375 pt total clearance for the GPU label"
+        )
+    }
+
+    // MARK: - IC-12: network-block clearance at 9 pt regular mono
+
+    func testNetworkBlockClearanceForWidestRateStringMeetsSpacerMinimum() {
+        let font = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
+        let width = ("999 MB/s" as NSString)
+            .size(withAttributes: [.font: font])
+            .width
+
+        XCTAssertEqual(
+            MenuBarLayout.networkBlockWidth,
+            50.0,
+            accuracy: 0.0001,
+            "IC-12: the network block width must stay 50.0 pt"
+        )
+        XCTAssertEqual(
+            width,
+            42.1084,
+            accuracy: 0.05,
+            "expected 42.1084 pt text width at the target font"
+        )
+
+        let clearance = MenuBarLayout.networkBlockWidth - 6.0 - width
+        XCTAssertGreaterThanOrEqual(
+            clearance,
+            1.8,
+            """
+            IC-12: total clearance for "999 MB/s" at 9 pt regular \
+            monospacedDigit plus the 6.0 pt dot must be at least 1.8 pt \
+            for Spacer(minLength: 1); got \(clearance) pt.
+            """
+        )
+        XCTAssertEqual(
+            clearance,
+            1.8916,
+            accuracy: 0.05,
+            "expected 1.8916 pt total clearance at the target font"
         )
     }
 }
