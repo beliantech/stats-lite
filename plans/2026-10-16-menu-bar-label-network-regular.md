@@ -7,6 +7,11 @@ Status: Design gate **PASS** (`artifacts/2026-10-16-menu-bar-label-network-regul
 commit `3e36d88`). Plan authored 2026-10-16. Clarity adjustment pass applied 2026-10-16 after `run_plan`
 (wording and procedure only — ISC checks, Design Blueprint, scope, and tasks unchanged).
 Awaiting `[plan-review]`.
+**Complete 2026-10-16:** T1 waiver probe exit 1 (`8b0ce41`); red `98cc6fb` (225 tests,
+2 failures on both production tokens); green `8a82730` (three tokens, 225/0); ledger
+`bc861a4` (12 pass, 2 waived); reviewer verdict GO (`subagent_done`, `23c4579d`); no rebase
+needed (main did not advance); merged fast-forward to `main` at `bc861a4`; worktree and
+branch removed.
 Repo HEAD at authoring: `3e36d88`, clean (untracked `worktrees/` only).
 Baseline suite: 223 tests, 0 failures (gate report §5 at `9e9e9f2`; the three commits
 since — `253100b`, `3e36d88`, `e30cef8` — are docs-only, so no `StatsLite/` or
@@ -727,11 +732,11 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1` … unique; `FM*` = failur
 Git receipt commands run with cwd = the worktree when they carry no `-C`; a
 `git -C worktrees/…` path is relative to the repo root, so run those from the main repo.
 
-- [ ] **T1** — waiver note, no code edit. note ⏳
-- [ ] **T2** — red: flip IC-4 / IC-10 guards, add IC-11 / IC-12 guards (marker `[red]`). red ⏳ · review ⏳
-- [ ] **T3** — green: two tokens on three lines. red n/a · green ⏳ · review ⏳
-- [ ] **T4** — VAC ledger, tests only; pass/waived rows. ledger ⏳
-- [ ] **T5** — reviewer `[code-review]`, rebase, ff-only merge, cleanup. review ⏳ · merge ⏳
+- [x] **T1** — waiver note, no code edit. DONE: probe exit 1, note at artifacts/2026-10-16-menu-bar-label-network-regular/waiver-note.md (`8b0ce41`).
+- [x] **T2** — red: flip IC-4 / IC-10 guards, add IC-11 / IC-12 guards (marker `[red]`). red PASS (`98cc6fb`, 225/2) · review GO
+- [x] **T3** — green: three tokens on three lines. red n/a · green PASS (`8a82730`, 225/0) · review GO
+- [x] **T4** — VAC ledger, tests only; pass/waived rows. DONE: 12 pass / 2 waived (`bc861a4`).
+- [x] **T5** — reviewer `[code-review]`, rebase, ff-only merge, cleanup. review GO · merge ff to `main` = `bc861a4`
 
 ## Phase 1 — Waiver record (before the first code edit)
 
@@ -739,7 +744,7 @@ Worktree: `<repo>/worktrees/menu-bar-label-network-regular`, branch
 `feat/2026-10-16-menu-bar-label-network-regular`. Create the worktree before the T2 spawn;
 set the spawn `cwd` to it.
 
-- [ ] **T1** — planner, main repo, no code edit. Probe the waiver basis:
+- [x] **T1** — planner, main repo, no code edit. Probe the waiver basis:
   `screencapture -x /tmp/waiver_probe_label_network.png`; record the exit status.
   Then write `artifacts/2026-10-16-menu-bar-label-network-regular/waiver-note.md` with:
   the carried-over user waiver (plan `2026-10-16-menu-bar-regular-weight`), its reason
@@ -763,7 +768,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
   "${MAIN_REPO}/worktrees/menu-bar-label-network-regular" main
 ```
 
-- [ ] **T2** — `T2: [red]` Rewrite the guards in
+- [x] **T2** — `T2: [red]` Rewrite the guards in
   `StatsLiteTests/MenuBarValueTypographyTests.swift` first, then run the suite. Test-only
   diff: touch no application code.
   1. Update the file header comment to plan `2026-10-16-menu-bar-label-network-regular`;
@@ -805,7 +810,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
 
 ## Phase 3 — Green (implementation, same worktree)
 
-- [ ] **T3** — Apply Blueprint Appendix A steps 3, 5, 7 in one commit:
+- [x] **T3** — Apply Blueprint Appendix A steps 3, 5, 7 in one commit:
   `StatsLite/MenuBarStackedItemView.swift:112` `weight: .bold` → `weight: .regular`;
   `:153` and `:167` `weight: .medium` → `weight: .regular`. Nothing else in production
   code: `:116` untouched, no comment edits (the `:137-138` VAC citation refresh is a
@@ -818,7 +823,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
 
 ## Phase 4 — VAC ledger (tests only)
 
-- [ ] **T4** — coder self-verify, same worktree, tests only (no captures); the pass evidence
+- [x] **T4** — coder self-verify, same worktree, tests only (no captures); the pass evidence
   is the T3 green run under the T2 xcodebuild command. Write
   `artifacts/2026-10-16-menu-bar-label-network-regular/vac-ledger.md` with one row per IC:
   IC-1 … IC-6 and IC-8 … IC-13 read `pass` with evidence (green test name, `rg` output
@@ -831,7 +836,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
 
 ## Phase 5 — Review, merge, cleanup
 
-- [ ] **T5** — Spawn `reviewer` with `[code-review]`, plan name
+- [x] **T5** — Spawn `reviewer` with `[code-review]`, plan name
   `2026-10-16-menu-bar-label-network-regular`, `cwd` = the worktree, against
   `git -C worktrees/menu-bar-label-network-regular diff main...HEAD`. Checks: the red
   commit is test-only and fails on BOTH production tokens (label `.bold`, network
