@@ -2,18 +2,18 @@
 //  MenuBarValueTypographyTests.swift
 //  StatsLiteTests
 //
-//  Plan 2026-10-16-menu-bar-label-network-regular, Phase 2 (red):
-//  pin the menu bar block typography tokens to the blueprint
-//  targets. The red run fails on both production tokens: the label
-//  font at MenuBarStackedItemView.swift:112 carries .bold and the
-//  network rate fonts at :153 and :167 carry .medium. Mechanism: a
-//  source-token check anchored on the view source through
-//  #filePath. The check compares the literal font token in the
-//  source file that the compiler builds against the expected
-//  literal, so it cannot pass while those lines carry .bold or
-//  .medium. The value, monospaced-digit, and clearance tests (IC-1,
-//  IC-2, IC-3, IC-11, IC-12) are regression guards and pass at
-//  HEAD.
+//  Plan 2026-10-16-emulate-stats-layout, Phase 2 (red):
+//  pin the menu bar block typography and stack-spacing tokens to
+//  the blueprint targets. The red run fails on all four production
+//  tokens: label size: 8 at MenuBarStackedItemView.swift:112,
+//  value size: 10.5 at :116, block stack spacing: 1 at :103, and
+//  network stack spacing: 1 at :143. Mechanism: a source-token
+//  check anchored on the view source through #filePath. The check
+//  compares the literal font and stack tokens in the source file
+//  that the compiler builds against the expected literals, so it
+//  cannot pass while those lines carry the current tokens. The
+//  monospaced-digit and clearance tests (IC-2, IC-3, IC-11, IC-12)
+//  measure the target fonts and pass at HEAD.
 //
 
 import AppKit
@@ -24,10 +24,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
     // MARK: - Expected source tokens (normalized: whitespace removed)
 
-    /// `.font(.system(size: 10.5, weight: .regular).monospacedDigit())`
-    private let expectedValueFont = ".font(.system(size:10.5,weight:.regular).monospacedDigit())"
-    /// `.font(.system(size: 8, weight: .regular))`
-    private let expectedLabelFont = ".font(.system(size:8,weight:.regular))"
+    /// `.font(.system(size: 11, weight: .regular).monospacedDigit())`
+    private let expectedValueFont = ".font(.system(size:11,weight:.regular).monospacedDigit())"
+    /// `.font(.system(size: 7, weight: .regular))`
+    private let expectedLabelFont = ".font(.system(size:7,weight:.regular))"
     /// `.foregroundStyle(.secondary)`
     private let expectedLabelStyle = ".foregroundStyle(.secondary)"
     /// `.font(.system(size: 9, weight: .regular).monospacedDigit())`
@@ -143,9 +143,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         return squashed(fontLine[tokenStart.lowerBound...closeParen])
     }
 
-    // MARK: - FM1: value font is 10.5 pt regular monospacedDigit
+    // MARK: - FM1: value font is 11 pt regular monospacedDigit
 
-    func testValueFontIsTenAndAHalfPointRegularMonospacedDigit() throws {
+    func testValueFontIsElevenPointRegularMonospacedDigit() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let token = try fontToken(
@@ -158,7 +158,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
             """
             FM1: the MenuBarBlockView value font at \
             MenuBarStackedItemView.swift:115-116 must be \
-            Font.system(size: 10.5, weight: .regular).monospacedDigit(). \
+            Font.system(size: 11, weight: .regular).monospacedDigit(). \
             Found \(token).
             """
         )
@@ -182,9 +182,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-4: label flips to 8 pt regular secondary
+    // MARK: - IC-4: label flips to 7 pt regular secondary
 
-    func testLabelFontIsEightPointRegularSecondary() throws {
+    func testLabelFontIsSevenPointRegularSecondary() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let labelStart = try XCTUnwrap(
@@ -203,7 +203,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
         XCTAssertTrue(
             region.contains(expectedLabelFont),
             """
-            IC-4: the category labels (CPU, MEM, GPU) must be 8 pt \
+            IC-4: the category labels (CPU, MEM, GPU) must be 7 pt \
             .regular with .foregroundStyle(.secondary) and no .bold \
             weight; found label region \(region).
             """
@@ -217,9 +217,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-10: network flips to 9 pt regular, value size stays 10.5
+    // MARK: - IC-10: network flips to 9 pt regular, value size stays 11
 
-    func testNetworkFontsAreNinePointRegularAndValueStaysSizeTenAndAHalf() throws {
+    func testNetworkFontsAreNinePointRegularAndValueStaysSizeEleven() throws {
         let source = try loadSource()
 
         let blockScope = try declarationScope(of: "MenuBarBlockView", in: source)
@@ -228,9 +228,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
             in: blockScope
         )
         XCTAssertTrue(
-            blockValueToken.contains("size:10.5"),
+            blockValueToken.contains("size:11"),
             """
-            IC-10: the MenuBarBlockView value line must keep size 10.5; \
+            IC-10: the MenuBarBlockView value line must keep size 11; \
             found \(blockValueToken).
             """
         )
@@ -265,10 +265,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-3: clearance for "100%" at 10.5 pt regular
+    // MARK: - IC-3: clearance for "100%" at 11 pt regular
 
-    func testClearanceForWidestValueAtRegularMeetsThreeAndAHalfPoints() {
-        let font = NSFont.monospacedDigitSystemFont(ofSize: 10.5, weight: .regular)
+    func testClearanceForWidestValueAtElevenPointRegularMeetsRelaxedThreshold() {
+        let font = NSFont.monospacedDigitSystemFont(ofSize: 11.0, weight: .regular)
         let width = ("100%" as NSString)
             .size(withAttributes: [.font: font])
             .width
@@ -282,30 +282,30 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertGreaterThanOrEqual(
             clearance,
-            3.5,
+            2.5,
             """
-            IC-3: total clearance for "100%" at 10.5 pt regular \
-            monospacedDigit must be at least 3.5 pt; got \(clearance) pt.
+            IC-3: total clearance for "100%" at 11 pt regular \
+            monospacedDigit must be at least 2.5 pt; got \(clearance) pt.
             """
         )
         XCTAssertEqual(
             width,
-            29.93,
+            31.22,
             accuracy: 0.05,
-            "expected 29.93 pt text width at the target font"
+            "expected 31.22 pt text width at the target font"
         )
         XCTAssertEqual(
             clearance,
-            4.07,
+            2.78,
             accuracy: 0.05,
-            "expected 4.07 pt total clearance at the target font"
+            "expected 2.78 pt total clearance at the target font"
         )
     }
 
-    // MARK: - IC-11: label-row clearance at 8 pt regular
+    // MARK: - IC-11: label-row clearance at 7 pt regular
 
-    func testLabelRowClearanceForMemRowMeetsThreeAndAHalfPoints() {
-        let font = NSFont.systemFont(ofSize: 8, weight: .regular)
+    func testLabelRowClearanceForMemRowAtSevenPointRegularMeetsThreeAndAHalfPoints() {
+        let font = NSFont.systemFont(ofSize: 7.0, weight: .regular)
         func width(of text: String) -> CGFloat {
             (text as NSString).size(withAttributes: [.font: font]).width
         }
@@ -323,15 +323,15 @@ final class MenuBarValueTypographyTests: XCTestCase {
             3.5,
             """
             IC-11: total clearance for the MEM label row (4.0 pt dot + \
-            2.0 pt gap + "MEM" at 8 pt regular) must be at least 3.5 pt; \
+            2.0 pt gap + "MEM" at 7 pt regular) must be at least 3.5 pt; \
             got \(memClearance) pt.
             """
         )
         XCTAssertEqual(
             memClearance,
-            8.6406,
+            10.9067,
             accuracy: 0.05,
-            "expected 8.6406 pt total clearance for the MEM label row"
+            "expected 10.9067 pt total clearance for the MEM label row"
         )
 
         let cpuClearance = MenuBarLayout.blockWidth - width(of: "CPU")
@@ -345,9 +345,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             cpuClearance,
-            16.6836,
+            18.6943,
             accuracy: 0.05,
-            "expected 16.6836 pt total clearance for the CPU label"
+            "expected 18.6943 pt total clearance for the CPU label"
         )
 
         let gpuClearance = MenuBarLayout.blockWidth - width(of: "GPU")
@@ -361,9 +361,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             gpuClearance,
-            16.4375,
+            18.4790,
             accuracy: 0.05,
-            "expected 16.4375 pt total clearance for the GPU label"
+            "expected 18.4790 pt total clearance for the GPU label"
         )
     }
 
@@ -403,6 +403,49 @@ final class MenuBarValueTypographyTests: XCTestCase {
             1.8916,
             accuracy: 0.05,
             "expected 1.8916 pt total clearance at the target font"
+        )
+    }
+
+    // MARK: - plan IC-3 (VAC-3): metric block stack spacing is 0
+
+    func testMetricBlockStackUsesZeroVerticalSpacing() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(of: "MenuBarBlockView", in: source)
+        let line = try XCTUnwrap(
+            sourceLine(containing: "VStack(", in: scope),
+            "no VStack( line found in MenuBarBlockView"
+        )
+        XCTAssertEqual(
+            squashed(line),
+            "VStack(alignment:.center,spacing:0){",
+            """
+            plan IC-3: the MenuBarBlockView stack at \
+            MenuBarStackedItemView.swift:103 must be \
+            VStack(alignment: .center, spacing: 0); found \(line).
+            """
+        )
+    }
+
+    // MARK: - plan IC-4 (VAC-4): network block stack row spacing is 0
+
+    func testNetworkBlockStackUsesZeroRowSpacing() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(
+            of: "MenuBarNetworkBlockView",
+            in: source
+        )
+        let line = try XCTUnwrap(
+            sourceLine(containing: "VStack(", in: scope),
+            "no VStack( line found in MenuBarNetworkBlockView"
+        )
+        XCTAssertEqual(
+            squashed(line),
+            "VStack(alignment:.leading,spacing:0){",
+            """
+            plan IC-4: the MenuBarNetworkBlockView stack at \
+            MenuBarStackedItemView.swift:143 must be \
+            VStack(alignment: .leading, spacing: 0); found \(line).
+            """
         )
     }
 }
