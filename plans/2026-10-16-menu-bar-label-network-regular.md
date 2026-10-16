@@ -4,13 +4,17 @@ Date: 2026-10-16
 Plan name: `2026-10-16-menu-bar-label-network-regular`
 Risk class: **R2** (UI work — zero-tolerance visual policy applies; visual defects are blocking).
 Status: Design gate **PASS** (`artifacts/2026-10-16-menu-bar-label-network-regular/gate-report.md`,
-commit `3e36d88`). Plan authored 2026-10-16. Awaiting the `run_plan` clarity pass.
+commit `3e36d88`). Plan authored 2026-10-16. Clarity adjustment pass applied 2026-10-16 after `run_plan`
+(wording and procedure only — ISC checks, Design Blueprint, scope, and tasks unchanged).
+Awaiting `[plan-review]`.
 Repo HEAD at authoring: `3e36d88`, clean (untracked `worktrees/` only).
-Baseline suite: 223 tests, 0 failures (gate report §5 at `9e9e9f2`; no commit between
-`9e9e9f2` and `3e36d88` touched `StatsLite/` or `StatsLiteTests/`, so the baseline stands at HEAD).
+Baseline suite: 223 tests, 0 failures (gate report §5 at `9e9e9f2`; the three commits
+since — `253100b`, `3e36d88`, `e30cef8` — are docs-only, so no `StatsLite/` or
+`StatsLiteTests/` change landed after `9e9e9f2` and the baseline stands at HEAD).
 Screenshot waiver: carried over from plan `2026-10-16-menu-bar-regular-weight` — user
 authority, no Screen Recording permission. All screenshot and strip captures stay waived;
-the waiver is recorded in the ISC preamble and in the T1 note; the ledger gets pass/waived rows.
+the waiver is recorded in the ISC preamble now and on disk in T1's waiver note; the ledger
+gets pass/waived rows.
 Worktree: `<repo>/worktrees/menu-bar-label-network-regular`, branch
 `feat/2026-10-16-menu-bar-label-network-regular` (non-base). main advances in parallel —
 expect to rebase before the ff-only merge, as last time.
@@ -108,10 +112,10 @@ layout claims verify from test evidence. Each IC ends with a `Widths:` line.
 - [ ] **IC-8 (VAC-11, pinned length)** — `statusItem.length` stays 114 pt (3 metrics),
   168 pt (with network), 76 pt (2 metrics), 38 pt (1 metric); value or label changes never
   resize the item; `MenuBarLayoutTests` passes. Widths: 768 reference; 375/1440/Retina check-only.
-- [ ] **IC-9 (suite)** — red run executes baseline + 2 new tests (225 expected at current
-  HEAD) with **exactly 2 failures**: the flipped IC-4 guard and the flipped IC-10 guard.
+- [ ] **IC-9 (suite)** — red run executes baseline + 2 new tests (223 + 2 = 225 at the red
+  run's HEAD) with **exactly 2 failures**: the flipped IC-4 guard and the flipped IC-10 guard.
   Green run executes the same count with 0 failures. No test is deleted. Baseline 223/223
-  at `3e36d88`. Widths: n/a.
+  at `3e36d88`; recompute per the Test-count drift risk if main lands tests first. Widths: n/a.
 - [ ] **IC-10 (VAC-6, network rate typography — FLIPPED)** — both rate fonts render
   `.font(.system(size: 9, weight: .regular).monospacedDigit())` at `:153` (upload) and
   `:167` (download); neither line carries `.medium` or `.bold`; the value line keeps size
@@ -720,6 +724,9 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1` … unique; `FM*` = failur
      -> Receipts (waiver note / red SHA / green SHA / VAC ledger / review verdict / merge SHA — verify each in git or on disk, record it on the task line)
 ```
 
+Git receipt commands run with cwd = the worktree when they carry no `-C`; a
+`git -C worktrees/…` path is relative to the repo root, so run those from the main repo.
+
 - [ ] **T1** — waiver note, no code edit. note ⏳
 - [ ] **T2** — red: flip IC-4 / IC-10 guards, add IC-11 / IC-12 guards (marker `[red]`). red ⏳ · review ⏳
 - [ ] **T3** — green: two tokens on three lines. red n/a · green ⏳ · review ⏳
@@ -772,7 +779,9 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
      upload token at `:153` and the download token at `:167` against the flipped
      `expectedNetworkFont` and keeps the value-line `size:10.5` assertion (IC-10 flip).
   6. Add `testLabelRowClearanceForMemRowMeetsThreeAndAHalfPoints` (IC-11): `NSFont`
-     measurement like the existing IC-3 test — MEM row `4.0 + 2.0 + width("MEM" @ 8 pt
+     measurement on the pattern of the existing IC-3 test
+     (`testClearanceForWidestValueAtRegularMeetsThreeAndAHalfPoints`,
+     `MenuBarValueTypographyTests.swift:268`) — MEM row `4.0 + 2.0 + width("MEM" @ 8 pt
      regular)` → clearance ≥ 3.5 pt (expect 8.6406 ± 0.05); CPU clearance ≥ 16.0
      (expect 16.6836 ± 0.05); GPU clearance ≥ 16.0 (expect 16.4375 ± 0.05);
      `MenuBarLayout.blockWidth` = 34.0.
@@ -809,7 +818,8 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-label-network-reg
 
 ## Phase 4 — VAC ledger (tests only)
 
-- [ ] **T4** — coder self-verify, same worktree, tests only (no captures). Write
+- [ ] **T4** — coder self-verify, same worktree, tests only (no captures); the pass evidence
+  is the T3 green run under the T2 xcodebuild command. Write
   `artifacts/2026-10-16-menu-bar-label-network-regular/vac-ledger.md` with one row per IC:
   IC-1 … IC-6 and IC-8 … IC-13 read `pass` with evidence (green test name, `rg` output
   for IC-5, recorded measurements for IC-3 / IC-11 / IC-12: 29.93/4.07, 25.36/8.64,
@@ -881,5 +891,6 @@ No simulator concurrency: the xcodebuild serial flags in T2/T3 are mandatory
 - **Threshold wording in the blueprint**: VAC-7 states ≥ 1.8 pt, Appendix A step 8 states
   ≥ 1.0 pt for the same spacer. IC-12 asserts 1.8 pt — the stricter rule, which subsumes
   the 1.0 pt spacer minimum.
-- **VAC-7 human-judgment visual checks** (VAC-10 blend) are waived, not approximated: the
-  ledger records `waived`, never `pass`, for them.
+- **Human-judgment visual checks (VAC-10 blend = IC-7)** are waived, not approximated: the
+  ledger records `waived`, never `pass`, for them. The numeric clearance checks (VAC-5 /
+  VAC-7 = IC-11 / IC-12) stay binding.
