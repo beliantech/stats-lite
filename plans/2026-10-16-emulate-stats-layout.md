@@ -4,12 +4,15 @@ Date: 2026-10-16
 Plan name: `2026-10-16-emulate-stats-layout`
 Risk class: **R2** (UI work — zero-tolerance visual policy applies; visual defects are blocking).
 Status: Design gate **PASS** (`artifacts/2026-10-16-emulate-stats-layout/gate-report.md`,
-commit `0b11573`, gate date 2026-10-17). Plan authored 2026-10-16. Awaiting `run_plan`.
+commit `0b11573`, gate date 2026-10-17). Plan authored 2026-10-16. Clarity adjustment pass
+applied 2026-10-16 after `run_plan` (wording and procedure only — ISC checks, Design
+Blueprint, scope, and tasks unchanged). Ready for execution: T1 → T5.
 Repo HEAD at authoring: `e32f26e` (`0b11573` + the blueprint archive commit), clean
 (untracked `worktrees/` only).
 Baseline suite: **225 tests, 0 failures** (previous plan `2026-10-16-menu-bar-label-network-regular`
-green run at `8a82730`; `git diff bc861a4..HEAD -- StatsLite StatsLiteTests` is empty at
-authoring, so no production or test change landed after that run and the baseline stands).
+green run at `8a82730`; the six commits since `bc861a4` — `cd03d01`, `4697230`, `6049af5`,
+`0b11573`, `e32f26e`, `5897efb` — are docs-only, so `git diff bc861a4..HEAD -- StatsLite
+StatsLiteTests` is empty and the baseline stands at HEAD).
 Screenshot waiver: carried over from plan `2026-10-16-menu-bar-regular-weight` — user
 authority, no Screen Recording permission. Probe already proven exit 1 twice (designer
 session probes, gate §Visual Evidence Pass; waiver note `8b0ce41`). T1 records the waiver
@@ -99,8 +102,13 @@ Decision) and govern the test constants:
 > ledger. Test-based ICs stay binding and must pass.
 
 Citation rule: a bare `:N` in the ISC and tasks means `StatsLite/MenuBarStackedItemView.swift:N`
-unless another file is named beside it. Line numbers are as-at-HEAD (`0b11573`); the red
-commit shifts test-file lines, so test-file citations in the tasks are as-at-HEAD too.
+unless another file is named beside it. An `IC-N` / `FM-N` inside a test-method name or MARK
+comment (for example the blueprint's "IC-10 guard") is the test file's own label; the plan's
+IC-1 … IC-12 list above is the authority, and tasks annotate the mapping as "plan IC-N".
+Line numbers are as-at-HEAD (`0b11573`); the two
+commits since (`e32f26e`, `5897efb`) are docs-only, so every Swift line citation still
+resolves at execution HEAD. The red commit shifts test-file lines, so test-file citations
+in the tasks are as-at-HEAD too.
 
 Widths (blueprint, gate C5 pattern): 768 px is the reference width. 375 px, 1440 px, and
 Retina are check-only. Block widths are pinned (34.0 pt standard, 50.0 pt network), so
@@ -815,7 +823,8 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-emulate-stats-layout \
   4. FM1 (`:148-165`): MARK (`:146`) → `// MARK: - FM1: value font is 11 pt regular
      monospacedDigit`; rename to `testValueFontIsElevenPointRegularMonospacedDigit`;
      failure message (`:161`) → `Font.system(size: 11, weight: .regular).monospacedDigit()`.
-     (IC-2 flip half of the value token — FM1 in the plan's IC-2.)
+     (Plan IC-2, first of its two flipped guards; the blueprint Appendix B calls this
+     guard FM1.)
   5. IC-4 (`:187-219`): MARK (`:185`) → `// MARK: - IC-4: label flips to 7 pt regular
      secondary`; rename to `testLabelFontIsSevenPointRegularSecondary`; failure message
      (`:205-210`, phrase at `:206`) `must be 8 pt` → `must be 7 pt` (plan IC-1).
