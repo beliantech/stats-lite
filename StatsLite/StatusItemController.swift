@@ -101,6 +101,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             popover.performClose(sender)
             return
         }
+        openPopover()
+    }
+
+    private func openPopover() {
         guard let button else { return }
         button.isHighlighted = true
         // Mount only when about to show and no controller is held.
@@ -119,6 +123,43 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             of: button,
             preferredEdge: .minY
         )
+    }
+
+    // MARK: - Measurement support
+
+    // measurement support: automated open/hold/close cycle for the
+    // footprint harness (scripts/measure_popover_footprint.sh). Opens
+    // ~1 s after launch, holds `holdSeconds`, closes through the normal
+    // close path so popoverDidClose releases the content controller,
+    // waits 2 s, repeats `cycles` times. Each event prints an epoch
+    // timestamp the harness matches against its footprint samples.
+    func startMeasurementCycle(cycles: Int, holdSeconds: Double) {
+        guard cycles > 0 else { return }
+        Task { @MainActor [weak self] in
+            for cycle in 1...cycles {
+                // First open 1 s after launch, later opens 2 s after
+                // the previous close.
+                let delay: UInt64 = cycle == 1 ? 1_000_000_000 : 2_000_000_000
+                try? await Task.sleep(nanoseconds: delay)
+                guard let self else { return }
+                Self.log("cycle \(cycle)/\(cycles) open")
+                self.openPopover()
+                try? await Task.sleep(
+                    nanoseconds: UInt64(max(holdSeconds, 0) * 1_000_000_000)
+                )
+                Self.log("cycle \(cycle)/\(cycles) close")
+                self.popover.performClose(nil)
+            }
+            Self.log("cycles complete")
+        }
+    }
+
+    // Each event writes an epoch-stamped line to stderr (unbuffered)
+    // so the harness can match hook events against its samples.
+    private static func log(_ message: String) {
+        let stamp = String(format: "%.3f", Date().timeIntervalSince1970)
+        let line = "[measurement] \(stamp) \(message)\n"
+        FileHandle.standardError.write(Data(line.utf8))
     }
 
     func popoverDidClose(_ notification: Notification) {

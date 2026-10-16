@@ -45,5 +45,27 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             monitor: monitor,
             preferences: preferences
         )
+        startMeasurementHookIfNeeded()
+    }
+
+    // measurement support: `--open-popover` drives the automated
+    // popover cycle for scripts/measure_popover_footprint.sh. Inert
+    // without the flag. `--popover-cycles N` overrides the default 3
+    // cycles; `--popover-hold N` overrides the default 5 s hold.
+    private func startMeasurementHookIfNeeded() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard arguments.contains("--open-popover") else { return }
+        let cycles = intValue("--popover-cycles", in: arguments) ?? 3
+        let hold = intValue("--popover-hold", in: arguments) ?? 5
+        statusItemController?.startMeasurementCycle(
+            cycles: cycles,
+            holdSeconds: Double(hold)
+        )
+    }
+
+    private func intValue(_ flag: String, in arguments: [String]) -> Int? {
+        guard let index = arguments.firstIndex(of: flag),
+              index + 1 < arguments.count else { return nil }
+        return Int(arguments[index + 1])
     }
 }
