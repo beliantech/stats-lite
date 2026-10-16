@@ -7,7 +7,7 @@ release build of the worktree).
 
 - `dark.png`, `light.png`: open StatsLite popover in dark and light
   appearance. Produced by `scripts/capture_baseline.sh`.
-- Footprint log: `.pi/plans/2026-10-16-popover-ram-trim/footprint-baseline.txt`.
+- Footprint log: `plans/2026-10-16-popover-ram-trim/footprint-baseline.txt`.
   Produced by `scripts/measure_popover_footprint.sh`.
 
 Baseline numbers (3 cycles, 5 s hold, 0.4 s sampler):
