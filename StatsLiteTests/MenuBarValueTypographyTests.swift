@@ -2,21 +2,28 @@
 //  MenuBarValueTypographyTests.swift
 //  StatsLiteTests
 //
-//  Plan 2026-10-16-emulate-stats-layout, Phase 2 (red):
-//  pin the menu bar block typography and stack-spacing tokens to
-//  the blueprint targets. The red run fails on all four production
-//  tokens: label size: 8 at MenuBarStackedItemView.swift:112,
-//  value size: 10.5 at :116, block stack spacing: 1 at :103, and
-//  network stack spacing: 1 at :143. Mechanism: a source-token
-//  check anchored on the view source through #filePath. The check
-//  compares the literal font and stack tokens in the source file
-//  that the compiler builds against the expected literals, so it
-//  cannot pass while those lines carry the current tokens. The
-//  monospaced-digit and clearance tests (IC-2, IC-3, IC-11, IC-12)
-//  measure the target fonts and pass at HEAD.
+//  Plan 2026-10-16-menu-bar-row-alignment (Phase 2, red):
+//  pin the menu bar block typography and row-alignment tokens to
+//  the blueprint targets. Green target state: category labels at
+//  8 pt regular secondary (MenuBarStackedItemView.swift:112),
+//  values at 11 pt regular monospacedDigit (:117), network rates
+//  at 9 pt regular monospacedDigit (:155 and :170), and every row
+//  container pinned with .frame(height: MenuBarLayout.rowHeight)
+//  (11 pt), so both blocks fit exactly 22.0 pt against
+//  NSStatusBar.system.thickness (VAC-11 and VAC-12). Mechanism: a
+//  source-token check anchored on the view source through
+//  #filePath, plus font-metric clearance measurements. This red
+//  commit flips the label token to size: 8 and adds the two
+//  alignment guards
+//  (testBlockFittingHeightsAreEqualAndMatchStatusBarThickness and
+//  testRowFramesUseRowHeightConstantInBothBlocks), so the red run
+//  fails on the label token, the block fitting heights, and the
+//  row-frame tokens. The clearance tests (IC-6, IC-12) measure
+//  their own fonts and pass at HEAD.
 //
 
 import AppKit
+import SwiftUI
 import XCTest
 @testable import StatsLite
 
@@ -26,8 +33,8 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
     /// `.font(.system(size: 11, weight: .regular).monospacedDigit())`
     private let expectedValueFont = ".font(.system(size:11,weight:.regular).monospacedDigit())"
-    /// `.font(.system(size: 7, weight: .regular))`
-    private let expectedLabelFont = ".font(.system(size:7,weight:.regular))"
+    /// `.font(.system(size: 8, weight: .regular))`
+    private let expectedLabelFont = ".font(.system(size:8,weight:.regular))"
     /// `.foregroundStyle(.secondary)`
     private let expectedLabelStyle = ".foregroundStyle(.secondary)"
     /// `.font(.system(size: 9, weight: .regular).monospacedDigit())`
@@ -54,6 +61,30 @@ final class MenuBarValueTypographyTests: XCTestCase {
         return try XCTUnwrap(
             String(data: data, encoding: .utf8),
             "MenuBarStackedItemView.swift is not valid UTF-8",
+            file: file,
+            line: line
+        )
+    }
+
+    /// URL of MenuBarBlockModel.swift relative to this test file,
+    /// same #filePath pattern as stackedItemViewURL. A read error
+    /// throws and fails the test, never a vacuous pass.
+    private var blockModelURL: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("StatsLite/MenuBarBlockModel.swift")
+            .standardizedFileURL
+    }
+
+    private func loadLayoutSource(
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> String {
+        let data = try Data(contentsOf: blockModelURL)
+        return try XCTUnwrap(
+            String(data: data, encoding: .utf8),
+            "MenuBarBlockModel.swift is not valid UTF-8",
             file: file,
             line: line
         )
@@ -157,7 +188,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
             expectedValueFont,
             """
             FM1: the MenuBarBlockView value font at \
-            MenuBarStackedItemView.swift:115-116 must be \
+            MenuBarStackedItemView.swift:116-117 must be \
             Font.system(size: 11, weight: .regular).monospacedDigit(). \
             Found \(token).
             """
@@ -182,9 +213,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-4: label flips to 7 pt regular secondary
+    // MARK: - IC-4: label flips to 8 pt regular secondary
 
-    func testLabelFontIsSevenPointRegularSecondary() throws {
+    func testLabelFontIsEightPointRegularSecondary() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let labelStart = try XCTUnwrap(
@@ -203,7 +234,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
         XCTAssertTrue(
             region.contains(expectedLabelFont),
             """
-            IC-4: the category labels (CPU, MEM, GPU) must be 7 pt \
+            IC-4: the category labels (CPU, MEM, GPU) must be 8 pt \
             .regular with .foregroundStyle(.secondary) and no .bold \
             weight; found label region \(region).
             """
@@ -248,15 +279,15 @@ final class MenuBarValueTypographyTests: XCTestCase {
             in: networkScope
         )
         // One compound assertion records one failure for the guard while
-        // still covering both lines: it fails unless :153 AND :167 both
+        // still covering both lines: it fails unless :155 AND :170 both
         // carry the flipped token, and the message quotes both found
         // tokens, so the red output shows both production lines.
         XCTAssertEqual(
             [uploadToken, downloadToken],
             [expectedNetworkFont, expectedNetworkFont],
             """
-            IC-10: the upload rate line at MenuBarStackedItemView.swift:153 \
-            and the download rate line at MenuBarStackedItemView.swift:167 \
+            IC-10: the upload rate line at MenuBarStackedItemView.swift:155 \
+            and the download rate line at MenuBarStackedItemView.swift:170 \
             must each be \
             .font(.system(size: 9, weight: .regular).monospacedDigit()), \
             no .medium; found upload \(uploadToken), \
@@ -302,10 +333,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-11: label-row clearance at 7 pt regular
+    // MARK: - IC-11: label-row clearance at 8 pt regular
 
-    func testLabelRowClearanceForMemRowAtSevenPointRegularMeetsThreeAndAHalfPoints() {
-        let font = NSFont.systemFont(ofSize: 7.0, weight: .regular)
+    func testLabelRowClearanceForMemRowMeetsThreeAndAHalfPoints() {
+        let font = NSFont.systemFont(ofSize: 8.0, weight: .regular)
         func width(of text: String) -> CGFloat {
             (text as NSString).size(withAttributes: [.font: font]).width
         }
@@ -323,15 +354,15 @@ final class MenuBarValueTypographyTests: XCTestCase {
             3.5,
             """
             IC-11: total clearance for the MEM label row (4.0 pt dot + \
-            2.0 pt gap + "MEM" at 7 pt regular) must be at least 3.5 pt; \
+            2.0 pt gap + "MEM" at 8 pt regular) must be at least 3.5 pt; \
             got \(memClearance) pt.
             """
         )
         XCTAssertEqual(
             memClearance,
-            10.9067,
+            8.6406,
             accuracy: 0.05,
-            "expected 10.9067 pt total clearance for the MEM label row"
+            "expected 8.6406 pt total clearance for the MEM label row"
         )
 
         let cpuClearance = MenuBarLayout.blockWidth - width(of: "CPU")
@@ -345,9 +376,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             cpuClearance,
-            18.6943,
+            16.6836,
             accuracy: 0.05,
-            "expected 18.6943 pt total clearance for the CPU label"
+            "expected 16.6836 pt total clearance for the CPU label"
         )
 
         let gpuClearance = MenuBarLayout.blockWidth - width(of: "GPU")
@@ -361,9 +392,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             gpuClearance,
-            18.4790,
+            16.4375,
             accuracy: 0.05,
-            "expected 18.4790 pt total clearance for the GPU label"
+            "expected 16.4375 pt total clearance for the GPU label"
         )
     }
 
@@ -443,9 +474,124 @@ final class MenuBarValueTypographyTests: XCTestCase {
             "VStack(alignment:.leading,spacing:0){",
             """
             plan IC-4: the MenuBarNetworkBlockView stack at \
-            MenuBarStackedItemView.swift:143 must be \
+            MenuBarStackedItemView.swift:145 must be \
             VStack(alignment: .leading, spacing: 0); found \(line).
             """
+        )
+    }
+
+    // MARK: - VAC-11/VAC-12: row height constant and block alignment invariants
+
+    // @MainActor: NSHostingView(rootView:) is MainActor-isolated and
+    // the target compiles in Swift 6 mode, so the fitting-height
+    // probe must run on the main actor (same pattern as
+    // MenuBarRedrawChurnTests).
+    @MainActor
+    func testBlockFittingHeightsAreEqualAndMatchStatusBarThickness() {
+        let standardBlock = MenuBarBlockView(
+            block: MenuBarBlock(
+                kind: .cpu,
+                label: "CPU",
+                dotState: nil,
+                valueText: "100%",
+                valueTint: .primary,
+                width: MenuBarLayout.blockWidth
+            )
+        )
+        let networkBlock = MenuBarNetworkBlockView(
+            block: MenuBarBlock(
+                kind: .network,
+                label: "",
+                dotState: nil,
+                valueText: "999 MB/s",
+                valueTint: .primary,
+                width: MenuBarLayout.networkBlockWidth,
+                secondaryValueText: "999 MB/s",
+                secondaryValueTint: .primary
+            )
+        )
+
+        let stdHeight = NSHostingView(rootView: standardBlock).fittingSize.height
+        let netHeight = NSHostingView(rootView: networkBlock).fittingSize.height
+
+        XCTAssertEqual(
+            stdHeight,
+            22.0,
+            accuracy: 0.01,
+            "VAC-11: MenuBarBlockView fitting height must be 22.0 pt"
+        )
+        XCTAssertEqual(
+            netHeight,
+            22.0,
+            accuracy: 0.01,
+            "VAC-11: MenuBarNetworkBlockView fitting height must be 22.0 pt"
+        )
+        XCTAssertEqual(
+            stdHeight,
+            netHeight,
+            accuracy: 0.01,
+            "VAC-11: both block types must have equal fitting height within 0.01 pt"
+        )
+    }
+
+    func testRowFramesUseRowHeightConstantInBothBlocks() throws {
+        // Constant check folded from blueprint Appendix B item 5
+        // (Approach item 3): a compiled reference to the not-yet
+        // existing constant would break the red build, so the 11 pt
+        // constant is pinned as an exact source token on
+        // MenuBarBlockModel.swift instead.
+        let layoutLine = try XCTUnwrap(
+            sourceLine(
+                containing: "rowHeight",
+                in: Substring(try loadLayoutSource())
+            ),
+            "no rowHeight line found in MenuBarBlockModel.swift"
+        )
+        XCTAssertEqual(
+            squashed(layoutLine),
+            "staticletrowHeight:CGFloat=11",
+            """
+            VAC-12: MenuBarLayout.rowHeight must be declared as \
+            static let rowHeight: CGFloat = 11; found \(layoutLine).
+            """
+        )
+
+        let source = try loadSource()
+        let blockScope = try declarationScope(of: "MenuBarBlockView", in: source)
+        let netScope = try declarationScope(of: "MenuBarNetworkBlockView", in: source)
+
+        let expectedFrame = ".frame(height:MenuBarLayout.rowHeight)"
+        XCTAssertTrue(
+            squashed(blockScope).contains(expectedFrame),
+            "VAC-12: MenuBarBlockView must use .frame(height: MenuBarLayout.rowHeight)"
+        )
+
+        let uploadSection = try XCTUnwrap(
+            netScope.range(of: "Upload rate"),
+            "Upload rate section not found in MenuBarNetworkBlockView"
+        )
+        let uploadFrameLine = try XCTUnwrap(
+            sourceLine(containing: ".frame(height", in: netScope[uploadSection.upperBound...]),
+            "no .frame(height line found in upload rate section"
+        )
+        XCTAssertEqual(
+            squashed(uploadFrameLine),
+            expectedFrame,
+            "VAC-12: MenuBarNetworkBlockView line 1 must use .frame(height: MenuBarLayout.rowHeight)"
+        )
+
+        let downloadSection = try XCTUnwrap(
+            netScope.range(of: "Download rate"),
+            "Download rate section not found in MenuBarNetworkBlockView"
+        )
+        let downloadFrameLine = try XCTUnwrap(
+            sourceLine(containing: ".frame(height", in: netScope[downloadSection.upperBound...]),
+            "no .frame(height line found in download rate section"
+        )
+        XCTAssertEqual(
+            squashed(downloadFrameLine),
+            expectedFrame,
+            "VAC-12: MenuBarNetworkBlockView line 2 must use .frame(height: MenuBarLayout.rowHeight)"
         )
     }
 }
