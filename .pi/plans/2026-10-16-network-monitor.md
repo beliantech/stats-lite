@@ -339,7 +339,7 @@ Evidence rule: this is a macOS menu bar app, so the 375px / 768px / 1440px viewp
 
 ### Functional
 
-- [ ] **F1**: With `showNetwork = true` (the default) the menu bar shows the NETWORK block after the GPU block, two lines, red dot + download rate above, blue dot + upload rate below.
+- [ ] **F1**: With `showNetwork = true` (the default) the menu bar shows the NETWORK block after the GPU block, two lines: **red dot + upload rate on line 1 (top), blue dot + download rate on line 2 (bottom)** (corrected by fix round 1, T4).
 - [ ] **F2**: Fresh install and existing install both land with NETWORK ON (default `true` in `@AppStorage("showNetwork")`).
 - [ ] **F3**: Network rates publish every 1.0 s (± 150 ms tolerance) while `refreshInterval` is 1, 2, or 5. Changing `refreshInterval` never changes the network cadence; network keeps ticking during an interval change.
 - [ ] **F4**: Rates sum all non-loopback interfaces. A download on Wi-Fi and an upload on a VPN adapter both count; `lo0` traffic never counts.
@@ -376,6 +376,8 @@ Evidence rule: this is a macOS menu bar app, so the 375px / 768px / 1440px viewp
 | T1 | Red + green: domain types, provider contract + fake, sampler delta logic, formatter, block model/layout/builder/accessibility (unit tested) | coder | - |
 | T2 | Green: live `getifaddrs` read, 1 s loop in `SystemMonitor`, network block view, controller + settings wiring, build passes | coder | T1 |
 | T3 | Verify: full suite, build, live 1x/2x menu bar captures vs VAC + ISC (F1–F10, FM1–FM12) | tester | T2 |
+| T4 | Red + green: role swap (red = upload top, blue = download bottom), 50 pt width, `spacing: 0` + `Spacer(minLength: 1)`, truncation formatter, layout totals, VoiceOver order | coder | fix-round plan review |
+| T5 | Verify fix round: suite, build, live 1x/2x captures vs VAC-C*/VAC-N* + F11 | tester | T4 |
 
 One worktree hosts T1 → T2 → T3, then squash-merge to `main`.
 
@@ -468,6 +470,58 @@ Worktree: `/Users/jonathan/beliantech/stats-lite/worktrees/2026-10-16-network-mo
    - F9 evidence: set `refreshInterval` to 5 s, then read the VoiceOver label (or assert `compositeLabel` inputs change) while the visible block updates each second.
    - F10 evidence: set CPU on, RAM off, GPU off, then click the `Network Throughput` toggle in Settings — it must respond.
 5. Cadence check: with `refreshInterval` at 5 s, confirm the network block still updates about once per second (frame captures or log timestamps).
+
+## Fix round 1 — 2026-10-16 (T4, T5)
+
+User asks (verbatim):
+
+1. "red shud be up there, for uploads, blue down there for downloads" — the shipped role mapping is reversed.
+2. "can we somehow narrow the gap between dots and words? i know it is to leave space for the worst case but in the worst case just truncate the decimals to accommodate narrower space"
+
+Designer output (verbatim, stored beside this plan):
+
+- Appendix A — role swap: `.pi/plans/2026-10-16-network-monitor/appendix-a-role-swap.md`
+- Appendix B — gap, width, truncation: `.pi/plans/2026-10-16-network-monitor/appendix-b-gap-width.md`
+
+Conflict resolution: appendix A governs roles and the VoiceOver order (it answers the explicit user instruction); appendix B governs width, spacing, and formatter thresholds. Where appendix B still shows top = download or keeps the old label order, appendix A wins.
+
+Appendix B proves a second shipped defect: at 58 pt the string `99.9 MB/s` needs 59.92 pt and renders as `99.9 M...` (`/tmp/test_999mb.png`). Round 1 does not merely restyle; it removes the clipping.
+
+### Criteria for this round (base VAC-1…VAC-11 stay the round-0 record)
+
+| New | Replaces | Invariant |
+|---|---|---|
+| VAC-C1 | VAC-1 | Two rows; line 1 = upload rate + red dot; line 2 = download rate + blue dot |
+| VAC-C4 | VAC-4 | Top dot `Color(nsColor: .systemRed)` paired with the upload string; bottom dot `Color(nsColor: .systemBlue)` paired with the download string |
+| VAC-C10 | VAC-10 | Composite label reads `Network Upload <upRate>, Download <downRate>`; `Network unavailable` when rates are missing |
+| VAC-N1 | VAC-2 | `MenuBarLayout.networkBlockWidth == 50`; no width change across `0 KB/s` … `999 MB/s` … `-- KB/s` |
+| VAC-N2 | VAC-6 | Rows use `HStack(spacing: 0)` + `Spacer(minLength: 1)`; trailing edges align at 0 pt delta; text never sits adjacent to the dot |
+| VAC-N3 | VAC-7 | Truncation thresholds per appendix B §3 (decimals dropped at ≥ 9.95 in each unit) |
+| VAC-N4 | VAC-11 | Lengths: all four = 168, network only = 54, CPU + network = 92, network off = 114 |
+| VAC-N5 | FM9 | No ellipsis for any produced string inside 50 pt; item width constant across ticks |
+| F11 | new | No `networkRate` output exceeds 42.91 pt of text width (appendix B §1 bounds) |
+
+Wording corrections carried with this round: plan intent line, blueprint legend `(R)`/`(B)`, ISC F1, and the T1 builder expectation (`valueText == networkRate(uploadRate)`, `secondaryValueText == networkRate(downloadRate)`).
+
+### T4 — Fix round 1 (TDD)
+
+**Red first** for everything unit-testable; the view geometry (`spacing: 0`, `Spacer(minLength: 1)`, width 50) is Blueprint-direct. Test files only in the red spawn:
+
+- `StatsLiteTests/MetricFormatterTests.swift` — appendix B §3 thresholds: `9.94 MB/s → 9.9 MB/s`, `9.95 MB/s → 10 MB/s`, `99.9 MB/s → 100 MB/s`, `999.4 MB/s → 999 MB/s`, `999.5 MB/s → 1.0 GB/s`, `9.95 GB/s → 10 GB/s`, plus the existing KB cases and `nil`/negative/non-finite → `-- KB/s`; assert no output has a 4+ digit mantissa or a 4-character decimal (`10.0`).
+- `StatsLiteTests/MenuBarLayoutTests.swift` — `networkBlockWidth == 50`; totals 168 / 54 / 92 / 114 (test names updated to the new numbers).
+- `StatsLiteTests/MenuBarBlockBuilderTests.swift` — network block `width == 50`; `valueText == networkRate(uploadRate)`; `secondaryValueText == networkRate(downloadRate)`; tints keyed to the upload/download nils; comments say line 1 upload.
+- `StatsLiteTests/MenuBarAccessibilityTests.swift` — `Network Upload 10 KB/s, Download 720 KB/s`, `Network Upload 22 KB/s, Download 1.6 MB/s`, `Network unavailable` unchanged.
+
+**Green scope** (application code only, appendix-specified):
+
+- `StatsLite/MetricFormatters.swift` — appendix B §3 formatter token verbatim.
+- `StatsLite/MenuBarBlockModel.swift` — `networkBlockWidth = 50`; builder role swap (appendix A §A.1); comment fixes (appendix A §A.3 items 1–2).
+- `StatsLite/MenuBarStackedItemView.swift` — `MenuBarNetworkBlockView` per appendix B §2 (`spacing: 0`, `Spacer(minLength: 1)`) with appendix A's role comments (line 1 upload / line 2 download).
+- `StatsLite/MenuBarAccessibility.swift` — appendix A §4.1 string order.
+- `StatsLite/StatusItemController.swift` — doc-comment example string (appendix A §A.3 item 7).
+- Nothing else: dot size and colors, fonts, two-row structure, cadence, sampler, `latestNetwork`, and the do-not-touch list stay as they are (appendix B §7).
+
+T5 verifies VAC-C1/C4/C10, VAC-N1…N5, F11, and re-checks VAC-3, VAC-5, VAC-8, VAC-9, FM9 against the new width.
 
 ## Verification (overall)
 
