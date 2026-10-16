@@ -100,7 +100,7 @@ struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
     var body: some View {
-        VStack(alignment: .center, spacing: 1) {
+        VStack(alignment: .center, spacing: 0) {
             HStack(alignment: .center, spacing: 2) {
                 if let dotState = block.dotState {
                     Circle()
@@ -109,11 +109,11 @@ struct MenuBarBlockView: View {
                         .offset(y: -0.5)
                 }
                 Text(block.label)
-                    .font(.system(size: 8, weight: .regular))
+                    .font(.system(size: 7, weight: .regular))
                     .foregroundStyle(.secondary)
             }
             Text(block.valueText)
-                .font(.system(size: 10.5, weight: .regular).monospacedDigit())
+                .font(.system(size: 11, weight: .regular).monospacedDigit())
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
         }
@@ -140,7 +140,7 @@ struct MenuBarNetworkBlockView: View {
     let block: MenuBarBlock
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 1) {
+        VStack(alignment: .leading, spacing: 0) {
             // Line 1: Upload rate
             HStack(alignment: .center, spacing: 0) {
                 Circle()
