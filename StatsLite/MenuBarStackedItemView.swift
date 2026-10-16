@@ -109,13 +109,15 @@ struct MenuBarBlockView: View {
                         .offset(y: -0.5)
                 }
                 Text(block.label)
-                    .font(.system(size: 7, weight: .regular))
+                    .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
             }
+            .frame(height: MenuBarLayout.rowHeight)
             Text(block.valueText)
                 .font(.system(size: 11, weight: .regular).monospacedDigit())
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
+                .frame(height: MenuBarLayout.rowHeight)
         }
         .frame(width: block.width)
     }
@@ -154,6 +156,7 @@ struct MenuBarNetworkBlockView: View {
                     .foregroundStyle(valueColor)
                     .lineLimit(1)
             }
+            .frame(height: MenuBarLayout.rowHeight)
 
             // Line 2: Download rate
             HStack(alignment: .center, spacing: 0) {
@@ -168,6 +171,7 @@ struct MenuBarNetworkBlockView: View {
                     .foregroundStyle(secondaryValueColor)
                     .lineLimit(1)
             }
+            .frame(height: MenuBarLayout.rowHeight)
         }
         .frame(width: block.width)
     }

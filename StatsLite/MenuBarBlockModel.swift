@@ -57,6 +57,10 @@ enum MenuBarLayout {
     /// truncated rate string "999 MB/s" (42.91 pt) plus the 6 pt dot
     /// with 1.09 pt clearance (appendix B §1).
     static let networkBlockWidth: CGFloat = 50
+    /// Pinned height of each line within a block. Two 11 pt rows yield
+    /// a 22 pt block height that matches NSStatusBar.system.thickness
+    /// and aligns line 1 and line 2 across standard and network blocks.
+    static let rowHeight: CGFloat = 11
     /// Gap between adjacent blocks.
     static let gap: CGFloat = 4
     /// Outer padding: leading 2 pt plus trailing 2 pt.
