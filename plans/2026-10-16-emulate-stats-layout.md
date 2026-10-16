@@ -7,6 +7,10 @@ Status: Design gate **PASS** (`artifacts/2026-10-16-emulate-stats-layout/gate-re
 commit `0b11573`, gate date 2026-10-17). Plan authored 2026-10-16. Clarity adjustment pass
 applied 2026-10-16 after `run_plan` (wording and procedure only — ISC checks, Design
 Blueprint, scope, and tasks unchanged). Ready for execution: T1 → T5.
+**Complete 2026-10-17:** T1 waiver probe exit 1 (`0b84d4a`); red `92c28ca` (227 tests,
+exactly 5 failures per derivation); green `ff61edf` (four tokens, 227/0); ledger `bf9973e`
+(12 pass, 1 waived); reviewer GO via `subagent_done` (`10824a25`); no rebase needed;
+merged fast-forward to `main` at `bf9973e`; worktree and branch removed.
 Repo HEAD at authoring: `e32f26e` (`0b11573` + the blueprint archive commit), clean
 (untracked `worktrees/` only).
 Baseline suite: **225 tests, 0 failures** (previous plan `2026-10-16-menu-bar-label-network-regular`
@@ -769,11 +773,11 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1` … unique; `FM*` = failur
 Git receipt commands run with cwd = the worktree when they carry no `-C`; a
 `git -C worktrees/…` path is relative to the repo root, so run those from the main repo.
 
-- [ ] **T1** — waiver note, no code edit.
-- [ ] **T2** — red: flip the three token guards, add the two spacing guards (marker `[red]`).
-- [ ] **T3** — green: four tokens on four lines.
-- [ ] **T4** — VAC ledger, tests only; pass/waived rows.
-- [ ] **T5** — reviewer `[code-review]`, rebase, ff-only merge, cleanup.
+- [x] **T1** — waiver note, no code edit. DONE: probe exit 1 (`0b84d4a`).
+- [x] **T2** — red: flip the three token guards, add the two spacing guards (marker `[red]`). red PASS (`92c28ca`, 227/5) · review GO
+- [x] **T3** — green: four tokens on four lines. green PASS (`ff61edf`, 227/0) · review GO
+- [x] **T4** — VAC ledger, tests only; pass/waived rows. DONE (`bf9973e`, 12 pass / 1 waived).
+- [x] **T5** — reviewer `[code-review]`, rebase, ff-only merge, cleanup. review GO · merge ff to `main` = `bf9973e`
 
 ## Phase 1 — Waiver record (before the first code edit)
 
@@ -781,7 +785,7 @@ Worktree: `<repo>/worktrees/emulate-stats-layout`, branch
 `feat/2026-10-16-emulate-stats-layout`. Create the worktree before the T2 spawn;
 set the spawn `cwd` to it.
 
-- [ ] **T1** — planner, main repo, no code edit. Probe the waiver basis once for the record:
+- [x] **T1** — planner, main repo, no code edit. Probe the waiver basis once for the record:
   `screencapture -x /tmp/waiver_probe_emulate_stats.png`; record the exit status. The waiver
   was already proven exit 1 twice (designer session probes; `8b0ce41`), so this probe is a
   formality, not a new measurement. Then write
@@ -807,7 +811,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-emulate-stats-layout \
   "${MAIN_REPO}/worktrees/emulate-stats-layout" main
 ```
 
-- [ ] **T2** — `T2: [red]` Rewrite the guards in
+- [x] **T2** — `T2: [red]` Rewrite the guards in
   `StatsLiteTests/MenuBarValueTypographyTests.swift` first, then run the suite. Test-only
   diff: touch no application code. All test-file line numbers below are as-at-HEAD
   (`0b11573`); the edit order below keeps each citation valid when it is used.
@@ -877,7 +881,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-emulate-stats-layout \
 
 ## Phase 3 — Green (implementation, same worktree)
 
-- [ ] **T3** — Apply Blueprint Appendix A edits 1-4 in one commit:
+- [x] **T3** — Apply Blueprint Appendix A edits 1-4 in one commit:
   `StatsLite/MenuBarStackedItemView.swift:103` `spacing: 1` → `spacing: 0`;
   `:112` `size: 8` → `size: 7`; `:116` `size: 10.5` → `size: 11`; `:143` `spacing: 1` →
   `spacing: 0`. Nothing else in production code: `:153`/`:167` untouched, no comment edits
@@ -891,7 +895,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-emulate-stats-layout \
 
 ## Phase 4 — VAC ledger (tests only)
 
-- [ ] **T4** — coder self-verify, same worktree, tests only (no captures); the pass evidence
+- [x] **T4** — coder self-verify, same worktree, tests only (no captures); the pass evidence
   is the T3 green run under the T2 xcodebuild command. Write
   `artifacts/2026-10-16-emulate-stats-layout/vac-ledger.md` with one row per IC: IC-1 …
   IC-12 read `pass` with evidence (green test names; `rg` output for IC-9; recorded
@@ -904,7 +908,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-emulate-stats-layout \
 
 ## Phase 5 — Review, merge, cleanup
 
-- [ ] **T5** — Spawn `reviewer` with `[code-review]`, plan name
+- [x] **T5** — Spawn `reviewer` with `[code-review]`, plan name
   `2026-10-16-emulate-stats-layout`, `cwd` = the worktree, against
   `git -C worktrees/emulate-stats-layout diff main...HEAD`. Checks: the red commit is
   test-only and fails on ALL FOUR production tokens (label `size:8`, value `size:10.5` in
