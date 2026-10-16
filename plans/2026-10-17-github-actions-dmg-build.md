@@ -24,8 +24,8 @@ Macs.
 
 ## ISC
 
-- [ ] I1. Workflow file `.github/workflows/build-dmg.yml` exists and is valid YAML.
-- [ ] I2. Workflow triggers on `pull_request` to main, `push` to main, and `workflow_dispatch`.
+- [x] I1. Workflow file `.github/workflows/build-dmg.yml` exists and is valid YAML.
+- [x] I2. Workflow triggers on `pull_request` to main, `push` to main, and `workflow_dispatch`.
 - [ ] I3. A pull request run on the feature branch completes with conclusion `success`.
 - [ ] I4. The run produces an artifact named `StatsLite-dmg` that contains a valid `StatsLite.dmg` (non-zero size, `hdiutil imageinfo` passes on the downloaded file).
 - [ ] I5. The .app inside the dmg is ad-hoc signed (`codesign -dv` reports `Signature=adhoc`).
@@ -50,15 +50,17 @@ Workflow `build-dmg.yml`:
 3. Steps: checkout, `xcodebuild build` Release with `CODE_SIGNING_ALLOWED=NO`,
    ad-hoc `codesign --force --deep --sign -` on the .app, build a dmg staging
    folder (app + `/Applications` symlink), `hdiutil create -format UDZO`,
-   `actions/upload-artifact@v4` with the .dmg.
+   `actions/upload-artifact` pinned to commit SHA with
+   `if-no-files-found: error`. Top-level `permissions: contents: read`,
+   checkout `persist-credentials: false`.
 4. No tests in this workflow (out of scope; can be added later).
 5. No release step, no `softprops/action-gh-release`, no tags.
 
 ## Tasks
 
-- [ ] **T1** — Write `.github/workflows/build-dmg.yml` and commit on branch `ci/github-actions-dmg-build`. red n/a (R0) · green ⏳ · review ⏳
-- [ ] **T2** — Push branch, open PR to main via GitHub API, watch the `pull_request` run until conclusion. green ⏳
-- [ ] **T3** — Reviewer `[code-review]` on the workflow diff. review ⏳
+- [x] **T1** — Write `.github/workflows/build-dmg.yml` and commit on branch `ci/github-actions-dmg-build`. red n/a (R0) · green n/a (YAML lint clean) · review —
+- [ ] **T2** — Push branch, open PR to main via GitHub API, watch the `pull_request` run until conclusion. green ⏳ · BLOCKED: `git push` filtered in session; user must push or lift the filter
+- [x] **T3** — Reviewer `[code-review]` on the workflow diff. review **GO** (2026-10-17)
 - [ ] **T4** — Merge to main with `--ff-only` (or squash), push main, close PR, clean up. merged ⏳
 
 ## Verification note
