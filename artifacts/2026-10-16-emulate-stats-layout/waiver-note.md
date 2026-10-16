@@ -34,3 +34,12 @@ app's own windows succeed.
 - User override recorded: category labels adopt 7 pt despite the earlier non-Retina
   legibility finding. VoiceOver access covers the non-visual path.
 - The zero-tolerance visual policy stays active for any defect the user reports by eye.
+
+## Carry-over — plan `2026-10-16-menu-bar-row-alignment` (2026-10-16)
+
+The screenshot waiver carries over to the label 8 pt + row-alignment plan.
+No new probe runs: the basis is unrefuted (three recorded exit-1 probes above) and
+the alignment plan adds no new capture surface.
+
+Scope for that plan: all screenshot and strip captures SKIPPED. Test-based ICs are
+binding. The ledger `vac-ledger-alignment.md` gets one waived row with this reason.
