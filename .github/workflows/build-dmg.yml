@@ -1,0 +1,58 @@
+name: Build DMG
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-dmg:
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        # actions/checkout v4.2.2
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        with:
+          persist-credentials: false
+
+      - name: Build StatsLite (Release, unsigned)
+        run: |
+          xcodebuild build \
+            -project StatsLite.xcodeproj \
+            -scheme StatsLite \
+            -configuration Release \
+            -derivedDataPath build \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Ad-hoc sign the app
+        run: |
+          APP="build/Build/Products/Release/StatsLite.app"
+          codesign --force --deep --sign - "$APP"
+          codesign --verify --deep --strict "$APP"
+
+      - name: Create DMG
+        run: |
+          APP="build/Build/Products/Release/StatsLite.app"
+          STAGE="dmg-root"
+          mkdir -p "$STAGE"
+          cp -R "$APP" "$STAGE/"
+          ln -s /Applications "$STAGE/Applications"
+          hdiutil create \
+            -volname "StatsLite" \
+            -srcfolder "$STAGE" \
+            -ov \
+            -format UDZO \
+            StatsLite.dmg
+
+      - name: Upload DMG artifact
+        # actions/upload-artifact v4.6.2
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: StatsLite-dmg
+          path: StatsLite.dmg
+          if-no-files-found: error
