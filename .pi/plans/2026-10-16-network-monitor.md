@@ -348,7 +348,7 @@ Evidence rule: this is a macOS menu bar app, so the 375px / 768px / 1440px viewp
 - [ ] **F7**: No popover card and no history/sparkline entry for network exists (`PopoverContentView.swift` and `SystemMonitor.recordHistory` unchanged).
 - [ ] **F8**: The adjacent interval plan's symbols (do-not-touch list) show zero diff in this branch.
 - [ ] **F9**: The VoiceOver composite label refreshes on each 1 s network tick. With `refreshInterval = 5`, the label's network rates track the visible block within one second instead of lagging to the next standard snapshot.
-- [ ] **F10**: The `Network Throughput` toggle in Settings is never disabled: with exactly one standard metric active (`activeMetricCount == 1`) and network ON, the toggle stays clickable.
+- [ ] **F10**: The `Network Throughput` toggle in Settings is never disabled: with exactly one standard metric active (`activeMetricCount == 1`) and network ON, the toggle stays clickable. Evidence: `SettingsView` carries no `.disabled(...)` on the network row (diff), plus the T3 live click check. Note: `isToggleLocked(true)` cannot be asserted false at `activeMetricCount == 1` — the helper is toggle-agnostic and `SettingsWindowTests.testSoleEnabledToggleIsLocked` pins it to `true`; the unit-level guarantee is the F10 companion test `showNetworkDoesNotAffectStandardToggleLock` (network never enters `activeMetricCount` / `enabledMetrics`).
 
 ### Failure modes (oracle, 2026-10-16)
 
@@ -383,6 +383,10 @@ One worktree hosts T1 → T2 → T3, then squash-merge to `main`.
 - Worktree: `/Users/jonathan/beliantech/stats-lite/worktrees/2026-10-16-network-monitor`
 
 ### T1 — Model, sampler, formatter, block model (TDD)
+
+Status: red `089720c` (test-only, 9 files under `StatsLiteTests/`, +775/−3, verified in git) · green `045cf89` (9 app files, no test edits) · gap revision red `37d3a9f` / green `d66951a` · suite 192 tests / 0 failures, build clean · review PASS (branch review, `[code-review]` on `diff main...HEAD`)
+
+Ratification (2026-10-16, planner): the discontinuity cap in `MetricSamplerActor.sampleNetwork` is **2.5 s** per D5 and FM3. The green phase had shipped a 5 s cap to satisfy a contradicting red test (`testNetworkRateDividesByMeasuredElapsedTime` used a 4 s gap and expected a rate); that test is amended instead, and a 3.0 s → `nil` boundary test is added. `NetworkInterfaceRow` is declared top-level in `StatsLite/SystemMetricsParsing.swift` (the pure rule stays inside the enum) — no plan conflict.
 
 **Red cycle first.** New or updated tests: `StatsLiteTests/MetricSamplerActorTests.swift`, `StatsLiteTests/SystemMetricsProviderContractTests.swift`, `StatsLiteTests/FakeSystemMetricsProvider.swift`, `StatsLiteTests/SystemMetricsParsingTests.swift`, `StatsLiteTests/MetricFormatterTests.swift`, `StatsLiteTests/MenuBarBlockBuilderTests.swift`, `StatsLiteTests/MenuBarLayoutTests.swift`, `StatsLiteTests/MenuBarAccessibilityTests.swift`, `StatsLiteTests/PreferencesStoreGuardTests.swift`. Run the test command; compile errors against the new API count as red. Touch no application code in the red spawn.
 
@@ -426,6 +430,10 @@ Files touched: `StatsLite/MetricTypes.swift`, `StatsLite/SystemMetricsProvider.s
 
 ### T2 — Live read, 1 s loop, view, wiring
 
+Status: green `33be055` (6 files, +419/−28; new `SystemMonitorNetworkTests` covers FM7/FM11/F6) · suite 195 tests, build clean · review PASS
+
+Note (planner verification, 2026-10-16): `StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease` failed on one worktree run (5 failures, all that test) and passed on the immediate re-run (195/0), on the single-class run in the worktree, and on `main` full-suite + single-class runs. The failure is `[StatusBar] Unhandled disconnected scene` timing with a stray Release build of StatsLite running from `/tmp/statslite-dd` (pid 9796), and the T2 diff contains no popover code. Treated as a pre-existing flaky environmental test; T3 re-runs it and reports flakiness rather than a branch regression.
+
 Green = T1 tests stay green + build clean + F1/F2/F6/F7 behavior present.
 
 1. `StatsLite/LiveSystemMetricsProvider.swift`: implement `sampleNetworkBytes()` with `getifaddrs`, skip `IFF_LOOPBACK`, sum `ifi_ibytes` / `ifi_obytes`; keep the pure rule in `StatsLite/SystemMetricsParsing.swift`.
@@ -445,6 +453,10 @@ Green = T1 tests stay green + build clean + F1/F2/F6/F7 behavior present.
 7. Build with the build command → zero errors, no new warnings.
 
 ### T3 — Verification (tester)
+
+Status: PASS (`33be055`, run 1: 195 tests / 0 failures including the flaky popover test; build 0 errors / 0 warnings; live 1x+2x captures in `/tmp/t3/`).
+Per-criterion: F1–F9 PASS (F9 via the plan's stated fallback), F10 / FM8 / FM12 interactive halves NOT-TESTABLE (locked session, Accessibility/input-injection TCC denied) with complete static + unit evidence; all remaining FM1–FM7, FM9–FM11 and VAC-1–VAC-11 PASS. Zero defects.
+Open follow-up: re-run the three interactive checks (F10 click at `activeMetricCount == 1`, FM8 popover-open observation, FM12 toggle resize) once the session is unlocked with the Accessibility grant.
 
 Worktree: `/Users/jonathan/beliantech/stats-lite/worktrees/2026-10-16-network-monitor`.
 
