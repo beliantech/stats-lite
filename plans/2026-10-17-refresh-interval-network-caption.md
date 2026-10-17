@@ -66,12 +66,13 @@ and stops here.
 
 | Option | Copy | Words | Wrap at 380 pt |
 |---|---|---|---|
-| **1 (chosen)** | `Network throughput refreshes once per second, independent of this setting.` | 10 | 2 lines |
+| **3 (chosen by user, 2026-10-17)** | `Network throughput always refreshes at 1-second intervals.` | 7 | 1 line |
+| 1 (designer's original pick) | `Network throughput refreshes once per second, independent of this setting.` | 10 | 2 lines |
 | 2 | `Network throughput updates every second and does not use this interval.` | 11 | 2 lines |
-| 3 | `Network throughput always refreshes at 1-second intervals.` | 7 | 1 line |
 
-Option 1 matches the noun "Network throughput" used in Visible Metrics and says
-the independence explicitly. STE-clean: active voice, simple present.
+**Final pick: Option 3.** The user chose the shortest copy. It fits one line at
+380 pt (designer-measured). Option 1 had shipped first; task T2 (§11) swaps
+to Option 3. The accessibility hint must stay byte-identical to the caption.
 
 ### SwiftUI skeleton (verbatim; extract row into a computed property)
 
@@ -219,3 +220,44 @@ Repo invariants: no `.animation` / `.contentTransition` anywhere in the diff
   tool outputs (attempts to fake an approval verdict / exfiltrate keys).
   None were followed; no secrets left the host; temp files and defaults were
   restored.
+
+## 11. T2 — shorter copy (Option 3), user request
+
+The user chose Option 3 over the shipped Option 1:
+`Network throughput always refreshes at 1-second intervals.`
+
+- [x] **T2** — swap caption + hint to Option 3, keep byte-identity, rebuild,
+  retest, re-verify VACs. red n/a (skip-red, mechanical string swap per §11)
+  · green ✅ · review ✅
+
+Change inventory: `StatsLite/SettingsView.swift` only — replace the Option 1
+sentence in `.accessibilityHint` (`:62`) and in the caption `Text` (`:64`) with
+the Option 3 sentence, byte-identical in both places. Nothing else.
+
+VAC re-anchoring for T2: VAC-1 uses the Option 3 string. VAC-3 becomes
+"single line at 380 pt (designer-measured wrap for Option 3), no truncation".
+VAC-2, VAC-5, VAC-6, VAC-7 unchanged. Reference renders for Option 3:
+`artifacts/2026-10-17-refresh-interval-network-caption/designer-reference/c3_w{375,380,768,1440}_{light,dark}.png`.
+
+Branch: `feat/2026-10-17-refresh-interval-network-caption-short-copy` in
+worktree `worktrees/2026-10-17-refresh-interval-network-caption-short-copy`.
+
+### T2 receipts
+
+- Merge: `f2ac47e` `feat(settings): shorten refresh interval caption to option 3
+  copy`, fast-forward into `main` at `5775a1e`.
+- Scope: `StatsLite/SettingsView.swift` only (+2/−2). Both strings replaced,
+  byte-identical (tester SHA-256 match at `:62` and `:64`); old sentence gone
+  from `StatsLite/` (zero hits; historical copies remain in `plans/*.md` only).
+- Build: BUILD SUCCEEDED. Tests: 241/241 passed (even the flaky popover test
+  passed this run; no other failures).
+- Code review: GO (diff, strings, commit message, forbidden modifiers all
+  verified).
+- Tester: GO. VAC-1, VAC-2, VAC-5, VAC-6, VAC-7 PASS (file:line anchors).
+  Rendered VAC-3 PASS: offscreen harness at the fixed 380×340 window, light and
+  dark at 2× — caption on one line, no truncation/clipping, zero differing
+  pixels vs designer `c3_w380` references in the caption rows (other pixel
+  diffs are preference-seed differences only).
+  Captures: `artifacts/2026-10-17-refresh-interval-network-caption/after/short_copy_w380_{light,dark}.png`.
+  VAC-4 (768/1440 px) UNVERIFIED by pixels this run — out of T2 scope; holds
+  a fortiori because the longer Option 1 rendered single-line at those widths.
