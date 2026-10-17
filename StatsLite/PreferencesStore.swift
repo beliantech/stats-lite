@@ -60,7 +60,7 @@ final class PreferencesStore {
     // MARK: - Sampling and history
 
     /// Refresh interval in seconds. The picker offers 1, 2, 3, and 5.
-    var refreshInterval: Int = 2 {
+    var refreshInterval: Int = 1 {
         didSet {
             guard !isSeeding else { return }
             refreshIntervalStorage = refreshInterval
@@ -114,7 +114,7 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("showRAM") private var showRAMStorage: Bool = true
     @ObservationIgnored @AppStorage("showGPU") private var showGPUStorage: Bool = true
     @ObservationIgnored @AppStorage("showNetwork") private var showNetworkStorage: Bool = true
-    @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 2
+    @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 1
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
     @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
 

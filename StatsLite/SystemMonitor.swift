@@ -31,7 +31,7 @@ final class SystemMonitor {
     var enabledMetrics: EnabledMetrics = .all
 
     /// Seconds between passes. Set it, then call `restartSampling()`.
-    var refreshInterval: TimeInterval = 2.0
+    var refreshInterval: TimeInterval = 1.0
 
     /// Seconds of sparkline history kept per metric. Set it, then call
     /// `restartSampling()`.

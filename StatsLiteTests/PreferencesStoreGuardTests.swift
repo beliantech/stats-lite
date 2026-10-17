@@ -52,7 +52,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
         XCTAssertTrue(store.showGPU)
         XCTAssertEqual(store.activeMetricCount, 3)
         XCTAssertEqual(store.enabledMetrics, .all)
-        XCTAssertEqual(store.refreshInterval, 2)
+        XCTAssertEqual(store.refreshInterval, 1)
         XCTAssertEqual(store.historyDuration, 60)
         XCTAssertTrue(store.showCoreBreakdown)
     }
