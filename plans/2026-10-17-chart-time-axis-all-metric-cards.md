@@ -243,7 +243,15 @@ from screenshots, `rg`, or test output.
   Open item: the plan's Docs section presupposes a `DESIGN.md` that does not exist in
   this repo (no such file in history); the axis rule will land in the repo `AGENTS.md`
   instead, as a planner-owned MD change after merge.
-- [ ] **T4** — `tester` VAC run: VAC-1…VAC-12, dark + light, screenshots to `artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`. verdict ⏳
+- [x] **T4** — `tester` VAC run: verdict `OVERALL: INCOMPLETE` (2026-10-17); dark-capture step TCC-blocked (Apple Events -1743, same denial that killed the baseline script). Verdict `INCOMPLETE` → user directed "skip tester" after the report; remaining gap waived by user.
+
+  Tester evidence: light-appearance captures `after/light.png`, `after/light_t8.png`,
+  `after/light_network_loading.png` (+ `after/probe_light.log`) show VAC-1,2,3,5,6,7,9,10,11
+  Met; VAC-4 and VAC-12 code-verified (rg/diff); VAC-8 Met in light, dark capture Blocked.
+  Window grew exactly +45 pt for 3 axis rows vs the 2026-10-16 baseline; no visual defect
+  found. Environment restored (prefs: historyDuration=120, showNetwork=1, refreshInterval=5,
+  appearance auto; all test StatsLite instances killed). verdict ✗ · screenshots in
+  `worktrees/2026-10-17-chart-time-axis-all-metric-cards/artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`
 - [ ] **T5** — `reviewer` code review against `git diff main...HEAD`; on GO, merge `--ff-only` or `--squash` to main. verdict ⏳ · merge ⏳
 
 Notation: Plan → Phase → Task (`T*`) → Receipts (red SHA / green SHA / review verdict).
