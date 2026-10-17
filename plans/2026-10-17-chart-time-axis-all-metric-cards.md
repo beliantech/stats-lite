@@ -223,6 +223,11 @@ from screenshots, `rg`, or test output.
 ## Tasks
 
 - [ ] **T1** — `[red]` write failing unit tests for `MetricFormatters.historyDurationAxis` covering all five durations (30/60/120/180/300), the `<60s` branch, the negative clamp, and the NaN/infinite guard; run the suite, report red output, touch no app code. red ⏳ · green — · review —
+
+  Red evidence (T1, 2026-10-17): `StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift`,
+  4 test methods / 10 assertions. Suite run exit 65, `** TEST FAILED **`, 10× `Type
+  'MetricFormatters' has no member 'historyDurationAxis'`, build fails before execution
+  (xcresult totalTestCount 0). Compile-failure red is the intended red for a new API.
 - [ ] **T2** — `[skip-red]` green: implement `historyDurationAxis`, add `SparklineTimeAxisView` (Blueprint Part 2), integrate into CPU / Memory / GPU / Network cards, delete the Network `axisRow`, run tests to green. red `T1` · green ⏳ · review ⏳
 - [ ] **T3** — self-verify: 0 type errors on changed files; the macOS `xcodebuild test` command from ISC-9 passes. record ⏳
 - [ ] **T4** — `tester` VAC run: VAC-1…VAC-12, dark + light, screenshots to `artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`. verdict ⏳
