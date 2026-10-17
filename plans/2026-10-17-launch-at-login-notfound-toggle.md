@@ -50,25 +50,25 @@ behavior of `.notFound` are unverified prior.
 
 Binary checks. All must read "yes":
 
-- [ ] ISC-1: `StatsLiteTests/LaunchAtLoginServiceTests.swift` exists and asserts
+- [x] ISC-1: `StatsLiteTests/LaunchAtLoginServiceTests.swift` exists and asserts
       `LaunchAtLoginService.map(.notFound) == .notRegistered`,
       `map(.notRegistered) == .notRegistered`, `map(.enabled) == .enabled`, and
       `map(.requiresApproval) == .approvalNeeded`. Red phase: the
       `.notFound` assertion fails; green phase: all pass.
-- [ ] ISC-2: full test suite passes with zero failures
+- [x] ISC-2: full test suite passes with zero failures
       (`xcodebuild test -scheme StatsLite -destination 'platform=macOS'`), and
       the Release build succeeds.
-- [ ] ISC-3: `register()` and `unregister()` remain reachable only from the
+- [x] ISC-3: `register()` and `unregister()` remain reachable only from the
       Settings toggle binding (`SettingsView.swift:111-124`); `refresh()`
       performs a status read only. No `register()` call exists in `init()`,
       `refresh()`, or any launch path (no retry loop).
-- [ ] ISC-4: `.requiresApproval` still maps to `.approvalNeeded` (covered by
+- [x] ISC-4: `.requiresApproval` still maps to `.approvalNeeded` (covered by
       ISC-1) and `.unavailable` still exists for `@unknown default`, so the
       Settings hint and lock logic in `SettingsView.swift:125-148` keep their
       current behavior for every other state.
-- [ ] ISC-5: `map(_:)` access is `internal` (not `private`) so the test target
+- [x] ISC-5: `map(_:)` access is `internal` (not `private`) so the test target
       can reach it via `@testable import StatsLite`; no other visibility or
-      signature change.
+      signature change. Verified 2026-10-17 in green run.
 
 Failure modes:
 
@@ -108,13 +108,13 @@ No UI edits: `SettingsView` lock and hint logic already behave correctly for
 
 ## Tasks
 
-- [ ] **T1** (red) — worktree `worktrees/2026-10-17-launch-at-login-notfound-toggle`,
-      branch `feat/2026-10-17-launch-at-login-notfound-toggle`. Add the test file,
-      make `map(_:)` internal, run the suite, report the red SHA and the exact
-      failing assertion.
-- [ ] **T2** (green, same worktree) — apply the mapping change and the catch-block
-      `refresh()`; run the full suite and a Release build; report the green SHA
-      and the ISC checklist.
+- [x] **T1** (red) — red 783ac77 (237 tests, exactly 1 failure:
+      `testNotFoundMapsToNotRegistered`, right reason; `StatusItemControllerPopoverTests`
+      timing-flake falsified as unrelated — passed on pristine tree and in final run).
+- [x] **T2** (green, same worktree) — green d644d3d (+6/-1, one file). Full suite
+      237 tests, 0 failures, TEST SUCCEEDED; Release build SUCCEEDED; ISC-1..5 all
+      yes. Review GO (2026-10-17: contract coverage, error-message retention,
+      no retry loop, zero UI diff). Merged fast-forward as d644d3d.
 
 ## Notation
 
