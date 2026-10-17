@@ -4,7 +4,7 @@
 //
 //  Network Usage card: header row (network symbol + title + combined
 //  rate), legend row (red Up / blue Down / Peak), 56 pt mirrored
-//  chart, time axis row. Colors follow the menu-bar convention:
+//  chart, shared time axis row. Colors follow the menu-bar convention:
 //  upload systemRed, download systemBlue. Loading state shows
 //  -- KB/s, "Waiting for first sample", and a 38 pt placeholder.
 //  Sampling off shows the dashed 38 pt container with a warning icon
@@ -63,7 +63,7 @@ struct NetworkCardView: View {
                 )
                 .equatable()
 
-                axisRow
+                SparklineTimeAxisView(duration: monitor.historyDuration).equatable()
             } else {
                 Text("Waiting for first sample")
                     .font(.system(size: 10))
@@ -121,18 +121,6 @@ struct NetworkCardView: View {
                 .foregroundStyle(.tertiary)
                 .lineLimit(1)
         }
-    }
-
-    // MARK: - Time axis row (~12 pt)
-
-    private var axisRow: some View {
-        HStack {
-            Text("-\(Int(monitor.historyDuration))s")
-            Spacer()
-            Text("Now")
-        }
-        .font(.system(size: 9))
-        .foregroundStyle(.tertiary)
     }
 
     // MARK: - Loading state (VAC-11): 38 pt placeholder rect

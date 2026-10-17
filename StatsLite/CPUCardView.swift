@@ -43,6 +43,8 @@ struct CPUCardView: View {
             )
             .equatable()
 
+            SparklineTimeAxisView(duration: monitor.historyDuration).equatable()
+
             if preferences.showCoreBreakdown {
                 disclosure
             }

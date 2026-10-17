@@ -62,4 +62,19 @@ enum MetricFormatters {
         }
         return "\(Int(gb.rounded())) GB/s"
     }
+
+    /// Formats history window duration into a compact sparkline axis anchor.
+    /// Seconds under 60 render with 's' (for example: "-30s").
+    /// Durations of 60 seconds or more render with 'm' (for example: "-1m", "-2m", "-5m").
+    static func historyDurationAxis(_ seconds: TimeInterval) -> String {
+        // Deviation from Blueprint (reviewer finding 2026-10-17): guard non-finite
+        // input. Int(NaN) / Int(infinity) traps at runtime. No visual change for
+        // the five valid durations.
+        let totalSeconds = seconds.isFinite ? max(Int(seconds), 0) : 0
+        if totalSeconds < 60 {
+            return "-\(totalSeconds)s"
+        }
+        let minutes = totalSeconds / 60
+        return "-\(minutes)m"
+    }
 }

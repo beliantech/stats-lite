@@ -47,6 +47,8 @@ struct MemoryPressureCardView: View {
             )
             .equatable()
 
+            SparklineTimeAxisView(duration: monitor.historyDuration).equatable()
+
             Text(usedLine)
                 .font(.system(size: 11).monospacedDigit())
                 .foregroundStyle(.secondary)

@@ -37,6 +37,8 @@ struct GPUCardView: View {
                     capacity: monitor.sparklineCapacity
                 )
                 .equatable()
+
+                SparklineTimeAxisView(duration: monitor.historyDuration).equatable()
             } else {
                 Text("Unavailable")
                     .font(.system(size: 10))
