@@ -16,7 +16,7 @@ import XCTest
 final class MenuBarBlockBuilderTests: XCTestCase {
 
     /// Pinned per-block width from the plan constants table.
-    private let blockWidth: CGFloat = 34
+    private let blockWidth: CGFloat = 39
 
     private func blocks(
         showCPU: Bool = true,
@@ -325,7 +325,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
                 dotState: .normal,
                 valueText: "62%",
                 valueTint: .primary,
-                width: 34
+                width: 39
             )
         )
         XCTAssertFalse(ram[0].valueText.contains("●"))

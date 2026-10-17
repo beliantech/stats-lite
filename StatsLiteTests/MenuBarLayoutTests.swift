@@ -2,11 +2,14 @@
 //  MenuBarLayoutTests.swift
 //  StatsLiteTests
 //
-//  Red-phase tests for MenuBarLayout.length(showCPU:showRAM:showGPU:),
-//  which does not exist yet. Constants from the plan
-//  2026-10-15-menubar-stacked-fixed-width: each block pins 34 pt,
-//  the gap between blocks is 4 pt, and outer padding is 2 pt per
-//  side. Totals: 114 (three), 76 (any pair), 38 (single), 4 (off).
+//  Pinned-length tests for MenuBarLayout.length(showCPU:showRAM:
+//  showGPU:showNetwork:). Constants from the plan
+//  2026-10-17-menu-bar-typography-and-block-width: each standard
+//  block pins 39 pt, the network block pins 50 pt, the gap
+//  between blocks is 4 pt, and outer padding is 2 pt per side.
+//  Totals: 129 (three standards), 86 (any pair), 43 (single),
+//  183 (all four), 97 (one standard + network), 54 (network
+//  only), 4 (off).
 //
 
 import XCTest
@@ -16,58 +19,58 @@ final class MenuBarLayoutTests: XCTestCase {
 
     private let accuracy: CGFloat = 0.0001
 
-    func testAllThreeMetricsTotal114() {
+    func testAllThreeMetricsTotal129() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: true, showGPU: true),
-            114,
+            129,
             accuracy: accuracy
         )
     }
 
-    func testCPURAMPairTotal76() {
+    func testCPURAMPairTotal86() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: true, showGPU: false),
-            76,
+            86,
             accuracy: accuracy
         )
     }
 
-    func testCPUGPUPairTotal76() {
+    func testCPUGPUPairTotal86() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: false, showGPU: true),
-            76,
+            86,
             accuracy: accuracy
         )
     }
 
-    func testRAMGPUPairTotal76() {
+    func testRAMGPUPairTotal86() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: false, showRAM: true, showGPU: true),
-            76,
+            86,
             accuracy: accuracy
         )
     }
 
-    func testCPUSingleTotal38() {
+    func testCPUSingleTotal43() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: false, showGPU: false),
-            38,
+            43,
             accuracy: accuracy
         )
     }
 
-    func testRAMSingleTotal38() {
+    func testRAMSingleTotal43() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: false, showRAM: true, showGPU: false),
-            38,
+            43,
             accuracy: accuracy
         )
     }
 
-    func testGPUSingleTotal38() {
+    func testGPUSingleTotal43() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: false, showRAM: false, showGPU: true),
-            38,
+            43,
             accuracy: accuracy
         )
     }
@@ -86,7 +89,7 @@ final class MenuBarLayoutTests: XCTestCase {
         XCTAssertEqual(MenuBarLayout.networkBlockWidth, 50, accuracy: accuracy)
     }
 
-    func testAllFourMetricsTotal168() {
+    func testAllFourMetricsTotal183() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -94,7 +97,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: true,
                 showNetwork: true
             ),
-            168,
+            183,
             accuracy: accuracy
         )
     }
@@ -112,7 +115,7 @@ final class MenuBarLayoutTests: XCTestCase {
         )
     }
 
-    func testCPUPlusNetworkTotal92() {
+    func testCPUPlusNetworkTotal97() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -120,12 +123,12 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: false,
                 showNetwork: true
             ),
-            92,
+            97,
             accuracy: accuracy
         )
     }
 
-    func testNetworkOffKeepsThreeMetricTotal114() {
+    func testNetworkOffKeepsThreeMetricTotal129() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -133,7 +136,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: true,
                 showNetwork: false
             ),
-            114,
+            129,
             accuracy: accuracy
         )
     }
