@@ -3,7 +3,13 @@
 Date: 2026-10-17
 Plan name: `2026-10-17-menu-bar-typography-and-block-width`
 Risk class: **R2** (UI work — zero-tolerance visual policy applies; visual defects are blocking).
-Status: authored 2026-10-17. Awaiting user confirmation, then `[plan-review]`.
+Status: **Complete 2026-10-17.** plan-review GO; red `d0ccaa4` (241 tests, 18 failed = 17 IC-12
+expected + 1 pre-existing popover failure); green `303821f` (240/241 — only
+`StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease` failed in-session,
+proven environment-dependent by stash-and-rerun); code review GO (fresh reviewer session,
+`5f6722d2`, after two verdict-less summaries); rebased onto main (`aae8c01` popover commit)
+prior to merge; post-rebase suite 241/241; merged fast-forward to `main` at
+**`303821f`**; worktree and branch removed.
 Repo HEAD at authoring: `1e906e3`, clean (untracked `.DS_Store`, `worktrees/`, artifacts only).
 Baseline suite: **241 tests, 0 failures** at `1e906e3` (run at authoring,
 `DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test`).
@@ -221,8 +227,8 @@ None. No band-aids introduced or left behind.
       `feat/2026-10-17-menu-bar-typography-and-block-width`. Red: test-only commit that
       updates the three test files to the blueprint expectations and fails exactly per
       IC-12. Green: blueprint Appendix B verbatim (3 token lines + doc comment). Full
-      `xcodebuild test` + build in the worktree with `DEVELOPER_DIR` set. red ⏳ ·
-      green ⏳ · review ⏳
+      `xcodebuild test` + build in the worktree with `DEVELOPER_DIR` set.
+      red `d0ccaa4` · green `303821f` · review GO (`5f6722d2`) · merged `303821f`
 
 ## Notation
 
