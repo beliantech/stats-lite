@@ -28,17 +28,17 @@ bundle contains the icon and reports it in its Info.plist.
 
 Binary checks. All must read "yes" on the built product:
 
-- [ ] ISC-1: `StatsLite/Assets.xcassets/Contents.json`,
+- [x] ISC-1: `StatsLite/Assets.xcassets/Contents.json`,
       `StatsLite/Assets.xcassets/AppIcon.appiconset/Contents.json`, and
       `StatsLite/Assets.xcassets/AppIcon.appiconset/AppIcon-1024.png` exist in the
       repository; the PNG is generated from `assets/StatsLiteLogoDark.svg` at
       exactly 1024x1024.
-- [ ] ISC-2: the built `StatsLite.app/Contents/Resources/Assets.car` exists and
+- [x] ISC-2: the built `StatsLite.app/Contents/Resources/Assets.car` exists and
       contains the `AppIcon` image set (`assetutil --info` on the file lists
       `AppIcon`).
-- [ ] ISC-3: `plutil -extract CFBundleIconName raw StatsLite.app/Contents/Info.plist`
+- [x] ISC-3: `plutil -extract CFBundleIconName raw StatsLite.app/Contents/Info.plist`
       prints `AppIcon`.
-- [ ] ISC-4: the app builds clean from a fresh build with zero errors
+- [x] ISC-4: the app builds clean from a fresh build with zero errors
       (`xcodebuild build`), and `git diff` on `project.pbxproj` touches only
       build-setting lines.
 
@@ -99,7 +99,12 @@ None. No band-aids are introduced or left behind.
       `assets/StatsLiteLogoDark.svg` at 1024x1024, and set
       `ASSETCATALOG_COMPILER_APPICON_NAME` plus `INFOPLIST_KEY_CFBundleIconName`
       to `AppIcon` in the app target's Debug and Release configurations. Build
-      and verify ISC-1 through ISC-4. red ⏳ · green ⏳ · review ⏳
+      and verify ISC-1 through ISC-4. red 810dc0c · green 810dc0c (fresh rebuild,
+      all ISC yes) · review GO (2026-10-17; both deviations verified: actool slot
+      `idiom mac / 512x512 / 2x` for the 1024 PNG because Xcode 27 actool rejects
+      a `mac` platform single-size entry; machine-local `DEVELOPMENT_DIR` build
+      override, nothing repo-committed). Merged 27b98c2 (rebased onto main,
+      fast-forward).
 
 ## Notation
 
