@@ -4,8 +4,9 @@ Plan name: `2026-10-17-chart-time-axis-all-metric-cards`
 Date: 2026-10-17
 Risk class: **R2** (UI work, zero-tolerance visual policy applies)
 Approval: user approved in chat ("ok", 2026-10-17) after the Design Blueprint was presented.
-Status: **Active** — reviewer plan-review verdict `### VERDICT: GO` (2026-10-17, re-review
-after fixing three findings: baseline task gap, `isFinite` guard, macOS test destination).
+Status: **Done** — merged to `main` at `338c896` (2026-10-17, ff-only after rebase onto
+the concurrently rewritten main; reviewer GO with verified receipts; tester light-mode
+VAC pass, dark capture TCC-blocked and waived by user).
 Worktree: `worktrees/2026-10-17-chart-time-axis-all-metric-cards` (branch `feat/2026-10-17-chart-time-axis-all-metric-cards`)
 
 ## Intent
@@ -252,7 +253,23 @@ from screenshots, `rg`, or test output.
   found. Environment restored (prefs: historyDuration=120, showNetwork=1, refreshInterval=5,
   appearance auto; all test StatsLite instances killed). verdict ✗ · screenshots in
   `worktrees/2026-10-17-chart-time-axis-all-metric-cards/artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`
-- [ ] **T5** — `reviewer` code review against `git diff main...HEAD`; on GO, merge `--ff-only` or `--squash` to main. verdict ⏳ · merge ⏳
+- [x] **T5** — `reviewer` code review against `git diff main...HEAD`; on GO, merge `--ff-only` or `--squash` to main. verdict ✓ · merge ✓
+
+  Review (2026-10-17): first pass returned in 5 s without the required verdict line and
+  was rejected; the resumed session produced verified receipts (diff stat, green commit
+  touches no test file, quoted view/formatter bodies, `rg` one definition + four use
+  sites, `axisRow` deleted, animation/transition matches only in comments, GPU/Network
+  branch placement quoted) and `### VERDICT: GO`.
+
+  Merge note: `main` was force-rewritten mid-plan by the concurrent app-icon session
+  (old base `d4d5af1` orphaned, receipt docs cherry-picked in). The two task commits
+  were rebased onto the new `main` tip and the full suite re-run green (`** TEST
+  SUCCEEDED **`) before a fast-forward merge.
+
+  Merged to `main` at `338c896` (red `75ec11b`, green `338c896`, ff-only). Tester
+  screenshots copied to `artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`
+  before worktree removal. Axis rule recorded in the repo `AGENTS.md` (no `DESIGN.md`
+  exists in this repo).
 
 Notation: Plan → Phase → Task (`T*`) → Receipts (red SHA / green SHA / review verdict).
 
