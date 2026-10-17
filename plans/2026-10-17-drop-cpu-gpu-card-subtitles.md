@@ -134,3 +134,14 @@ say so explicitly instead of guessing.
 - `git diff main` shows no test, config, or dependency changes.
 - Test mandate is satisfied by the tester's GO report.
 - Merge is fast-forward or squash into `main`.
+
+## 9. Receipts
+
+- Merge: `aae8c01` `feat(popover): drop CPU/GPU card subtitles`, fast-forward into `main` at `33851df`.
+- Scope: `StatsLite/CPUCardView.swift`, `StatsLite/GPUCardView.swift` only (+10/−11).
+- Build: `xcodebuild -scheme StatsLite -configuration Debug clean build` → BUILD SUCCEEDED (`DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer`; xcode-select points at CommandLineTools).
+- Tests: 240 passed, 1 failed — `StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease`. Pre-existing on `main`: same test fails with the changes stashed (tree = `33851df`), same timeout. Unrelated to this change.
+- `rg -n "Across .* cores|Integrated Graphics" StatsLite/` → zero hits.
+- Tester verdict: GO. VAC-1..VAC-10, VAC-12, VAC-13 PASS (source-level, file:line cited). VAC-11 UNVERIFIED: rendered screenshots unavailable; this host lacks the Screen Recording and Automation (System Events) TCC permissions, so `scripts/capture_baseline.sh` fails with `-1743`. Not a code defect.
+- To verify VAC-11 later: grant those permissions, then run
+  `scripts/capture_baseline.sh --out-dir artifacts/2026-10-17-drop-cpu-gpu-card-subtitles/after`.
