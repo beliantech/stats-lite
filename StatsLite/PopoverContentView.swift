@@ -71,9 +71,6 @@ struct PopoverContentView: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Image(systemName: "gauge.with.needle")
-                .font(.system(size: 13, weight: .semibold))
-                .foregroundStyle(.tint)
             Text("StatsLite")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.primary)
@@ -116,13 +113,42 @@ struct PopoverContentView: View {
             Text("Updated every \(preferences.refreshInterval)s")
                 .font(.system(size: 10))
                 .foregroundStyle(.tertiary)
+                .lineLimit(1)
             Spacer()
-            Text("macOS Native")
+            Text(Self.versionLabel())
                 .font(.system(size: 10))
                 .foregroundStyle(.tertiary)
+                .lineLimit(1)
+                .accessibilityLabel(Self.versionAccessibilityLabel())
         }
         .padding(.horizontal, 12)
         .padding(.top, 5)
         .padding(.bottom, 8)
+    }
+
+    // MARK: - Version helpers
+
+    /// Pure formatting helper for display version and build number.
+    static func versionLabel(version: String, build: String) -> String {
+        "v\(version) (\(build))"
+    }
+
+    /// Version label from the bundle display version and build number.
+    static func versionLabel(bundle: Bundle = .main) -> String {
+        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0"
+        let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+        return versionLabel(version: version, build: build)
+    }
+
+    /// Pure formatting helper for accessibility label.
+    static func versionAccessibilityLabel(version: String, build: String) -> String {
+        "Version \(version), build \(build)"
+    }
+
+    /// Accessibility description for assistive technology.
+    static func versionAccessibilityLabel(bundle: Bundle = .main) -> String {
+        let version = bundle.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "1.0.0"
+        let build = bundle.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "1"
+        return versionAccessibilityLabel(version: version, build: build)
     }
 }
