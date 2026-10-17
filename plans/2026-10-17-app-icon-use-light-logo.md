@@ -58,6 +58,13 @@ None. No band-aids involved.
 
 ## Tasks
 
-- [ ] **T1** — render blueprint SVG to `AppIcon-1024.png`, commit source SVG,
+- [x] **T1** — render blueprint SVG to `AppIcon-1024.png`, commit source SVG,
       verify I1–I5. red n/a (`[skip-red]` — asset swap, no code logic) ·
-      green ⏳ · review ⏳
+      green PASS · review GO
+
+## Merge receipt
+
+Branch `app-icon-light-logo` squashed into `main` as `19c78bb`
+("feat(app-icon): light-mode polished bundle icon").
+Planner docs commit: `6ea5446`. Deviation (FM3/librsvg single-feDropShadow)
+recorded in `plans/2026-10-17-app-icon-light/design.md`.
