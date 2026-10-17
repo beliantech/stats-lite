@@ -32,19 +32,19 @@ right shows the live bundle version as `v1.0.0 (1)` in both appearances.
 
 ## ISC
 
-- [ ] ISC-1: `rg 'gauge.with.needle' StatsLite/PopoverContentView.swift` prints
+- [x] ISC-1: `rg 'gauge.with.needle' StatsLite/PopoverContentView.swift` prints
       no hits; the first subview of the header `HStack` is `Text("StatsLite")`.
-- [ ] ISC-2: `rg '"macOS Native"' StatsLite/` prints no hits (whole repo, all
+- [x] ISC-2: `rg '"macOS Native"' StatsLite/` prints no hits (whole repo, all
       sources).
-- [ ] ISC-3: `rg -F 'v1.0.0' StatsLite/PopoverContentView.swift` prints no hits —
+- [x] ISC-3: `rg -F 'v1.0.0' StatsLite/PopoverContentView.swift` prints no hits —
       the view contains no version literal; the string comes from
       `PopoverContentView.versionLabel(bundle:)` via `CFBundleShortVersionString`
       + `CFBundleVersion`.
-- [ ] ISC-4: unit tests pass: `versionLabel(version:build:)` returns
+- [x] ISC-4: unit tests pass: `versionLabel(version:build:)` returns
       `v1.0.0 (1)` for inputs `1.0.0` / `1` and `v1.0.0 (9999)` for build `9999`;
       the bundle-sourced `versionLabel()` matches
       `^v[0-9][0-9.]* \([0-9]+\)$`. Full `xcodebuild test` suite green.
-- [ ] ISC-5: built product reports the values that make the label read
+- [x] ISC-5: built product reports the values that make the label read
       `v1.0.0 (1)`: `plutil -extract CFBundleShortVersionString raw
       .derivedData/Build/Products/Release/StatsLite.app/Contents/Info.plist`
       prints `1.0.0`, and `plutil -extract CFBundleVersion raw
@@ -56,6 +56,13 @@ right shows the live bundle version as `v1.0.0 (1)` in both appearances.
       vertically centered with the gear/quit buttons (28 pt header), footer right
       reads `v1.0.0 (1)` in tertiary 10 pt, no wrap/truncation/clip at 280 pt,
       light and dark parity.
+      Status 2026-10-17: pixel capture is TCC-blocked from agent sessions
+      (SSH-originated; no prompt possible). Measured stand-in evidence:
+      text widths and spacer clearance measured in-process (VAC-9: 99.47 pt
+      worst case), popover window confirmed open (306x631, no crash),
+      VAC-1..VAC-9 source-verified + code review GO. VAC-10 (dark/light
+      pixels) awaits a user-run `scripts/capture_baseline.sh` from a
+      Finder-launched terminal.
 
 Failure modes:
 
@@ -113,14 +120,14 @@ None. No band-aids introduced or left behind.
 
 ## Tasks
 
-- [ ] **T1** — Red-green implementation in worktree
+- [x] **T1** — Red-green implementation in worktree
       `worktrees/2026-10-17-popover-drop-gauge-version-footer`, branch
       `feat/2026-10-17-popover-drop-gauge-version-footer`. Red: tests for
       `versionLabel(version:build:)` and the bundle-sourced regex (ISC-4) against
       a failing stub, commit 1. Green: blueprint Part 6 Edit 1 verbatim (header
       icon removal + footer version label + four helpers), commit 2. Run full `xcodebuild test` + build, ISC-1..ISC-5, and
       `scripts/capture_baseline.sh --out-dir artifacts/2026-10-17-popover-drop-gauge-version-footer/after`
-      for dark/light screenshots (ISC-6). red ⏳ · green ⏳ · review ⏳
+      for dark/light screenshots (ISC-6). red cae1504 · green 47b8cee · review GO (plan + code) · merged 29b928b (squash)
 
 ## Notation
 
