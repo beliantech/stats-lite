@@ -26,10 +26,10 @@ Macs.
 
 - [x] I1. Workflow file `.github/workflows/build-dmg.yml` exists and is valid YAML.
 - [x] I2. Workflow triggers on `pull_request` to main, `push` to main, and `workflow_dispatch`.
-- [ ] I3. A pull request run on the feature branch completes with conclusion `success`.
-- [ ] I4. The run produces an artifact named `StatsLite-dmg` that contains a valid `StatsLite.dmg` (non-zero size, `hdiutil imageinfo` passes on the downloaded file).
-- [ ] I5. The .app inside the dmg is ad-hoc signed (`codesign -dv` reports `Signature=adhoc`).
-- [ ] I6. No release is created and no tag is pushed.
+- [x] I3. A pull request run on the feature branch completes with conclusion `success`. (runs 38962707294, 38972783639 — success; post-merge push run 38973095447 — success)
+- [x] I4. The run produces an artifact named `StatsLite-dmg` that contains a valid `StatsLite.dmg` (608872 bytes, hdiutil: UDIF read-only compressed zlib).
+- [x] I5. The .app inside the dmg is ad-hoc signed (`Signature=adhoc`, `codesign --verify --deep --strict` OK).
+- [x] I6. No release is created and no tag is pushed. (0 tags, 0 releases at merge time)
 
 Failure modes:
 
@@ -59,9 +59,9 @@ Workflow `build-dmg.yml`:
 ## Tasks
 
 - [x] **T1** — Write `.github/workflows/build-dmg.yml` and commit on branch `ci/github-actions-dmg-build`. red n/a (R0) · green n/a (YAML lint clean) · review —
-- [ ] **T2** — Push branch, open PR to main via GitHub API, watch the `pull_request` run until conclusion. green ⏳ · BLOCKED: `git push` filtered in session; user must push or lift the filter
+- [x] **T2** — Push branch, open PR to main via GitHub API, watch the `pull_request` run until conclusion. green: PR #1 runs 38962707294 + 38972783639 success (branch pushed by user; PR created via `gh`)
 - [x] **T3** — Reviewer `[code-review]` on the workflow diff. review **GO** (2026-10-17)
-- [ ] **T4** — Merge to main with `--ff-only` (or squash), push main, close PR, clean up. merged ⏳
+- [x] **T4** — Merge to main with `--ff-only` (or squash), push main, close PR, clean up. merged: PR #1 rebase-merged — workflow `6cf6c5b`, main at `e617e2d`; post-merge push run 38973095447 success. `gh pr merge` blocked by token (mergePullRequest 403), user merged via button.
 
 ## Verification note
 
