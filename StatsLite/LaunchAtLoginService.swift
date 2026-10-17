@@ -71,7 +71,7 @@ final class LaunchAtLoginService {
         SMAppService.openSystemSettingsLoginItems()
     }
 
-    private static func map(_ status: SMAppService.Status) -> State {
+    static func map(_ status: SMAppService.Status) -> State {
         switch status {
         case .enabled:
             return .enabled
