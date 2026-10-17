@@ -50,9 +50,9 @@ struct MenuBarBlock: Equatable {
 /// Layout constants shared by the block builder, MenuBarLayout, and
 /// the stacked views. Single source of truth for widths.
 enum MenuBarLayout {
-    /// Pinned width of every block. "100%" at the value font fits
-    /// with clearance.
-    static let blockWidth: CGFloat = 34
+    /// Pinned width of every block. "100%" at 12 pt regular mono (33.78 pt)
+    /// fits with 2.61 pt clearance per side, satisfying the >= 2.5 pt rule.
+    static let blockWidth: CGFloat = 39
     /// Pinned width of the two-line network block. Fits the widest
     /// truncated rate string "999 MB/s" (42.91 pt) plus the 6 pt dot
     /// with 1.09 pt clearance (appendix B §1).
