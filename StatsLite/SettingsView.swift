@@ -59,9 +59,9 @@ struct SettingsView: View {
                 Text("3 s").tag(3)
                 Text("5 s").tag(5)
             }
-            .accessibilityHint("Network throughput refreshes once per second, independent of this setting.")
+            .accessibilityHint("Network throughput always refreshes at 1-second intervals.")
 
-            Text("Network throughput refreshes once per second, independent of this setting.")
+            Text("Network throughput always refreshes at 1-second intervals.")
                 .font(.caption)
                 .foregroundStyle(.secondary)
         }
