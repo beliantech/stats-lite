@@ -3,8 +3,8 @@
 //  StatsLite
 //
 //  GPU card per extension blueprint §2. Available state: header value,
-//  GPU name subtitle, 38 pt teal sparkline. Unavailable state: --%
-//  value, dashed container with warning icon, caveat footnote.
+//  38 pt teal sparkline. Unavailable state: --% value, dashed
+//  container with warning icon, caveat footnote.
 //
 
 import SwiftUI
@@ -28,9 +28,6 @@ struct GPUCardView: View {
             }
 
             if gpu != nil {
-                Text("Integrated Graphics")
-                    .font(.system(size: 10))
-                    .foregroundStyle(.tertiary)
                 SparklineView(
                     values: monitor.gpuHistory.values,
                     tintColor: .teal,
@@ -94,6 +91,6 @@ struct GPUCardView: View {
             return "GPU metrics unavailable on this hardware. Sampling requires Apple Silicon or supported Metal driver."
         }
         let percent = Int((gpu.deviceUtilization * 100).rounded())
-        return "GPU usage is \(percent) percent on Integrated Graphics."
+        return "GPU usage is \(percent) percent."
     }
 }

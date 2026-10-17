@@ -3,7 +3,7 @@
 //  StatsLite
 //
 //  CPU card per the base blueprint: header with title and value,
-//  subtitle, 38 pt sparkline, per-core disclosure with an optional
+//  38 pt sparkline, per-core disclosure with an optional
 //  two-column core grid (+80 pt).
 //
 
@@ -32,9 +32,11 @@ struct CPUCardView: View {
                     .foregroundStyle(cpu == nil ? Color(nsColor: .tertiaryLabelColor) : Color.primary)
             }
 
-            Text(cpu == nil ? "Waiting for first sample" : "Across \(coreCount) cores")
-                .font(.system(size: 10))
-                .foregroundStyle(.tertiary)
+            if cpu == nil {
+                Text("Waiting for first sample")
+                    .font(.system(size: 10))
+                    .foregroundStyle(.tertiary)
+            }
 
             SparklineView(
                 values: monitor.cpuHistory.values,
@@ -134,6 +136,6 @@ struct CPUCardView: View {
     private var cpuSummary: String {
         guard let cpu else { return "CPU usage unavailable. Waiting for first sample." }
         let percent = Int((cpu.totalUsage * 100).rounded())
-        return "CPU usage is \(percent) percent across \(cpu.perCore.count) cores."
+        return "CPU usage is \(percent) percent."
     }
 }
