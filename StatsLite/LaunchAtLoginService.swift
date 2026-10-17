@@ -51,6 +51,7 @@ final class LaunchAtLoginService {
             refresh()
         } catch {
             errorMessage = error.localizedDescription
+            refresh()
         }
     }
 
@@ -62,6 +63,7 @@ final class LaunchAtLoginService {
             refresh()
         } catch {
             errorMessage = error.localizedDescription
+            refresh()
         }
     }
 
@@ -80,7 +82,10 @@ final class LaunchAtLoginService {
         case .notRegistered:
             return .notRegistered
         case .notFound:
-            return .unavailable("Login item service not found")
+            // Measured 2026-10-17 (macOS 26/27): a fresh app reports
+            // `.notFound` before its first registration, and a probe-measured
+            // `register()` succeeds from that state. Treat it as registerable.
+            return .notRegistered
         @unknown default:
             return .unavailable("Unknown login item status")
         }
