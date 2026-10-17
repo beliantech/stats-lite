@@ -46,14 +46,24 @@ struct SettingsView: View {
 
     private var generalSection: some View {
         Section("General") {
+            refreshIntervalRow
+            launchAtLoginRow
+        }
+    }
+
+    private var refreshIntervalRow: some View {
+        VStack(alignment: .leading, spacing: 3) {
             Picker("Refresh Interval", selection: $preferences.refreshInterval) {
                 Text("1 s").tag(1)
                 Text("2 s").tag(2)
                 Text("3 s").tag(3)
                 Text("5 s").tag(5)
             }
+            .accessibilityHint("Network throughput refreshes once per second, independent of this setting.")
 
-            launchAtLoginRow
+            Text("Network throughput refreshes once per second, independent of this setting.")
+                .font(.caption)
+                .foregroundStyle(.secondary)
         }
     }
 
