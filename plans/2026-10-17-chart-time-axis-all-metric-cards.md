@@ -222,14 +222,27 @@ from screenshots, `rg`, or test output.
 
 ## Tasks
 
-- [ ] **T1** — `[red]` write failing unit tests for `MetricFormatters.historyDurationAxis` covering all five durations (30/60/120/180/300), the `<60s` branch, the negative clamp, and the NaN/infinite guard; run the suite, report red output, touch no app code. red ⏳ · green — · review —
+- [ ] **T1** — `[red]` write failing unit tests for `MetricFormatters.historyDurationAxis` covering all five durations (30/60/120/180/300), the `<60s` branch, the negative clamp, and the NaN/infinite guard; run the suite, report red output, touch no app code. red `1c772e2` · green — · review —
 
   Red evidence (T1, 2026-10-17): `StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift`,
   4 test methods / 10 assertions. Suite run exit 65, `** TEST FAILED **`, 10× `Type
   'MetricFormatters' has no member 'historyDurationAxis'`, build fails before execution
   (xcresult totalTestCount 0). Compile-failure red is the intended red for a new API.
-- [ ] **T2** — `[skip-red]` green: implement `historyDurationAxis`, add `SparklineTimeAxisView` (Blueprint Part 2), integrate into CPU / Memory / GPU / Network cards, delete the Network `axisRow`, run tests to green. red `T1` · green ⏳ · review ⏳
-- [ ] **T3** — self-verify: 0 type errors on changed files; the macOS `xcodebuild test` command from ISC-9 passes. record ⏳
+- [ ] **T2** — `[skip-red]` green: implement `historyDurationAxis`, add `SparklineTimeAxisView` (Blueprint Part 2), integrate into CPU / Memory / GPU / Network cards, delete the Network `axisRow`, run tests to green. red `T1` · green `071e1b7` · review ⏳
+- [x] **T3** — self-verify: 0 type errors on changed files; the macOS `xcodebuild test` command from ISC-9 passes. record ✓
+
+  T2 green evidence (2026-10-17): `** TEST SUCCEEDED **`, 233 tests / 0 failures; red suite
+  4/4 methods (10/10 assertions) with zero test-file edits. Binary checks: 1 definition
+  + 4 use sites of `SparklineTimeAxisView`; `rg axisRow` clean; no animation/transition/
+  hover code added. `SystemMonitor.historyDuration` (SystemMonitor.swift:38) confirmed as
+  the plan's history-window duration (Settings values 30/60/120/180/300). Project uses
+  `PBXFileSystemSynchronizedRootGroup`, so the new file joins the target with no pbxproj
+  edit; successful compile of all four use sites confirms membership. SourceKit LSP
+  "Cannot find in scope" findings are phantom (identical errors on untouched files,
+  standalone parse without project settings); xcodebuild is authoritative.
+  Open item: the plan's Docs section presupposes a `DESIGN.md` that does not exist in
+  this repo (no such file in history); the axis rule will land in the repo `AGENTS.md`
+  instead, as a planner-owned MD change after merge.
 - [ ] **T4** — `tester` VAC run: VAC-1…VAC-12, dark + light, screenshots to `artifacts/2026-10-17-chart-time-axis-all-metric-cards/after/`. verdict ⏳
 - [ ] **T5** — `reviewer` code review against `git diff main...HEAD`; on GO, merge `--ff-only` or `--squash` to main. verdict ⏳ · merge ⏳
 
