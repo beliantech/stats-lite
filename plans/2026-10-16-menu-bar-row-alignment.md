@@ -10,6 +10,13 @@ re-gate round 2, §10). The gate report is committed as `ee4ef04` on
 — ISC semantics, the blueprint, scope, the task list, and the constant-folding
 adaptation (Approach item 3) are unchanged. No `[plan-review]` verdict is recorded in
 this file; do not invent one. Ready for execution: T1 → T5.
+**Complete 2026-10-17:** T1 waiver carry-over (`0e37f3d`, no new probe — basis unrefuted);
+red `f2b4671` (229 tests, 3 failing tests / 4 assertion events per derivation); green
+`38bb8c4` (six production edits, 229/0); ledger `e0873e0` (14 pass, 1 waived); reviewer
+GO via `subagent_done` (`cf1748e1`); gate report cherry-picked from ci as `7914cf8`;
+rebased and merged fast-forward to `main` at `e0873e0`; worktree and branch removed.
+Documented adaptations: @MainActor on the hosting test (Swift 6); the rowHeight
+constant-fold into the frame-token guard.
 Baseline suite: **227 tests, 0 failures** at `main` tip **5c67c21** (gate §5 measured;
 authoring scan `rg -c 'func test' StatsLiteTests/` = 227). The `ci` branch (`ee4ef04`)
 contains `main`, and `git diff 5c67c21 ee4ef04 -- StatsLite StatsLiteTests` is empty, so
@@ -1043,7 +1050,7 @@ steps that need a `main` checkout create short-lived worktrees and verify
 Worktree for T2–T4: `<repo>/worktrees/menu-bar-row-alignment`, branch
 `feat/2026-10-16-menu-bar-row-alignment`. Create it before the T2 spawn (below).
 
-- [ ] **T1** — planner, no code edit. The screenshot waiver already exists for this
+- [x] **T1** — planner, no code edit. The screenshot waiver already exists for this
   artifacts dir (`artifacts/2026-10-16-emulate-stats-layout/waiver-note.md`, three
   recorded exit-1 probes, user authority). **No new probe**: the basis is unrefuted and
   this plan adds no new capture surface. Append a carry-over section to the note naming
@@ -1071,7 +1078,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
   "${MAIN_REPO}/worktrees/menu-bar-row-alignment" main
 ```
 
-- [ ] **T2** — `T2: [red]` Rewrite the guards in
+- [x] **T2** — `T2: [red]` Rewrite the guards in
   `StatsLiteTests/MenuBarValueTypographyTests.swift` first, then run the suite.
   Test-only diff: touch no application code. All test-file citations are as-at the test
   file at the worktree base (current `main`);
@@ -1145,7 +1152,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
 
 ## Phase 3 — Green (implementation, same worktree)
 
-- [ ] **T3** — Apply blueprint Appendix A edits 1–6 in one commit. Every production line
+- [x] **T3** — Apply blueprint Appendix A edits 1–6 in one commit. Every production line
   the mechanism touches, enumerated (production citations as-at the T3 base — the red
   commit is test-only, so the production tree is still the `5c67c21` tree; the gate
   re-verified each "Current Code" quote character for character at `5c67c21`):
@@ -1180,7 +1187,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
 
 ## Phase 4 — VAC ledger (tests only)
 
-- [ ] **T4** — coder self-verify, same worktree, tests only (no captures); the pass
+- [x] **T4** — coder self-verify, same worktree, tests only (no captures); the pass
   evidence is the T3 green run under the T2 xcodebuild command. Write
   `artifacts/2026-10-16-emulate-stats-layout/vac-ledger-alignment.md` (new file — do not
   overwrite the previous plan's `vac-ledger.md`) with one row per plan IC: IC-1 … IC-14
@@ -1198,7 +1205,7 @@ git -C "${MAIN_REPO}" worktree add -B feat/2026-10-16-menu-bar-row-alignment \
 
 ## Phase 5 — Review, merge, cleanup
 
-- [ ] **T5** — Spawn `reviewer` with `[code-review]`, plan name
+- [x] **T5** — Spawn `reviewer` with `[code-review]`, plan name
   `2026-10-16-menu-bar-row-alignment`, `cwd` = the worktree, against
   `git -C worktrees/menu-bar-row-alignment diff main...HEAD`. The gate report lives only
   on the ci branch at review time; the reviewer reads it with
