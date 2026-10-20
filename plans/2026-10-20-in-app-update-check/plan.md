@@ -126,9 +126,21 @@ stops until it is fixed. One variable per verification round.
   through `promptState` like a fetched latest. No `#if DEBUG` (captures build
   Release); inert without the env var. Red first: policy table + fixture parse
   + service honors fixture with a counting fake source (0 fetch calls).
-  red ⏳ green ⏳ review ⏳
+  red **b5c55a3** (11 tests, errors confined to new file, 3 missing symbols
+  named) · green **933891b** (suite 289/289) · review deferred to T4
+- [ ] **T2c** — `[coder red/green]` in worktree `update-banner-ui` (stacked).
+  Design-gate fix (T3 FAIL round 1): the 300 s launch floor must not suppress
+  the check when `STATSLITE_FAKE_UPDATE_VERSION` is set — fixture semantics
+  override the floor exactly as they override the harness skip (production
+  relaunch-storm protection stays for the real path). Red first: service test
+  with fixture env + fresh `updateCheckLastCheckEpoch` (< 300 s gap) → check
+  still runs, `availableUpdate` set, source 0 calls; and without fixture the
+  floor still skips (guard the production behavior). green required before
+  re-capture. red ⏳ green ⏳
 - [ ] **T3** — `[designer]` design gate: verdict on I4/I5/I6 against captures,
-  VAC by VAC. review ⏳
+  VAC by VAC. review **FAIL round 1** (2026-10-21): dark.png PASS zero drift;
+  light.png missing banner — root cause 300 s launch floor blocks the second
+  capture pass; remediation = T2c, then re-capture + re-gate.
 - [ ] **T4** — reviewer `[code-review]` on both branches' combined diff vs
   main. review ⏳
 - [ ] **T5** — Merge ff-only: T1 then T2 to local main; I8 footprint
