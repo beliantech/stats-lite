@@ -5,7 +5,7 @@
 //  Plan 2026-10-17-menu-bar-typography-and-block-width (red):
 //  pin the menu bar block typography and row-alignment tokens to
 //  the blueprint targets. Green target state: category labels at
-//  7 pt regular secondary (MenuBarStackedItemView.swift:112),
+//  8 pt regular secondary (MenuBarStackedItemView.swift:112),
 //  values at 12 pt regular monospacedDigit (:117), network rates
 //  at 9 pt regular monospacedDigit (:155 and :170), standard
 //  block width 39 pt (MenuBarBlockModel.swift:56), and every row
@@ -214,9 +214,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-4: label flips to 7 pt regular secondary
+    // MARK: - IC-4: label flips to 8 pt regular secondary
 
-    func testLabelFontIsSevenPointRegularSecondary() throws {
+    func testLabelFontIsEightPointRegularSecondary() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let labelStart = try XCTUnwrap(
@@ -343,10 +343,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-11: label-row clearance at 7 pt regular
+    // MARK: - IC-11: label-row clearance at 8 pt regular
 
-    func testLabelRowClearanceForMemRowAtSevenPointRegularMeetsThreeAndAHalfPoints() {
-        let font = NSFont.systemFont(ofSize: 7.0, weight: .regular)
+    func testLabelRowClearanceForMemRowAtEightPointRegularMeetsThreeAndAHalfPoints() {
+        let font = NSFont.systemFont(ofSize: 8.0, weight: .regular)
         func width(of text: String) -> CGFloat {
             (text as NSString).size(withAttributes: [.font: font]).width
         }
@@ -364,15 +364,15 @@ final class MenuBarValueTypographyTests: XCTestCase {
             3.5,
             """
             IC-11: total clearance for the MEM label row (4.0 pt dot + \
-            2.0 pt gap + "MEM" at 7 pt regular) must be at least 3.5 pt; \
+            2.0 pt gap + "MEM" at 8 pt regular) must be at least 3.5 pt; \
             got \(memClearance) pt.
             """
         )
         XCTAssertEqual(
             memClearance,
-            15.9067,
+            13.6406,
             accuracy: 0.05,
-            "expected 15.9067 pt total clearance for the MEM label row"
+            "expected 13.6406 pt total clearance for the MEM label row"
         )
 
         let cpuClearance = MenuBarLayout.blockWidth - width(of: "CPU")
@@ -386,9 +386,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             cpuClearance,
-            23.6943,
+            21.6836,
             accuracy: 0.05,
-            "expected 23.6943 pt total clearance for the CPU label"
+            "expected 21.6836 pt total clearance for the CPU label"
         )
 
         let gpuClearance = MenuBarLayout.blockWidth - width(of: "GPU")
@@ -402,9 +402,9 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             gpuClearance,
-            23.4790,
+            21.4375,
             accuracy: 0.05,
-            "expected 23.4790 pt total clearance for the GPU label"
+            "expected 21.4375 pt total clearance for the GPU label"
         )
     }
 
@@ -669,7 +669,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
         let thickness: CGFloat = 22.0
         let rowHeight = MenuBarLayout.rowHeight
 
-        let labelFont = NSFont.systemFont(ofSize: 7.0, weight: .regular)
+        let labelFont = NSFont.systemFont(ofSize: 8.0, weight: .regular)
         let valueFont = NSFont.monospacedDigitSystemFont(
             ofSize: 12.0,
             weight: .regular
@@ -734,11 +734,11 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             opticalGap,
-            3.43,
+            3.06,
             accuracy: 0.05,
             """
             VAC-5: the label-to-value optical gap must fall from \
-            4.43 pt to 3.43 pt; got \(opticalGap).
+            4.06 pt to 3.06 pt; got \(opticalGap).
             """
         )
         XCTAssertGreaterThan(

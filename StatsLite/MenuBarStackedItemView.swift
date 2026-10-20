@@ -110,7 +110,7 @@ struct MenuBarBlockView: View {
                         .offset(y: -0.5)
                 }
                 Text(block.label)
-                    .font(.system(size: 7, weight: .regular))
+                    .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
             }
             .frame(height: MenuBarLayout.rowHeight)
