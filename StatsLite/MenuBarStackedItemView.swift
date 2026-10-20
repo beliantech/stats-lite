@@ -118,6 +118,7 @@ struct MenuBarBlockView: View {
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
                 .frame(height: MenuBarLayout.rowHeight)
+                .offset(y: MenuBarLayout.valueYOffset)
         }
         .frame(width: block.width)
     }

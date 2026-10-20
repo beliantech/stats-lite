@@ -61,6 +61,11 @@ enum MenuBarLayout {
     /// a 22 pt block height that matches NSStatusBar.system.thickness
     /// and aligns line 1 and line 2 across standard and network blocks.
     static let rowHeight: CGFloat = 11
+    /// Vertical shift applied to the value line in MenuBarBlockView.
+    /// -1 pt opens the menu bar bottom gap from 0.96 pt to 1.96 pt
+    /// and tightens the label-to-value gap (plan
+    /// 2026-10-20-menu-bar-value-vertical-shift).
+    static let valueYOffset: CGFloat = -1
     /// Gap between adjacent blocks.
     static let gap: CGFloat = 4
     /// Outer padding: leading 2 pt plus trailing 2 pt.

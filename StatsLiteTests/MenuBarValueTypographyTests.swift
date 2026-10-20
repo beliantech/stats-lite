@@ -604,4 +604,185 @@ final class MenuBarValueTypographyTests: XCTestCase {
             "VAC-12: MenuBarNetworkBlockView line 2 must use .frame(height: MenuBarLayout.rowHeight)"
         )
     }
+
+    // MARK: - plan 2026-10-20-menu-bar-value-vertical-shift: value line vertical shift
+
+    /// VAC-1 / IC-1: the shift token is one layout constant, pinned
+    /// at -1 pt in MenuBarLayout. The check reads both the source
+    /// declaration and the compiled constant, so a comment-only
+    /// change or a stub value fails.
+    func testValueYOffsetConstantIsMinusOne() throws {
+        let layoutLine = try XCTUnwrap(
+            sourceLine(
+                containing: "static let valueYOffset",
+                in: Substring(try loadLayoutSource())
+            ),
+            "no valueYOffset declaration found in MenuBarBlockModel.swift"
+        )
+        XCTAssertEqual(
+            squashed(layoutLine),
+            "staticletvalueYOffset:CGFloat=-1",
+            """
+            VAC-1: MenuBarLayout.valueYOffset must be declared as \
+            static let valueYOffset: CGFloat = -1; found \(layoutLine).
+            """
+        )
+        XCTAssertEqual(
+            MenuBarLayout.valueYOffset,
+            -1,
+            accuracy: 0.0001,
+            """
+            VAC-1: the compiled MenuBarLayout.valueYOffset must equal \
+            -1 pt; got \(MenuBarLayout.valueYOffset).
+            """
+        )
+    }
+
+    /// VAC-2 / IC-2: MenuBarBlockView applies the shift only to the
+    /// value Text. Source-string inspection inside the
+    /// MenuBarBlockView body scope, anchored on the value Text, so
+    /// an offset on some other view cannot satisfy the check.
+    func testMenuBarBlockViewAppliesValueYOffsetModifier() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(of: "MenuBarBlockView", in: source)
+        let valueStart = try XCTUnwrap(
+            scope.range(of: "Text(block.valueText)"),
+            "value anchor not found in MenuBarBlockView"
+        )
+        let valueRegion = squashed(scope[valueStart.lowerBound...])
+        XCTAssertTrue(
+            valueRegion.contains(".offset(y:MenuBarLayout.valueYOffset)"),
+            """
+            VAC-2: MenuBarBlockView must apply \
+            .offset(y: MenuBarLayout.valueYOffset) to Text(block.valueText); \
+            found value region \(valueRegion).
+            """
+        )
+    }
+
+    /// IC-3 (VAC-3…VAC-7, VAC-11): font-metric geometry of the
+    /// shifted value line. The plan's baseline formula: single-line
+    /// text centered in a row of rowHeight puts the baseline at
+    /// rowCenter + (ascender + descender) / 2; the shift moves the
+    /// baseline by valueYOffset. Tolerance ±0.05 pt.
+    func testValueBaselineOffsetAndGeometryInvariants() {
+        let thickness: CGFloat = 22.0
+        let rowHeight = MenuBarLayout.rowHeight
+
+        let labelFont = NSFont.systemFont(ofSize: 7.0, weight: .regular)
+        let valueFont = NSFont.monospacedDigitSystemFont(
+            ofSize: 12.0,
+            weight: .regular
+        )
+        let networkFont = NSFont.monospacedDigitSystemFont(
+            ofSize: 9.0,
+            weight: .regular
+        )
+
+        // Row 1 holds the label, row 2 holds the value — same order
+        // as the MenuBarBlockView stack.
+        let labelBaseline = rowHeight / 2
+            + (labelFont.ascender + labelFont.descender) / 2
+        let topGap = labelBaseline - labelFont.capHeight
+
+        let valueRowCenter = rowHeight + rowHeight / 2
+        let naturalBaseline = valueRowCenter
+            + (valueFont.ascender + valueFont.descender) / 2
+        let shiftedBaseline = naturalBaseline + MenuBarLayout.valueYOffset
+        let valueCapTop = shiftedBaseline - valueFont.capHeight
+        let bottomGap = thickness - shiftedBaseline
+        let opticalGap = valueCapTop - labelBaseline
+
+        let networkDownloadBaseline = valueRowCenter
+            + (networkFont.ascender + networkFont.descender) / 2
+
+        XCTAssertEqual(
+            naturalBaseline,
+            21.04,
+            accuracy: 0.05,
+            """
+            IC-3: the unshifted 12 pt value baseline must sit at \
+            21.04 pt; got \(naturalBaseline).
+            """
+        )
+        XCTAssertEqual(
+            shiftedBaseline,
+            20.04,
+            accuracy: 0.05,
+            """
+            VAC-3: with valueYOffset the value baseline must move to \
+            20.04 pt; got \(shiftedBaseline).
+            """
+        )
+        XCTAssertEqual(
+            thickness - naturalBaseline,
+            0.96,
+            accuracy: 0.05,
+            """
+            IC-3: the unshifted bottom gap must be 0.96 pt; got \
+            \(thickness - naturalBaseline).
+            """
+        )
+        XCTAssertEqual(
+            bottomGap,
+            1.96,
+            accuracy: 0.05,
+            """
+            VAC-4: the bottom gap must grow from 0.96 pt to 1.96 pt; \
+            got \(bottomGap).
+            """
+        )
+        XCTAssertEqual(
+            opticalGap,
+            3.43,
+            accuracy: 0.05,
+            """
+            VAC-5: the label-to-value optical gap must fall from \
+            4.43 pt to 3.43 pt; got \(opticalGap).
+            """
+        )
+        XCTAssertGreaterThan(
+            topGap,
+            bottomGap,
+            """
+            VAC-6: the top gap \(topGap) pt must exceed the bottom gap \
+            \(bottomGap) pt.
+            """
+        )
+        XCTAssertEqual(
+            valueCapTop,
+            11.58,
+            accuracy: 0.05,
+            """
+            VAC-7: the shifted value cap top must sit at 11.58 pt; \
+            got \(valueCapTop).
+            """
+        )
+        XCTAssertGreaterThanOrEqual(
+            valueCapTop,
+            rowHeight,
+            """
+            VAC-7: the value ink top \(valueCapTop) pt must stay at or \
+            below the row 2 top \(rowHeight) pt (zero clipping).
+            """
+        )
+        XCTAssertLessThanOrEqual(
+            shiftedBaseline,
+            thickness,
+            """
+            VAC-7: the value baseline \(shiftedBaseline) pt must stay at \
+            or above the menu bar bottom \(thickness) pt (zero clipping).
+            """
+        )
+        XCTAssertEqual(
+            shiftedBaseline - networkDownloadBaseline,
+            0.14,
+            accuracy: 0.05,
+            """
+            VAC-11: the standard and network download baselines must \
+            align within 0.14 pt; got delta \
+            \(shiftedBaseline - networkDownloadBaseline) pt.
+            """
+        )
+    }
 }
