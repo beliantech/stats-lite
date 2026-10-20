@@ -136,7 +136,8 @@ stops until it is fixed. One variable per verification round.
   with fixture env + fresh `updateCheckLastCheckEpoch` (< 300 s gap) → check
   still runs, `availableUpdate` set, source 0 calls; and without fixture the
   floor still skips (guard the production behavior). green required before
-  re-capture. red ⏳ green ⏳
+  re-capture. red **da17093** (fixture test fails as expected; floor pins pass)
+  · green **76d6f3d** (suite 292/292, single-hunk condition change)
 - [ ] **T3** — `[designer]` design gate: verdict on I4/I5/I6 against captures,
   VAC by VAC. review **FAIL round 1** (2026-10-21): dark.png PASS zero drift;
   light.png missing banner — root cause 300 s launch floor blocks the second
@@ -151,3 +152,4 @@ stops until it is fixed. One variable per verification round.
 Sparkle, settings pane, "Check for updates" menu item, ETag caching, retry
 ladder, pre-release channels, delta download, API token, build-number compare,
 `launchd`, DESIGN.md authoring, any CI workflow change.
+
