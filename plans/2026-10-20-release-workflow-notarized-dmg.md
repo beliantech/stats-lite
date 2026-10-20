@@ -26,8 +26,9 @@ pipeline but stops before the release step — that is the test path, honoring
 
 ## ISC
 
-- [ ] I1. Workflow file exists, valid YAML, actions pinned to SHAs,
+- [x] I1. Workflow file exists, valid YAML, actions pinned to SHAs,
   `permissions: contents: write` (release step needs it), line lengths <= 80.
+  (ruby YAML parse OK; pins and guards grep-verified; reviewer round 2)
 - [ ] I2. A `workflow_dispatch` run on main completes `success`: Developer ID
   signature (`Authority=Developer ID Application`, `flags=0x10000(runtime)`),
   notarization status `Accepted`, staple OK, `spctl -a -vv -t install` reports
@@ -40,7 +41,7 @@ pipeline but stops before the release step — that is the test path, honoring
   review; exercised at the first real tag.
 - [ ] I6 (deferred, user decision). First `v1.0.0` tag push creates Release
   `v1.0.0` with `StatsLite.dmg` attached. Plan stays open until then.
-- [ ] I7. `build-dmg.yml` byte-identical (`git diff` empty).
+- [x] I7. `build-dmg.yml` byte-identical (`git diff` empty).
 
 Failure modes:
 
@@ -78,12 +79,13 @@ Workflow `release-dmg.yml`:
 
 ## Tasks
 
-- [ ] **T1** — Write `.github/workflows/release-dmg.yml` on branch
+- [x] **T1** — Write `.github/workflows/release-dmg.yml` on branch
   `ci/release-workflow-notarized-dmg`, commit with this plan. red n/a · green
   [skip-red: pipeline config, not executable locally — the dispatch run (T3) is
-  the test] · review ⏳
-- [ ] **T2** — Reviewer `[code-review]` against ISC/FMs. review ⏳
+  the test] · review —
+- [x] **T2** — Reviewer `[code-review]` against ISC/FMs. review **GO**
+  (2026-10-20, round 2 with line-grounded evidence: guards at L65/L124)
 - [ ] **T3** — Merge ff-only to local main; user pushes; dispatch run; verify
-  I2/I3/I4 locally. green ⏳
+  I2/I3/I4 locally. merged locally `34b69ed`; green ⏳ (push + dispatch pending)
 - [ ] **T4** — Close plan after user's first real tag (I6) or explicit deferral.
   merged ⏳
