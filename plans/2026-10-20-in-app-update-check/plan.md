@@ -142,6 +142,8 @@ stops until it is fixed. One variable per verification round.
   VAC by VAC. review **FAIL round 1** (2026-10-21): dark.png PASS zero drift;
   light.png missing banner — root cause 300 s launch floor blocks the second
   capture pass; remediation = T2c, then re-capture + re-gate.
+  round 2 **PASS** (2026-10-21): VAC-1..11 all PASS, pixel evidence both
+  appearances, zero geometry drift, contrast AA verified.
 - [ ] **T4** — reviewer `[code-review]` on both branches' combined diff vs
   main. review ⏳
 - [ ] **T5** — Merge ff-only: T1 then T2 to local main; I8 footprint
