@@ -34,8 +34,8 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
     /// `.font(.system(size: 12, weight: .regular).monospacedDigit())`
     private let expectedValueFont = ".font(.system(size:12,weight:.regular).monospacedDigit())"
-    /// `.font(.system(size: 7, weight: .regular))`
-    private let expectedLabelFont = ".font(.system(size:7,weight:.regular))"
+    /// `.font(.system(size: 8, weight: .regular))`
+    private let expectedLabelFont = ".font(.system(size:8,weight:.regular))"
     /// `.foregroundStyle(.secondary)`
     private let expectedLabelStyle = ".foregroundStyle(.secondary)"
     /// `.font(.system(size: 9, weight: .regular).monospacedDigit())`
@@ -235,7 +235,7 @@ final class MenuBarValueTypographyTests: XCTestCase {
         XCTAssertTrue(
             region.contains(expectedLabelFont),
             """
-            IC-4: the category labels (CPU, MEM, GPU) must be 7 pt \
+            IC-4: the category labels (CPU, MEM, GPU) must be 8 pt \
             .regular with .foregroundStyle(.secondary) and no .bold \
             weight; found label region \(region).
             """
