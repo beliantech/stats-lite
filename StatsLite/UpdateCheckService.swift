@@ -4,7 +4,7 @@
 //
 //  Background update check. One task, one clock (SystemMonitor loop
 //  style, no Timer/Combine): the loop checks on launch when the last
-//  check is at least 300 s old, then sleeps 6 h between checks. Every
+//  check is at least 300 s old, then sleeps 24 h between checks. Every
 //  attempt stamps updateCheckLastCheckEpoch. A nil source result and
 //  an unparsable current version are silent no-ops. A dismissed
 //  version lives in UserDefaults as a normalized description.
@@ -26,7 +26,7 @@ final class UpdateCheckService {
     static let launchCheckMinGap: TimeInterval = 300
 
     /// Seconds between checks after the launch pass.
-    static let checkInterval: TimeInterval = 6 * 60 * 60
+    static let checkInterval: TimeInterval = 24 * 60 * 60
 
     /// Newest prompted release, or nil when nothing prompts. A failed
     /// check leaves the value untouched.
