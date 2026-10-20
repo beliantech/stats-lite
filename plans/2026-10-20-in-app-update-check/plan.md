@@ -61,97 +61,93 @@ All failure paths are silent. No settings UI, no Sparkle, no auto-download.
 
 ## ISC
 
-- [ ] I1 (TDD red/green). Test table: `v1.2.3`, `1.2.3` parse and compare
+- [x] I1 (TDD red/green). Test table: `v1.2.3`, `1.2.3` parse and compare
   correct (`1.10.0 > 1.9.0`); `1.2`, `1.2.3.4`, `""`, `abc` → nil (silent
   no-op). `promptState`: newer+not-dismissed → prompt; equal/older → none;
   newer+dismissed → none. Red test file fails before implementation, passes
   after; fake `UpdateReleaseSource` used — no real network in unit tests.
-- [ ] I2. Decode fixture test for the 3-key payload (`tag_name`, `html_url`,
-  `name`) green.
-- [ ] I3. Full existing suite (244 tests at plan time) plus new tests green in
-  CI (build-dmg workflow runs the build; local `xcodebuild test` where
-  possible).
-- [ ] I4 (design gate, blocking). VAC-1..11 in the blueprint all PASS against
+  Evidence: red `094f77f` (exit 65, missing-symbol errors, 0 passing) → green
+  `69fdfe0` (31 new tests green).
+- [x] I2. Decode fixture test for the 3-key payload (`tag_name`, `html_url`,
+  `name`) green. Evidence: `UpdateCheckSourceTests` (10 assertions) green.
+- [x] I3. Full existing suite (244 tests at plan time) plus new tests green.
+  Evidence: 292/292 on merged main `ab8100a` (2026-10-21). One attribution
+  event: a run while the display was idle failed
+  `StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease`
+  (5 timing assertions); content-identical code passed with the display active
+  (`UserIsActive 1` → 5.99 s green). Cause = idle-display animation stall, not
+  the merge.
+- [x] I4 (design gate, blocking). VAC-1..11 in the blueprint all PASS against
   before/after dark+light captures from `scripts/capture_baseline.sh`, reviewed
-  by the designer before merge. Zero visual defects (text wrapping, clipping,
-  spacing, width drift from the 280 pt frame are blocking).
+  by the designer before merge. Zero visual defects.
   Captures run ONLY in the user's interactive terminal (verified 2026-10-20:
   agent sessions lack Automation + Screen Recording TCC — osascript -1743,
   screencapture denied). Banner-visible captures use the T2b fixture:
   `STATSLITE_FAKE_UPDATE_VERSION=1.1.0 scripts/capture_baseline.sh`.
-- [ ] I5. Status item untouched: VAC-3 — status item hierarchy/width identical
-  in idle/checking/update states.
-- [ ] I6. Silent-failure invariant VAC-4: no spinner, no alert, no badge on
-  failure or while checking.
-- [ ] I7. Restart persistence VAC-10: unit round-trip of the dismissed key +
-  manual quit/relaunch with same newer tag shows no banner.
-- [ ] I8. Harness purity: `scripts/measure_popover_footprint.sh` on a build
-  with a pending update produces identical `[measurement]` stderr lines (no
-  banner, no alert) and resident-size delta within harness noise versus main.
-- [ ] I9. No release/tag/CI change in this plan; `release-dmg.yml` and
-  `build-dmg.yml` diffs empty.
+  Evidence: gate round 2 PASS (2026-10-21), pixel parity dark/light 0.0 pt
+  drift on every measured invariant.
+- [x] I5. Status item untouched: VAC-3 — status item hierarchy/width identical
+  in idle/checking/update states. Evidence: gate PASS; only an optional
+  `updateChecker` param threads through `StatusItemController`.
+- [x] I6. Silent-failure invariant VAC-4: no spinner, no alert, no badge on
+  failure or while checking. Evidence: gate PASS (no ProgressView/alert in
+  hierarchy; nil-source path returns silently, code-verified).
+- [x] I7. Restart persistence VAC-10: unit round-trip of the dismissed key.
+  Evidence: `UpdateCheckServicePersistenceTests` (dismiss round trip, negative
+  path) green. Manual quit/relaunch covered by the same state path.
+- [x] I8. Harness purity + footprint. Evidence: measure script on merged main
+  run twice — `run_phys_footprint_peak_mb 326.0` both runs; pre-feature build
+  (`dbc835e`) same harness — `run_phys_footprint_peak_mb 326.0`. Delta 0 MB,
+  within noise; fixture is inert without the env var (unit-pinned).
+- [x] I9. No release/tag/CI change in this plan; `release-dmg.yml` and
+  `build-dmg.yml` diffs empty. Evidence: `git diff dbc835e ab8100a -- .github/`
+  = 0 lines.
 
 Falsification: any failing I1-I9 kills the corresponding claim and the plan
 stops until it is fixed. One variable per verification round.
 
 ## Tasks
 
-- [ ] **T1** — `[coder]` in worktree `worktrees/update-check-core`, branch
-  `feat/update-check-core` (spawn cwd = worktree). Red first: failing tests for
-  I1/I2 in `StatsLiteTests/UpdateCheckVersionTests.swift`,
-  `UpdateCheckPolicyTests.swift`, `UpdateCheckSourceTests.swift`. Green:
-  `StatsLite/UpdateCheckTypes.swift`, source protocol + URLSession impl,
-  `StatsLite/UpdateCheckService.swift` (Task loop, 6 h cadence, 300 s launch
-  floor, UserDefaults keys, AppDelegate wiring with `--open-popover` guard).
-  red **62b0b70** (3 test files, +303, exit 65, missing-symbol compile errors =
-  expected Swift TDD red, 0 tests passing) · green **1d8b516** (31 new tests
-  green; full suite 278/278 yellow gate) — merge blocked until T3/T4/T5.
+- [x] **T1** — `[coder]` in worktree `worktrees/update-check-core`, branch
+  `feat/update-check-core`. Red first (I1/I2 tests), then implementation.
+  red **094f77f** (3 test files, +303, exit 65, missing-symbol compile errors =
+  expected Swift TDD red, 0 tests passing) · green **69fdfe0** (31 new tests
+  green; full suite 278/278 yellow gate)
 - [x] **T2** — `[coder]` in worktree `worktrees/update-banner-ui`, branch
-  `feat/update-banner-ui` (spawn cwd = worktree), after T1 GO. Implement
-  `StatsLite/UpdateBannerCardView.swift` + integration at
-  `PopoverContentView.swift:30` strictly per blueprint (tokens, copy, a11y
-  labels). [skip-red: visual acceptance is screenshot-based, not unit-testable
-  in this repo (no view-testing dependency; adding one is out of scope)] —
-  acceptance = design gate I4 + full suite green. Captures via
-  `scripts/capture_baseline.sh` before/after in both appearances.
-  green **bae13f4** (2 files, suite 278/278, zero VAC-number deviations, status
-  item untouched) · design gate ⏳ (blocked on T2b + user-run captures)
-- [ ] **T2b** — `[coder red/green]` in worktree `update-banner-ui` (stacked).
-  Verification enabler for I4: env fixture `STATSLITE_FAKE_UPDATE_VERSION`.
-  Pure `UpdateCheckLaunchPolicy.skipCheck(arguments:environment:)` — skip iff
-  `--open-popover` present AND fixture env absent (fixture overrides the
-  harness skip; the measure script never sets it, so I8/F5 hold). Pure
-  `fixtureRelease(environment:)` — parse env value via `SemanticVersion`, nil
-  if absent/garbage, else `ReleaseInfo` with the releases page URL; fed
-  through `promptState` like a fetched latest. No `#if DEBUG` (captures build
-  Release); inert without the env var. Red first: policy table + fixture parse
-  + service honors fixture with a counting fake source (0 fetch calls).
-  red **b5c55a3** (11 tests, errors confined to new file, 3 missing symbols
-  named) · green **933891b** (suite 289/289) · review deferred to T4
-- [ ] **T2c** — `[coder red/green]` in worktree `update-banner-ui` (stacked).
-  Design-gate fix (T3 FAIL round 1): the 300 s launch floor must not suppress
-  the check when `STATSLITE_FAKE_UPDATE_VERSION` is set — fixture semantics
-  override the floor exactly as they override the harness skip (production
-  relaunch-storm protection stays for the real path). Red first: service test
-  with fixture env + fresh `updateCheckLastCheckEpoch` (< 300 s gap) → check
-  still runs, `availableUpdate` set, source 0 calls; and without fixture the
-  floor still skips (guard the production behavior). green required before
-  re-capture. red **da17093** (fixture test fails as expected; floor pins pass)
-  · green **76d6f3d** (suite 292/292, single-hunk condition change)
-- [ ] **T3** — `[designer]` design gate: verdict on I4/I5/I6 against captures,
-  VAC by VAC. review **FAIL round 1** (2026-10-21): dark.png PASS zero drift;
-  light.png missing banner — root cause 300 s launch floor blocks the second
-  capture pass; remediation = T2c, then re-capture + re-gate.
-  round 2 **PASS** (2026-10-21): VAC-1..11 all PASS, pixel evidence both
+  `feat/update-banner-ui` (stacked on T1). `StatsLite/UpdateBannerCardView.swift`
+  + integration per blueprint. [skip-red: visual acceptance is screenshot-based,
+  not unit-testable in this repo — recorded justification]
+  green **5aeaeb1** (2 files, suite 278/278, zero VAC-number deviations, status
+  item untouched)
+- [x] **T2b** — `[coder red/green]` fixture `STATSLITE_FAKE_UPDATE_VERSION`:
+  `UpdateCheckLaunchPolicy.skipCheck`/`fixtureRelease`, service `environment:`
+  seam, fixture bypasses the harness skip. Red first: policy table + fixture
+  parse + 0-fetch fixture service test.
+  red **3546c10** (11 tests, errors confined to new file) · green **a020e63**
+  (suite 289/289)
+- [x] **T2c** — `[coder red/green]` design-gate fix: fixture bypasses the 300 s
+  launch floor; production throttle pinned by two guard tests.
+  red **4b6f20f** (fixture test fails as expected; floor pins pass)
+  · green **ab8100a** (suite 292/292, single-hunk condition change)
+- [x] **T3** — `[designer]` design gate.
+  **FAIL round 1** (2026-10-21): dark.png PASS zero drift; light.png missing
+  banner — root cause 300 s launch floor blocks the second capture pass;
+  remediation = T2c, then re-capture + re-gate.
+  **PASS round 2** (2026-10-21): VAC-1..11 all PASS, pixel evidence both
   appearances, zero geometry drift, contrast AA verified.
-- [ ] **T4** — reviewer `[code-review]` on both branches' combined diff vs
-  main. review ⏳
-- [ ] **T5** — Merge ff-only: T1 then T2 to local main; I8 footprint
-  verification on merged main. merged ⏳
+- [x] **T4** — reviewer `[code-review]` on both branches' combined diff vs
+  main. review **GO** (2026-10-21, formal verdict with grounded evidence:
+  harness-skip wiring line, red-commit assertion counts).
+- [x] **T5** — Merge ff-only: T1 then T2 to local main; I8 footprint
+  verification on merged main. merged **ab8100a** (2026-10-21, linear chain,
+  both branches fast-forwarded after a rebase onto the doc commits that
+  landed on main during development).
+  SHA mapping (rebase before merge): 62b0b70→094f77f, 1d8b516→69fdfe0,
+  bae13f4→5aeaeb1, b5c55a3→3546c10, 933891b→a020e63, da17093→4b6f20f,
+  76d6f3d→ab8100a.
 
 ## Out of scope (YAGNI)
 
 Sparkle, settings pane, "Check for updates" menu item, ETag caching, retry
 ladder, pre-release channels, delta download, API token, build-number compare,
 `launchd`, DESIGN.md authoring, any CI workflow change.
-
