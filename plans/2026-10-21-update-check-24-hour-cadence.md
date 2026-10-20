@@ -19,15 +19,17 @@ launch floor and all other semantics stay unchanged.
 
 ## ISC
 
-- [ ] I1. The loop interval constant reads 24 h, single source of truth (named
-  constant, not a duplicated literal).
-- [ ] I2. Full suite green (292/292).
-- [ ] I3. Reviewer GO; ff-only merge to local main.
+- [x] I1. The loop interval constant reads 24 h, single source of truth (named
+  constant, not a duplicated literal). Evidence: `checkInterval` is the sole
+  definition; `rg` shows zero remaining `6 * 60 * 60`/21600/"6 h" references.
+- [x] I2. Full suite green (292/292).
+- [x] I3. Reviewer GO; ff-only merge to local main.
 
 ## Tasks
 
 - [ ] **T1** — `[coder]` [no-red] in worktree `worktrees/update-cadence`,
   branch `feat/update-cadence`: change interval to 24 h; if the value is an
   inline literal, lift it to one named constant. Full suite green.
-  green ⏳ · review ⏳
-- [ ] **T2** — reviewer `[code-review]`; merge ff-only; cleanup. merged ⏳
+  green **7811e10** (2-line diff, 292/292) · review GO
+- [x] **T2** — reviewer `[code-review]`; merge ff-only; cleanup. merged
+  **7811e10** (2026-10-21); worktree and branch removed.
