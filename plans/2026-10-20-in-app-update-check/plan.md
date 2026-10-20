@@ -16,7 +16,8 @@ All failure paths are silent. No settings UI, no Sparkle, no auto-download.
 
 ## Research inputs (attached)
 
-- Design blueprint + VAC-1..11: `plans/2026-10-20-in-app-update-check/blueprint.md`
+- Design blueprint + VAC-1..11:
+  `plans/2026-10-20-in-app-update-check/blueprint.md`
   (designer, 2026-10-20; surface = in-popover banner card; exact copy, tokens,
   state matrix, WCAG contracts).
 - Oracle advisory (2026-10-20, session `2026-10-20T08-36-02-696Z`): integration
@@ -30,8 +31,9 @@ All failure paths are silent. No settings UI, no Sparkle, no auto-download.
   - Service pattern: `@MainActor @Observable final class` owned by
     `AppDelegate` (`StatsLite/StatsLiteApp.swift:36-48`, mirrors
     `StatsLite/LaunchAtLoginService.swift:14-16`).
-  - Popover content dies on close (`StatsLite/StatusItemController.swift:107-118,
-    165-171`) — dismissed state must live in app-lifetime service, not view.
+  - Popover content dies on close
+    (`StatsLite/StatusItemController.swift:107-118, 165-171`) — dismissed state
+    must live in app-lifetime service, not view.
   - Both targets are file-system-synchronized groups
     (`StatsLite.xcodeproj/project.pbxproj:24-33`) — new files need no pbxproj
     edit.
@@ -67,11 +69,16 @@ All failure paths are silent. No settings UI, no Sparkle, no auto-download.
 - [ ] I2. Decode fixture test for the 3-key payload (`tag_name`, `html_url`,
   `name`) green.
 - [ ] I3. Full existing suite (244 tests at plan time) plus new tests green in
-  CI (build-dmg workflow runs the build; local `xcodebuild test` where possible).
+  CI (build-dmg workflow runs the build; local `xcodebuild test` where
+  possible).
 - [ ] I4 (design gate, blocking). VAC-1..11 in the blueprint all PASS against
   before/after dark+light captures from `scripts/capture_baseline.sh`, reviewed
   by the designer before merge. Zero visual defects (text wrapping, clipping,
   spacing, width drift from the 280 pt frame are blocking).
+  Captures run ONLY in the user's interactive terminal (verified 2026-10-20:
+  agent sessions lack Automation + Screen Recording TCC — osascript -1743,
+  screencapture denied). Banner-visible captures use the T2b fixture:
+  `STATSLITE_FAKE_UPDATE_VERSION=1.1.0 scripts/capture_baseline.sh`.
 - [ ] I5. Status item untouched: VAC-3 — status item hierarchy/width identical
   in idle/checking/update states.
 - [ ] I6. Silent-failure invariant VAC-4: no spinner, no alert, no badge on
@@ -99,7 +106,7 @@ stops until it is fixed. One variable per verification round.
   red **62b0b70** (3 test files, +303, exit 65, missing-symbol compile errors =
   expected Swift TDD red, 0 tests passing) · green **1d8b516** (31 new tests
   green; full suite 278/278 yellow gate) — merge blocked until T3/T4/T5.
-- [ ] **T2** — `[coder]` in worktree `worktrees/update-banner-ui`, branch
+- [x] **T2** — `[coder]` in worktree `worktrees/update-banner-ui`, branch
   `feat/update-banner-ui` (spawn cwd = worktree), after T1 GO. Implement
   `StatsLite/UpdateBannerCardView.swift` + integration at
   `PopoverContentView.swift:30` strictly per blueprint (tokens, copy, a11y
@@ -107,7 +114,19 @@ stops until it is fixed. One variable per verification round.
   in this repo (no view-testing dependency; adding one is out of scope)] —
   acceptance = design gate I4 + full suite green. Captures via
   `scripts/capture_baseline.sh` before/after in both appearances.
-  green ⏳ design gate ⏳
+  green **bae13f4** (2 files, suite 278/278, zero VAC-number deviations, status
+  item untouched) · design gate ⏳ (blocked on T2b + user-run captures)
+- [ ] **T2b** — `[coder red/green]` in worktree `update-banner-ui` (stacked).
+  Verification enabler for I4: env fixture `STATSLITE_FAKE_UPDATE_VERSION`.
+  Pure `UpdateCheckLaunchPolicy.skipCheck(arguments:environment:)` — skip iff
+  `--open-popover` present AND fixture env absent (fixture overrides the
+  harness skip; the measure script never sets it, so I8/F5 hold). Pure
+  `fixtureRelease(environment:)` — parse env value via `SemanticVersion`, nil
+  if absent/garbage, else `ReleaseInfo` with the releases page URL; fed
+  through `promptState` like a fetched latest. No `#if DEBUG` (captures build
+  Release); inert without the env var. Red first: policy table + fixture parse
+  + service honors fixture with a counting fake source (0 fetch calls).
+  red ⏳ green ⏳ review ⏳
 - [ ] **T3** — `[designer]` design gate: verdict on I4/I5/I6 against captures,
   VAC by VAC. review ⏳
 - [ ] **T4** — reviewer `[code-review]` on both branches' combined diff vs
