@@ -20,6 +20,10 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
   - Launch at login.
 - **Real system data**: the app reads metrics from Mach APIs, IOKit, `sysctl`, and `getifaddrs`.
 
+## Goals
+
+- Keep StatsLite under 60 MB in memory in menu-bar-only mode. Menu-bar-only mode means the status item is visible and the popover is closed.
+
 ## Requirements
 
 - macOS 14.0 or later.
