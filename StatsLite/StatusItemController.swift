@@ -29,6 +29,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
     private let monitor: SystemMonitor
     private let preferences: PreferencesStore
+    private let updateChecker: UpdateCheckService?
     private let statusItem: NSStatusItem
 
     /// Internal so popover lifecycle tests can inspect the mount.
@@ -41,9 +42,14 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     /// Internal so layout tests can inspect the hosting view.
     var button: NSStatusBarButton? { statusItem.button }
 
-    init(monitor: SystemMonitor, preferences: PreferencesStore) {
+    init(
+        monitor: SystemMonitor,
+        preferences: PreferencesStore,
+        updateChecker: UpdateCheckService? = nil
+    ) {
         self.monitor = monitor
         self.preferences = preferences
+        self.updateChecker = updateChecker
         self.statusItem = NSStatusBar.system.statusItem(
             withLength: MenuBarLayout.length(
                 showCPU: preferences.showCPU,
@@ -114,7 +120,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             popover.contentViewController = NSHostingController(
                 rootView: PopoverContentView(
                     monitor: monitor,
-                    preferences: preferences
+                    preferences: preferences,
+                    updateChecker: updateChecker
                 )
             )
         }

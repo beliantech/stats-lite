@@ -5,7 +5,8 @@
 //  Menu bar agent entry point. MenuBarExtra is gone: it flattens its
 //  label into NSStatusBarButton.title and cannot render the stacked
 //  block layout. AppDelegate owns the shared SystemMonitor,
-//  PreferencesStore, and the StatusItemController that manages the
+//  PreferencesStore, UpdateCheckService, and the
+//  StatusItemController that manages the
 //  NSStatusItem and the popover. LSUIElement in Info.plist keeps the
 //  app out of the Dock. The Settings scene is unchanged.
 //
@@ -36,6 +37,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     let monitor = SystemMonitor()
     let preferences = PreferencesStore()
     let launchAtLogin = LaunchAtLoginService()
+    let updateChecker = UpdateCheckService()
 
     private var statusItemController: StatusItemController?
 
@@ -43,9 +45,19 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         monitor.apply(preferences)
         statusItemController = StatusItemController(
             monitor: monitor,
-            preferences: preferences
+            preferences: preferences,
+            updateChecker: updateChecker
         )
+        startUpdateCheckIfNeeded()
         startMeasurementHookIfNeeded()
+    }
+
+    // update check: skipped under `--open-popover` so the measurement
+    // harness never triggers a network check.
+    private func startUpdateCheckIfNeeded() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard !arguments.contains("--open-popover") else { return }
+        updateChecker.start()
     }
 
     // measurement support: `--open-popover` drives the automated

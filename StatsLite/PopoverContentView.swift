@@ -15,6 +15,7 @@ import SwiftUI
 struct PopoverContentView: View {
     let monitor: SystemMonitor
     let preferences: PreferencesStore
+    var updateChecker: UpdateCheckService? = nil
 
     @Environment(\.openSettings) private var openSettings
     @State private var coresExpanded = false
