@@ -29,6 +29,18 @@ struct PopoverContentView: View {
                 .padding(.top, 5)
 
             VStack(spacing: 6) {
+                if let updateChecker,
+                   let update = updateChecker.availableUpdate,
+                   !updateChecker.isDismissed(version: update.version.description) {
+                    UpdateBannerCardView(
+                        updateVersion: "v\(update.version.description)",
+                        releaseURL: update.releasePageURL,
+                        onDismiss: {
+                            updateChecker.dismiss(version: update.version.description)
+                        }
+                    )
+                    .transition(.opacity)
+                }
                 if preferences.showCPU {
                     CPUCardView(
                         monitor: monitor,
