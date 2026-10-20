@@ -96,7 +96,9 @@ stops until it is fixed. One variable per verification round.
   `StatsLite/UpdateCheckTypes.swift`, source protocol + URLSession impl,
   `StatsLite/UpdateCheckService.swift` (Task loop, 6 h cadence, 300 s launch
   floor, UserDefaults keys, AppDelegate wiring with `--open-popover` guard).
-  yellow then GO (existing suite green) — merge blocked until T3. red ⏳ green ⏳
+  red **62b0b70** (3 test files, +303, exit 65, missing-symbol compile errors =
+  expected Swift TDD red, 0 tests passing) · green **1d8b516** (31 new tests
+  green; full suite 278/278 yellow gate) — merge blocked until T3/T4/T5.
 - [ ] **T2** — `[coder]` in worktree `worktrees/update-banner-ui`, branch
   `feat/update-banner-ui` (spawn cwd = worktree), after T1 GO. Implement
   `StatsLite/UpdateBannerCardView.swift` + integration at
