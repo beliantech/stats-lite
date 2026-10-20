@@ -4,11 +4,11 @@
 //
 //  Network Usage card: header row (network symbol + title + combined
 //  rate), legend row (red Up / blue Down / Peak), 56 pt mirrored
-//  chart, shared time axis row. Colors follow the menu-bar convention:
-//  upload systemRed, download systemBlue. Loading state shows
+//  chart, shared time axis row. Loading state shows
 //  -- KB/s, "Waiting for first sample", and a 38 pt placeholder.
 //  Sampling off shows the dashed 38 pt container with a warning icon
-//  and footnote (mirrors GPUCardView). No .animation or
+//  and footnote (mirrors GPUCardView). Legend dots use the shared
+//  Color.networkUpload / Color.networkDownload tokens. No .animation or
 //  .contentTransition anywhere in this view.
 //
 
@@ -99,8 +99,8 @@ struct NetworkCardView: View {
         HStack(spacing: 8) {
             HStack(spacing: 4) {
                 Circle()
-                    .fill(Color(nsColor: .systemRed))
-                    .frame(width: 6, height: 6)
+                    .fill(Color.networkUpload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
                 Text("Up: \(MetricFormatters.networkRate(metrics.uploadBytesPerSecond))")
                     .font(.system(size: 10, weight: .medium).monospacedDigit())
                     .foregroundStyle(.secondary)
@@ -108,8 +108,8 @@ struct NetworkCardView: View {
             }
             HStack(spacing: 4) {
                 Circle()
-                    .fill(Color(nsColor: .systemBlue))
-                    .frame(width: 6, height: 6)
+                    .fill(Color.networkDownload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
                 Text("Down: \(MetricFormatters.networkRate(metrics.downloadBytesPerSecond))")
                     .font(.system(size: 10, weight: .medium).monospacedDigit())
                     .foregroundStyle(.secondary)

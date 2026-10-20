@@ -6,8 +6,9 @@
 //  category label sits on line 1, the percent value on line 2, and
 //  every block pins its width to MenuBarLayout.blockWidth, so the
 //  status item never resizes. The network block is a dedicated
-//  two-line view: red dot plus upload rate above blue dot plus
-//  download rate, pinned to MenuBarLayout.networkBlockWidth. Blocks
+//  two-line view: networkUpload dot plus upload rate above
+//  networkDownload dot plus download rate, pinned to
+//  MenuBarLayout.networkBlockWidth. Blocks
 //  come from MenuBarBlockBuilder — the single source of truth for
 //  text, tint, and width. The MEM block carries a 4 pt pressure dot
 //  left of the label. No frame height: the controller centers the
@@ -134,8 +135,11 @@ struct MenuBarBlockView: View {
 }
 
 /// Dedicated two-line network speed monitor block:
-/// line 1 carries a 6 pt red indicator dot and the upload rate.
-/// line 2 carries a 6 pt blue indicator dot and the download rate.
+/// line 1 carries a 5 pt red indicator dot (Color.networkUpload) and
+/// the upload rate.
+/// line 2 carries a 5 pt adaptive indicator dot
+/// (Color.networkDownload: systemCyan in dark mode, systemBlue in
+/// light) and the download rate.
 /// Width pins to block.width (50 pt), so rate string changes never
 /// resize the item (VAC-N1). Transitions stay discrete: no
 /// .animation and no .contentTransition modifiers (VAC-9).
@@ -147,8 +151,8 @@ struct MenuBarNetworkBlockView: View {
             // Line 1: Upload rate
             HStack(alignment: .center, spacing: 0) {
                 Circle()
-                    .fill(Color(nsColor: .systemRed))
-                    .frame(width: 6, height: 6)
+                    .fill(Color.networkUpload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
 
                 Spacer(minLength: 1)
 
@@ -162,8 +166,8 @@ struct MenuBarNetworkBlockView: View {
             // Line 2: Download rate
             HStack(alignment: .center, spacing: 0) {
                 Circle()
-                    .fill(Color(nsColor: .systemBlue))
-                    .frame(width: 6, height: 6)
+                    .fill(Color.networkDownload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
 
                 Spacer(minLength: 1)
 

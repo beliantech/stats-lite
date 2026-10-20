@@ -429,21 +429,21 @@ final class MenuBarValueTypographyTests: XCTestCase {
             "expected 42.1084 pt text width at the target font"
         )
 
-        let clearance = MenuBarLayout.networkBlockWidth - 6.0 - width
+        let clearance = MenuBarLayout.networkBlockWidth - 5.0 - width
         XCTAssertGreaterThanOrEqual(
             clearance,
             1.8,
             """
             IC-12: total clearance for "999 MB/s" at 9 pt regular \
-            monospacedDigit plus the 6.0 pt dot must be at least 1.8 pt \
+            monospacedDigit plus the 5.0 pt dot must be at least 1.8 pt \
             for Spacer(minLength: 1); got \(clearance) pt.
             """
         )
         XCTAssertEqual(
             clearance,
-            1.8916,
+            2.8916,
             accuracy: 0.05,
-            "expected 1.8916 pt total clearance at the target font"
+            "expected 2.8916 pt total clearance at the target font"
         )
     }
 

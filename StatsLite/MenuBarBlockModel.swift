@@ -54,8 +54,8 @@ enum MenuBarLayout {
     /// fits with 2.61 pt clearance per side, satisfying the >= 2.5 pt rule.
     static let blockWidth: CGFloat = 39
     /// Pinned width of the two-line network block. Fits the widest
-    /// truncated rate string "999 MB/s" (42.91 pt) plus the 6 pt dot
-    /// with 1.09 pt clearance (appendix B §1).
+    /// truncated rate string "999 MB/s" (42.91 pt) plus the 5 pt dot
+    /// with 2.89 pt clearance (appendix B §1).
     static let networkBlockWidth: CGFloat = 50
     /// Pinned height of each line within a block. Two 11 pt rows yield
     /// a 22 pt block height that matches NSStatusBar.system.thickness

@@ -60,3 +60,22 @@ extension View {
         modifier(MetricCardStyle())
     }
 }
+
+/// Network indicator dot colors, shared by the status item block and
+/// the popover legend. Upload stays systemRed. Download is adaptive:
+/// systemCyan on dark aqua keeps contrast on blue-hued wallpapers,
+/// systemBlue on aqua (plan 2026-10-20-network-dot-contrast-size).
+extension Color {
+    static let networkUpload = Color(nsColor: .systemRed)
+    static let networkDownload = Color(nsColor: NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? .systemCyan
+            : .systemBlue
+    })
+}
+
+/// Network indicator dot diameter. 5 pt matches the MEM dot-to-text
+/// ratio and lands on a whole pixel at 2x Retina.
+extension CGFloat {
+    static let networkDotSize: CGFloat = 5
+}
