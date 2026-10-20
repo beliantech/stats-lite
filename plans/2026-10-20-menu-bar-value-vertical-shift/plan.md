@@ -1,7 +1,7 @@
 # Plan: Menu bar value line vertical shift
 
 - Date: 2026-10-20
-- Status: awaiting Approval Gate
+- Status: GREEN (T1 d1c708a, T2 7c0fcee); designer VAC verification pending
 - User request: "hey the menubar gap to the bottom of the menubar is too small, can we shift up the bottom values a bit (reducing the gap between label and value)"
 - Branch: `feat/2026-10-20-menu-bar-value-vertical-shift`
 - Plan review round 1: NO GO → fixes applied (ISC section, VAC measurement correction,
@@ -161,7 +161,10 @@ shifted 20.0352 (VAC-3), value capTop 11.5801, bottomGap 1.9648 (VAC-4), optical
 3.4346 (VAC-5), topGap > bottomGap (VAC-6), ink [11.58, 20.04] within row 2 (VAC-7);
 network download baseline 19.9014, delta 0.1338 (VAC-11). Tolerance ±0.05 pt.
 
-## Evidence (capture during implementation)
+## Evidence (captured during implementation)
+
+- Branch `feat/2026-10-20-menu-bar-value-vertical-shift`, worktree
+  `worktrees/2026-10-20-menu-bar-value-vertical-shift`.
 
 - Test command:
   ```sh
@@ -173,8 +176,14 @@ network download baseline 19.9014, delta 0.1338 (VAC-11). Tolerance ±0.05 pt.
     -derivedDataPath .derivedData \
     CODE_SIGN_IDENTITY="-"
   ```
-- Red run: `xcodebuild test` compiles; list failing new assertions (expected), exact count.
-- Green run: `Executed N tests, with 0 failures` (fill exact count).
+- Red run (commit d1c708a): suite compiled clean; `Executed 244 tests, with 8 failures`
+  (0 unexpected) — all 8 in the three new tests (VAC-3 21.0352≠20.04, VAC-4 0.9648≠1.96,
+  VAC-5 4.4346≠3.43, VAC-7 capTop 12.5801≠11.58, VAC-11 delta 1.1338≠0.14, plus token/
+  modifier asserts). Zero pre-existing tests failed.
+- Green run (commit 7c0fcee): exit 0, ** TEST SUCCEEDED ** —
+  `Executed 244 tests, with 0 failures (0 unexpected)`.
+- Font metrics independently verified by the coder with an AppKit script before authoring
+  tests: match the plan's values to 4 decimals (metrics now verified, no longer prior).
 
 ### Red-phase compile-safe staging order
 
