@@ -57,7 +57,12 @@ final class UpdateCheckService {
                 forKey: Self.lastCheckEpochKey
             )
             let gap = Date().timeIntervalSince1970 - lastCheck
-            if gap >= Self.launchCheckMinGap || gap < 0 {
+            // The fixture env key bypasses the launch floor so capture
+            // scripts get a prompt on every relaunch.
+            let fixtureOverride = UpdateCheckLaunchPolicy.fixtureRelease(
+                environment: self.environment
+            ) != nil
+            if gap >= Self.launchCheckMinGap || gap < 0 || fixtureOverride {
                 await self.performCheck()
             }
             while !Task.isCancelled {
