@@ -53,10 +53,16 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
     }
 
     // update check: skipped under `--open-popover` so the measurement
-    // harness never triggers a network check.
+    // harness never triggers a network check. The
+    // STATSLITE_FAKE_UPDATE_VERSION fixture key overrides the skip so
+    // banner captures can run under the harness.
     private func startUpdateCheckIfNeeded() {
         let arguments = ProcessInfo.processInfo.arguments
-        guard !arguments.contains("--open-popover") else { return }
+        let environment = ProcessInfo.processInfo.environment
+        guard !UpdateCheckLaunchPolicy.skipCheck(
+            arguments: arguments,
+            environment: environment
+        ) else { return }
         updateChecker.start()
     }
 

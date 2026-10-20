@@ -34,14 +34,17 @@ final class UpdateCheckService {
 
     private let source: any UpdateReleaseSource
     private let bundle: Bundle
+    private let environment: [String: String]
     private var checkTask: Task<Void, Never>?
 
     init(
         source: any UpdateReleaseSource = GitHubReleaseSource(),
-        bundle: Bundle = .main
+        bundle: Bundle = .main,
+        environment: [String: String] = ProcessInfo.processInfo.environment
     ) {
         self.source = source
         self.bundle = bundle
+        self.environment = environment
     }
 
     /// Starts the check loop once. A second call while the loop runs
@@ -88,8 +91,9 @@ final class UpdateCheckService {
         availableUpdate = nil
     }
 
-    /// One check: stamp the epoch, resolve the current version, ask
-    /// the source, then apply the policy. An unparsable current
+    /// One check: stamp the epoch, resolve the current version, take
+    /// the fixture release when the env key is set (no network), else
+    /// ask the source, then apply the policy. An unparsable current
     /// version and a nil source result are silent.
     private func performCheck() async {
         UserDefaults.standard.set(
@@ -97,7 +101,16 @@ final class UpdateCheckService {
             forKey: Self.lastCheckEpochKey
         )
         guard let current = Self.currentVersion(bundle: bundle) else { return }
-        guard let latest = await source.latestRelease() else { return }
+        let latest: ReleaseInfo
+        if let fixture = UpdateCheckLaunchPolicy.fixtureRelease(
+            environment: environment
+        ) {
+            latest = fixture
+        } else if let fetched = await source.latestRelease() {
+            latest = fetched
+        } else {
+            return
+        }
         let dismissed = UserDefaults.standard.string(
             forKey: Self.dismissedVersionKey
         )

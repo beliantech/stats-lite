@@ -1,0 +1,47 @@
+//
+//  UpdateCheckLaunchPolicy.swift
+//  StatsLite
+//
+//  Launch-time update check decision plus the capture fixture.
+//  Foundation only, pure: no bundle, no UserDefaults, no network.
+//  The fixture env key (STATSLITE_FAKE_UPDATE_VERSION) overrides the
+//  `--open-popover` harness skip so banner captures can run under
+//  scripts/capture_baseline.sh.
+//
+
+import Foundation
+
+enum UpdateCheckLaunchPolicy {
+
+    /// Environment key that injects a fake latest release.
+    static let fixtureVersionKey = "STATSLITE_FAKE_UPDATE_VERSION"
+
+    /// Release page carried by the fixture release.
+    static let fixtureReleasePageURL =
+        "https://github.com/beliantech/stats-lite-macos/releases"
+
+    /// True when the measurement harness launched the app with the
+    /// exact `--open-popover` argument and no fixture key is set. The
+    /// fixture key overrides the skip.
+    static func skipCheck(
+        arguments: [String],
+        environment: [String: String]
+    ) -> Bool {
+        guard arguments.contains("--open-popover") else { return false }
+        return environment[fixtureVersionKey] == nil
+    }
+
+    /// Fixture release from the environment key. Returns nil when the
+    /// key is absent or the value fails the SemanticVersion parse.
+    static func fixtureRelease(
+        environment: [String: String]
+    ) -> ReleaseInfo? {
+        guard let raw = environment[fixtureVersionKey],
+              let version = SemanticVersion(raw)
+        else { return nil }
+        return ReleaseInfo(
+            version: version,
+            releasePageURL: URL(string: fixtureReleasePageURL)!
+        )
+    }
+}
