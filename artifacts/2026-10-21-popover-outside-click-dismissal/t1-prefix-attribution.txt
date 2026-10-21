@@ -1,0 +1,7 @@
+# T1 pre-fix attribution (IC1) — 2026-10-21
+# caffeinate -u -d, cycles=1 hold=15, click (100,500), main repo Release build
+before_click: win=16338 display_asleep=0
+after_click_1s: win=16338
+after_click_2.5s: win=16338
+[measurement] cycle 1/1 open (no close before +16s)
+verdict: outside click ignored while awake -> H2 owned (IC1 pass)
