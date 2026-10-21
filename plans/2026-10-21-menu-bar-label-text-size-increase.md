@@ -16,10 +16,10 @@ Out of scope: popover metric-card labels (11 pt → 12 pt), sparkline time-axis 
 Plan -> Phase -> Task (T*, FM* = failure modes) -> Receipts (red SHA / green SHA / review verdict)
 ```
 
-- [ ] **T1** — red: failing tests for the 8 pt label step. red ⏳ · green — · review —
-- [ ] **T2** — green: implement 8 pt label step until green. red — · green ⏳ · review ⏳
-- [ ] **T3** — tester VAC verification on rendered dark/light captures. ⏳
-- [ ] **T4** — reviewer code review, merge to main, docs. ⏳
+- [x] **T1** — red: failing tests for the 8 pt label step. red `342433e` · green — · review GO
+- [x] **T2** — green: implement 8 pt label step until green. red — · green `9626aa6` · review GO
+- [x] **T3** — tester VAC verification on rendered dark/light captures. PASS — see Receipts
+- [x] **T4** — reviewer code review, merge to main, docs. GO → merged, `9626aa6`
 
 ## ISC
 
@@ -115,3 +115,12 @@ None required. The inline 7 pt literal becomes an inline 8 pt literal; extractin
 - Renders verified by `tester` against VAC-1..VAC-4 in dark and light appearance before any task is marked `[x]`.
 - Baseline captures exist at `artifacts/2026-10-16-menu-bar-regular-weight/baseline/{dark,light}.png`; capture a fresh before-state if those are stale (before the first code edit).
 - Merge with `--ff-only` or `--squash`; linear main history.
+
+## Receipts
+
+- Plan review: NO GO (green-phase literal contradiction) → fixed → re-review GO.
+- Red `342433e` (rebased): test-only, 1 intended failure of 292; failure quotes the 7 pt production token (FM4 dead).
+- Green `9626aa6` (rebased): 2 files, +20/−20; suite 292/292 green (44 s). Fixture re-encode measured at 8 pt with all thresholds preserved (MEM 13.6406 ≥ 3.5, CPU/GPU ≥ 16, topGap > bottomGap, zero-clipping guards).
+- VAC: all PASS both appearances — light on `light-status-item.png`, dark on `dark-status-item.png` (label glyphs 12–13 px @2x = 8 pt regular; single row, no ellipsis, no clip). VAC-3/4 static PASS; ISC-6 14/14 PASS. Evidence: `artifacts/2026-10-21-menu-bar-label-text-size-increase/TESTER-REPORT.md`.
+- TCC note: SSH-session Screen Recording + Accessibility grants now on `/usr/libexec/sshd-keygen-wrapper` (Device Control and Data Access pane); Automation (osascript) still denied, worked around.
+- Reviewer: GO. Merge: fast-forward, main = `9626aa6`. Worktree and branch removed.
