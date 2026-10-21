@@ -174,8 +174,17 @@ final class MenuBarRedrawChurnTests: XCTestCase {
             [.width, .height],
             "the view must stretch with the button"
         )
+        // AppKit/SwiftUI internals hold single-item centering
+        // constraints for their private drawing views (CGDrawingView,
+        // _NSGraphicsView) once a layout pass runs; setting
+        // button.image for the inactive-display dim triggers that
+        // pass. The invariant is that no constraint pins the
+        // hosting view itself: our pin stays frame math.
+        let ours = hosting.constraints.filter {
+            $0.firstItem === hosting || $0.secondItem === hosting
+        }
         XCTAssertTrue(
-            hosting.constraints.isEmpty,
+            ours.isEmpty,
             "the hosting view must pin with frame math, not constraints"
         )
         XCTAssertEqual(

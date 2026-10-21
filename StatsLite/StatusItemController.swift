@@ -42,6 +42,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     /// Internal so layout tests can inspect the hosting view.
     var button: NSStatusBarButton? { statusItem.button }
 
+    /// Shared empty image that makes the item eligible for AppKit's
+    /// inactive-display dim (see the call site in init).
+    private static let emptyStatusImage = NSImage()
+
     init(
         monitor: SystemMonitor,
         preferences: PreferencesStore,
@@ -90,6 +94,14 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         hostingView.autoresizingMask = [.width, .height]
         hostingView.frame = button.bounds
         button.addSubview(hostingView)
+        // AppKit's inactive-display dim pass draws the replicant
+        // snapshot at 0.5 alpha only when button.image != nil and is
+        // not template; a nil image makes the gate read "already
+        // styled" and the dim is skipped. One shared empty
+        // non-template image (zero pixels, no layout impact) makes
+        // the item eligible. See
+        // docs/research/2026-10-21-status-item-inactive-dim.md.
+        button.image = Self.emptyStatusImage
 
         button.target = self
         button.action = #selector(togglePopover(_:))

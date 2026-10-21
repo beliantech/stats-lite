@@ -86,6 +86,27 @@ final class StatusItemControllerPopoverTests: XCTestCase {
         )
     }
 
+    /// AppKit dims the item on an unfocused display by drawing the
+    /// replicant snapshot at alpha 0.5, but only when
+    /// button.image != nil and the image is not template. A nil
+    /// image makes the gate read "already styled" and the dim is
+    /// skipped (docs/research/2026-10-21-status-item-inactive-dim.md).
+    func test_statusItem_imageSetForInactiveDisplayDimEligibility() {
+        let controller = StatusItemController(
+            monitor: SystemMonitor(),
+            preferences: PreferencesStore()
+        )
+        XCTAssertNotNil(
+            controller.button?.image,
+            "button.image must be non-nil so AppKit applies its inactive-display dim"
+        )
+        XCTAssertEqual(
+            controller.button?.image?.isTemplate,
+            false,
+            "button.image must be non-template so AppKit's gate takes the dim path"
+        )
+    }
+
     func testTogglePopoverCyclesMountAndRelease() {
         let controller = StatusItemController(
             monitor: SystemMonitor(),
