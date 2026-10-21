@@ -13,3 +13,20 @@
 - For popover memory work, use `scripts/measure_popover_footprint.sh` (footprint sampler
   with the `--open-popover` cycle hook) and `scripts/capture_baseline.sh` (dark/light
   VAC screenshots). Capture the baseline before the first code edit.
+- Popover close is display-sleep-sensitive: when `CGDisplayIsAsleep == 1`, the animated
+  close never completes and `popoverDidClose` never fires. Run any tool that closes the
+  popover (footprint cycles, tests) with the display awake — verify `CGDisplayIsAsleep`
+  or wrap the run in `caffeinate`.
+- `StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease` sets
+  `popover.animates = false` (merge d8d98bb) to stay deterministic while the display
+  sleeps. Do not remove that line; it is not dead code.
+
+## Known issues (parked)
+
+- `scripts/measure_popover_footprint.sh` has no display-sleep guard. An asleep display
+  stalls popover close, and later cycles sample a stale open popover — the memory numbers
+  are invalid. Fix parked: add a `CGDisplayIsAsleep` startup check or wrap the run in
+  `caffeinate`.
+- `[StatusBar] disconnected scene` is a known latent AppKit warning
+  (plans/2026-10-16-network-monitor.md). It is never the display-sleep root cause; do not
+  lump the two together.
