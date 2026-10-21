@@ -109,6 +109,15 @@ jobs:
             | tee "$RUNNER_TEMP/notary.json"
           STATUS="$(jq -r .status "$RUNNER_TEMP/notary.json")"
           echo "notary status: $STATUS"
+          if [ "$STATUS" != "Accepted" ]; then
+            SUBID="$(jq -r .id "$RUNNER_TEMP/notary.json")"
+            echo "::error::notarization $STATUS sub=$SUBID"
+            echo "== notarytool log =="
+            xcrun notarytool log "$SUBID" \
+              --key "$RUNNER_TEMP/AuthKey.p8" \
+              --key-id "$NOTARY_KEY_ID" \
+              --issuer "$NOTARY_ISSUER_ID" || true
+          fi
           test "$STATUS" = "Accepted"
 
       - name: Staple and verify DMG
