@@ -1,0 +1,74 @@
+{
+  "root-cause": "AppKit dims a status item on the unfocused display by drawing its NSStatusItemReplicantView snapshot at alpha 0.5, but only when ((button.image != nil) && !button.image.isTemplate) at snapshot time (gate in -[NSStatusItem _redrawReplicantSnapshot:sourceView:], AppKit 0x18cba57c4-0x18cba5930). We never set button.image, so the gate treats the empty cell as already-styled and skips the dim; our SwiftUI PassthroughHostingView snapshot renders at alpha 1.0. [measured via AppKit disassembly; prior art: exelban/stats 11b3449/9f2135f fixed the identical symptom with button.image = NSImage()]. Evidence note: docs/research/2026-10-21-status-item-inactive-dim.md",
+  "branch-name": "fix/status-item-inactive-dim",
+  "tasks": [
+    {
+      "id": "T0",
+      "title": "Make plan artifacts trackable in git",
+      "acceptance-criteria": [
+        ".gitignore replaces the `.pi/` entry with `.pi/*` plus `!.pi/plans/` so session logs stay ignored while plan JSON becomes trackable",
+        "`git check-ignore .pi/plans/2026-10-21-status-item-inactive-dim.json` exits non-zero (not ignored); `git check-ignore .pi/sessions` still matches",
+        "This plan JSON and docs/research/2026-10-21-status-item-inactive-dim.md are committed on the branch; no other .pi files are added"
+      ],
+      "falsification-signature": "If `git check-ignore` still matches the plan file after the .gitignore edit, the negation pattern is wrong and T0 fails.",
+      "changed-paths": [
+        ".gitignore",
+        ".pi/plans/2026-10-21-status-item-inactive-dim.json",
+        "docs/research/2026-10-21-status-item-inactive-dim.md"
+      ],
+      "test-ids": []
+    },
+    {
+      "id": "T1",
+      "title": "Make the status item eligible for the system inactive-display dim",
+      "acceptance-criteria": [
+        "StatusItemController.init assigns a shared static empty NSImage() (isTemplate == false) to statusItem.button.image after addSubview(hostingView); no other behavior change",
+        "No SwiftUI view-tree change: MenuBarStackedItemView and PassthroughHostingView untouched; hostingView.frame == button.bounds and sizingOptions == [] preserved (AC-11)",
+        "statusItem.length and MenuBarLayout widths unchanged; MenuBarLayoutTests green",
+        "No self-applied opacity/desaturation anywhere (user constraint: the system provides the dim)",
+        "Existing suites green: MenuBarLayoutTests, MenuBarAccessibilityTests, MenuBarRedrawChurnTests, StatusItemControllerPopoverTests, MenuBarValueTypographyTests"
+      ],
+      "falsification-signature": "Dual-display check: with focus on display A, the item on display B (unfocused) must render at ~0.5 alpha (matches adjacent native items) while the item on display A stays at full brightness. If display B does not dim after this change, the gate hypothesis is dead and the task stops.",
+      "changed-paths": [
+        "StatsLite/StatusItemController.swift"
+      ],
+      "test-ids": [
+        "MenuBarLayoutTests",
+        "MenuBarAccessibilityTests",
+        "MenuBarRedrawChurnTests",
+        "StatusItemControllerPopoverTests",
+        "MenuBarValueTypographyTests"
+      ]
+    },
+    {
+      "id": "T2",
+      "title": "Regression guard: button.image eligibility invariant",
+      "acceptance-criteria": [
+        "New test in StatsLiteTests/StatusItemControllerPopoverTests.swift (existing StatusItemController harness with inspectable controller.button) asserts button.image != nil and button.image?.isTemplate == false",
+        "Test fails on current main (red) and passes with T1 (green)"
+      ],
+      "falsification-signature": "If the new test passes on a build without T1's change, the guard does not encode the invariant and must be rewritten.",
+      "changed-paths": [
+        "StatsLiteTests/StatusItemControllerPopoverTests.swift"
+      ],
+      "test-ids": [
+        "test_statusItem_imageSetForInactiveDisplayDimEligibility"
+      ],
+      "depends-on": "T1"
+    },
+    {
+      "id": "T3",
+      "title": "Full verification and visual acceptance",
+      "acceptance-criteria": [
+        "xcodebuild test: all suites green",
+        "VAC-1..VAC-11 (docs/research/2026-10-21-status-item-inactive-dim.md, section 'Design acceptance checklist'): focused/unfocused states in light and dark appearance; layout bit-identical between states; VoiceOver strings unchanged; no .animation/.contentTransition in status item views; dim level is AppKit's system alpha, no self-applied opacity exists to verify",
+        "User confirms the T1 falsification signature on the real dual-display setup (only a human can move focus between physical displays)"
+      ],
+      "falsification-signature": "If any VAC fails or the user reports the item still bright on the unfocused display, the plan is not done and returns to investigation.",
+      "changed-paths": [],
+      "test-ids": [],
+      "depends-on": "T2"
+    }
+  ],
+  "verification": "xcodebuild test all suites; then human dual-display check: focus display A, confirm item on display B matches adjacent native/Bitwarden dimming (~0.5 alpha) in light and dark mode, and restores to full brightness when focus returns."
+}
