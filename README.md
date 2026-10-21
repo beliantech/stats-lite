@@ -6,6 +6,10 @@ StatsLite is a menu-bar system monitor for macOS. It shows live CPU, memory pres
 
 The app runs as a menu-bar agent. It has no Dock icon and no main window.
 
+## Screenshot
+
+![StatsLite menu bar blocks with the popover open, showing live CPU, memory, GPU, and network cards with sparklines](docs/screenshot.png)
+
 ## Features
 
 - **Menu bar blocks**: one stacked block per metric. Each block shows a category label and a value. Block widths stay fixed, so the status item never resizes.
