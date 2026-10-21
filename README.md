@@ -29,6 +29,7 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
 ## Goals
 
 - Keep StatsLite under 60 MB in memory in menu-bar-only mode. Menu-bar-only mode means the status item is visible and the popover is closed.
+- Keep the feature set small. StatsLite does one job: show system metrics. Every proposed feature must state its user benefit and its memory cost before it is added.
 
 ## Requirements
 
