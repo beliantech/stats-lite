@@ -94,6 +94,9 @@ jobs:
             -ov \
             -format UDZO \
             StatsLite.dmg
+          codesign --sign "Developer ID Application" \
+            --timestamp StatsLite.dmg
+          codesign --verify --strict --verbose=2 StatsLite.dmg
 
       - name: Notarize DMG
         env:
