@@ -53,7 +53,8 @@ Keep `popover.behavior = .transient` (`StatsLite/StatusItemController.swift:63`)
 - `NSEvent.addLocalMonitorForEvents(matching: same)` — closes on clicks in StatsLite's own windows (e.g. Settings); passes the event through unchanged when `event.window` is the popover window or the status-button window (FM2/FM3).
 - Guard `popover.isShown` before closing (FM5); remove monitors immediately when the close triggers.
 - Install in `openPopover()` (`:112-133`) after `popover.show`; remove in `popoverDidClose(_:)` (`:172-179`) and `deinit` (IC5).
-- Store the two monitor tokens as private properties on `StatusItemController` (next to `lastCloseTimestamp`, `:39-40`).
+- Store the two monitor tokens as `internal` properties on `StatusItemController` (next to `lastCloseTimestamp`, `:39-40`), each with an `/// Internal so popover lifecycle tests …` doc comment — the repo convention for test seams (`:30`, `:43`).
+- Extract the local-event filtering into an `internal` method `func handleLocalClickEvent(_ event: NSEvent) -> NSEvent?` so unit tests can drive it in-process: popover-window and button-window events return the event untouched; other-window events close the popover and return the event. Global monitors cannot fire in unit tests — IC5's global half is covered by token-lifecycle assertions plus the live IC2 run.
 
 **Rejected options (recorded for the reviewer):**
 
@@ -71,12 +72,14 @@ Keep `popover.behavior = .transient` (`StatsLite/StatusItemController.swift:63`)
 
 Notation: Plan -> Phase -> Task (`T*`) -> Receipts (red SHA / green SHA / review verdict).
 
-- [ ] **T1** — Phase 1 attribution: run the T1 command (below) from the main repo, awake. Receipt: saved log showing `win=<id>` before click and `win=<id>` at +1 s/+2.5 s → IC1. If `win=none` → FM1: stop and report.
-- [ ] **T2** — Phase 2 red: `[red]` coder in worktree `worktrees/popover-outside-click` on branch `popover-outside-click-dismissal`. Author failing tests only (IC3/IC4/IC5 failure modes: monitors installed on show; removed on close and deinit; local handler passes popover/button-window events and closes on other windows). Run the suite, report red output, touch no app code.
-- [ ] **T3** — Phase 2 green: same worktree/branch. Implement Option A in `StatsLite/StatusItemController.swift`; fix the `scripts/windowid.swift:6` comment. Suite green. Receipt: red + green SHAs.
-- [ ] **T4** — Phase 3 verify: (a) post-fix T1 command → `win=none` at +1 s (IC2); (b) awake full suite 0 failures (IC7); (c) rg checks (IC6); (d) reviewer `[code-review]` on `git -C <worktree> diff main...HEAD` → GO; (e) merge `--ff-only` or `--squash`, close worktree.
+- [ ] **T1** — Phase 1 attribution: run the T1 command (below) from the **main repo root**, where the Release build at `.derivedData/...` exists (verified this session). Receipt: saved log showing `win=<id>` before click and `win=<id>` at +1 s/+2.5 s → IC1. If `win=none` → FM1: stop and report.
+- [ ] **T2** — Phase 2 red: `[red]` coder in worktree `worktrees/popover-outside-click` on branch `popover-outside-click-dismissal`. Author failing tests only (IC3/IC4/IC5 failure modes: monitors installed on show; removed on close and deinit; `handleLocalClickEvent` passes popover/button-window events and closes on other windows). The seams (`globalClickMonitor`, `localClickMonitor`, `handleLocalClickEvent`) do not exist yet, so the expected red output is compile errors naming them — record that output as the red receipt. Touch no application code.
+- [ ] **T3** — Phase 2 green: same worktree/branch. Implement Option A in `StatsLite/StatusItemController.swift`, including the `internal` seam specified in Approach; fix the `scripts/windowid.swift:6` comment. Suite green. Receipt: red + green SHAs.
+- [ ] **T4** — Phase 3 verify (all steps in the **worktree** root): (a) build the fixed binary first — `xcodebuild -project StatsLite.xcodeproj -scheme StatsLite -configuration Release -derivedDataPath .derivedData build` — so the worktree's `.derivedData/...` path holds the post-fix app; then run the T1 command unchanged → `win=none` at +1 s (IC2); (b) awake full suite 0 failures (IC7); (c) rg checks (IC6); (d) reviewer `[code-review]` on `git -C <worktree> diff main...HEAD` → GO; (e) merge `--ff-only` or `--squash`, close worktree.
 
-### T1 / T4 attribution command (oracle §3A, unchanged between runs — one variable per experiment)
+### T1 / T4 attribution command (oracle §3A; identical between runs — one variable per experiment)
+
+Preconditions: run from the repo root where `.derivedData/Build/Products/Release/StatsLite.app` exists (T1: main repo; T4: worktree after the build step). The `swift -e` snippets use double quotes because the whole script is wrapped in single quotes.
 
 ```bash
 caffeinate -u -d bash -c '
@@ -87,7 +90,7 @@ caffeinate -u -d bash -c '
   PID=$!
   trap "kill $PID 2>/dev/null || true" EXIT
   sleep 2.5
-  echo "before_click: win=$(swift scripts/windowid.swift 2>/dev/null) display_asleep=$(swift -e 'import CoreGraphics; print(CGDisplayIsAsleep(CGMainDisplayID()))')"
+  echo "before_click: win=$(swift scripts/windowid.swift 2>/dev/null) display_asleep=$(swift -e "import CoreGraphics; print(CGDisplayIsAsleep(CGMainDisplayID()))")"
   swift -e "
     import CoreGraphics
     import Foundation
@@ -103,7 +106,7 @@ caffeinate -u -d bash -c '
 '
 ```
 
-Preconditions (FM4): Release build present at `.derivedData/.../StatsLite.app`; `display_asleep=0` in `before_click`; click point (100, 500) is far from the popover (recorded bounds `xy=885,26 wh=306x597`, `step2-close-behavior-awake.txt:10`); `cycles=1` means any window at +1 s is the original unclosed popover (rules out H3); `t=2.5 s >> 0.25 s` and the point is not on the status button (rules out H4).
+Preconditions (FM4): Release build present at `.derivedData/.../StatsLite.app` (see above); `display_asleep=0` in `before_click`; click point (100, 500) is far from the popover (recorded bounds `xy=885,26 wh=306x597`, `step2-close-behavior-awake.txt:10`); `cycles=1` means any window at +1 s is the original unclosed popover (rules out H3); `t=2.5 s >> 0.25 s` and the point is not on the status button (rules out H4).
 
 ## Verification plan
 
@@ -128,3 +131,9 @@ Preconditions (FM4): Release build present at `.derivedData/.../StatsLite.app`; 
 ## User confirmation
 
 <!-- The interactive plan-approval milestone records user confirmation here. -->
+
+### Receipts
+
+- User approval: 2026-10-21 (“ok” after plan summary).
+- `[plan-review]` pass 1: NO GO (3 findings) — `.pi/reviews/2026-10-21-popover-dismiss-plan-review.md`.
+- `[plan-review]` pass 2: **GO** (all three findings verified resolved).
