@@ -1,14 +1,14 @@
-# StatsLite
+# Stats Lite
 
 [![Download StatsLite.dmg](https://img.shields.io/badge/Download-StatsLite.dmg-2ea44f)](https://github.com/beliantech/stats-lite-macos/releases/latest/download/StatsLite.dmg)
 
-StatsLite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
+Stats Lite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
 
 The app runs as a menu-bar agent. It has no Dock icon and no main window.
 
 ## Screenshot
 
-<img src="docs/screenshot.png" alt="StatsLite menu bar blocks with the popover open, showing live CPU, memory, GPU, and network cards with sparklines" width="400">
+<img src="docs/screenshot.png" alt="Stats Lite menu bar blocks with the popover open, showing live CPU, memory, GPU, and network cards with sparklines" width="400">
 
 ## Features
 
@@ -28,8 +28,8 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
 
 ## Goals
 
-- Keep StatsLite under 60 MB in memory in menu-bar-only mode. Menu-bar-only mode means the status item is visible and the popover is closed.
-- Keep the feature set small. StatsLite does one job: show system metrics at a glance. Every proposed feature must state its user benefit and its memory cost before it is added.
+- Keep Stats Lite under 60 MB in memory in menu-bar-only mode. Menu-bar-only mode means the status item is visible and the popover is closed.
+- Keep the feature set small. Stats Lite does one job: show system metrics at a glance. Every proposed feature must state its user benefit and its memory cost before it is added.
 
 ## Requirements
 
@@ -37,7 +37,7 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
 - Apple Silicon (arm64).
 - Full Xcode. Xcode Command Line Tools alone do not work.
 
-StatsLite has zero third-party dependencies. You do not install anything before you build.
+Stats Lite has zero third-party dependencies. You do not install anything before you build.
 
 ## Build
 

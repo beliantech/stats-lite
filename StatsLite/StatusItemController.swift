@@ -198,11 +198,11 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     /// MenuBarItemView used.
     func updateAccessibility() {
         button?.setAccessibilityElement(true)
-        button?.setAccessibilityTitle("StatsLite")
+        button?.setAccessibilityTitle("Stats Lite")
         button?.setAccessibilityLabel(compositeLabel)
     }
 
-    /// "StatsLite: CPU 14 percent, Memory Pressure Normal at 25
+    /// "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25
     /// percent, GPU 28 percent, Network Upload 10 KB/s, Download 720
     /// KB/s" from the latest snapshot and network pass.
     private var compositeLabel: String {

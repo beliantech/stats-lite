@@ -22,7 +22,7 @@ struct UpdateBannerCardView: View {
         }
         .metricCardStyle()
         .accessibilityElement(children: .contain)
-        .accessibilityLabel("Update available. StatsLite \(updateVersion) is available.")
+        .accessibilityLabel("Update available. Stats Lite \(updateVersion) is available.")
     }
 
     // MARK: - Header Row (~18 pt)
@@ -57,7 +57,7 @@ struct UpdateBannerCardView: View {
     // MARK: - Body Row (~14 pt)
 
     private var bodyRow: some View {
-        Text("StatsLite \(updateVersion) is available.")
+        Text("Stats Lite \(updateVersion) is available.")
             .font(.system(size: 10))
             .foregroundStyle(.secondary)
             .lineLimit(1)
@@ -83,7 +83,7 @@ struct UpdateBannerCardView: View {
             }
             .buttonStyle(.plain)
             .help("Open release page in default browser")
-            .accessibilityLabel("View release page for StatsLite \(updateVersion) in browser")
+            .accessibilityLabel("View release page for Stats Lite \(updateVersion) in browser")
 
             Spacer(minLength: 0)
         }

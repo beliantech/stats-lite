@@ -89,7 +89,7 @@ jobs:
           cp -R "$APP" "$STAGE/"
           ln -s /Applications "$STAGE/Applications"
           hdiutil create \
-            -volname "StatsLite" \
+            -volname "Stats Lite" \
             -srcfolder "$STAGE" \
             -ov \
             -format UDZO \
@@ -147,5 +147,5 @@ jobs:
         run: |
           set -euo pipefail
           gh release create "$GITHUB_REF_NAME" StatsLite.dmg \
-            --title "StatsLite $GITHUB_REF_NAME" \
+            --title "Stats Lite $GITHUB_REF_NAME" \
             --verify-tag --generate-notes

@@ -84,7 +84,7 @@ struct PopoverContentView: View {
 
     private var header: some View {
         HStack(spacing: 8) {
-            Text("StatsLite")
+            Text("Stats Lite")
                 .font(.system(size: 13, weight: .semibold))
                 .foregroundStyle(.primary)
 
@@ -113,7 +113,7 @@ struct PopoverContentView: View {
                     .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
-            .help("Quit StatsLite")
+            .help("Quit Stats Lite")
         }
         .padding(.horizontal, 12)
         .padding(.top, 4)

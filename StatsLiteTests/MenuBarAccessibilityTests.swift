@@ -28,7 +28,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
         )
     }
 
@@ -44,7 +44,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure Warning at 62 percent, GPU unavailable"
+            "Stats Lite: CPU 14 percent, Memory Pressure Warning at 62 percent, GPU unavailable"
         )
     }
 
@@ -61,7 +61,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure unavailable, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, Memory Pressure unavailable, GPU 28 percent"
         )
     }
 
@@ -77,7 +77,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU unavailable, Memory Pressure Warning at 68 percent, GPU 28 percent"
+            "Stats Lite: CPU unavailable, Memory Pressure Warning at 68 percent, GPU 28 percent"
         )
     }
 
@@ -91,7 +91,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
             pressure: .normal,
             gpuPercent: nil
         )
-        XCTAssertEqual(label, "StatsLite: CPU 50 percent")
+        XCTAssertEqual(label, "Stats Lite: CPU 50 percent")
     }
 
     func testCompositeLabelRoundsAndClampsPercent() {
@@ -99,13 +99,13 @@ final class MenuBarAccessibilityTests: XCTestCase {
             showCPU: true, showRAM: false, showGPU: false,
             cpuPercent: 1.8, pressurePercent: nil, pressure: .normal, gpuPercent: nil
         )
-        XCTAssertEqual(high, "StatsLite: CPU 100 percent")
+        XCTAssertEqual(high, "Stats Lite: CPU 100 percent")
 
         let low = MenuBarAccessibility.compositeLabel(
             showCPU: true, showRAM: false, showGPU: false,
             cpuPercent: -0.2, pressurePercent: nil, pressure: .normal, gpuPercent: nil
         )
-        XCTAssertEqual(low, "StatsLite: CPU 0 percent")
+        XCTAssertEqual(low, "Stats Lite: CPU 0 percent")
 
         let pressureHigh = MenuBarAccessibility.compositeLabel(
             showCPU: false, showRAM: true, showGPU: false,
@@ -113,7 +113,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             pressureHigh,
-            "StatsLite: Memory Pressure Normal at 100 percent"
+            "Stats Lite: Memory Pressure Normal at 100 percent"
         )
 
         let pressureLow = MenuBarAccessibility.compositeLabel(
@@ -122,7 +122,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             pressureLow,
-            "StatsLite: Memory Pressure Normal at 0 percent"
+            "Stats Lite: Memory Pressure Normal at 0 percent"
         )
     }
 
@@ -157,7 +157,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
                 + "GPU 28 percent, Network Upload 10 KB/s, Download 720 KB/s"
         )
     }
@@ -177,7 +177,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
                 + "GPU 28 percent, Network unavailable"
         )
     }
@@ -197,7 +197,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: Network Upload 22 KB/s, Download 1.6 MB/s"
+            "Stats Lite: Network Upload 22 KB/s, Download 1.6 MB/s"
         )
     }
 
@@ -216,7 +216,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 50 percent, Network Upload 10 KB/s, Download 720 KB/s"
+            "Stats Lite: CPU 50 percent, Network Upload 10 KB/s, Download 720 KB/s"
         )
     }
 
@@ -235,7 +235,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "StatsLite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
         )
     }
 

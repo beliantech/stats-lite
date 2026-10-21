@@ -134,10 +134,10 @@ final class SettingsWindowTests: XCTestCase {
     func testVersionLabelReadsBundleInfo() {
         let label = SettingsView.versionLabel()
 
-        let pattern = #"^StatsLite v[0-9][0-9.]* \(Build [0-9]+\)$"#
+        let pattern = #"^Stats Lite v[0-9][0-9.]* \(Build [0-9]+\)$"#
         XCTAssertNotNil(
             label.range(of: pattern, options: .regularExpression),
-            "Version label must read 'StatsLite v<version> (Build <n>)', got: \(label)"
+            "Version label must read 'Stats Lite v<version> (Build <n>)', got: \(label)"
         )
     }
 }
