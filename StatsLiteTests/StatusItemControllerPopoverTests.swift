@@ -92,6 +92,9 @@ final class StatusItemControllerPopoverTests: XCTestCase {
             preferences: PreferencesStore()
         )
         let popover = controller.popover
+        // Close teardown must not depend on the display link: with the
+        // display asleep, animated teardown never completes.
+        popover.animates = false
         XCTAssertNil(popover.contentViewController)
 
         // Warm-up: let the test host connect the status bar scene
