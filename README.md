@@ -8,7 +8,7 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
 
 ## Screenshot
 
-![StatsLite menu bar blocks with the popover open, showing live CPU, memory, GPU, and network cards with sparklines](docs/screenshot.png)
+<img src="docs/screenshot.png" alt="StatsLite menu bar blocks with the popover open, showing live CPU, memory, GPU, and network cards with sparklines" width="400">
 
 ## Features
 
