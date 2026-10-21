@@ -1,0 +1,154 @@
+{
+  "slug": "2026-10-20-popover-memory-attribution",
+  "title": "Attribute the 163-250 MB graphics memory spike to the popover open path",
+  "user_complaint": "Opening the status-item popover pushes process memory from ~50 MB idle to 200-300+ MB. A popup should not do that. User target for any remedy: peak unmapped graphics <= 80 MB while the popover is open (10 x 8 MiB blocks). No API exists to cap the RenderBox/Metal queue directly; 80 MB is reached only via (1) removing the popover's Metal path, (2) throttling per-tick redraw re-locking, or (3) pixel-area scaling if H5b proves true.",
+  "problem_statement": "With the popover open, `footprint` reports Owned physical footprint (unmapped) (graphics) of 163-250 MB (20-31 identical 8.0 MiB / 512-page kernel-wired chunks). The actual popover pixel backing store is only a 2.80 MB RenderBox IOSurface (596x1200 l10r). Prior work (plans/2026-10-16-popover-ram-trim, commit 7e04821) falsified material/animation-only hypotheses: removing .regularMaterial, popover.animates, and view animations changed nothing (163.0 MB in both baseline and candidate). The owner of the unmapped GPU-driver charge is not yet attributed; project rules forbid naming a root cause before one attribution measurement proves ownership.",
+  "evidence": [
+    "plans/2026-10-16-popover-ram-trim/footprint-baseline.txt: idle 20 MB, open peaks 203/208/206 MB, max_graphics 163.0 MB; footprint oscillates ~37<->200 MB while open, tracking the graphics region.",
+    "Oracle live inspection (footprint -v -w, ioreg, Apple M5 Max AGXAcceleratorG17X): the 163-250 MB charge is 18-31 identical 512-page (8.0 MiB) unmapped wired chunks; StatsLite holds an active AGXDeviceUserClient with API=Metal and CommandQueueCount=1 while the popover is open; the popover's rendered pixel buffer is a single 2.80 MB RenderBox IOSurface.",
+    "Oracle two reads 0.6 s apart while open: 250 MB Dirty | 0 B Reclaimable, then 146 MB Dirty | 104 MB Reclaimable at constant 53 regions. The ~37<->200 MB oscillation is a Dirty/Wired<->Reclaimable ledger flip ~1.0 s after each Metal render pass, not heap churn (Malloc Small flat, 23 MB).",
+    "Wave 1 baseline (fix/measure-footprint-harness, step0-baseline.txt, cycles 3 hold 15 Release): spike reproduced at HIGHER magnitude than the old baseline — peak gfx Dirty 279/266/250 MB, footprint peak 326 MB, up to 61 x 8 MiB regions settling at 53. Malloc Small flat 17->18 MB (heap owner falsified). Dirty<->Reclaimable flip exact at constant region count (250 = 146+104 @ 53 regions), but the pool drains ~16 MB between re-locks so the sum is not constant (invariant verdict 'stable no', spread 22-36%).",
+    "Wave 1 new fact: the ~5 s gfx re-lock continues while the popover is CLOSED (all re-lock spikes fall after close; 41 s after last close footprint 185 MB with 146 MB gfx Dirty). The 'closed popover: 640 KB graphics' prior holds only before the first open. Re-lock period measured ~5.0 s, slower than the 1 s app tick — an unidentified re-render driver (candidate: status-item view redraw, WindowServer, or an internal timer).",
+    "Wave 1 harness verified: exact-PID footprint -w sampling immune to the user's Xcode Debug instance (pid 92491) that the old pgrep sampler would have measured wrongly; real column layout Dirty Swapped Clean Reclaimable Wired Regions Category; Malloc Small spans two tokens; '(unmapped)' vs '(unmapped) (graphics)' are distinct categories.",
+    "Killed by commit 7e04821: .regularMaterial removal, popover.animates=false, and animation/transition removal all left 163.0 MB. Note the OR-gate trap: that experiment removed material while Canvas stayed active, so a co-trigger may have masked the result.",
+    "Code: popover mounts a fresh NSHostingController(PopoverContentView) per open (StatsLite/StatusItemController.swift:113-132, :178); 3-4 SwiftUI Canvas sparklines redraw per tick (StatsLite/SparklineView.swift:28, StatsLite/NetworkSparklineView.swift:32); sampling starts at launch, not on open (StatsLite/StatsLiteApp.swift:45).",
+    "Closed popover before first open: graphics 640 KB, no RenderBox calls; menu-bar item renders via CoreGraphics CGDrawingLayer (plans/2026-10-15-stats-lite-view-weight-verification). sampleGPU() IOKit read runs continuously at 31-32 MB closed footprint, so H7 (IOKit dictionary) is virtually falsified.",
+    "H6 sudo snapshot BLOCKED (footprint --unmapped needs root, exit 77; no tty for sudo in subagent). Unprivileged substitute step0-v-open-own.txt: 31 x 512-page unmapped graphics chunks (20 dirty+wired, 11 reclaimable) and two RenderBox IOSurfaces (596x1200 l10r 2.80 MB dirty, 596x1134 2.70 MB reclaimable). Runbook in step0-report.md section 5 for the user to run the sudo snapshots."
+  ],
+  "isc": {
+    "independent_variables": [
+      "popover.contentViewController: NSHostingController(PopoverContentView) vs bare NSView 280x560 (probe --probe-plain-nsview)",
+      "PopoverContentView composition: full tree vs Canvas removed (Color.clear) vs Text-only minimal SwiftUI vs one-at-a-time re-enabling of .metricCardStyle()/.clipShape()/.regularMaterial()/Canvas",
+      "Popover pixel area: 280x560 pt vs 32x32 pt with same Canvas render path (--probe-tiny-popover)",
+      "Tick cadence while open: normal 1 s ticks vs frozen ticks over 15 s hold (--probe-freeze-popover-ticks)"
+    ],
+    "controlled_variables": [
+      "hardware and display (Apple M5 Max, 2x Retina, same machine for all runs)",
+      "build configuration (Release build via harness)",
+      "measurement tool and cadence (measure_popover_footprint.sh, 0.4 s, plus sudo footprint -v --unmapped -w snapshots)",
+      "popover open/hold/cycle counts (--open-popover hook, identical cycle parameters)"
+    ],
+    "hypotheses": [
+      {
+        "id": "H1",
+        "statement": "The SwiftUI NSHostingController + RenderBox (RBLayer/Metal command queue) pipeline mounted inside NSPopover owns the 163-250 MB charge; NSPopover AppKit chrome does not.",
+        "rationale": "Opening the popover activates an AGXDeviceUserClient Metal command queue and maps a RenderBox IOSurface; the closed app renders the menu bar via CoreGraphics CGDrawingLayer at 640 KB graphics.",
+        "measurement": "Harness run with --probe-plain-nsview: contentViewController replaced by a bare 280x560 pt NSView. Metric: max_graphics_mb_across_opens from footprint -w, plus RenderBox IOSurface presence in a sudo footprint -v --unmapped snapshot.",
+        "falsification_signature": "If H1, max_graphics_mb drops 163-250 MB -> <15 MB (unverified prior) and the RenderBox IOSurface disappears. If it stays >=140 MB (unverified prior), H1 is dead and H6 (NSPopover native chrome owns it) is proven.",
+        "status": "DEAD (measured, step1-plain-nsview.txt, branch probe/plain-nsview commit ed06d9d): bare 280x560 NSView still peaks 168/168/152 MB >= 140 gate; a RenderBox-named IOSurface (596x1178 l10r) maps even with the bare view. Content-stripping ladder (Wave 2 run 2b) CANCELLED: content bottoms out at the 168 MB floor, no ladder run can go below it."
+      },
+      {
+        "id": "H2",
+        "statement": "SwiftUI Canvas sparklines (3x SparklineView + 1x NetworkSparklineView) are the specific trigger that promotes NSHostingView from CoreGraphics CGDrawingLayer to the Metal RenderBox path.",
+        "rationale": "The same NSHostingView (menu bar) with Text/Circle stays on CoreGraphics at 640 KB; the popover adds four Canvas views with gradient fills before the Metal path activates.",
+        "measurement": "Harness run with --probe-no-canvas: Canvas bodies replaced by Color.clear, all card containers/text/material unchanged. Metric: max_graphics_mb_across_opens.",
+        "falsification_signature": "If H2, max_graphics_mb drops 163-250 MB -> <25 MB (unverified prior). If it stays >=140 MB (unverified prior), H2 is dead; proceed to H3.",
+        "status": "DEAD (measured, step2a-no-canvas.txt, branch probe/no-canvas commit 2b220b8): peak gfx 279->168 MB (still >=140). Canvas is not the trigger for the open-time pool allocation. SIDE FINDINGS: (1) Canvas redraws DO drive the sustained ~5 s re-lock: without Canvas, each open spikes once then drains to 1.2-2.3 MB within 10-12 s, and idle-after-close drops 162->1.2 MB (baseline final idle 185 MB/146 MB -> 34 MB/2.3 MB). (2) A second slower re-lock driver remains: 2 delayed spikes at +19.8/+24.0 s post-close. The Canvas->CoreGraphics lever alone does not reach the 80 MB peak target (168 MB peak) but nearly eliminates the while-open steady waste and post-close residue."
+      },
+      {
+        "id": "H3",
+        "statement": "Some other modifier in PopoverContentView (.clipShape(RoundedRectangle), .metricCardStyle() fills/strokes, or .regularMaterial as an OR-gate co-trigger) independently activates the RenderBox Metal path.",
+        "rationale": "Commit 7e04821 removed .regularMaterial while Canvas stayed active; if any one of several modifiers independently opens the Metal command queue, single-removal experiments mask the owner (OR-gate trap).",
+        "measurement": "Bottom-up first: --probe-minimal-swiftui renders Text-only rows in NSHostingController. Then re-enable .metricCardStyle(), .clipShape(), .regularMaterial(), Canvas one at a time, one harness run each.",
+        "falsification_signature": "If Text-only NSHostingController still measures >=140 MB (unverified prior), H3 is dead and any NSHostingController in NSPopover on this OS/hardware unconditionally initializes RenderBox. If Text-only is <15 MB (unverified prior), the one-at-a-time ladder attributes every independent trigger."
+      },
+      {
+        "id": "H4",
+        "statement": "While open, per-tick redraws re-lock volatile 8.0 MiB GPU-driver blocks from Reclaimable back to Dirty+Wired; the ~37<->200 MB oscillation is this ledger flip, not heap churn.",
+        "rationale": "Two footprint -w reads 0.6 s apart show constant 53 regions with 104 MB moving Dirty->Reclaimable; Malloc Small flat at 23 MB; each tick redraw re-locks the blocks for ~1.0 s.",
+        "measurement": "Extend the harness to log graphics Dirty, Reclaimable, Wired, region count, and Malloc Small; run --probe-freeze-popover-ticks with a 15 s hold (zero ticks after open).",
+        "falsification_signature": "If H4, gfx_dirty + gfx_reclaim stays invariant at ~163 MB (unverified prior) through the flip and Malloc Small moves <2 MB (unverified prior); with ticks frozen there is exactly one spike at open then gfx_dirty <2 MB (unverified prior) for the remaining hold. Mid-hold oscillation with ticks frozen kills the per-tick re-lock claim (points to an AppKit/WindowServer timer)."
+      },
+      {
+        "id": "H5",
+        "statement": "The 163-250 MB charge is a fixed multi-die AGXAcceleratorG17X driver pool (8.0 MiB blocks per command queue), not a function of popover pixel area.",
+        "rationale": "The mapped pixel surface is only 2.80 MB while the unmapped charge comes in exact 512-page blocks; count, not size, tracks the footprint.",
+        "measurement": "Harness run with --probe-tiny-popover: PopoverContentView clamped to 32x32 pt with the same Canvas render path. Compare RenderBox IOSurface size and unmapped 8 MiB region count.",
+        "falsification_signature": "If H5a (fixed pool): RenderBox surface shrinks to <0.15 MB (unverified prior) while peak_graphics stays >=120 MB (unverified prior). If H5b (area-scaled): peak_graphics drops >90% (unverified prior), killing H5a.",
+        "status": "SPLIT RESOLVED: H5a PROVEN (fixed pool), H5b DEAD. step3a-tiny.txt (branch probe/tiny-popover commit 2f43e6f): 32x32 pt content shrank the RenderBox surface 596x1178 px/2.73 MB -> 122x122 px/0.06 MB (47x fewer px, below the 0.15 MB prior) while peak gfx only moved 168->166 MB (>=120 gate; -1.2% vs step1, 40.5% vs baseline at gate >90%). The floor is a fixed ~166 MB pool wired by the NSPopover window/show path regardless of pixel area. CONSEQUENCE: area reduction is not a viable lever for the <=80 MB target; remaining candidates are the container swap (step3b-new) and cadence levers. Note: mid-hold ~5 s re-lock fired only in cycle 3 (variance, unexplained); post-close tail quiet like step1."
+      },
+      {
+        "id": "H6",
+        "statement": "The NSPopover window backing store / WindowServer-side surfaces own the charge, not the SwiftUI content.",
+        "rationale": "footprint's unmapped graphics region can include shared objects mapped on a process's behalf; WindowServer mapping must be excluded before blaming client rendering.",
+        "measurement": "Zero code: during a 20 s open hold, run sudo footprint -v --unmapped -w <pid> and check whether WindowServer maps the 512-page chunks; plus the H1 decision gate.",
+        "falsification_signature": "If WindowServer maps the 8 MiB chunks, they are shared WindowServer surfaces. If no userspace process maps them and H1's plain-NSView run drops to <15 MB (unverified prior), H6 is dead and the pools are kernel/GPU driver pools owned by StatsLite's Metal context.",
+        "status": "FULLY PROVEN - NSPOPOVER IS THE OWNER (step3b-panel.txt, branch probe/panel-container commit ab3478d): the same bare 280x560 view shown from a borderless non-activating NSPanel at .popUpMenu level measures max_graphics_mb_across_opens 0.0, 0 gfx regions, 0 IOSurface, run footprint 21 MB flat across all 3 cycles + 40 s tail (vs step1 popover 168 MB peaks / 204 MB run). The fixed ~166-168 MB pool originates exclusively in the NSPopover window/show path, not in any top-level window hosting the view, not WindowServer-shared, not area-scaled, not content-dependent. Panel proven on screen via CGWindowList (win 14141, 280x560 below status button). Probe caveat: flat borderless rectangle, no rounded corners/arrow; transient-close/focus behavior not modeled - all must be addressed in the fix plan."
+      },
+      {
+        "id": "H7",
+        "statement": "Per-tick IOKit PerformanceStatistics dictionary allocation (sampleGPU) owns the spike.",
+        "rationale": "Virtually falsified already: sampleGPU runs every tick while the popover is closed at 31-32 MB total footprint and 640 KB graphics; ioreg shows ~11 scalar keys.",
+        "measurement": "Optional only: --probe-no-gpu-io returns a fixed value; one harness run.",
+        "falsification_signature": "If peak_graphics stays 163-250 MB, H7 is dead (expected)."
+      }
+    ]
+  },
+  "waves": [
+    {
+      "wave": 1,
+      "title": "Fix measurement blind spots (no app code changes)",
+      "rationale": "Every later gate depends on trustworthy numbers. The harness currently kills by process name and cannot see the Reclaimable flip that explains the oscillation.",
+      "tasks": [
+        "Worktree branch fix/measure-footprint-harness.",
+        "scripts/measure_popover_footprint.sh: capture APP_PID=$! at launch and sample/cleanup by that PID instead of pkill/pgrep -x StatsLite (protects the user's live instance and avoids wrong-PID sampling).",
+        "scripts/measure_popover_footprint.sh: switch to footprint -w and log Footprint, graphics Dirty/Reclaimable/Wired/region-count, IOSurface Dirty/Reclaimable, and Malloc Small per sample; extend the summary awk accordingly.",
+        "Run the baseline harness on Release: --output artifacts/2026-10-20-popover-memory-attribution/step0-baseline.txt (cycles 3, hold 15 with frozen-tick-capable build not yet present; normal ticks). Confirm reproduction of ~163 MB graphics and capture the Dirty<->Reclaimable invariant.",
+        "During a 20 s open hold (--open-popover --popover-cycles 1 --popover-hold 20), take two sudo footprint -v --unmapped -w <pid> snapshots (+0.5 s and +2.5 s after open). Record whether WindowServer maps the 8 MiB chunks. Save under artifacts/2026-10-20-popover-memory-attribution/.",
+        "Report: does the baseline reproduce 163-250 MB graphics; does gfx_dirty+gfx_reclaim stay invariant; does WindowServer map the chunks (H6 evidence)."
+      ],
+      "exit_criteria": [
+        "Harness samples by exact PID, never pkills by name.",
+        "Baseline artifact reproduces the spike with per-region columns logged.",
+        "WindowServer-mapping question answered from the -v --unmapped snapshots."
+      ]
+    },
+    {
+      "wave": 2,
+      "title": "Binary-search attribution: Canvas trigger first, then AppKit NSPopover vs SwiftUI hosting (H2, H1 vs H6)",
+      "rationale": "One variable per run; --probe-no-canvas is the cheapest run and tests the likely fix's premise, then the plain-NSView run splits AppKit chrome from SwiftUI hosting.",
+      "tasks": [
+        "First run --probe-no-canvas (branch probe/no-canvas, rebased on wave 1): Canvas bodies in SparklineView.swift and NetworkSparklineView.swift replaced by Color.clear (containers, text, material untouched), because it is the cheapest run and tests the premise of the likely fix. Forward the flag from the harness. Save step2a-no-canvas.txt. Gate: <25 MB (unverified prior) -> H2 proven, lever 1 on track for the <=80 MB target; >=140 MB -> H2 dead, run 2b and the plain-nsview run. DONE: H2 DEAD at 168 MB; side findings recorded in the ISC (re-lock driver + post-close residue, see step2a-report.md).",
+        "Second run --probe-plain-nsview (branch probe/popover-nsview): StatusItemController.openPopover() mounts a bare NSViewController with a 280x560 pt layer-backed NSView instead of NSHostingController(PopoverContentView), behind the launch flag. Save step1-plain-nsview.txt. Gate: <15 MB (unverified prior) -> H1 proven, H6 dead; >=140 MB (unverified prior) -> H6 proven, skip to H5/H6 analysis.",
+        "RUN 2b CANCELLED (planner decision after step1): the minimal-SwiftUI ladder cannot go below the 168 MB content-independent floor (step1-plain-nsview.txt); superseded by Wave 3. The Canvas delta (279->168) and re-lock behavior are already attributed from step2a.",
+        "Update the ISC with measured A->B values; mark each hypothesis PROVEN or DEAD with its artifact path.",
+        "DECISION for Wave 3 after step1: the decisive questions are now (a) does the 168 MB floor scale with popover pixel area (H5) and (b) can the same content show without NSPopover - e.g. a borderless NSPanel/NSWindow - below 80 MB."
+      ],
+      "exit_criteria": [
+        "One measurement names which component(s) activate the RenderBox Metal path, or proves NSPopover itself does.",
+        "Every hypothesis updated with a measured (not prior) metric value and artifact citation."
+      ]
+    },
+    {
+      "wave": 3,
+      "title": "Scaling and re-locking confirmation (H4, H5) plus remedy design",
+      "rationale": "Confirms mechanism: fixed pool vs area-scaled, and per-tick re-lock vs external timer. Feeds the fix design; no fix is implemented in this plan.",
+      "tasks": [
+        "Worktree branch probe/popover-tick-scaling (rebase on wave 2).",
+        "Behind --probe-tiny-popover: clamp PopoverContentView to 32x32 pt with same Canvas path. Run harness; compare RenderBox IOSurface pages and 8 MiB region count; save step3a-tiny.txt. Resolve H5a vs H5b. This is the first candidate lever for the <=80 MB target: if the 168 MB floor is area-scaled, a smaller/slimmer popover or offscreen-hidden content reaches it; if fixed, area reduction cannot.",
+        "Run 3b-new (--probe-panel-container): show the popover content (or the same bare 280x560 view for a clean single variable vs step1) from a borderless NSPanel/NSWindow instead of NSPopover. Gate: <80 MB peak gfx -> container swap is a viable fix path to the target; >=140 MB -> the charge is not NSPopover-specific and comes from SwiftUI/NSHostingView/Metal window rendering generally, closing the fix search around cadence-only levers. Reuse the step1 bare-NSView content so the only variable is the container.",
+        "Behind --probe-freeze-popover-ticks: stop SystemMonitor after the initial snapshot, before openPopover(); 15 s hold. Confirm exactly one spike at open then gfx_dirty <2 MB (unverified prior); save step3b-frozen.txt. Resolve H4.",
+        "Write the attribution report: artifacts/2026-10-20-popover-memory-attribution/README.md stating the proven owner with measured values, what killed each dead hypothesis, and the measured behavior to expect from candidate remedies (e.g., if H2 proven: NSViewRepresentable CoreGraphics NSView.draw(_) sparklines like CGDrawingLayer; if H5a proven: fixed driver pool is outside app control, remedy targets tick cadence/redraw suppression via .equatable and freeze behavior).",
+        "Design candidates only - each with target metric, falsification signature, and visual-fidelity verification plan via scripts/capture_baseline.sh per the zero-tolerance visual policy. No code fixes in this plan."
+      ],
+      "exit_criteria": [
+        "H4 and H5 resolved with artifacts.",
+        "README.md states one proven owner with measured A->B values for every gate, and scores every surviving lever against the user's <=80 MB peak-graphics target (state clearly if no lever reaches it).",
+        "Remedy options designed with falsification signatures, ready for a follow-up fix plan."
+      ]
+    }
+  ],
+  "risks": [
+    "OR-gate trap: multiple modifiers may independently open the Metal path; single-removal experiments mask the owner. Mitigation: bottom-up minimal-SwiftUI baseline before top-down removals.",
+    "Harness aliasing: each footprint call takes ~0.10 s so the effective period is ~0.50 s; the ~1.0 s Dirty window can be missed. Mitigation: log Dirty+Reclaimable together so flips never masquerade as alloc/free.",
+    "sudo footprint -v --unmapped requires the user's password; Wave 1 must schedule that step with the user.",
+    "All probes stay behind --probe-* launch flags during investigation; any eventual production fix must pass scripts/capture_baseline.sh dark/light verification before merge (zero-tolerance visual policy; prior material removal broke light-mode contrast).",
+    "Probes run on the local M5 Max only; results may not generalize to other GPU architectures (unverified prior elsewhere)."
+  ],
+  "assumptions": [
+    "The user's machine is the Apple M5 Max workstation the oracle inspected; the spike reproduces there via the existing harness.",
+    "Investigation only: no production code changes merge to main except the measurement-harness fix (Wave 1, shell script).",
+    "Numeric thresholds marked (unverified prior) until a Wave 1/2 measurement replaces them."
+  ],
+  "oracle_session": "/Users/jonathan/.pi/agent/sessions/--Users-jonathan-beliantech-stats-lite-macos--/2026-10-20T21-20-28-736Z_247dfd1a-54f662c4-9f2f2ae5-b4b2.jsonl"
+}

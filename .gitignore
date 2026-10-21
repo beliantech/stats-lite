@@ -1,5 +1,4 @@
 docs/plans/
-.pi/*
-!.pi/plans/
+.pi/
 .derivedData/
 *.profraw
