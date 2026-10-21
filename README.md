@@ -1,5 +1,7 @@
 # StatsLite
 
+[![Download StatsLite.dmg](https://img.shields.io/badge/Download-StatsLite.dmg-2ea44f)](https://github.com/beliantech/stats-lite-macos/releases/latest/download/StatsLite.dmg)
+
 StatsLite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
 
 The app runs as a menu-bar agent. It has no Dock icon and no main window.
