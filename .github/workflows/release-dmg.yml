@@ -54,7 +54,9 @@ jobs:
             CODE_SIGN_STYLE=Manual \
             CODE_SIGN_IDENTITY="Developer ID Application" \
             DEVELOPMENT_TEAM="$TEAM_ID" \
-            ENABLE_HARDENED_RUNTIME=YES
+            ENABLE_HARDENED_RUNTIME=YES \
+            OTHER_CODE_SIGN_FLAGS="--timestamp" \
+            CODE_SIGN_INJECT_BASE_ENTITLEMENTS=NO
           APP="build/Build/Products/Release/StatsLite.app"
           codesign --verify --deep --strict --verbose=2 "$APP"
           codesign -dv --verbose=4 "$APP" 2>&1 | tee "$RUNNER_TEMP/sign.txt"
