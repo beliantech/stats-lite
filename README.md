@@ -110,6 +110,12 @@ Both scripts set `DEVELOPER_DIR` when needed.
 
 Preferences save in UserDefaults. There are no config files and no environment variables. Change preferences in the Settings window.
 
+## Privacy
+
+Stats Lite sends no telemetry. No script collects or sends your activity or events, and no metric data leaves your Mac.
+
+The only network request the app makes is an update check: one GET to the GitHub latest-release endpoint, at launch (at most once per 5 minutes) and then once every 24 hours. It reads the newest release version and sends nothing about you or your system.
+
 ## Contribute
 
 Read `AGENTS.md` before you edit. One rule to remember: status item views must not use `.animation` or `.contentTransition`. Transitions stay discrete.
