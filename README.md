@@ -1,6 +1,6 @@
 # Stats Lite
 
-[![Download StatsLite.dmg](https://img.shields.io/badge/Download-StatsLite.dmg-2ea44f)](https://github.com/beliantech/stats-lite-macos/releases/latest/download/StatsLite.dmg)
+[![Download StatsLite.dmg](https://img.shields.io/badge/Download-StatsLite.dmg-2ea44f)](https://github.com/beliantech/stats-lite/releases/latest/download/StatsLite.dmg)
 
 Stats Lite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
 
