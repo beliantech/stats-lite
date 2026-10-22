@@ -20,6 +20,12 @@
 - `StatusItemControllerPopoverTests.testTogglePopoverCyclesMountAndRelease` sets
   `popover.animates = false` (merge d8d98bb) to stay deterministic while the display
   sleeps. Do not remove that line; it is not dead code.
+- Outside-click dismissal runs through the lifecycle-scoped `NSEvent` monitors in
+  `StatusItemController` (installed on show, removed in `popoverDidClose`/`deinit`):
+  `.transient` never sees outside clicks in this non-activating app. Keep the monitors.
+- A controller with a shown or just-closed popover does not deallocate on release
+  (A/B-proven, plan 2026-10-21-popover-outside-click-dismissal-monitor). Popover lifecycle
+  tests must not assert dealloc-while-open.
 
 ## Known issues (parked)
 
