@@ -1,0 +1,19 @@
+# T1b + T4 attribution receipts (IC1 reconfirmed, IC2) — 2026-10-21
+# same command, cwd=worktree, fixed probe 271fa17, caffeinate -u -d, cycles=1 hold=15, click (100,500)
+
+## T1b — main tip (pre-fix), fresh Release build (CFBundleDisplayName=Stats Lite)
+before_click: win=17189 display_asleep=0
+after_click_1s: win=17189
+after_click_2.5s: win=17189
+verdict: outside click ignored -> H2 owned on current main code (IC1 pass, restated)
+
+## T4 — worktree (fixed), Release build
+before_click: win=17190 display_asleep=0
+after_click_1s: (no window)
+after_click_2.5s: (no window)
+verdict: outside click dismisses within 1s -> IC2 pass
+
+# note: first T4 attempt read empty before_click — stale probe owner filter
+# (windowid matched "StatsLite" only; fresh builds report "Stats Lite").
+# Probe fixed in 271fa17; T1 and T4 now use the identical fixed probe.
+# T1's original build (21 Oct 04:59) predates 1e2c430; T1b restates IC1 on current tip.
