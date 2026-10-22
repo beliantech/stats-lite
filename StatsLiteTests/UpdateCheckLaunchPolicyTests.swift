@@ -17,7 +17,7 @@ import XCTest
 
 private let fixtureKey = "STATSLITE_FAKE_UPDATE_VERSION"
 private let releasesURLString =
-    "https://github.com/beliantech/stats-lite-macos/releases"
+    "https://github.com/beliantech/stats-lite/releases"
 
 /// UserDefaults keys owned by these tests, plus the reset helper. The
 /// helper is a free function so setUp/tearDown can call it without an

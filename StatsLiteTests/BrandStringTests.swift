@@ -118,7 +118,7 @@ final class BrandStringTests: XCTestCase {
         UpdateBannerCardView(
             updateVersion: "v1.4.0",
             releaseURL: URL(
-                string: "https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0"
+                string: "https://github.com/beliantech/stats-lite/releases/tag/v1.4.0"
             )!,
             onDismiss: {}
         )

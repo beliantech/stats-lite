@@ -15,7 +15,7 @@ import XCTest
 final class UpdateCheckPolicyTests: XCTestCase {
 
     private let releaseURL = URL(
-        string: "https://github.com/beliantech/stats-lite-macos/releases/tag/v1.2.0"
+        string: "https://github.com/beliantech/stats-lite/releases/tag/v1.2.0"
     )!
 
     private func makeRelease(tag: String) throws -> ReleaseInfo {

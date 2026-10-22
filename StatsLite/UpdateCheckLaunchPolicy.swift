@@ -18,7 +18,7 @@ enum UpdateCheckLaunchPolicy {
 
     /// Release page carried by the fixture release.
     static let fixtureReleasePageURL =
-        "https://github.com/beliantech/stats-lite-macos/releases"
+        "https://github.com/beliantech/stats-lite/releases"
 
     /// True when the measurement harness launched the app with the
     /// exact `--open-popover` argument and no fixture key is set. The

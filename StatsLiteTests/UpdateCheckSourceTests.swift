@@ -15,7 +15,7 @@ import XCTest
 final class UpdateCheckSourceTests: XCTestCase {
 
     private let fixtureJSON = """
-    {"tag_name":"v1.4.0","html_url":"https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0","name":"StatsLite 1.4.0"}
+    {"tag_name":"v1.4.0","html_url":"https://github.com/beliantech/stats-lite/releases/tag/v1.4.0","name":"StatsLite 1.4.0"}
     """
 
     private var fixtureData: Data {
@@ -33,7 +33,7 @@ final class UpdateCheckSourceTests: XCTestCase {
     func testReleaseInfoEquatableComparesEqualValues() throws {
         let version = try XCTUnwrap(SemanticVersion("1.4.0"))
         let url = try XCTUnwrap(
-            URL(string: "https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0")
+            URL(string: "https://github.com/beliantech/stats-lite/releases/tag/v1.4.0")
         )
         let left = ReleaseInfo(version: version, releasePageURL: url)
         let right = ReleaseInfo(version: version, releasePageURL: url)
@@ -48,13 +48,13 @@ final class UpdateCheckSourceTests: XCTestCase {
         XCTAssertEqual(info.version, expectedVersion)
         XCTAssertEqual(
             info.releasePageURL,
-            URL(string: "https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0")
+            URL(string: "https://github.com/beliantech/stats-lite/releases/tag/v1.4.0")
         )
     }
 
     func testDecodeLatestIgnoresUnknownExtraFields() throws {
         let payload = """
-        {"tag_name":"v1.4.0","html_url":"https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0","name":"StatsLite 1.4.0","id":42,"prerelease":false,"assets":[]}
+        {"tag_name":"v1.4.0","html_url":"https://github.com/beliantech/stats-lite/releases/tag/v1.4.0","name":"StatsLite 1.4.0","id":42,"prerelease":false,"assets":[]}
         """
         let info = try ReleaseInfo.decodeLatest(data: Data(payload.utf8))
         XCTAssertEqual(info.version, try XCTUnwrap(SemanticVersion("1.4.0")))
@@ -64,7 +64,7 @@ final class UpdateCheckSourceTests: XCTestCase {
 
     func testDecodeLatestThrowsWhenTagNameMissing() {
         let payload = """
-        {"html_url":"https://github.com/beliantech/stats-lite-macos/releases/tag/v1.4.0","name":"StatsLite 1.4.0"}
+        {"html_url":"https://github.com/beliantech/stats-lite/releases/tag/v1.4.0","name":"StatsLite 1.4.0"}
         """
         XCTAssertThrowsError(try ReleaseInfo.decodeLatest(data: Data(payload.utf8)))
     }

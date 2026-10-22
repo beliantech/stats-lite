@@ -12,7 +12,7 @@ import Foundation
 struct GitHubReleaseSource: UpdateReleaseSource {
 
     static let latestReleaseURL = URL(
-        string: "https://api.github.com/repos/beliantech/stats-lite-macos/releases/latest"
+        string: "https://api.github.com/repos/beliantech/stats-lite/releases/latest"
     )!
 
     func latestRelease() async -> ReleaseInfo? {
