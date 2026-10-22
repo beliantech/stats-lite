@@ -3,10 +3,15 @@
 // Usage: swift scripts/windowid.swift
 //
 // Prints the window id of the frontmost on-screen StatsLite window
-// with non-zero bounds. The popover window sits at layer 101 and has
-// real bounds; the status bar item window can report zero-size
-// bounds, so the bounds filter picks the popover. Exits 1 and prints
-// nothing when no StatsLite window matches.
+// with non-zero bounds. The script does not filter on CG layer. It
+// matches the app owner name and keeps windows with non-zero
+// bounds: the popover window has real bounds, while the status bar
+// item window can report zero-size bounds, so the bounds filter picks
+// the popover. The owner name is CFBundleDisplayName when the built
+// app has one ("Stats Lite", pbxproj INFOPLIST_KEY_CFBundleDisplayName)
+// and CFBundleName otherwise ("StatsLite") — accept both, or every
+// fresh build reports no match. Exits 1 and prints nothing when no
+// window matches.
 
 import CoreGraphics
 import Foundation
@@ -20,7 +25,7 @@ guard let list = CGWindowListCopyWindowInfo(options, kCGNullWindowID) as? [[Stri
 // The list is ordered front-to-back.
 for window in list {
     guard let owner = window[kCGWindowOwnerName as String] as? String,
-          owner == "StatsLite" else { continue }
+          owner == "StatsLite" || owner == "Stats Lite" else { continue }
     guard let number = window[kCGWindowNumber as String] as? NSNumber else { continue }
     let bounds = window[kCGWindowBounds as String] as? [String: Any] ?? [:]
     let width = (bounds["Width"] as? NSNumber)?.doubleValue ?? 0

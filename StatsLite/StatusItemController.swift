@@ -13,7 +13,9 @@
 //  NSPopover with the unchanged PopoverContentView. A 0.25 s
 //  debounce on popoverDidClose stops the transient-reopen race: the
 //  popover closes on the button's own click before the action fires,
-//  so isShown alone would read false and reopen instantly.
+//  so isShown alone would read false and reopen instantly. Outside
+//  clicks need lifecycle-scoped NSEvent monitors, because `.transient`
+//  never sees them in this non-activating agent.
 //
 
 import AppKit
@@ -38,6 +40,15 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     /// systemUptime of the last popover close. togglePopover()
     /// ignores clicks inside the debounce window.
     private var lastCloseTimestamp: TimeInterval = 0
+
+    /// Internal so popover lifecycle tests can assert install/remove.
+    /// `nonisolated(unsafe)`: MainActor code writes the tokens, and
+    /// only the nonisolated deinit reads them at final release.
+    nonisolated(unsafe) var globalClickMonitor: Any?
+
+    /// Internal so popover lifecycle tests can assert install/remove.
+    /// `nonisolated(unsafe)` for the same reason as globalClickMonitor.
+    nonisolated(unsafe) var localClickMonitor: Any?
 
     /// Internal so layout tests can inspect the hosting view.
     var button: NSStatusBarButton? { statusItem.button }
@@ -109,6 +120,17 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         updateAccessibility()
     }
 
+    // Removes the monitors at final release, so no monitor
+    // outlives the controller (IC5).
+    deinit {
+        if let globalClickMonitor {
+            NSEvent.removeMonitor(globalClickMonitor)
+        }
+        if let localClickMonitor {
+            NSEvent.removeMonitor(localClickMonitor)
+        }
+    }
+
     // MARK: - Popover toggle
 
     @objc private func togglePopover(_ sender: Any?) {
@@ -142,6 +164,61 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             of: button,
             preferredEdge: .minY
         )
+        installOutsideClickMonitors()
+    }
+
+    // MARK: - Outside-click dismissal monitors
+
+    /// Installs the global and local mouse-down monitors that close
+    /// the shown popover. Any previous install is removed first, so
+    /// one show cycle owns exactly one monitor pair.
+    func installOutsideClickMonitors() {
+        removeOutsideClickMonitors()
+        globalClickMonitor = NSEvent.addGlobalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown]
+        ) { [weak self] _ in
+            Task { @MainActor in
+                guard let self, self.popover.isShown else { return }
+                self.removeOutsideClickMonitors()
+                self.popover.performClose(nil)
+            }
+        }
+        localClickMonitor = NSEvent.addLocalMonitorForEvents(
+            matching: [.leftMouseDown, .rightMouseDown, .otherMouseDown]
+        ) { [weak self] event in
+            self?.handleLocalClickEvent(event) ?? event
+        }
+    }
+
+    /// Removes both click monitors. Called before every install and
+    /// from popoverDidClose and deinit so no monitor outlives a shown
+    /// popover or the controller.
+    func removeOutsideClickMonitors() {
+        if let globalClickMonitor {
+            NSEvent.removeMonitor(globalClickMonitor)
+            self.globalClickMonitor = nil
+        }
+        if let localClickMonitor {
+            NSEvent.removeMonitor(localClickMonitor)
+            self.localClickMonitor = nil
+        }
+    }
+
+    /// Local-monitor hook. Clicks on the popover window and on the
+    /// status-button window pass through unchanged, so the transient
+    /// behavior and togglePopover keep their own close/reopen
+    /// sequence. Clicks on any other window remove the monitors and
+    /// close the popover once. Always returns the event.
+    func handleLocalClickEvent(_ event: NSEvent) -> NSEvent? {
+        guard popover.isShown else { return event }
+        if event.window === popover.contentViewController?.view.window
+            || event.window === button?.window {
+            return event
+        }
+        removeOutsideClickMonitors()
+        guard popover.isShown else { return event }
+        popover.performClose(nil)
+        return event
     }
 
     // MARK: - Measurement support
@@ -182,6 +259,7 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
     }
 
     func popoverDidClose(_ notification: Notification) {
+        removeOutsideClickMonitors()
         lastCloseTimestamp = ProcessInfo.processInfo.systemUptime
         button?.isHighlighted = false
         // Release the controller so no popover view evaluates while
