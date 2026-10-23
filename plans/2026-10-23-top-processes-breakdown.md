@@ -415,8 +415,9 @@ touches views; E is read-only + merge.
 
 ## 10. Fix cycle (reopened 2026-10-23): production defects D1 / D2
 
-Status: reopened — defect report after close. Design authority = Appendix D (below), designer
-visual pass reproduced both defects on the deployed build (`/tmp/designer/shots/`).
+Status: done — merged to `main` via squash as 7803d55 (feature) + **3c0d8af (fix cycle D1/D2,
+reviewer GO 2026-10-23)**. Attribution verdict: H1 confirmed (budget starvation), H2 refuted —
+root cause reported to user in handoff.
 
 User report (with screenshots):
 - **D1**: Top-process rows render `Process NNNNN` instead of real names (4–5 of 5 rows on
