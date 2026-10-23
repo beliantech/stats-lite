@@ -345,8 +345,9 @@ final class MenuBarTempBlockTests: XCTestCase {
 
     /// The temp block reuses the network two-row mapping:
     /// `valueText` = top row, `secondaryValueText` = bottom row,
-    /// each composed as `<subsystem> <degrees>`, whole-degree from
-    /// MetricFormatters.degrees. A nil subsystem renders `--°` on
+    /// each composed as `<subsystem> <degrees>`, whole-degree ROUNDING
+    /// from MetricFormatters.degrees (61.6 → 62, never truncation). A nil
+    /// subsystem renders `--°` on
     /// its own row only, never `0°`.
     func testTempRowsRenderPerSubsystemDegreesWithRowPlaceholders() throws {
         // Both sensors present (VAC-2, VAC-3).
@@ -363,8 +364,8 @@ final class MenuBarTempBlockTests: XCTestCase {
         )
         XCTAssertEqual(
             both.secondaryValueText,
-            "GPU 61°",
-            "FM-T4-5 (VAC-2/3): the bottom row renders GPU 61° from gpu 61.6 (whole degree)"
+            "GPU 62°",
+            "FM-T4-5 (VAC-2/3): the bottom row renders GPU 62° from gpu 61.6 — whole-degree ROUNDING (61.6→62), not truncation [planner red amendment]"
         )
         XCTAssertEqual(both.valueTint, .primary)
         XCTAssertEqual(both.secondaryValueTint, .primary)
@@ -409,8 +410,8 @@ final class MenuBarTempBlockTests: XCTestCase {
         )
         XCTAssertEqual(
             gpuOnly.secondaryValueText,
-            "GPU 61°",
-            "FM-T4-5: a missing CPU sensor must not touch the GPU row"
+            "GPU 62°",
+            "FM-T4-5: a missing CPU sensor must not touch the GPU row (61.6 rounds to 62) [planner red amendment]"
         )
 
         // Neither: the block stays, both rows read the placeholder
@@ -423,7 +424,7 @@ final class MenuBarTempBlockTests: XCTestCase {
     // MARK: - FM-T4-6 (accessibility segment, VAC-10)
 
     /// The composite VoiceOver label carries "Temperature: CPU 84
-    /// degrees, GPU 61 degrees" in the network position (after the
+    /// degrees, GPU 62 degrees" in the network position (after the
     /// GPU segment, before the Network segment). A missing subsystem
     /// reads "unavailable" on its own row.
     func testCompositeLabelCarriesTemperatureSegmentIncludingUnavailableRows() throws {
@@ -442,10 +443,10 @@ final class MenuBarTempBlockTests: XCTestCase {
             uploadRate: 10 * 1024
         )
         XCTAssertTrue(
-            full.contains("Temperature: CPU 84 degrees, GPU 61 degrees"),
+            full.contains("Temperature: CPU 84 degrees, GPU 62 degrees"),
             """
             FM-T4-6 (VAC-10): the composite label must contain \
-            "Temperature: CPU 84 degrees, GPU 61 degrees"; got \(full).
+            "Temperature: CPU 84 degrees, GPU 62 degrees" (61.6 rounds to 62); got \(full).
             """
         )
 
@@ -508,10 +509,10 @@ final class MenuBarTempBlockTests: XCTestCase {
             temperature: TemperatureMetrics(cpuCelsius: nil, gpuCelsius: 61.6)
         )
         XCTAssertTrue(
-            cpuMissing.contains("Temperature: CPU unavailable, GPU 61 degrees"),
+            cpuMissing.contains("Temperature: CPU unavailable, GPU 62 degrees"),
             """
             FM-T4-6 (VAC-10): a nil CPU reading must read \
-            "CPU unavailable" inside the Temperature segment; \
+            "CPU unavailable" inside the Temperature segment (61.6 rounds to 62); \
             got \(cpuMissing).
             """
         )
