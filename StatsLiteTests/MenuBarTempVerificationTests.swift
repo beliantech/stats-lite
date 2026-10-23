@@ -281,13 +281,14 @@ final class MenuBarTempVerificationTests: XCTestCase {
 
     // MARK: - FM-T5-3 (pinned width fits the clamp-max row)
 
-    /// The T4 review flagged the measurement gap: FM-T4-4 pins
-    /// "CPU 100°" (43.91 pt) but the widest row the view can render
-    /// is "GPU 130°" (44.19 pt at the 9 pt row font), because init
-    /// clamps readings at 130 °C. The row text below comes from the
-    /// builder fed a clamp-max TemperatureMetrics, so the
-    /// measurement never bypasses the clamp (T2 note: the degrees()
-    /// Int conversion must not see unclamped input).
+    /// The T4 review flagged the measurement gap: FM-T4-4 pins the
+    /// 100 °C CPU row but the widest composite row the view can
+    /// render is the GPU row at the clamp max (8 pt "GPU" label +
+    /// 2 pt gap + "130°" value), because init clamps readings at
+    /// 130 °C. The row text below comes from the builder fed a
+    /// clamp-max TemperatureMetrics, so the measurement never
+    /// bypasses the clamp (T2 note: the degrees() Int conversion
+    /// must not see unclamped input).
     func testTempBlockWidthFitsClampMaxGPUDegreesRow() throws {
         let block = try XCTUnwrap(
             blocks(
@@ -302,13 +303,18 @@ final class MenuBarTempVerificationTests: XCTestCase {
 
         XCTAssertEqual(
             block.valueText,
-            "CPU 130°",
+            "130°",
             "init clamps 999 °C to the 130 °C band before the formatter"
         )
         XCTAssertEqual(
             block.secondaryValueText,
-            "GPU 130°",
-            "the clamp max reaches the bottom row — the true widest row"
+            "130°",
+            "the clamp max reaches the bottom row — the true widest value"
+        )
+        XCTAssertEqual(
+            block.secondaryLabel,
+            "GPU",
+            "the widest composite row pairs the GPU subsystem label with the clamp-max value"
         )
         XCTAssertEqual(
             block.width,
@@ -316,20 +322,31 @@ final class MenuBarTempVerificationTests: XCTestCase {
             "the block pins its width regardless of the reading"
         )
 
-        let font = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
-        let cpuWidth = try XCTUnwrap(block.valueText)
-            .size(withAttributes: [.font: font]).width
-        let gpuWidth = try XCTUnwrap(block.secondaryValueText)
-            .size(withAttributes: [.font: font]).width
-        let widest = max(cpuWidth, gpuWidth)
+        let labelFont = NSFont.systemFont(ofSize: 8, weight: .regular)
+        let valueFont = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
+        func rowWidth(label: String, value: String) -> CGFloat {
+            (label as NSString).size(withAttributes: [.font: labelFont]).width
+                + 2.0
+                + (value as NSString).size(withAttributes: [.font: valueFont]).width
+        }
+        let cpuRow = rowWidth(
+            label: block.label,
+            value: try XCTUnwrap(block.valueText)
+        )
+        let gpuRow = rowWidth(
+            label: try XCTUnwrap(block.secondaryLabel),
+            value: try XCTUnwrap(block.secondaryValueText)
+        )
+        let widest = max(cpuRow, gpuRow)
 
         XCTAssertGreaterThanOrEqual(
             MenuBarLayout.tempBlockWidth,
             widest,
             """
-            FM-T5-3 (VAC-9): tempBlockWidth must fit the true widest row \
-            "GPU 130°" at 9 pt regular monospacedDigit (\(widest) pt), so \
-            a clamp-max reading never clips, wraps, or shifts neighbors.
+            FM-T5-3 (VAC-9): tempBlockWidth must fit the true widest \
+            composite row ("GPU" at 8 pt regular + 2 pt gap + "130°" at \
+            9 pt regular monospacedDigit) = \(widest) pt, so a \
+            clamp-max reading never clips, wraps, or shifts neighbors.
             """
         )
     }
@@ -549,13 +566,23 @@ final class MenuBarTempVerificationTests: XCTestCase {
         )
         XCTAssertEqual(
             built.first?.valueText,
-            "CPU --°",
+            "--°",
             "FM-T5-5 (VAC-4): an unreadable CPU row renders the placeholder, never 0°"
         )
         XCTAssertEqual(
             built.first?.secondaryValueText,
-            "GPU --°",
+            "--°",
             "FM-T5-5 (VAC-4): an unreadable GPU row renders the placeholder, never 0°"
+        )
+        XCTAssertEqual(
+            built.first?.label,
+            "CPU",
+            "FM-T5-5: an unreadable reading keeps the CPU subsystem label"
+        )
+        XCTAssertEqual(
+            built.first?.secondaryLabel,
+            "GPU",
+            "FM-T5-5: an unreadable reading keeps the GPU subsystem label"
         )
     }
 

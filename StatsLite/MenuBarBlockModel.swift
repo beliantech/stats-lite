@@ -37,6 +37,10 @@ enum MenuBarBlockKind: Hashable {
 /// state for the MEM block, so its dot always renders. CPU and GPU
 /// blocks keep dotState nil. The network block carries a second line:
 /// secondaryValueText holds the download rate below the upload rate.
+/// The temp block carries discrete subsystem labels for parity with
+/// the standard metric labels: label holds "CPU", secondaryLabel
+/// holds "GPU", and the two value fields hold only the degree
+/// strings.
 struct MenuBarBlock: Equatable {
     var kind: MenuBarBlockKind
     var label: String
@@ -46,6 +50,7 @@ struct MenuBarBlock: Equatable {
     var width: CGFloat
     var secondaryValueText: String? = nil
     var secondaryValueTint: MenuBarValueTint? = nil
+    var secondaryLabel: String? = nil
 }
 
 /// Layout constants shared by the block builder, MenuBarLayout, and
@@ -59,10 +64,11 @@ enum MenuBarLayout {
     /// with 2.89 pt clearance (appendix B §1).
     static let networkBlockWidth: CGFloat = 50
     /// Pinned width of the two-line temperature block. Fits the
-    /// widest row "GPU 100°" (44.19 pt at 9 pt regular mono) with
-    /// 2.90 pt clearance per side, satisfying the >= 2.5 pt rule.
-    /// Row text never resizes the block (VAC-9, never-resize
-    /// invariant).
+    /// widest composite row "GPU 130°" (41.48 pt = 17.56 pt "GPU"
+    /// at 8 pt regular + 2 pt gap + 21.92 pt "130°" at 9 pt regular
+    /// mono) with 4.26 pt clearance per side, satisfying the
+    /// >= 2.5 pt rule. Row text never resizes the block (VAC-9,
+    /// never-resize invariant).
     static let tempBlockWidth: CGFloat = 50
     /// Pinned height of each line within a block. Two 11 pt rows yield
     /// a 22 pt block height that matches NSStatusBar.system.thickness
@@ -169,11 +175,13 @@ enum MenuBarBlockBuilder {
         }
 
         if showTemperature {
-            // The temp block mirrors the network two-row field
-            // mapping: valueText carries the top row ("CPU 84°"),
-            // secondaryValueText the bottom row ("GPU 61°"), and the
-            // label stays empty because each row carries its own
-            // subsystem prefix. Whole-degree rendering comes from
+            // The temp block carries discrete subsystem labels,
+            // matching the standard metric labels: label holds "CPU"
+            // and secondaryLabel holds "GPU" at 8 pt regular
+            // secondary in the view, while valueText and
+            // secondaryValueText carry only the degree values
+            // ("84°", "61°") at 9 pt regular monospacedDigit.
+            // Whole-degree rendering comes from
             // MetricFormatters.degrees, applied per row to the
             // TemperatureMetrics clamp output (never bypassed). An
             // unreadable subsystem renders "--°" and tints its own
@@ -185,13 +193,14 @@ enum MenuBarBlockBuilder {
             blocks.append(
                 MenuBarBlock(
                     kind: .temp,
-                    label: "",
+                    label: "CPU",
                     dotState: nil,
-                    valueText: "CPU " + MetricFormatters.degrees(cpuCelsius),
+                    valueText: MetricFormatters.degrees(cpuCelsius),
                     valueTint: cpuCelsius == nil ? .tertiary : .primary,
                     width: MenuBarLayout.tempBlockWidth,
-                    secondaryValueText: "GPU " + MetricFormatters.degrees(gpuCelsius),
-                    secondaryValueTint: gpuCelsius == nil ? .tertiary : .primary
+                    secondaryValueText: MetricFormatters.degrees(gpuCelsius),
+                    secondaryValueTint: gpuCelsius == nil ? .tertiary : .primary,
+                    secondaryLabel: "GPU"
                 )
             )
         }

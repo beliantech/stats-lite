@@ -12,10 +12,13 @@
 //  - MenuBarBlockBuilder.blocks gains `showTemperature: Bool = false`
 //    directly after `showNetwork:` and
 //    `temperature: TemperatureMetrics? = nil` directly after
-//    `gpuPercent:`. The temp block reuses the network two-row field
-//    mapping: `valueText` holds the top row ("CPU 84°"),
-//    `secondaryValueText` holds the bottom row ("GPU 61°"), `label`
-//    stays "", and `width` pins to MenuBarLayout.tempBlockWidth.
+//    `gpuPercent:`. The temp block carries discrete subsystem
+//    labels (parity with the standard metric labels): `label`
+//    holds "CPU" and `secondaryLabel` holds "GPU" at 8 pt regular
+//    secondary, while `valueText` holds the CPU degrees ("84°")
+//    and `secondaryValueText` the GPU degrees ("61°") at 9 pt
+//    regular monospacedDigit. `width` pins to
+//    MenuBarLayout.tempBlockWidth.
 //  - MenuBarLayout gains `tempBlockWidth` and
 //    `length(... showTemperature:)` with `showTemperature:` directly
 //    after `showNetwork:`.
@@ -299,25 +302,29 @@ final class MenuBarTempBlockTests: XCTestCase {
 
     // MARK: - FM-T4-4 (pinned width: VAC-9 3-digit clip guard)
 
-    /// The pinned `tempBlockWidth` fits the worst-case row "CPU 100°"
-    /// at the Network-block row typography (9 pt regular
-    /// monospacedDigit), and the block width never varies with the
-    /// value. Measurement harness: MenuBarValueTypographyTests
-    /// NSString.size(withAttributes:) pattern.
+    /// The pinned `tempBlockWidth` fits the worst-case composite CPU
+    /// row (8 pt regular "CPU" label + 2 pt gap + "100°" at the
+    /// 9 pt regular monospacedDigit value font), and the block width
+    /// never varies with the value. Measurement harness:
+    /// MenuBarValueTypographyTests NSString.size(withAttributes:)
+    /// pattern.
     func testTempBlockWidthFitsCPU100DegreesAndNeverVariesWithValue() throws {
-        let font = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
-        let worstCase = ("CPU 100°" as NSString)
-            .size(withAttributes: [.font: font])
-            .width
+        let labelFont = NSFont.systemFont(ofSize: 8, weight: .regular)
+        let valueFont = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
+        let worstCase = ("CPU" as NSString)
+                .size(withAttributes: [.font: labelFont]).width
+            + 2.0
+            + ("100°" as NSString)
+                .size(withAttributes: [.font: valueFont]).width
 
         XCTAssertGreaterThanOrEqual(
             MenuBarLayout.tempBlockWidth,
             worstCase,
             """
             FM-T4-4 (VAC-9): MenuBarLayout.tempBlockWidth must fit the \
-            worst-case row "CPU 100°" at 9 pt regular monospacedDigit \
-            (\(worstCase) pt), so a 3-digit reading never clips, wraps, \
-            or shifts neighbors.
+            worst-case composite CPU row ("CPU" at 8 pt regular + 2 pt gap \
+            + "100°" at 9 pt regular monospacedDigit) = \(worstCase) pt, \
+            so a 3-digit reading never clips, wraps, or shifts neighbors.
             """
         )
 
@@ -343,29 +350,34 @@ final class MenuBarTempBlockTests: XCTestCase {
 
     // MARK: - FM-T4-5 (two-row content matrix, VAC-2/3/4)
 
-    /// The temp block reuses the network two-row mapping:
-    /// `valueText` = top row, `secondaryValueText` = bottom row,
-    /// each composed as `<subsystem> <degrees>`, whole-degree ROUNDING
-    /// from MetricFormatters.degrees (61.6 → 62, never truncation). A nil
-    /// subsystem renders `--°` on
-    /// its own row only, never `0°`.
+    /// The temp block carries discrete subsystem labels:
+    /// `label` = "CPU" and `secondaryLabel` = "GPU" (8 pt regular
+    /// secondary), `valueText` = CPU degrees, `secondaryValueText`
+    /// = GPU degrees, whole-degree ROUNDING from
+    /// MetricFormatters.degrees (61.6 → 62, never truncation). A nil
+    /// subsystem renders `--°` on its own row only, never `0°`.
     func testTempRowsRenderPerSubsystemDegreesWithRowPlaceholders() throws {
         // Both sensors present (VAC-2, VAC-3).
         let both = try tempBlock(cpuCelsius: 84.4, gpuCelsius: 61.6)
         XCTAssertEqual(
             both.label,
-            "",
-            "FM-T4-5: the rows carry their own CPU/GPU prefixes, so the block label stays empty (network pattern)"
+            "CPU",
+            "FM-T4-5: the top row carries the discrete CPU subsystem label (label parity with the standard metric labels)"
+        )
+        XCTAssertEqual(
+            both.secondaryLabel,
+            "GPU",
+            "FM-T4-5: the bottom row carries the discrete GPU subsystem label (label parity with the standard metric labels)"
         )
         XCTAssertEqual(
             both.valueText,
-            "CPU 84°",
-            "FM-T4-5 (VAC-2/3): the top row renders CPU 84° from cpu 84.4 (whole degree)"
+            "84°",
+            "FM-T4-5 (VAC-2/3): the top row renders 84° from cpu 84.4 (whole degree), no conjoined prefix"
         )
         XCTAssertEqual(
             both.secondaryValueText,
-            "GPU 62°",
-            "FM-T4-5 (VAC-2/3): the bottom row renders GPU 62° from gpu 61.6 — whole-degree ROUNDING (61.6→62), not truncation [planner red amendment]"
+            "62°",
+            "FM-T4-5 (VAC-2/3): the bottom row renders 62° from gpu 61.6 — whole-degree ROUNDING (61.6→62), not truncation [planner red amendment]"
         )
         XCTAssertEqual(both.valueTint, .primary)
         XCTAssertEqual(both.secondaryValueTint, .primary)
@@ -374,13 +386,13 @@ final class MenuBarTempBlockTests: XCTestCase {
         let cpuOnly = try tempBlock(cpuCelsius: 84.4, gpuCelsius: nil)
         XCTAssertEqual(
             cpuOnly.valueText,
-            "CPU 84°",
+            "84°",
             "FM-T4-5: a missing GPU sensor must not touch the CPU row"
         )
         XCTAssertEqual(
             cpuOnly.secondaryValueText,
-            "GPU --°",
-            "FM-T4-5 (VAC-4): the GPU row renders \"GPU --°\" when gpu is nil"
+            "--°",
+            "FM-T4-5 (VAC-4): the GPU row renders \"--°\" when gpu is nil"
         )
         XCTAssertFalse(
             (cpuOnly.secondaryValueText ?? "").contains("0°"),
@@ -396,8 +408,8 @@ final class MenuBarTempBlockTests: XCTestCase {
         let gpuOnly = try tempBlock(cpuCelsius: nil, gpuCelsius: 61.6)
         XCTAssertEqual(
             gpuOnly.valueText,
-            "CPU --°",
-            "FM-T4-5 (VAC-4): the CPU row renders \"CPU --°\" when cpu is nil"
+            "--°",
+            "FM-T4-5 (VAC-4): the CPU row renders \"--°\" when cpu is nil"
         )
         XCTAssertFalse(
             gpuOnly.valueText.contains("0°"),
@@ -410,15 +422,26 @@ final class MenuBarTempBlockTests: XCTestCase {
         )
         XCTAssertEqual(
             gpuOnly.secondaryValueText,
-            "GPU 62°",
+            "62°",
             "FM-T4-5: a missing CPU sensor must not touch the GPU row (61.6 rounds to 62) [planner red amendment]"
         )
 
         // Neither: the block stays, both rows read the placeholder
-        // (VAC-4: the block never disappears while enabled).
+        // and keep their subsystem labels (VAC-4: the block never
+        // disappears while enabled).
         let neither = try tempBlock(cpuCelsius: nil, gpuCelsius: nil)
-        XCTAssertEqual(neither.valueText, "CPU --°", "FM-T4-5 (VAC-4): neither sensor → top row placeholder")
-        XCTAssertEqual(neither.secondaryValueText, "GPU --°", "FM-T4-5 (VAC-4): neither sensor → bottom row placeholder")
+        XCTAssertEqual(neither.valueText, "--°", "FM-T4-5 (VAC-4): neither sensor → top row placeholder")
+        XCTAssertEqual(neither.secondaryValueText, "--°", "FM-T4-5 (VAC-4): neither sensor → bottom row placeholder")
+        XCTAssertEqual(
+            neither.label,
+            "CPU",
+            "FM-T4-5: an unreadable reading keeps the CPU subsystem label on the top row"
+        )
+        XCTAssertEqual(
+            neither.secondaryLabel,
+            "GPU",
+            "FM-T4-5: an unreadable reading keeps the GPU subsystem label on the bottom row"
+        )
     }
 
     // MARK: - FM-T4-6 (accessibility segment, VAC-10)

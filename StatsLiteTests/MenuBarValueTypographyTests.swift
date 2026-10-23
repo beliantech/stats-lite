@@ -249,6 +249,74 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
+    // MARK: - TEMP parity: subsystem labels are 8 pt regular secondary
+
+    /// Plan 2026-10-23-temp-menu-bar-label-parity (VAC-1/VAC-2):
+    /// the TEMP block renders its CPU and GPU subsystem labels as
+    /// discrete text with the same tokens as the standard metric
+    /// labels: 8 pt regular with .foregroundStyle(.secondary) on
+    /// both rows, in every state.
+    func testTempBlockLabelsAreEightPointRegularSecondary() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(of: "MenuBarTempBlockView", in: source)
+
+        let cpuToken = try fontToken(after: "Text(block.label)", in: scope)
+        let gpuToken = try fontToken(after: "Text(block.secondaryLabel", in: scope)
+        XCTAssertEqual(
+            [cpuToken, gpuToken],
+            [expectedLabelFont, expectedLabelFont],
+            """
+            TEMP parity: both MenuBarTempBlockView subsystem labels must \
+            use .font(.system(size: 8, weight: .regular)); found \
+            CPU \(cpuToken), GPU \(gpuToken).
+            """
+        )
+
+        let cpuStart = try XCTUnwrap(
+            scope.range(of: "Text(block.label)"),
+            "TEMP parity: CPU label anchor not found in MenuBarTempBlockView"
+        )
+        let cpuValueStart = try XCTUnwrap(
+            scope.range(of: "Text(block.valueText)"),
+            "TEMP parity: CPU value anchor not found in MenuBarTempBlockView"
+        )
+        XCTAssertTrue(
+            cpuStart.upperBound < cpuValueStart.lowerBound,
+            "TEMP parity: the CPU label line must precede the CPU value line"
+        )
+        let cpuRegion = squashed(scope[cpuStart.upperBound..<cpuValueStart.lowerBound])
+        XCTAssertTrue(
+            cpuRegion.contains(expectedLabelStyle),
+            """
+            TEMP parity: the CPU subsystem label must use \
+            .foregroundStyle(.secondary) in every state; found \
+            \(cpuRegion).
+            """
+        )
+
+        let gpuStart = try XCTUnwrap(
+            scope.range(of: "Text(block.secondaryLabel"),
+            "TEMP parity: GPU label anchor not found in MenuBarTempBlockView"
+        )
+        let gpuValueStart = try XCTUnwrap(
+            scope.range(of: "Text(block.secondaryValueText"),
+            "TEMP parity: GPU value anchor not found in MenuBarTempBlockView"
+        )
+        XCTAssertTrue(
+            gpuStart.upperBound < gpuValueStart.lowerBound,
+            "TEMP parity: the GPU label line must precede the GPU value line"
+        )
+        let gpuRegion = squashed(scope[gpuStart.upperBound..<gpuValueStart.lowerBound])
+        XCTAssertTrue(
+            gpuRegion.contains(expectedLabelStyle),
+            """
+            TEMP parity: the GPU subsystem label must use \
+            .foregroundStyle(.secondary) in every state; found \
+            \(gpuRegion).
+            """
+        )
+    }
+
     // MARK: - IC-10: network flips to 9 pt regular, value size stays 12
 
     func testNetworkFontsAreNinePointRegularAndValueStaysSizeTwelve() throws {
@@ -520,9 +588,23 @@ final class MenuBarValueTypographyTests: XCTestCase {
                 secondaryValueTint: .primary
             )
         )
+        let tempBlock = MenuBarTempBlockView(
+            block: MenuBarBlock(
+                kind: .temp,
+                label: "CPU",
+                dotState: nil,
+                valueText: "84°",
+                valueTint: .primary,
+                width: MenuBarLayout.tempBlockWidth,
+                secondaryValueText: "62°",
+                secondaryValueTint: .primary,
+                secondaryLabel: "GPU"
+            )
+        )
 
         let stdHeight = NSHostingView(rootView: standardBlock).fittingSize.height
         let netHeight = NSHostingView(rootView: networkBlock).fittingSize.height
+        let tempHeight = NSHostingView(rootView: tempBlock).fittingSize.height
 
         XCTAssertEqual(
             stdHeight,
@@ -537,10 +619,28 @@ final class MenuBarValueTypographyTests: XCTestCase {
             "VAC-11: MenuBarNetworkBlockView fitting height must be 22.0 pt"
         )
         XCTAssertEqual(
+            tempHeight,
+            22.0,
+            accuracy: 0.01,
+            """
+            TEMP parity: MenuBarTempBlockView fitting height must be \
+            22.0 pt (two 11 pt rows), matching the status bar thickness.
+            """
+        )
+        XCTAssertEqual(
             stdHeight,
             netHeight,
             accuracy: 0.01,
             "VAC-11: both block types must have equal fitting height within 0.01 pt"
+        )
+        XCTAssertEqual(
+            tempHeight,
+            stdHeight,
+            accuracy: 0.01,
+            """
+            TEMP parity: the TEMP block fitting height must match the \
+            standard block within 0.01 pt.
+            """
         )
     }
 

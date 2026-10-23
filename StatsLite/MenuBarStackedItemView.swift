@@ -205,22 +205,29 @@ struct MenuBarNetworkBlockView: View {
 }
 
 /// Dedicated two-line temperature monitor block:
-/// line 1 reads "CPU 84°" from the CPU die sensor row, line 2 reads
-/// "GPU 61°" from the GPU die sensor row. Each row renders "--°"
-/// and tints tertiary when its subsystem is unreadable — the block
-/// never hides per tick (VAC-4) and never shows a fake 0°.
-/// Row composition copies the Network block: 9 pt regular
-/// monospacedDigit text, one row per line, pinned to block.width
-/// (MenuBarLayout.tempBlockWidth), so value changes never resize
-/// the item (VAC-9). Transitions stay discrete: no .animation and
-/// no .contentTransition modifiers (VAC-5).
+/// line 1 displays label "CPU" in 8 pt regular secondary text plus
+/// the CPU reading in 9 pt monospacedDigit text.
+/// line 2 displays label "GPU" in 8 pt regular secondary text plus
+/// the GPU reading in 9 pt monospacedDigit text.
+/// Each row displays "--°" and tints tertiary when its subsystem is
+/// unreadable — the block never hides per tick (VAC-4) and never
+/// shows a fake 0°.
+/// Width pins to block.width (MenuBarLayout.tempBlockWidth), so
+/// value changes never resize the item (VAC-9).
+/// Transitions stay discrete: no .animation and no
+/// .contentTransition modifiers (VAC-5).
 struct MenuBarTempBlockView: View {
     let block: MenuBarBlock
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Line 1: CPU die temperature
-            HStack(alignment: .center, spacing: 0) {
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(block.label)
+                    .font(.system(size: 8, weight: .regular))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
                 Text(block.valueText)
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(valueColor)
@@ -229,8 +236,13 @@ struct MenuBarTempBlockView: View {
             .frame(height: MenuBarLayout.rowHeight)
 
             // Line 2: GPU die temperature
-            HStack(alignment: .center, spacing: 0) {
-                Text(block.secondaryValueText ?? "GPU --°")
+            HStack(alignment: .firstTextBaseline, spacing: 2) {
+                Text(block.secondaryLabel ?? "GPU")
+                    .font(.system(size: 8, weight: .regular))
+                    .foregroundStyle(.secondary)
+                    .lineLimit(1)
+
+                Text(block.secondaryValueText ?? "--°")
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(secondaryValueColor)
                     .lineLimit(1)
