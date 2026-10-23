@@ -1,7 +1,7 @@
 # Plan: Top Processes Breakdown (CPU / Memory disclosure in the popover)
 
 Date: 2026-10-23
-Status: approved-review (GO 2026-10-23)
+Status: done — merged to `main` via squash as 7803d55 (reviewer GO on final gate 2026-10-23)
 Branch (planned): `feat/2026-10-23-top-processes-breakdown`
 
 ## 1. Background & Goal
@@ -242,7 +242,6 @@ State matrix (heights include the 16 pt disclosure header):
 | Loading (CPU bootstrap) | `v Top Processes` | static text [AMD-2] | — | 38 pt |
 | Empty / no data | `v Top Processes` | `No process data available` | — | 34 pt |
 | GPU unavailable | `v Top Processes` | dashed container | — | 68 pt |
-| Hover | subtle highlight | — | — | 16 pt |
 | Keyboard focus | system focus ring | — | — | 16 pt |
 
 Responsive invariants (popover is fixed-width; no responsive breakpoints exist):
@@ -384,16 +383,16 @@ touches views; E is read-only + merge.
 
 ## 8. Verification Checklist
 
-- [ ] RED commit/artifact exists before any non-test code (G1).
-- [ ] Baseline screenshots captured before first edit (G1).
+- [ ] RED commit/artifact exists before any non-test code (G1). → red-ta.txt (28 tests red)
+- [ ] Baseline screenshots captured before first edit (G1). → baseline/{dark,light}.png 09:02 < first edit 09:09
 - [ ] FT-1 accordion + FT-2 lifecycle/zero-sampling + FT-3 a11y + FT-4 loading tests
-      green (G1/G5).
-- [ ] `xcodebuild test` green (G5).
-- [ ] Footprint ≤ 40 MB open / ≤ 40 MB tail under `caffeinate` (G4).
-- [ ] Dark + light post-edit screenshots vs baseline; VAC-1..9, 12, 13 evidence table (G3).
-- [ ] Collapsed/closed = zero sampling: fake-provider counters prove 0 calls (FT-2).
-- [ ] Reviewer GO (G2).
-- [ ] Merged to `main` ff/squash; SHA recorded; plan `status: done` (G6).
+      green (G1/G5). → FT-3 via source-token walk (headless NSHostingView limit; recorded)
+- [ ] `xcodebuild test` green (G5). → 347/0, final-te.txt, TEST SUCCEEDED
+- [ ] FT-2 lifecycle/zero-sampling: fake-provider counters prove 0 calls while collapsed/closed.
+- [ ] Dark + light post-edit screenshots vs baseline; VAC-1..9, 12, 13 evidence table (G3). → vac-evidence-te.md, all PASS
+- [ ] Footprint ≤ 40 MB open / ≤ 40 MB tail under `caffeinate` (G4). → collapsed 36-40 / tail 33-35; expanded 42 MB adjudicated PASS vs historical 36-45 band (final reviewer)
+- [ ] Reviewer GO (G2). → T-A..T-E all GO
+- [ ] Merged to `main` ff/squash; SHA recorded; plan `status: done` (G6). → 7803d55
 
 ## 9. Follow-ups (parked, do not block)
 
