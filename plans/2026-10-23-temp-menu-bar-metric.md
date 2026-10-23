@@ -7,12 +7,14 @@
 
 - [x] **T1** — Phase 0 SMC probe + H1/H2 measurement gate. green `fa6b697` (rebased `3b71025`/`9bef218`/`fa6b697`; H1 GO, H2 GO)
 - [x] **T1b** — baseline dark/light screenshots before first code edit. green `a458ed1`
-- [ ] **T2** — Phase 1+2: `TemperatureMetrics`, degrees formatter, `sampleTemperature()` on provider + SMC impl in `LiveSystemMetricsProvider`, fake conformance, contract tests. red ⏳ · green ⏳ · review ⏳
-- [ ] **T3** — Phase 3: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` (joined into `==`), `collectSnapshot` gating, `PreferencesStore.showTemperature` (enabledMetrics insert per F1 + network carve-out). red ⏳ · green ⏳ · review ⏳
+- [x] **T2** — Phase 1+2: `TemperatureMetrics`, degrees formatter, `sampleTemperature()` on provider + SMC impl in `LiveSystemMetricsProvider`, fake conformance, contract tests. red `667b04a` · green `7cd7b82` (rebased; suite 369/0) · review GO
+- [ ] **T3** — Phase 3 remainder: `PreferencesStore.showTemperature` + `enabledMetrics` insert (F1 critical) + `@AppStorage` seeding. (Bleed already merged in T2: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` joined into `==`, `collectSnapshot` gating.) red ⏳ · green ⏳ · review ⏳
 - [ ] **T4** — Phase 4: `MenuBarBlockKind.temp`, two-row `MenuBarTempBlockView`, layout/width/accessibility/SettingsView toggle wiring (blueprint verbatim). red ⏳ · green ⏳ · review ⏳
 - [ ] **T5** — Phase 5: 32-permutation guards, equality/gating/width tests + VAC verification (dark/light vs baseline). red ⏳ · green ⏳ · review ⏳
 
-Note: GPU-side keys unproven (0 in band; Tg* +10.2..10.5°C directional) — GPU row uses `Tg08`/`Tg0O`+ family as candidates, `--°` fallback load-bearing, support statement in Phase 0 report.
+Note: GPU-side keys unproven (0 in band; Tg* +9.8..+10.5°C directional) — GPU row uses 8 strongest measured Tg responders as candidates (unverified prior), `--°` fallback load-bearing, support statement in Phase 0 report.
+
+T2 review observations folded in: (1) GPU comment delta range fixed at review; (2) H2 p99 is per single-key — full 32-key pass extrapolates to tens of ms, still inside the 50 ms falsification bound (note: production reads only the 24+8 candidate keys, not all 296); (3) stale "stay red until T3" comment in red test file — T3 may update that comment ONLY (no assertion changes); (4) `degrees()` Int conversion traps on unclamped huge values — unreachable via TemperatureMetrics clamp, T4 must not bypass the clamp.
 **Risk class:** R1 (new data source + UI ordering edit + undocumented API usage)
 
 ## Goal
