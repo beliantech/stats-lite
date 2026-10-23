@@ -1,0 +1,1158 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS,arch=arm64 -derivedDataPath .derivedData CODE_SIGN_IDENTITY=-
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+
+Build Preparation
+Build task concurrency set to 4 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'StatsLiteTests' in project 'StatsLite'
+        ➜ Explicit dependency on target 'StatsLite' in project 'StatsLite'
+    Target 'StatsLite' in project 'StatsLite' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 2ae7d25c203c7189d685d142d1d06f07
+Build description path: /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/XCBuildData/2ae7d25c203c7189d685d142d1d06f07.xcbuilddata
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/CompilationCache.noindex
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/CompilationCache.noindex
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite-65e51b807c3022deba731052fb42354a-VFS/all-product-headers.yaml
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite-65e51b807c3022deba731052fb42354a-VFS/all-product-headers.yaml
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/PrecompiledHeaders
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/PrecompiledHeaders
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+CreateBuildDirectory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite.xcodeproj
+    builtin-create-build-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/empty-StatsLiteTests.plist (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/empty-StatsLiteTests.plist
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.DependencyStaticMetadataFileList (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.DependencyMetadataFileList (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-non-framework-target-headers.hmap (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftConstValuesFileList (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.LinkFileList (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.LinkFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.DependencyStaticMetadataFileList (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.DependencyStaticMetadataFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.DependencyMetadataFileList (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.DependencyMetadataFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-project-headers.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-project-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-own-target-headers.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-own-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-generated-files.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-generated-files.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-target-headers.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-non-framework-target-headers.hmap (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-non-framework-target-headers.hmap
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibPath-normal-arm64.txt (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibPath-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibInstallName-normal-arm64.txt (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibInstallName-normal-arm64.txt
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftFileList (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_const_extract_protocols.json (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_const_extract_protocols.json
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftConstValuesFileList (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftConstValuesFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.LinkFileList (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.LinkFileList
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-OutputFileMap.json (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-OutputFileMap.json
+
+WriteAuxiliaryFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/Entitlements.plist (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    write-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/Entitlements.plist
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/MacOS (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/MacOS
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app
+
+ProcessProductPackaging "" /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    
+    Entitlements:
+    
+    {
+    "com.apple.security.get-task-allow" = 1;
+}
+    
+    builtin-productPackagingUtility -entitlements -format xml -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent
+
+ProcessProductPackagingDER /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent.der (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /usr/bin/derq query -f xml -i /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent.der --raw
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned
+
+Ld /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/__preview.dylib normal (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -install_name @rpath/StatsLite.debug.dylib -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_dependency_info.dat -Xlinker -no_adhoc_codesign -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/__preview.dylib
+
+MkDir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/unthinned (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /bin/mkdir -p /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/unthinned
+
+GenerateAssetSymbols /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/Assets.xcassets (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/Assets.xcassets --compile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources --output-format human-readable-text --notices --warnings --export-dependency-info /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_dependencies --output-partial-info-plist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist --app-icon AppIcon --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 14.0 --platform macosx --bundle-identifier com.beliantech.statslite --generate-swift-asset-symbols /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.swift --generate-objc-asset-symbols /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.h --generate-asset-symbol-index /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/* com.apple.actool.compilation-results */
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols-Index.plist
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.h
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.swift
+
+
+CompileAssetCatalogVariant thinned /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/Assets.xcassets (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /Applications/Xcode.app/Contents/Developer/usr/bin/actool /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/Assets.xcassets --compile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned --output-format human-readable-text --notices --warnings --export-dependency-info /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_dependencies_thinned --output-partial-info-plist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist_thinned --app-icon AppIcon --enable-on-demand-resources NO --development-region en --target-device mac --minimum-deployment-target 14.0 --platform macosx
+/* com.apple.actool.compilation-results */
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist_thinned
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned/AppIcon.icns
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned/Assets.car
+
+
+LinkAssetCatalog /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/Assets.xcassets (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-linkAssetCatalog --thinned /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/thinned --thinned-dependencies /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist_unthinned --output /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources --plist-output /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources/AppIcon.icns (in target 'StatsLite' from project 'StatsLite')
+note: Emplaced /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Resources/Assets.car (in target 'StatsLite' from project 'StatsLite')
+
+ProcessInfoPlistFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Info.plist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-infoPlistUtility /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist -producttype com.apple.product-type.application -genpkginfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Info.plist
+
+SwiftDriver StatsLite normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLite -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -experimental-emit-module-separately -disable-cmo
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_SwiftConcurrencyShims-DE6OQPZLPI0ZKO44JS3YHEKS5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/DeveloperToolsSupport-DRBMM4HMTC4RTM5DHZKV5R0J5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/SwiftShims-BN50XPUXXR0NE5N79EPIZBWQR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_stdarg-8EY63LLH3AS8UIXIHL8DBJNIP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_AvailabilityInternal-6EC08GPIFENGTNVHXS4IQ46LM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_stddef-5V2XBO9UNSP5XMS40K8FP74OY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ptrcheck-22PGPX2IM1T8ZQXPXLBPQAWJA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_float-13ZAKQZVTNNNGS5DFODQ0WSAM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_stdbool-CJVZY56ZK79BYW5XEMYOUYFMK.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ptrauth-9IN74POCIU5EIYLTS8VJ4S0XF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_DarwinFoundation1-5U1CGI5PNOXKCVXNOLVZIH0WF.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_DarwinFoundation2-6DA0CG4L5Y9S0T7C7IO92QRUX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_limits-38S4EB7PVERKW8Y42A4DUG4OJ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/sys_types-BLMZD8SKAA6P401C9Y67XKP72.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/string_h-7BYMS7BLNYVABGDE18TMGZ2FG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_tgmath-E6NSHCD611C28BZ0W8JUUMA40.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_stdint-H1XFYC9RB8T43A66KZ4DFFFG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_intrinsics-4A9AE1EATH3VSYBKFC7YNGQR3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/libDER-9SQJ2ASWH5FUZV83HBB9KX9XL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_DarwinFoundation3-8QGJQ9VPWKOQXQGI7L9VDLMSM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_stdatomic-699M5WA7W7QKNOW4S6PIFVAYY.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/_Builtin_inttypes-DXCU2CSHDBJP2VT5N2QXDOVT5.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Darwin-4G0V247MLG93NMUOECDVHTSWX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/simd-7ANE9IOWRQYTIKS61B70W633Y.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CUPS-LCWE5G3AUUI0O8X4VZBEZGOU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/libkern-4RIAL04X4911IATT9K2OUX2ZA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/launch-A9KIN5E8O4EH4KQ0D3W0C2JVG.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/MachO-CQT1DBWLXWT9VSA8CSV9XQLXU.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Spatial-151NZW2ENCHJ8QDQMJVIFHKDB.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ObjectiveC-95Y37ISQ64ONHTK3LFA2NOSRV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/os_object-DJVA7FS00BTS8BNQMFZ5FY7CD.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/os_workgroup-7S5R9QPTHIA1M31V1NG3BUHOH.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Dispatch-EBICJHR6BAL9JND3NGVFQ1DW4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreFoundation-DKWK8SA9S0Y5UEF8ZV4H4QXUM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/XPC-9LC2RQO9609QNJZC00X9QHD6H.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/os-7SBAM7O6QGZ3TRB873MXG1OAM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/IOKit-5QFTTLRU8VNL99BYD7AIQ4PWV.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Security-432MTZPLM3Z4YYONRFBRAT2SE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ColorSync-7QLALGKRP01GWKDFGWH7BHGS1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreAudioTypes-1O07FJB725K3NVDSVBVVGCCW4.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CFNetwork-B6TFFUFS97992B4EM6G2HGJ30.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/DiskArbitration-AVAF6W0XNAW6DBN3NTNO985C2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreGraphics-8JH2PVDSQ9LLBD6J3HRBO5FXR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreServices-F3P8BM2Z0VDPHQ0LATFGLVJT1.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ImageIO-6STUY2WLG26JIQ7D2EV0GCBRP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreText-9KQUWEDYD6PKCB88SDL8MOQW2.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Foundation-BLUH4RWXRRIM6QYJIWTPYJR10.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Accessibility-16WFTCR67ONP038A4Q3BN9MSP.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ServiceManagement-4DJJMIY1O8EII3KD6MUFZ03BR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreTransferable-40QB8ROOBOV30E2TRAM4O5BCL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/IOSurface-8OWEVPXN9A360MPAJRZU1SGUQ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/DataDetection-5UZEI5CVIEPQSSW9VTIXS9TL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreData-CTTBTSH7GLDWMMJPG8LLXRELX.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Symbols-BI5W28ZOZY4A9GK7ZK1UHUAEM.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/Metal-4HBXUPYVGNZ2B8ULRR1CVMXKE.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/UniformTypeIdentifiers-CGKRWDH4P097OE5BZFM8U6ZRL.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreAudio-7G7PHZ8BV5ALLNUKK0HPS3OTT.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/OpenGL-5JR2CD97VA5J9ZSJ5BTFY4QXZ.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/ApplicationServices-1ITIA8FK4VH1TS99KDLBL8HAR.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/OSLog-9DVJTL9F13G35FHCATL9CDFWW.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreVideo-9O33JRHBM7E8O2BLALFRQMVI3.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreMedia-BVIR3CV93O09BJ4RG0IEPPZ7F.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/QuartzCore-BUCN6Z7GBERLAE9NZWS87TO3J.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/CoreImage-4HX141DS2WCFB5DJSH5X5GDDA.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/SwiftUICore-1V9S7T4P14EDR3U8CU73VYY8U.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/AppKit-6GAI22UEX86B6N8B3NS45JOG3.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/SwiftUICore-1YS61T2Y8YQ1L.swiftmodule
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/SwiftUI-3CZ3V8AMFMDDE1X56KED7UVF8.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/AppKit-W3ETBM24HV7S.swiftmodule
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules/SwiftUI-WH99RSC94VL2.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ StatsLite (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    
+
+SwiftCompile normal arm64 Compiling\ MetricSamplerActor.swift,\ MetricTypes.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricSamplerActor.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricTypes.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricSamplerActor.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricSamplerActor.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricTypes.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricTypes.swift
+
+SwiftCompile normal arm64 Compiling\ GeneratedAssetSymbols.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile GeneratedAssetSymbols.swift
+
+SwiftCompile normal arm64 Compiling\ StatusItemController.swift,\ SystemMetricsParsing.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/StatusItemController.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMetricsParsing.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/StatusItemController.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile StatusItemController.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMetricsParsing.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMetricsParsing.swift
+
+SwiftCompile normal arm64 Compiling\ MenuBarBlockModel.swift,\ MenuBarStackedItemView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarBlockModel.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarStackedItemView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarBlockModel.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MenuBarBlockModel.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarStackedItemView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MenuBarStackedItemView.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for StatsLite (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriver\ Compilation\ Requirements StatsLite normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLite -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling MetricSamplerActor.swift, MetricTypes.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckTypes.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckTypes.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckTypes.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile UpdateCheckTypes.swift
+
+SwiftMergeGeneratedHeaders /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/StatsLite-Swift.h /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-Swift.h (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-swiftHeaderTool -arch arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-Swift.h -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/StatsLite-Swift.h
+
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckTypes.swift (in target 'StatsLite' from project 'StatsLite')
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftdoc (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.abi.json (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftsourceinfo (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ DesignTokens.swift,\ GitHubReleaseSource.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/DesignTokens.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/GitHubReleaseSource.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/DesignTokens.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile DesignTokens.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/GitHubReleaseSource.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile GitHubReleaseSource.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling DesignTokens.swift, GitHubReleaseSource.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ TopProcessesView.swift,\ UpdateBannerCardView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/TopProcessesView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateBannerCardView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/TopProcessesView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile TopProcessesView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateBannerCardView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile UpdateBannerCardView.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MenuBarBlockModel.swift, MenuBarStackedItemView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MemoryPressureCardView.swift,\ MenuBarAccessibility.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MemoryPressureCardView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarAccessibility.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MemoryPressureCardView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MemoryPressureCardView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MenuBarAccessibility.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MenuBarAccessibility.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling StatusItemController.swift, SystemMetricsParsing.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ NetworkCardView.swift,\ NetworkSparklineView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/NetworkCardView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/NetworkSparklineView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/NetworkCardView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile NetworkCardView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/NetworkSparklineView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile NetworkSparklineView.swift
+
+SwiftCompile normal arm64 Compiling\ SettingsView.swift,\ SparklineTimeAxisView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SettingsView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SparklineTimeAxisView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SettingsView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SettingsView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SparklineTimeAxisView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SparklineTimeAxisView.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling GeneratedAssetSymbols.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ SparklineView.swift,\ StatsLiteApp.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SparklineView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/StatsLiteApp.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SparklineView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SparklineView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/StatsLiteApp.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile StatsLiteApp.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling TopProcessesView.swift, UpdateBannerCardView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ PopoverContentView.swift,\ PreferencesStore.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/PopoverContentView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/PreferencesStore.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/PopoverContentView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile PopoverContentView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/PreferencesStore.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile PreferencesStore.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MemoryPressureCardView.swift, MenuBarAccessibility.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckLaunchPolicy.swift,\ UpdateCheckService.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckLaunchPolicy.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckService.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckLaunchPolicy.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile UpdateCheckLaunchPolicy.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/UpdateCheckService.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile UpdateCheckService.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling NetworkCardView.swift, NetworkSparklineView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ GPUCardView.swift,\ HistoryBuffer.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/GPUCardView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/HistoryBuffer.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/GPUCardView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile GPUCardView.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/HistoryBuffer.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile HistoryBuffer.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SettingsView.swift, SparklineTimeAxisView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ CoreGraphicsSparkline.swift,\ CPUCardView.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/CoreGraphicsSparkline.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/CPUCardView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/CoreGraphicsSparkline.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile CoreGraphicsSparkline.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/CPUCardView.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile CPUCardView.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SparklineView.swift, StatsLiteApp.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MetricFormatters.swift,\ MetricMath.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricFormatters.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricMath.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricFormatters.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricFormatters.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/MetricMath.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricMath.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckLaunchPolicy.swift, UpdateCheckService.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ SystemMetricsProvider.swift,\ SystemMonitor.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMonitor.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMetricsProvider.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMetricsProvider.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/SystemMonitor.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMonitor.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling GPUCardView.swift, HistoryBuffer.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ LaunchAtLoginService.swift,\ LiveSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/LaunchAtLoginService.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/LiveSystemMetricsProvider.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/LaunchAtLoginService.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile LaunchAtLoginService.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLite/LiveSystemMetricsProvider.swift (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile LiveSystemMetricsProvider.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MetricFormatters.swift, MetricMath.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PopoverContentView.swift, PreferencesStore.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriver StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling CoreGraphicsSparkline.swift, CPUCardView.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling SystemMetricsProvider.swift, SystemMonitor.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-9G34I7P2TCJHH802WKWCYN1MN.pcm
+
+SwiftExplicitDependencyGeneratePcm arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-61Y9MLVEITIEL9P56HENQIFTH.pcm
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCUIAutomation-1MEFV4JQE9UW6.swiftmodule
+
+SwiftDriverJobDiscovery normal arm64 Compiling LaunchAtLoginService.swift, LiveSystemMetricsProvider.swift (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriver\ Compilation StatsLite normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-Swift-Compilation -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLite -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.SwiftFileList -DDEBUG -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib normal (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -dynamiclib -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -L/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/EagerLinkingTBDs/Debug -F/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -filelist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.LinkFileList -install_name @rpath/StatsLite.debug.dylib -Xlinker -rpath -Xlinker /usr/lib/swift -Xlinker -rpath -Xlinker @executable_path/../Frameworks -Xlinker -object_path_lto -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_lto.o -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -Xlinker -dependency_info -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite_dependency_info.dat -fobjc-link-runtime -fprofile-instr-generate -L/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/macosx -L/usr/lib/swift -Xlinker -add_ast_path -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/Objects-normal/arm64/StatsLite.swiftmodule -Xlinker -alias -Xlinker _main -Xlinker ___debug_main_executable_dylib_entry_point -Xlinker -no_adhoc_codesign -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib
+
+SwiftExplicitDependencyCompileModuleFromInterface arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules/XCTest-1PKNVAX3YFXTY.swiftmodule
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    
+
+SwiftCompile normal arm64 Compiling\ SystemMonitorNetworkTests.swift,\ SystemMonitorProcessSamplingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorNetworkTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorNetworkTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMonitorNetworkTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMonitorProcessSamplingTests.swift
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:250:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+248 |         await fulfillment(of: [warm], timeout: 3)
+249 | 
+250 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+251 |         let shown = expectation(
+252 |             for: NSPredicate(format: "isShown == true"),
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:264:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+262 |         // Close through the normal path (covers outside-click and
+263 |         // Escape too: both end in popoverDidClose, T5).
+264 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+265 |         let released = expectation(
+266 |             for: NSPredicate(format: "contentViewController == nil"),
+SwiftCompile normal arm64 Compiling\ SystemMetricsParsingTests.swift,\ SystemMetricsProviderContractTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsParsingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsParsingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMetricsParsingTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SystemMetricsProviderContractTests.swift
+
+SwiftCompile normal arm64 Compiling\ MetricFormatterDegreesTests.swift,\ MetricFormatterHistoryDurationAxisTests.swift,\ MetricFormatterTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterDegreesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterDegreesTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricFormatterDegreesTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricFormatterHistoryDurationAxisTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricFormatterTests.swift
+
+ConstructStubExecutorLinkFileList /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-ExecutorLinkFileList-normal-arm64.txt (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    construct-stub-executor-link-file-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor_no_swift_entry_point.a /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libPreviewsJITStubExecutor.a --output /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-ExecutorLinkFileList-normal-arm64.txt
+note: Using stub executor library with Swift entry point. (in target 'StatsLite' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriver\ Compilation\ Requirements StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -experimental-emit-module-separately -disable-cmo
+
+Ld /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite normal (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -Xlinker -reproducible -target arm64-apple-macos14.0 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -O0 -Xlinker -no_warn_duplicate_libraries -L/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -Xlinker -rpath -Xlinker @executable_path -Xlinker -rpath -Xlinker @executable_path/../Frameworks -rdynamic -Xlinker -no_deduplicate -Xlinker -debug_variant -e ___debug_blank_executor_main -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_dylib -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibPath-normal-arm64.txt -Xlinker -sectcreate -Xlinker __TEXT -Xlinker __debug_instlnm -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-DebugDylibInstallName-normal-arm64.txt -Xlinker -filelist -Xlinker /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite-ExecutorLinkFileList-normal-arm64.txt /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib -Xlinker -no_adhoc_codesign -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite
+
+SwiftMergeGeneratedHeaders /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-swiftHeaderTool -arch arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ ProcessDisclosureTests.swift,\ SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/ProcessDisclosureTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile ProcessDisclosureTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SettingsWindowTests.swift
+
+SwiftCompile normal arm64 Compiling\ TemperatureMetricsTests.swift,\ TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureMetricsTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile TemperatureMetricsTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile TemperatureSamplerGatingTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MetricFormatterDegreesTests.swift, MetricFormatterHistoryDurationAxisTests.swift, MetricFormatterTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MetricMathCPUPercentTests.swift,\ MetricProcessSamplerTests.swift,\ MetricSamplerActorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricSamplerActorTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricMathCPUPercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricMathCPUPercentTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricProcessSamplerTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricSamplerActorTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MetricSamplerActorTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SystemMetricsParsingTests.swift, SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling TemperatureMetricsTests.swift, TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ SparklineTimeAxisGuardTests.swift,\ SparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineTimeAxisGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineTimeAxisGuardTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SparklineTimeAxisGuardTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile SparklineViewTests.swift
+
+SwiftCompile normal arm64 Compiling\ PopoverVersionLabelTests.swift,\ PreferencesShowTemperatureWiringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift:16:40: warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+13 | final class PopoverVersionLabelTests: XCTestCase {
+14 | 
+15 |     func testPureVersionLabelFormatsBuild1() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionLabelFormatsBuild1()' part of global actor 'MainActor'
+16 |         let label = PopoverContentView.versionLabel(version: "1.0.0", build: "1")
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+17 |         XCTAssertEqual(label, "v1.0.0 (1)")
+18 |     }
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift:21:40: warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+18 |     }
+19 | 
+20 |     func testPureVersionLabelFormatsBuild9999() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionLabelFormatsBuild9999()' part of global actor 'MainActor'
+21 |         let label = PopoverContentView.versionLabel(version: "1.0.0", build: "9999")
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+22 |         XCTAssertEqual(label, "v1.0.0 (9999)")
+23 |     }
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift:26:40: warning: call to main actor-isolated static method 'versionAccessibilityLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+23 |     }
+24 | 
+25 |     func testPureVersionAccessibilityLabel() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionAccessibilityLabel()' part of global actor 'MainActor'
+26 |         let label = PopoverContentView.versionAccessibilityLabel(version: "1.0.0", build: "1")
+   |                                        `- warning: call to main actor-isolated static method 'versionAccessibilityLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+27 |         XCTAssertEqual(label, "Version 1.0.0, build 1")
+28 |     }
+
+StatsLite.PopoverContentView.versionAccessibilityLabel:2:33: note: calls to static method 'versionAccessibilityLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionAccessibilityLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionAccessibilityLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift:31:40: warning: call to main actor-isolated static method 'versionLabel(bundle:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+28 |     }
+29 | 
+30 |     func testBundleSourcedVersionLabelMatchesPattern() {
+   |          `- note: add '@MainActor' to make instance method 'testBundleSourcedVersionLabelMatchesPattern()' part of global actor 'MainActor'
+31 |         let label = PopoverContentView.versionLabel()
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(bundle:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+32 |         let pattern = #"^v[0-9][0-9.]* \([0-9]+\)$"#
+33 |         XCTAssertNotNil(
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(bundle:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(bundle: Bundle = .main) -> String}
+  |                                 `- note: calls to static method 'versionLabel(bundle:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:61:19: error: cannot convert value of type '_' to expected argument type 'Bool'
+ 59 | 
+ 60 |         XCTAssertTrue(
+ 61 |             store.showTemperature,
+    |                   `- error: cannot convert value of type '_' to expected argument type 'Bool'
+ 62 |             "F2 mirror: TEMP ships ON on fresh and existing installs, like Network"
+ 63 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:61:19: error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 59 | 
+ 60 |         XCTAssertTrue(
+ 61 |             store.showTemperature,
+    |                   `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 62 |             "F2 mirror: TEMP ships ON on fresh and existing installs, like Network"
+ 63 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:77:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 75 |         let store = PreferencesStore()
+ 76 | 
+ 77 |         store.showTemperature = true
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 78 |         XCTAssertTrue(
+ 79 |             store.enabledMetrics.contains(.temperature),
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:83:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 81 |         )
+ 82 | 
+ 83 |         store.showTemperature = false
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+ 84 |         XCTAssertFalse(
+ 85 |             store.enabledMetrics.contains(.temperature),
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:105:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+103 | 
+104 |         // Temperature toggles never move the count.
+105 |         store.showTemperature = false
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+106 |         XCTAssertEqual(store.activeMetricCount, 3, "showTemperature never enters the count")
+107 |         store.showTemperature = true
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:107:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+105 |         store.showTemperature = false
+106 |         XCTAssertEqual(store.activeMetricCount, 3, "showTemperature never enters the count")
+107 |         store.showTemperature = true
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+108 |         XCTAssertEqual(store.activeMetricCount, 3, "showTemperature never enters the count")
+109 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:116:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+114 |         XCTAssertEqual(store.activeMetricCount, 1)
+115 | 
+116 |         store.showTemperature = false
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+117 |         XCTAssertFalse(
+118 |             store.showTemperature,
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:118:19: error: cannot convert value of type '_' to expected argument type 'Bool'
+116 |         store.showTemperature = false
+117 |         XCTAssertFalse(
+118 |             store.showTemperature,
+    |                   `- error: cannot convert value of type '_' to expected argument type 'Bool'
+119 |             "no last-one-enabled lock applies to showTemperature"
+120 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:118:19: error: value of type 'PreferencesStore' has no member 'showTemperature'
+116 |         store.showTemperature = false
+117 |         XCTAssertFalse(
+118 |             store.showTemperature,
+    |                   `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+119 |             "no last-one-enabled lock applies to showTemperature"
+120 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:126:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+124 |         // the count still counts only CPU/RAM/GPU, and the lock state
+125 |         // of the standard toggles is unchanged.
+126 |         store.showTemperature = true
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+127 |         XCTAssertEqual(store.activeMetricCount, 1, "count still counts only CPU/RAM/GPU")
+128 |         XCTAssertTrue(store.isToggleLocked(store.showCPU), "the sole standard toggle stays locked")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:146:31: error: cannot convert value of type '_' to expected argument type 'Bool'
+144 | 
+145 |         let seeded = PreferencesStore()
+146 |         XCTAssertFalse(seeded.showTemperature, "a persisted opt-out seeds a fresh store")
+    |                               `- error: cannot convert value of type '_' to expected argument type 'Bool'
+147 |         XCTAssertTrue(seeded.showNetwork, "the showNetwork key stays untouched")
+148 |         XCTAssertTrue(seeded.showGPU, "the other metric keys stay untouched")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:146:31: error: value of type 'PreferencesStore' has no member 'showTemperature'
+144 | 
+145 |         let seeded = PreferencesStore()
+146 |         XCTAssertFalse(seeded.showTemperature, "a persisted opt-out seeds a fresh store")
+    |                               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+147 |         XCTAssertTrue(seeded.showNetwork, "the showNetwork key stays untouched")
+148 |         XCTAssertTrue(seeded.showGPU, "the other metric keys stay untouched")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:154:29: error: cannot convert value of type '_' to expected argument type 'Bool'
+152 |         UserDefaults.standard.removeObject(forKey: "showTemperature")
+153 |         let first = PreferencesStore()
+154 |         XCTAssertTrue(first.showTemperature, "default ON with the key absent")
+    |                             `- error: cannot convert value of type '_' to expected argument type 'Bool'
+155 | 
+156 |         first.showTemperature = false
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:154:29: error: value of type 'PreferencesStore' has no member 'showTemperature'
+152 |         UserDefaults.standard.removeObject(forKey: "showTemperature")
+153 |         let first = PreferencesStore()
+154 |         XCTAssertTrue(first.showTemperature, "default ON with the key absent")
+    |                             `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+155 | 
+156 |         first.showTemperature = false
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:156:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+154 |         XCTAssertTrue(first.showTemperature, "default ON with the key absent")
+155 | 
+156 |         first.showTemperature = false
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+157 |         XCTAssertEqual(
+158 |             UserDefaults.standard.object(forKey: "showTemperature") as? Bool,
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:168:31: error: cannot convert value of type '_' to expected argument type 'Bool'
+166 | 
+167 |         let second = PreferencesStore()
+168 |         XCTAssertFalse(second.showTemperature, "an opt-out survives a fresh store instance")
+    |                               `- error: cannot convert value of type '_' to expected argument type 'Bool'
+169 | 
+170 |         second.showTemperature = true
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:168:31: error: value of type 'PreferencesStore' has no member 'showTemperature'
+166 | 
+167 |         let second = PreferencesStore()
+168 |         XCTAssertFalse(second.showTemperature, "an opt-out survives a fresh store instance")
+    |                               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+169 | 
+170 |         second.showTemperature = true
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:170:16: error: value of type 'PreferencesStore' has no member 'showTemperature'
+168 |         XCTAssertFalse(second.showTemperature, "an opt-out survives a fresh store instance")
+169 | 
+170 |         second.showTemperature = true
+    |                `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+171 |         let third = PreferencesStore()
+172 |         XCTAssertTrue(third.showTemperature, "a re-enable survives a fresh store instance")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:172:29: error: cannot convert value of type '_' to expected argument type 'Bool'
+170 |         second.showTemperature = true
+171 |         let third = PreferencesStore()
+172 |         XCTAssertTrue(third.showTemperature, "a re-enable survives a fresh store instance")
+    |                             `- error: cannot convert value of type '_' to expected argument type 'Bool'
+173 |     }
+174 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:172:29: error: value of type 'PreferencesStore' has no member 'showTemperature'
+170 |         second.showTemperature = true
+171 |         let third = PreferencesStore()
+172 |         XCTAssertTrue(third.showTemperature, "a re-enable survives a fresh store instance")
+    |                             `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+173 |     }
+174 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:186:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+184 |         // Enabled: store ON -> .temperature present -> one read per pass.
+185 |         let store = PreferencesStore()
+186 |         store.showTemperature = true
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+187 |         XCTAssertTrue(
+188 |             store.enabledMetrics.contains(.temperature),
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift:204:15: error: value of type 'PreferencesStore' has no member 'showTemperature'
+202 | 
+203 |         // Disabled: store OFF -> .temperature absent -> zero reads.
+204 |         store.showTemperature = false
+    |               `- error: value of type 'PreferencesStore' has no member 'showTemperature'
+205 |         XCTAssertFalse(
+206 |             store.enabledMetrics.contains(.temperature),
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/BrandStringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/CoreGraphicsSparklineTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/CPUTicksTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/EnabledMetricsGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/FakeSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/HistoryBufferTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/LaunchAtLoginServiceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarAccessibilityTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarBlockBuilderTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarLayoutTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarRedrawChurnTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarValueTypographyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterDegreesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricFormatterTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricSamplerActorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MetricTypesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/NetworkSparklineViewTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesStoreGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PressurePercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineTimeAxisGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/StatsLiteTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/StatusItemControllerPopoverTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsParsingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMetricsProviderContractTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorNetworkTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/SystemMonitorProcessSamplingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckFixtureFloorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckServicePersistenceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckSourceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/UpdateCheckVersionTests.swift -emit-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.d -emit-const-values-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.swiftconstvalues -emit-reference-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.swiftdeps -serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.dia -emit-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.d -emit-const-values-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.swiftconstvalues -emit-reference-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.swiftdeps -serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.dia -target arm64-apple-macos14.0 -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -profile-generate -profile-coverage-mapping -swift-version 6 -Onone -D DEBUG -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name StatsLiteTests -const-gather-protocols-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos27.0 -target-sdk-version 27.0 -target-sdk-name macosx27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.o -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.o -debug-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PopoverVersionLabelTests.o -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/PreferencesShowTemperatureWiringTests.o -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile PopoverVersionLabelTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile PreferencesShowTemperatureWiringTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling ProcessDisclosureTests.swift, SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ LaunchAtLoginServiceTests.swift,\ MenuBarAccessibilityTests.swift,\ MenuBarBlockBuilderTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/LaunchAtLoginServiceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarAccessibilityTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarBlockBuilderTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/LaunchAtLoginServiceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile LaunchAtLoginServiceTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarAccessibilityTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MenuBarAccessibilityTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/MenuBarBlockBuilderTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences
+    builtin-SwiftPerFileCompile MenuBarBlockBuilderTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SystemMonitorNetworkTests.swift, SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_18-00-41-+0800.xcresult
+
+Testing failed:
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Cannot convert value of type '_' to expected argument type 'Bool'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Value of type 'PreferencesStore' has no member 'showTemperature'
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 Compiling\ PopoverVersionLabelTests.swift,\ PreferencesShowTemperatureWiringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PopoverVersionLabelTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t3-preferences/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	Testing project StatsLite with scheme StatsLite
+(3 failures)
