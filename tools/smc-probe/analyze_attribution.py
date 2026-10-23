@@ -6,8 +6,13 @@ Plan: plans/2026-10-23-temp-menu-bar-metric.md
 Reads the watch logs produced by tools/smc-probe/probe --watch:
 
   h1-baseline.log    one run (baseline)
-  h1-cpu-load.log    two runs: # phase=load, then # phase=recovery
-  h1-gpu-load.log    two runs: # phase=load, then # phase=recovery
+  h1-cpu-load.log    one run (CPU load phase)
+  h1-cool.log        one run (post-CPU recovery phase)
+  h1-gpu-load.log    one run (GPU load phase)
+  h1-gpu-cool.log    one run (post-GPU recovery phase)
+
+A load log that contains a '# phase=recovery' run is also accepted as the
+recovery source when the matching cool log is absent.
 
 Prints per-key baseline, CPU-round, and GPU-round means, deltas from
 baseline, recovery deltas, and a classification:
@@ -87,11 +92,21 @@ def fmt(value):
     return f"{value:.1f}"
 
 
-def run_pair(runs, phase, path):
-    found = dict(runs).get(phase)
-    if found is None:
-        fail(f"missing '# phase={phase}' run in {path}")
-    return found
+def load_run(path, phase=None):
+    runs = parse_runs(path)
+    if not runs:
+        fail(f"no watch run in {path}")
+    if phase is not None:
+        for name, values in runs:
+            if name == phase:
+                return values
+    return runs[0][1]
+
+
+def recovery_run(cool_path, load_path):
+    if os.path.exists(cool_path):
+        return load_run(cool_path)
+    return load_run(load_path, "recovery")
 
 
 def classify(cpu_delta, gpu_delta):
@@ -208,10 +223,12 @@ def main():
     baseline_runs = parse_runs(baseline_path)
     if not baseline_runs:
         fail(f"no watch run in {baseline_path}")
-    cpu_load = run_pair(parse_runs(cpu_path), "load", cpu_path)
-    cpu_rec = run_pair(parse_runs(cpu_path), "recovery", cpu_path)
-    gpu_load = run_pair(parse_runs(gpu_path), "load", gpu_path)
-    gpu_rec = run_pair(parse_runs(gpu_path), "recovery", gpu_path)
+    cool_path = os.path.join(base_dir, "h1-cool.log")
+    gpu_cool_path = os.path.join(base_dir, "h1-gpu-cool.log")
+    cpu_load = load_run(cpu_path)
+    cpu_rec = recovery_run(cool_path, cpu_path)
+    gpu_load = load_run(gpu_path)
+    gpu_rec = recovery_run(gpu_cool_path, gpu_path)
 
     rows = build_rows(baseline_runs[0][1], cpu_load, cpu_rec, gpu_load, gpu_rec)
     print_table(rows)

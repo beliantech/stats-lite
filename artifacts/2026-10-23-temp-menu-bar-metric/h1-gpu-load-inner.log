@@ -1,0 +1,2 @@
+# gpuload device=Apple M5 Max threads=16384 seconds=30.0
+# gpuload done dispatches=1699 elapsed_s=30.0
