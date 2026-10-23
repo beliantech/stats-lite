@@ -49,6 +49,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             updateChecker: updateChecker
         )
         startUpdateCheckIfNeeded()
+        applyCaptureAppearanceIfNeeded()
         startMeasurementHookIfNeeded()
     }
 
@@ -85,5 +86,43 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         guard let index = arguments.firstIndex(of: flag),
               index + 1 < arguments.count else { return nil }
         return Int(arguments[index + 1])
+    }
+
+    // Verification hook (T-E, plan 2026-10-23 screenshot evidence):
+    // `--capture-appearance <dark|light>` forces this app's windows
+    // into one appearance. The screenshot harness needs both
+    // appearances, and scripts/capture_baseline.sh switches the
+    // SYSTEM appearance through System Events, which fails with
+    // -1743 under hosts that hold no Automation permission. This
+    // hook keeps the capture per-app and needs no TCC grant. Inert
+    // without the flag. Test hook, not a product feature.
+    private func applyCaptureAppearanceIfNeeded() {
+        let arguments = ProcessInfo.processInfo.arguments
+        guard let index = arguments.firstIndex(of: "--capture-appearance"),
+              index + 1 < arguments.count else { return }
+        switch arguments[index + 1] {
+        case "dark":
+            NSApp.appearance = NSAppearance(named: .darkAqua)
+        case "light":
+            NSApp.appearance = NSAppearance(named: .aqua)
+        default: break
+        }
+        // NSApp.appearance does not reach NSPopover windows (they
+        // attach to the system status-bar window), so the popover
+        // gets the forced appearance directly.
+        let forced: NSAppearance?
+        switch arguments[index + 1] {
+        case "dark": forced = NSAppearance(named: .darkAqua)
+        case "light": forced = NSAppearance(named: .aqua)
+        default: forced = nil
+        }
+        statusItemController?.applyCaptureAppearance(forced)
+        // [capture-appearance] diagnostic line for the harness, same
+        // pattern as the [measurement] hook lines.
+        let effective = NSApp.effectiveAppearance
+            .bestMatch(from: [.darkAqua, .aqua])?.rawValue ?? "nil"
+        FileHandle.standardError.write(Data(
+            "[capture-appearance] requested \(arguments[index + 1]) effective \(effective)\n".utf8
+        ))
     }
 }

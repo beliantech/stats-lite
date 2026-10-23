@@ -8,7 +8,9 @@
 //  A second task ticks the network every second on a fixed cadence
 //  that `refreshInterval` never touches. Call `apply` after every
 //  toggle or interval change. No Combine, no AsyncStream, no third
-//  timer.
+//  timer. Besides these, a lazy per-process task runs only while a
+//  Top Processes disclosure is expanded (T4); it shares the sampler
+//  actor and never restarts the standard loop.
 //
 
 import Foundation
@@ -25,6 +27,20 @@ final class SystemMonitor {
     /// Result of the latest network pass. nil while the network
     /// block is off and before the second pass of a session (F5).
     private(set) var latestNetwork: NetworkMetrics?
+
+    /// Top processes by instantaneous CPU % from the latest process
+    /// scan (T3). Never on `SystemSnapshot`: the menu bar observes
+    /// `latestSnapshot` and per-tick process data would churn it.
+    private(set) var topCPUProcesses: [ProcessMetricItem] = []
+
+    /// Top processes by memory footprint from the latest process scan
+    /// (T3). Populates on the first scan pass (R6).
+    private(set) var topMemoryProcesses: [ProcessMetricItem] = []
+
+    /// The category whose disclosure is expanded, nil when every list
+    /// is collapsed (R4 accordion state, mirror of the @State in
+    /// PopoverContentView).
+    private(set) var activeProcessCategory: ProcessCategory?
 
     /// Toggle set for the next pass. Set it, then call
     /// `restartSampling()`.
@@ -66,6 +82,7 @@ final class SystemMonitor {
     private let sampler: MetricSamplerActor
     private var samplingTask: Task<Void, Never>?
     private var networkSamplingTask: Task<Void, Never>?
+    private var processSamplingTask: Task<Void, Never>?
     private var showNetwork = false
 
     /// True while the sampling loop runs.
@@ -73,6 +90,20 @@ final class SystemMonitor {
 
     /// True while the 1 s network loop runs.
     var isNetworkSampling: Bool { networkSamplingTask != nil }
+
+    /// True while the lazy per-process loop has not yet published
+    /// its first CPU ranking (R3/R5 bootstrap window): set by
+    /// `startProcessSampling`, cleared when the first pass carries
+    /// CPU rows or when sampling stops. The disclosure renders
+    /// `Sampling top processes…` only while this is true AND the
+    /// active category's list is still empty — a memory expand
+    /// publishes rows on tick 0 (R6) and must not be masked until
+    /// +250 ms. That is the T-D view contract:
+    /// `isSamplingProcesses && processes.isEmpty` for the active
+    /// category (VAC-13, FT-4). Steady-state ticks after the first
+    /// publish leave the flag false; loop liveness lives on
+    /// `processSamplingTask` (T4).
+    private(set) var isSamplingProcesses = false
 
     /// Incremented each time `restartSampling()` starts a new
     /// standard loop. The FM11 tests assert that a network-only flip
@@ -230,13 +261,103 @@ final class SystemMonitor {
         Task { await self.sampler.clearNetworkBase() }
     }
 
-    /// Cancels both loops. The last snapshot stays available for the
-    /// UI.
+    /// Cancels every loop: standard, network, and lazy
+    /// per-process. The last snapshot stays available for the UI;
+    /// process lists, the active category, and the process delta
+    /// base clear with the sampler (T5).
     func stop() {
+        stopProcessSampling()
         samplingTask?.cancel()
         samplingTask = nil
         networkSamplingTask?.cancel()
         networkSamplingTask = nil
+    }
+
+    // MARK: - Process sampling lifecycle (plan 2026-10-23, T4/T5)
+
+    /// Starts the lazy per-process loop for an expanded disclosure
+    /// (R3/T4). One task scans on tick zero, sleeps a single 250 ms
+    /// warm-up, then follows `refreshInterval` (§3 bootstrap, R5).
+    /// Memory publishes on the first scan (R6); CPU publishes from
+    /// the warm-up scan on, and the first non-empty CPU ranking
+    /// closes the loading window (`isSamplingProcesses`). `.gpu`
+    /// expands only the unavailable container and never samples
+    /// (R7): it stops the loop instead. A running loop is left
+    /// alone, so an accordion category switch never restarts it,
+    /// and neither start nor stop touches the standard loop (T4).
+    func startProcessSampling(category: ProcessCategory) {
+        activeProcessCategory = category
+        guard category != .gpu else {
+            // R7: no scans for GPU. Stop any running sampler so no
+            // stale ranking outlives the switch; the recorded
+            // category still mirrors the expanded disclosure.
+            stopProcessSampling()
+            activeProcessCategory = category
+            return
+        }
+        guard processSamplingTask == nil else { return }
+
+        // Loading-line contract for T-D: render `Sampling top
+        // processes…` only while `isSamplingProcesses` is true AND the
+        // active category's list is empty. Memory rows exist at tick 0
+        // (R6), so the flag alone never masks them.
+        isSamplingProcesses = true
+        processSamplingTask = Task {
+            let clock = ContinuousClock()
+            var isFirstPass = true
+            while !Task.isCancelled {
+                let result = await self.sampler.sampleProcesses()
+                // A cancel during the read must not publish into a
+                // stopped state: stopProcessSampling already cleared
+                // the lists, and a late write would resurrect them.
+                guard !Task.isCancelled else { return }
+                if let result {
+                    // Memory ranks on the first scan (R6); CPU needs
+                    // the warm-up scan for its delta (R5). A nil scan
+                    // keeps the last lists and the base.
+                    self.topMemoryProcesses = result.topMemory
+                    self.topCPUProcesses = result.topCPU
+                    if !result.topCPU.isEmpty {
+                        self.isSamplingProcesses = false
+                    }
+                }
+                do {
+                    if isFirstPass {
+                        // One 250 ms warm-up sleep after the anchoring
+                        // pass, then refreshInterval cadence (§3).
+                        isFirstPass = false
+                        try await clock.sleep(
+                            for: .milliseconds(250),
+                            tolerance: .milliseconds(50)
+                        )
+                    } else {
+                        try await clock.sleep(
+                            for: .seconds(self.refreshInterval),
+                            tolerance: .milliseconds(150)
+                        )
+                    }
+                } catch {
+                    // Cancellation interrupts the sleep and ends the loop.
+                    return
+                }
+            }
+        }
+    }
+
+    /// Stops the loop, closes the loading window, clears the
+    /// published lists and the active category, and drops the
+    /// sampler delta base, so a later expand anchors from scratch and
+    /// no off-gap CPU delta appears (T5, mirrors
+    /// `stopNetworkSampling`). Called on collapse-to-nil,
+    /// `popoverDidClose`, and `onDisappear`.
+    func stopProcessSampling() {
+        processSamplingTask?.cancel()
+        processSamplingTask = nil
+        isSamplingProcesses = false
+        activeProcessCategory = nil
+        topCPUProcesses = []
+        topMemoryProcesses = []
+        Task { await self.sampler.clearProcessBase() }
     }
 
     /// Appends one point per enabled metric. The age window and the

@@ -19,6 +19,56 @@ struct PopoverContentView: View {
 
     @Environment(\.openSettings) private var openSettings
     @State private var coresExpanded = false
+    @State private var expandedProcessCategory: ProcessCategory? =
+        Self.captureExpandedCategory()
+
+    // MARK: - Capture verification hook (T-E, plan 2026-10-23)
+
+    /// Verification hook for the T-E screenshot harness: the launch
+    /// argument `--expand-processes <cpu|memory|gpu>` seeds the
+    /// initial disclosure state so the harness can capture the
+    /// expanded Top Processes lists (VAC-3…9, VAC-13 evidence).
+    /// Inert in normal runs — production launches never pass the
+    /// flag. This is a test hook, not a product feature; do not
+    /// wire UI to it.
+    static func captureExpandedCategory(
+        arguments: [String] = ProcessInfo.processInfo.arguments
+    ) -> ProcessCategory? {
+        guard let index = arguments.firstIndex(of: "--expand-processes"),
+              index + 1 < arguments.count else { return nil }
+        switch arguments[index + 1] {
+        case "cpu": return ProcessCategory.cpu
+        case "memory": return ProcessCategory.memory
+        case "gpu": return ProcessCategory.gpu
+        default: return nil
+        }
+    }
+
+    // MARK: - Accordion rule (R4, FT-1)
+
+    /// Pure toggle rule for the shared accordion state (R4): tapping a
+    /// card's disclosure expands that card and collapses any other
+    /// open list in the same step; retapping the open card collapses
+    /// to nil, which drives `stopProcessSampling()` (R3).
+    static func toggledProcessCategory(
+        _ current: ProcessCategory?,
+        to category: ProcessCategory
+    ) -> ProcessCategory? {
+        current == category ? nil : category
+    }
+
+    /// Wiring seam for the disclosure action (FT-1 carry-over): the
+    /// cards tap this with the popover's shared binding, so a tap on
+    /// card B stores B and collapses card A in the same step.
+    static func toggleProcessCategory(
+        _ binding: Binding<ProcessCategory?>,
+        to category: ProcessCategory
+    ) {
+        binding.wrappedValue = toggledProcessCategory(
+            binding.wrappedValue,
+            to: category
+        )
+    }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -45,17 +95,24 @@ struct PopoverContentView: View {
                     CPUCardView(
                         monitor: monitor,
                         preferences: preferences,
-                        coresExpanded: $coresExpanded
+                        coresExpanded: $coresExpanded,
+                        expandedProcessCategory: $expandedProcessCategory
                     )
                     .transition(.opacity)
                 }
                 if preferences.showRAM {
-                    MemoryPressureCardView(monitor: monitor)
-                        .transition(.opacity)
+                    MemoryPressureCardView(
+                        monitor: monitor,
+                        expandedProcessCategory: $expandedProcessCategory
+                    )
+                    .transition(.opacity)
                 }
                 if preferences.showGPU {
-                    GPUCardView(monitor: monitor)
-                        .transition(.opacity)
+                    GPUCardView(
+                        monitor: monitor,
+                        expandedProcessCategory: $expandedProcessCategory
+                    )
+                    .transition(.opacity)
                 }
                 if preferences.showNetwork {
                     NetworkCardView(monitor: monitor)
@@ -77,7 +134,31 @@ struct PopoverContentView: View {
         .animation(.easeInOut(duration: 0.2), value: preferences.activeMetricCount)
         .animation(.easeInOut(duration: 0.2), value: preferences.showNetwork)
         .animation(.easeInOut(duration: 0.2), value: coresExpanded)
-        .onAppear { monitor.apply(preferences) }
+        .animation(.easeInOut(duration: 0.2), value: expandedProcessCategory)
+        .onAppear {
+            monitor.apply(preferences)
+            // Capture hook: a seeded category starts its sampler
+            // here because onChange never fires for the initial
+            // @State value. Normal runs seed nil, so this branch
+            // never runs outside the harness.
+            if let seededCategory = expandedProcessCategory {
+                monitor.startProcessSampling(category: seededCategory)
+            }
+        }
+        // T5: teardown stops the lazy process sampler when the
+        // popover content goes away.
+        .onDisappear { monitor.stopProcessSampling() }
+        // R3/T8: the disclosure drives the lazy sampler. Expanding
+        // starts the category's loop (the .gpu case stops it instead,
+        // R7); collapsing to nil stops it. Popover only — the status
+        // item never runs this animation.
+        .onChange(of: expandedProcessCategory) { _, category in
+            if let category {
+                monitor.startProcessSampling(category: category)
+            } else {
+                monitor.stopProcessSampling()
+            }
+        }
     }
 
     // MARK: - Header (28 pt, gear and quit 24x24 targets)

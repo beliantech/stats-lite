@@ -223,6 +223,16 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
     // MARK: - Measurement support
 
+    // Verification hook (T-E, plan 2026-10-23 screenshot evidence):
+    // forces the popover itself into one appearance. NSApp.appearance
+    // does not reach NSPopover windows (they attach to the system
+    // status-bar window). Called only when the `--capture-appearance`
+    // launch flag is present; nil restores inheritance. Test hook,
+    // not a product feature.
+    func applyCaptureAppearance(_ appearance: NSAppearance?) {
+        popover.appearance = appearance
+    }
+
     // measurement support: automated open/hold/close cycle for the
     // footprint harness (scripts/measure_popover_footprint.sh). Opens
     // ~1 s after launch, holds `holdSeconds`, closes through the normal
@@ -260,6 +270,10 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
     func popoverDidClose(_ notification: Notification) {
         removeOutsideClickMonitors()
+        // T5: every close path stops the lazy process sampler. This
+        // delegate fires for outside-click and Escape dismissals too:
+        // both call performClose and bypass togglePopover.
+        monitor.stopProcessSampling()
         lastCloseTimestamp = ProcessInfo.processInfo.systemUptime
         button?.isHighlighted = false
         // Release the controller so no popover view evaluates while

@@ -5,6 +5,13 @@
 # Usage:
 #   scripts/measure_popover_footprint.sh --output <file> \
 #       [--binary <StatsLite.app>] [--cycles N] [--hold N] [--tail N]
+#       [--expand-processes <cpu|memory|gpu>]
+#
+# T-E deviation hook (plan 2026-10-23-top-processes-breakdown):
+# `--expand-processes` forwards the same verification launch flag to
+# the app so the run samples with the Top Processes disclosure open
+# and its sampler live. Inert without the flag — every other launch
+# is byte-identical to the original argument list.
 #
 # The script launches the release build with the --open-popover
 # measurement hook, samples `footprint -w <pid>` every 0.4 s, and
@@ -36,6 +43,7 @@ BINARY=""
 CYCLES=3
 HOLD=5
 TAIL=40
+EXPAND=""
 
 while [ $# -gt 0 ]; do
   case "$1" in
@@ -44,6 +52,7 @@ while [ $# -gt 0 ]; do
     --cycles) CYCLES="$2"; shift 2 ;;
     --hold) HOLD="$2"; shift 2 ;;
     --tail) TAIL="$2"; shift 2 ;;
+    --expand-processes) EXPAND="$2"; shift 2 ;;
     -h|--help) grep '^#' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) echo "unknown flag: $1" >&2; exit 2 ;;
   esac
@@ -67,6 +76,10 @@ validate_int() {
 validate_int --cycles "$CYCLES"
 validate_int --hold "$HOLD"
 validate_int --tail "$TAIL"
+case "$EXPAND" in
+  ""|cpu|memory|gpu) ;;
+  *) echo "error: --expand-processes must be cpu, memory or gpu (got: $EXPAND)" >&2; exit 2 ;;
+esac
 
 build_release() {
   if ! xcodebuild -version >/dev/null 2>&1; then
@@ -117,9 +130,12 @@ for _ in $(seq 1 50); do
   sleep 0.1
 done
 
-"$APP/Contents/MacOS/StatsLite" \
-  --open-popover --popover-cycles "$CYCLES" --popover-hold "$HOLD" \
-  >"$APPLOG" 2>&1 &
+LAUNCH_ARGS=(--open-popover --popover-cycles "$CYCLES" --popover-hold "$HOLD")
+if [ -n "$EXPAND" ]; then
+  LAUNCH_ARGS+=(--expand-processes "$EXPAND")
+  echo "launch args: ${LAUNCH_ARGS[*]} (disclosure expanded, sampler live)"
+fi
+"$APP/Contents/MacOS/StatsLite" "${LAUNCH_ARGS[@]}" >"$APPLOG" 2>&1 &
 APP_PID=$!
 echo "launched pid $APP_PID"
 
@@ -172,6 +188,7 @@ done
   echo "# binary: $APP"
   echo "# pid: $APP_PID"
   echo "# cycles: $CYCLES  hold: ${HOLD}s  gap: 2s  tail: ${TAIL}s  interval: 0.4s"
+  echo "# expand-processes: ${EXPAND:-collapsed}"
   echo
   awk -v inv_tol_pct=20 '
     function fmt(x) { return sprintf("%.1f", x) }

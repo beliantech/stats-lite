@@ -1,0 +1,60 @@
+GREEN-TB — T-B green phase, full xcodebuild test output tail
+=============================================================
+Command:
+  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData
+Run: 2026-10-23 (Asia/Kuala_Lumpur), after T-B sampler-core implementation.
+
+Expectation (task T-B): exactly 16 tests stay red — 7 in
+SystemMonitorProcessSamplingTests (T-C) and 9 in ProcessDisclosureTests (T-D);
+all 12 MetricProcessSamplerTests green; everything else unchanged.
+
+Result: 339 tests, 21 failing assertions across exactly 16 unique failing
+tests (9 disclosure + 7 monitor) = EXPECTED. 323 passing, 0 unexpected.
+MetricProcessSamplerTests: Executed 12 tests, with 0 failures.
+
+--- output tail ---
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' passed (0.001 seconds).
+Test Suite 'UpdateCheckVersionTests' passed at 2026-10-23 09:58:32.917.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.012 (0.017) seconds
+Test Suite 'StatsLiteTests.xctest' failed at 2026-10-23 09:58:32.917.
+	 Executed 339 tests, with 21 failures (0 unexpected) in 99.650 (99.729) seconds
+Test Suite 'All tests' failed at 2026-10-23 09:58:32.917.
+	 Executed 339 tests, with 21 failures (0 unexpected) in 99.650 (99.730) seconds
+2026-10-23 09:58:38.593 xcodebuild[58449:126520873] [MT] IDETestOperationsObserverDebug: 105.894 elapsed -- Testing started completed.
+2026-10-23 09:58:38.593 xcodebuild[58449:126520873] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-23 09:58:38.593 xcodebuild[58449:126520873] [MT] IDETestOperationsObserverDebug: 105.894 sec, +105.894 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_09-56-50-+0800.xcresult
+
+Failing tests:
+	ProcessDisclosureTests.testEmptyStateShowsNoProcessDataLine()
+	ProcessDisclosureTests.testExpandingAnotherCardCollapsesTheOpenList()
+	ProcessDisclosureTests.testExpandingFromCollapsedSetsTheCategory()
+	ProcessDisclosureTests.testGPUCategoryParticipatesInTheAccordion()
+	ProcessDisclosureTests.testGPUUnavailableMessageMatchesPlanCopy()
+	ProcessDisclosureTests.testLoadingLineWinsOverRowCountWhileBootstrapHolds()
+	ProcessDisclosureTests.testLoadingStateShowsStaticSamplingLine()
+	ProcessDisclosureTests.testRealRowsShowNoPlaceholder()
+	ProcessDisclosureTests.testRetappingTheOpenCardCollapsesToNil()
+	SystemMonitorProcessSamplingTests.testCollapseWhileOpenStopsSamplerClearsListsAndReadsZero()
+	SystemMonitorProcessSamplingTests.testGPUCategoryStartsNoProcessSampling()
+	SystemMonitorProcessSamplingTests.testPopoverCloseStopsProcessSampling()
+	SystemMonitorProcessSamplingTests.testPopoverContentDisappearStopsProcessSampling()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingDoesNotRestartStandardLoop()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingReadsProviderAndPublishesCategory()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingReadsProviderAndPublishesCategory()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingReadsProviderAndPublishesCategory()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingReadsProviderAndPublishesCategory()
+	SystemMonitorProcessSamplingTests.testStartProcessSamplingReadsProviderAndPublishesCategory()
+	SystemMonitorProcessSamplingTests.testStopClearsBaseSoRestartDoesNotRateTheGap()
+	SystemMonitorProcessSamplingTests.testStopClearsBaseSoRestartDoesNotRateTheGap()
+
+** TEST FAILED **
+
+Testing started

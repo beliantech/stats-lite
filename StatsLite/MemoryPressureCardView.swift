@@ -13,6 +13,7 @@ import SwiftUI
 
 struct MemoryPressureCardView: View {
     let monitor: SystemMonitor
+    @Binding var expandedProcessCategory: ProcessCategory?
 
     private var memory: MemoryMetrics? { monitor.latestSnapshot?.memory }
     private var pressure: MemoryPressureMetrics? { monitor.latestSnapshot?.memoryPressure }
@@ -36,6 +37,8 @@ struct MemoryPressureCardView: View {
                 Spacer()
                 badge
             }
+            .accessibilityElement(children: .ignore)
+            .accessibilityLabel(summary)
 
             gaugeBar
                 .accessibilityHidden(true)
@@ -60,10 +63,27 @@ struct MemoryPressureCardView: View {
                 .font(.system(size: 10))
                 .foregroundStyle(.tertiary)
                 .lineLimit(1)
+
+            TopProcessesDisclosureButton(
+                isExpanded: expandedProcessCategory == .memory,
+                usageState: processCueState,
+                metricTitle: "Memory",
+                action: {
+                    PopoverContentView.toggleProcessCategory($expandedProcessCategory, to: .memory)
+                }
+            )
+
+            if expandedProcessCategory == .memory {
+                TopProcessesSectionView(
+                    processes: monitor.topMemoryProcesses,
+                    tintColor: processGaugeTint,
+                    isLoading: monitor.isSamplingProcesses && monitor.topMemoryProcesses.isEmpty
+                )
+                .transition(.opacity)
+            }
         }
         .metricCardStyle()
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(summary)
+        .accessibilityElement(children: .contain)
     }
 
     // MARK: - Badge (VAC-20)
@@ -119,6 +139,27 @@ struct MemoryPressureCardView: View {
     }
 
     // MARK: - Lines
+
+    /// The disclosure cue from the display state (§4.4): unknown
+    /// pressure maps to normal.
+    private var processCueState: ProcessCueState {
+        switch state {
+        case .normal: .normal
+        case .warning: .warning
+        case .critical: .critical
+        case .unknown: .normal
+        }
+    }
+
+    /// Process gauge tint per state matrix: the card tint normally,
+    /// systemOrange at warning, systemRed at critical (§4.4).
+    private var processGaugeTint: Color {
+        switch processCueState {
+        case .normal: state.levelColor
+        case .warning: Color(nsColor: .systemOrange)
+        case .critical: Color(nsColor: .systemRed)
+        }
+    }
 
     private var usedLine: String {
         guard let memory else { return "Used: --% (-- / -- GB)" }

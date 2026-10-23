@@ -1,0 +1,68 @@
+GREEN-TC - T-C green phase after review fix, full xcodebuild test output tail
+==============================================================================
+Command:
+  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer caffeinate -di xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData
+Run: 2026-10-23 (Asia/Kuala_Lumpur), after the T-C review fix (hardened L7
+detach assertions + loading-contract doc).
+
+Expectation (task T-C): exactly 9 tests stay red - the 9
+ProcessDisclosureTests (T-D). The 7 SystemMonitorProcessSamplingTests and
+the FT-4 test must be green; every other suite unchanged.
+
+Result: 340 tests, 9 failures (0 unexpected) across exactly the 9
+ProcessDisclosureTests = EXPECTED. 331 passing, 0 unexpected.
+
+Key suites:
+  SystemMonitorProcessSamplingTests  Executed 8 tests, 0 failures
+  SystemMonitorNetworkTests          Executed 8 tests, 0 failures
+  StatusItemControllerPopoverTests   Executed 8 tests, 0 failures
+  MetricProcessSamplerTests          Executed 12 tests, 0 failures (T-B unchanged)
+  ProcessDisclosureTests             Executed 9 tests, 9 failures (T-D, expected red)
+
+FT-4 test: SystemMonitorProcessSamplingTests
+  testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves
+
+Review-fix verification of L7 (testPopoverContentDisappearStopsProcessSampling):
+  - Hook deleted (.onDisappear commented out), new harness + cleared-wait:
+    L7 FAILS at 'FT-2: the detach path clears both published lists' (3.7 s
+    cleared-wait timeout), scoped run /tmp/tc-l7-teeth.log.
+  - Hook restored: L7 passes (0.414 s), scoped run /tmp/tc-l7-green2.log.
+  - Measured finding: window.contentViewController = nil never fires the root
+    view's onDisappear (3 s cleared-wait timeout with the hook present, run
+    /tmp/tc-l7-green.log), so L7 now drives the disappearance through a
+    SwiftUI conditional parent (PopoverDetachHost).
+
+--- failing tests (unique) ---
+	ProcessDisclosureTests.testEmptyStateShowsNoProcessDataLine()
+	ProcessDisclosureTests.testExpandingAnotherCardCollapsesTheOpenList()
+	ProcessDisclosureTests.testExpandingFromCollapsedSetsTheCategory()
+	ProcessDisclosureTests.testGPUCategoryParticipatesInTheAccordion()
+	ProcessDisclosureTests.testGPUUnavailableMessageMatchesPlanCopy()
+	ProcessDisclosureTests.testLoadingLineWinsOverRowCountWhileBootstrapHolds()
+	ProcessDisclosureTests.testLoadingStateShowsStaticSamplingLine()
+	ProcessDisclosureTests.testRealRowsShowNoPlaceholder()
+	ProcessDisclosureTests.testRetappingTheOpenCardCollapsesToNil()
+
+--- output tail ---
+2026-10-23 11:14:27.703 xcodebuild[97449:127622096] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-23 11:14:27.703 xcodebuild[97449:127622096] [MT] IDETestOperationsObserverDebug: 69.746 sec, +69.746 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_11-13-16-+0800.xcresult
+
+Failing tests:
+	ProcessDisclosureTests.testEmptyStateShowsNoProcessDataLine()
+	ProcessDisclosureTests.testExpandingAnotherCardCollapsesTheOpenList()
+	ProcessDisclosureTests.testExpandingFromCollapsedSetsTheCategory()
+	ProcessDisclosureTests.testGPUCategoryParticipatesInTheAccordion()
+	ProcessDisclosureTests.testGPUUnavailableMessageMatchesPlanCopy()
+	ProcessDisclosureTests.testLoadingLineWinsOverRowCountWhileBootstrapHolds()
+	ProcessDisclosureTests.testLoadingStateShowsStaticSamplingLine()
+	ProcessDisclosureTests.testRealRowsShowNoPlaceholder()
+	ProcessDisclosureTests.testRetappingTheOpenCardCollapsesToNil()
+
+** TEST FAILED **
+
+Testing started

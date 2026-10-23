@@ -31,4 +31,17 @@ protocol SystemMetricsProvider: Sendable {
     /// Cumulative non-loopback interface byte counters. Returns `nil`
     /// when the interface walk fails or when no usable interface exists.
     func sampleNetworkBytes() -> NetworkBytes?
+
+    /// One full process scan (T1). Returns per PID: `pid`, `cpuTicks`
+    /// (`ri_user_time + ri_system_time`), `startAbstime`
+    /// (`ri_proc_start_abstime`), `exitAbstime` (`ri_proc_exit_abstime`),
+    /// `physFootprint` (`ri_phys_footprint`), `residentSize`
+    /// (`ri_resident_size`). PIDs whose `proc_pid_rusage` read failed
+    /// (EPERM for other users' processes) are absent. Returns `nil`
+    /// when the scan fails. One scan serves both rankings.
+    func sampleProcesses() -> [RawProcessSample]?
+
+    /// Display name for one PID (T7). Returns `nil` when the PID is
+    /// gone or both the path and name reads fail.
+    func resolveProcessName(pid: Int32) -> String?
 }

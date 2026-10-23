@@ -225,4 +225,112 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
 
         return SystemMetricsParsing.networkBytes(from: rows)
     }
+
+    // MARK: - Process scan (plan 2026-10-23, T1/T6/T7)
+
+    /// One full process scan: `proc_listallpids` in two phases, then
+    /// `proc_pid_rusage(RUSAGE_INFO_V2)` per PID (T1). Phase 1 asks
+    /// for the current PID count; phase 2 over-allocates with headroom
+    /// so processes started between the calls still fit. The loop
+    /// allocates no `String`: names resolve later, only for the
+    /// top candidates (T7). Skips `pid <= 0`, failed rusage reads
+    /// (EPERM for other users' processes, ESRCH for exited ones), and
+    /// zombies (`ri_proc_exit_abstime != 0`) (T6). Returns `nil` when
+    /// a phase fails (nil-on-failure contract, T1).
+    func sampleProcesses() -> [RawProcessSample]? {
+        // Phase 1: with a nil buffer the call returns the PID count
+        // the list needs right now.
+        let required = proc_listallpids(nil, 0)
+        guard required > 0 else { return nil }
+
+        // Phase 2: headroom absorbs processes that start between the
+        // two calls, so the second call never truncates in practice.
+        let capacity = Int(required) + 32
+        var pids = [Int32](repeating: 0, count: capacity)
+        let written = pids.withUnsafeMutableBufferPointer { buffer -> Int32 in
+            guard let base = buffer.baseAddress else { return -1 }
+            let byteCount = Int32(buffer.count * MemoryLayout<Int32>.size)
+            return proc_listallpids(base, byteCount)
+        }
+        guard written > 0 else { return nil }
+
+        var samples: [RawProcessSample] = []
+        samples.reserveCapacity(min(Int(written), capacity))
+        for index in 0..<min(Int(written), capacity) {
+            let pid = pids[index]
+            guard pid > 0 else { continue }
+
+            var info = rusage_info_v2()
+            // proc_pid_rusage takes `rusage_info_t *` (a `void **`);
+            // the address it writes through is the struct itself.
+            let rc = withUnsafeMutablePointer(to: &info) { pointer -> Int32 in
+                proc_pid_rusage(
+                    pid,
+                    RUSAGE_INFO_V2,
+                    UnsafeMutableRawPointer(pointer)
+                        .assumingMemoryBound(to: rusage_info_t?.self)
+                )
+            }
+            // EPERM (root, WindowServer, kernel_task) and ESRCH are
+            // expected for an unprivileged scan; drop the PID (T6).
+            guard rc == 0 else { continue }
+            // A non-zero exit stamp marks a zombie; drop it (T6).
+            guard info.ri_proc_exit_abstime == 0 else { continue }
+
+            samples.append(
+                RawProcessSample(
+                    pid: pid,
+                    // &+ matches the plan's `+` for every realistic
+                    // value and keeps the no-crash contract on wrap.
+                    cpuTicks: info.ri_user_time &+ info.ri_system_time,
+                    startAbstime: info.ri_proc_start_abstime,
+                    exitAbstime: info.ri_proc_exit_abstime,
+                    physFootprint: info.ri_phys_footprint,
+                    residentSize: info.ri_resident_size
+                )
+            )
+        }
+        return samples
+    }
+
+    /// Display name for one PID (T7): `proc_pidpath` first, basename
+    /// only; `proc_name` as the fallback. Returns `nil` when the PID
+    /// is gone or both reads fail. No NSWorkspace or
+    /// NSRunningApplication: both spin up per-call machinery that a
+    /// top-8-per-tick lookup does not need.
+    func resolveProcessName(pid: Int32) -> String? {
+        guard pid > 0 else { return nil }
+
+        // proc_pidpath: the executable's absolute path; keep the
+        // basename only. The pre-zeroed buffer makes cString reads
+        // terminate even when the call writes no NUL.
+        var pathBuffer = [CChar](repeating: 0, count: 4096)
+        let pathLength = pathBuffer.withUnsafeMutableBufferPointer { buffer -> Int32 in
+            guard let base = buffer.baseAddress else { return 0 }
+            return proc_pidpath(pid, base, UInt32(buffer.count))
+        }
+        if pathLength > 0 {
+            let path = pathBuffer.withUnsafeBufferPointer { buffer -> String? in
+                guard let base = buffer.baseAddress else { return nil }
+                return String(cString: base)
+            }
+            if let name = path?.split(separator: "/").last.map(String.init),
+               !name.isEmpty {
+                return name
+            }
+        }
+
+        // Fallback: proc_name's short process name.
+        var nameBuffer = [CChar](repeating: 0, count: 128)
+        let nameLength = nameBuffer.withUnsafeMutableBufferPointer { buffer -> Int32 in
+            guard let base = buffer.baseAddress else { return 0 }
+            return proc_name(pid, base, UInt32(buffer.count))
+        }
+        guard nameLength > 0 else { return nil }
+        return nameBuffer.withUnsafeBufferPointer { buffer -> String? in
+            guard let base = buffer.baseAddress else { return nil }
+            let name = String(cString: base)
+            return name.isEmpty ? nil : name
+        }
+    }
 }

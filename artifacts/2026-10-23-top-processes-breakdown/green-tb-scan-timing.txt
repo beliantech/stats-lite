@@ -1,0 +1,37 @@
+GREEN-TB scan timing — plan §3 oracle prior check
+==================================================
+Prior (plan §3, marked unverified): ~0.3-1.2 ms/tick over 400-700 PIDs
+for proc_listallpids + proc_pid_rusage(RUSAGE_INFO_V2).
+
+Method: a -O swiftc harness compiled the REAL
+StatsLite/LiveSystemMetricsProvider.swift (with MetricTypes,
+SystemMetricsProvider, SystemMetricsParsing, MetricMath) and timed
+sampleProcesses() plus one tick's 8 resolveProcessName lookups,
+300 iterations after a warm-up, on this machine (2026-10-23).
+The harness listed ~1600 PIDs; the scan returned ~1270 samples after
+EPERM/zombie/pid<=0 skips. Date-run note: machine PID count exceeds the
+plan's 400-700 prior, so the timing is a conservative upper bound for
+the plan's scenario.
+
+Run 1:
+  warm-up scan: 1271 processes
+  process scan (n=300, 1271 pids): min 0.854 ms  mean 1.015 ms  max 4.138 ms
+  8 name lookups:                  min 0.011 ms  mean 0.015 ms  max 0.134 ms
+  full tick (scan + names):        mean 1.030 ms
+  oracle prior 0.3-1.2 ms/tick: WITHIN range
+
+Run 2:
+  warm-up scan: 1271 processes
+  process scan (n=300, 1273 pids): min 0.883 ms  mean 0.988 ms  max 1.537 ms
+  8 name lookups:                  min 0.011 ms  mean 0.017 ms  max 0.041 ms
+  full tick (scan + names):        mean 1.005 ms
+  oracle prior 0.3-1.2 ms/tick: WITHIN range
+
+Live negative-path check (real provider, same harness method):
+  resolveProcessName(bogus pid 999999) -> nil
+  resolveProcessName(pid 0) -> nil
+  resolveProcessName(self) -> "neg"
+  sampleProcesses() -> 1277 processes, all pid>0=true, all zombie-free=true
+
+Verdict: the measured tick cost sits inside the oracle's 0.3-1.2 ms band
+at 1271+ PIDs. The prior is now measured, not unverified.

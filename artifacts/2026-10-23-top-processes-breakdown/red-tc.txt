@@ -1,0 +1,53 @@
+RED-TC - T-C red phase, scoped xcodebuild test output (FT-4 test added against RED stubs)
+=================================================================
+Command:
+  DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer caffeinate -di xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData -only-testing:StatsLiteTests/SystemMonitorProcessSamplingTests
+Run: 2026-10-23 (Asia/Kuala_Lumpur), after adding the FT-4 fixture test,
+before the T-C monitor implementation.
+
+Expectation: 8 tests, all failing - the 7 T-A lifecycle reds plus the new
+FT-4 test (startProcessSampling is still a no-op stub).
+
+2026-10-23 10:39:57.873364+0800 StatsLite[33339:127158840] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:290: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling] : XCTAssertTrue failed - seed: sampling runs while the popover is open
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling]' failed (6.518 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverContentDisappearStopsProcessSampling]' started.
+2026-10-23 10:40:04.362371+0800 StatsLite[33339:127158840] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x748aee1980>
+2026-10-23 10:40:04.362499+0800 StatsLite[33339:127158840] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 10:40:04.362595+0800 StatsLite[33339:127158840] [SceneClient] [com.apple.appkit.status-items:6CBA0722-4BD4-4541-80B2-4DB7DD90E375-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 10:40:04.362654+0800 StatsLite[33339:127158840] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x748be061c0>
+2026-10-23 10:40:04.362696+0800 StatsLite[33339:127158840] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:372: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverContentDisappearStopsProcessSampling] : XCTAssertTrue failed - seed: sampling runs while the content view is mounted
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverContentDisappearStopsProcessSampling]' failed (3.272 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingDoesNotRestartStandardLoop]' started.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:115: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingDoesNotRestartStandardLoop] : XCTAssertTrue failed - L2: start must scan processes before the isolation check
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingDoesNotRestartStandardLoop]' failed (3.202 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory]' started.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:84: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory] : XCTAssertTrue failed - L1: expanding the disclosure must scan processes (R3)
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:85: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory] : XCTAssertTrue failed - L1: start marks the loop running
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:86: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory] : XCTAssertEqual failed: ("nil") is not equal to ("Optional(StatsLite.ProcessCategory.cpu)") - L1: the active category records .cpu
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:93: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory] : XCTAssertTrue failed - L1: the first scan publishes the memory ranking (R6)
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:94: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory] : XCTAssertEqual failed: ("nil") is not equal to ("Optional("FixtureProcess")")
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory]' failed (8.024 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap]' started.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:204: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap] : XCTAssertTrue failed - seed: CPU published with a delta (two scans)
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:226: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap] : XCTAssertTrue failed - the restarted sampler publishes memory on its first pass (R6)
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap]' failed (10.023 seconds).
+Test Suite 'SystemMonitorProcessSamplingTests' failed at 2026-10-23 10:40:28.884.
+	 Executed 8 tests, with 16 failures (0 unexpected) in 44.815 (44.820) seconds
+Test Suite 'StatsLiteTests.xctest' failed at 2026-10-23 10:40:28.884.
+	 Executed 8 tests, with 16 failures (0 unexpected) in 44.815 (44.820) seconds
+Test Suite 'Selected tests' failed at 2026-10-23 10:40:28.884.
+
+--- FT-4 failures (red evidence) ---
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:336: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves] : XCTAssertTrue failed - fixture: the first CPU-producing scan is held inside the fake
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:337: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves] : XCTAssertTrue failed - FT-4: the loading window reads true while the first CPU sample is held (VAC-13)
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:353: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves] : XCTAssertFalse failed - FT-4: the resolved sample publishes the first CPU ranking
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:357: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves] : XCTAssertEqual failed: ("nil") is not equal to ("Optional("FixtureProcess")")
+
+	 Executed 8 tests, with 16 failures (0 unexpected) in 44.815 (44.820) seconds
+	 Executed 8 tests, with 16 failures (0 unexpected) in 44.815 (44.821) seconds
+
+** TEST FAILED **

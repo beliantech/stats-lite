@@ -19,6 +19,10 @@ actor MetricSamplerActor {
     /// clock instant they were read at. Rate math needs both.
     private var previousNetworkSample: (bytes: NetworkBytes, instant: ContinuousClock.Instant)?
 
+    /// Per-PID CPU delta anchors for process sampling (T2): Mach tick
+    /// counter plus `ri_proc_start_abstime` for PID-reuse rejection.
+    private var processAnchors: [Int32: ProcessTickAnchor] = [:]
+
     init(provider: any SystemMetricsProvider) {
         self.provider = provider
     }
@@ -126,6 +130,172 @@ actor MetricSamplerActor {
     /// again and returns nil.
     func clearNetworkBase() {
         previousNetworkSample = nil
+    }
+
+    // MARK: - Process sampling (plan 2026-10-23, T2/T6)
+
+    /// Mach timebase: nanoseconds per Mach tick, read once and cached.
+    /// CPU fractions scale tick deltas through it (T6).
+    private static let nanosecondsPerTick: Double = {
+        var timebase = mach_timebase_info()
+        mach_timebase_info(&timebase)
+        return Double(timebase.numer) / Double(timebase.denom)
+    }()
+
+    /// One process pass at instant `now`: one scan serves both
+    /// rankings (T1). Returns `nil` when the scan fails and keeps the
+    /// delta base, so the next good pass still has its predecessor.
+    ///
+    /// CPU rows publish only for PIDs that already hold an anchor:
+    /// the first pass anchors every PID and ranks memory only (R5).
+    /// A start-stamp mismatch (recycled PID), a tick-counter rollback,
+    /// or a non-positive elapsed time reports 0 for that pass and
+    /// re-anchors (P3, P5). The fraction is
+    /// delta ticks x timebase / (elapsed ns x cores), clamped 0...1
+    /// (T6). `pid <= 0` rows and zombies (`exitAbstime != 0`) never
+    /// enter a ranking, and a PID that vanishes from the scan drops
+    /// its anchor (T6, P6). Memory ranks the top 5 by footprint with a
+    /// resident-size fallback and no delta (R6).
+    func sampleProcesses(now: ContinuousClock.Instant = .now) -> ProcessSampleResult? {
+        guard let samples = provider.sampleProcesses() else { return nil }
+
+        // Attribution filters (T6), de-duplicated so one scan cannot
+        // rank or anchor the same PID twice.
+        var seenPids: Set<Int32> = []
+        let live = samples.filter { sample in
+            guard sample.pid > 0, sample.exitAbstime == 0 else { return false }
+            return seenPids.insert(sample.pid).inserted
+        }
+
+        // A PID that vanished from the scan (EPERM, exited) drops its
+        // anchor: no stale delta can surface when it returns (P6).
+        processAnchors = processAnchors.filter { seenPids.contains($0.key) }
+
+        let timebase = Self.nanosecondsPerTick
+        let cores = Double(ProcessInfo.processInfo.activeProcessorCount)
+        let totalRAM = Double(ProcessInfo.processInfo.physicalMemory)
+
+        var cpuRows: [ProcessMetricItem] = []
+        var memoryCandidates: [MemoryCandidate] = []
+
+        for sample in live {
+            // A PID without a prior anchor measures this pass for the
+            // first time: it anchors and publishes no CPU row yet.
+            if let anchor = processAnchors[sample.pid] {
+                var fraction = 0.0
+                if anchor.startAbstime == sample.startAbstime,
+                   sample.cpuTicks >= anchor.cpuTicks {
+                    let elapsed = now - anchor.instant
+                    let components = elapsed.components
+                    let seconds = Double(components.seconds)
+                        + Double(components.attoseconds) / 1e18
+                    if seconds > 0 {
+                        let deltaTicks = Double(sample.cpuTicks - anchor.cpuTicks)
+                        let computed = deltaTicks * timebase / (seconds * 1e9 * cores)
+                        fraction = min(max(computed, 0), 1)
+                    }
+                }
+                // Mismatch or rollback falls through with fraction 0:
+                // a re-anchor, never a stale or wrapped delta (P3, P5).
+                cpuRows.append(
+                    ProcessMetricItem(
+                        pid: sample.pid,
+                        name: "Process \(sample.pid)",
+                        fraction: fraction,
+                        valueLabel: MetricFormatters.percentTenth(fraction)
+                    )
+                )
+            }
+            processAnchors[sample.pid] = ProcessTickAnchor(
+                cpuTicks: sample.cpuTicks,
+                startAbstime: sample.startAbstime,
+                instant: now
+            )
+
+            // Memory: footprint is the Activity Monitor figure; a
+            // zero footprint falls back to resident size (T6, P8).
+            let bytes = sample.physFootprint > 0
+                ? sample.physFootprint
+                : sample.residentSize
+            memoryCandidates.append(
+                MemoryCandidate(pid: sample.pid, bytes: bytes)
+            )
+        }
+
+        // Descending rank, PID as the deterministic tie-breaker;
+        // at most 5 rows per list (VAC-8).
+        let topCPU = cpuRows
+            .sorted { lhs, rhs in
+                lhs.fraction == rhs.fraction
+                    ? lhs.pid < rhs.pid
+                    : lhs.fraction > rhs.fraction
+            }
+            .prefix(5)
+        let topMemory = memoryCandidates
+            .sorted { lhs, rhs in
+                lhs.bytes == rhs.bytes
+                    ? lhs.pid < rhs.pid
+                    : lhs.bytes > rhs.bytes
+            }
+            .prefix(5)
+
+        // Names resolve only for the top candidates until 5 succeed,
+        // capped at 8 lookups per pass (T7). CPU rows lead so the
+        // stricter test list always carries its names (P11).
+        var nameByPid: [Int32: String] = [:]
+        var lookups = 0
+        var resolved = 0
+        for pid in topCPU.map(\.pid) + topMemory.map(\.pid) {
+            guard lookups < 8, resolved < 5, nameByPid[pid] == nil else { continue }
+            lookups += 1
+            if let name = provider.resolveProcessName(pid: pid), !name.isEmpty {
+                nameByPid[pid] = name
+                resolved += 1
+            }
+        }
+
+        let topMemoryItems = topMemory.map { candidate in
+            ProcessMetricItem(
+                pid: candidate.pid,
+                name: nameByPid[candidate.pid] ?? "Process \(candidate.pid)",
+                fraction: Double(candidate.bytes) / totalRAM,
+                valueLabel: Self.memoryValueLabel(candidate.bytes)
+            )
+        }
+        let topCPUItems = topCPU.map { item in
+            ProcessMetricItem(
+                pid: item.pid,
+                name: nameByPid[item.pid] ?? item.name,
+                fraction: item.fraction,
+                valueLabel: item.valueLabel
+            )
+        }
+
+        return ProcessSampleResult(topCPU: topCPUItems, topMemory: topMemoryItems)
+    }
+
+    /// Drops the per-PID process delta base, so the next pass anchors
+    /// from scratch (T5, mirrors `clearNetworkBase`).
+    func clearProcessBase() {
+        processAnchors = [:]
+    }
+
+    /// One PID's memory value for the ranking: a named type keeps the
+    /// sort closures simple to type-check.
+    private struct MemoryCandidate: Sendable {
+        var pid: Int32
+        var bytes: UInt64
+    }
+
+    /// One memory row's display value: one-decimal GB from 1 GiB up
+    /// ("6.8 GB"), integer MB below ("780 MB") (plan §4.3).
+    private static func memoryValueLabel(_ bytes: UInt64) -> String {
+        let gibibyte: Double = 1_073_741_824
+        if Double(bytes) >= gibibyte {
+            return String(format: "%.1f GB", Double(bytes) / gibibyte)
+        }
+        let mebibyte: Double = 1_048_576
+        return "\(Int((Double(bytes) / mebibyte).rounded())) MB"
     }
 
     // MARK: - CPU delta

@@ -235,3 +235,80 @@ struct SystemSnapshot: Sendable, Equatable {
         self.gpu = enabled.contains(.gpu) ? gpu : nil
     }
 }
+
+// MARK: - Top Processes (plan 2026-10-23-top-processes-breakdown)
+
+/// One per-process row from one full process scan. Raw Mach values
+/// only: no formatting, no ranking. A PID whose `proc_pid_rusage`
+/// read failed (EPERM for other users' processes) is absent from
+/// the scan result (T1, T6).
+struct RawProcessSample: Sendable, Equatable {
+    /// Process identifier.
+    var pid: Int32
+    /// `ri_user_time + ri_system_time` in Mach absolute time units.
+    var cpuTicks: UInt64
+    /// `ri_proc_start_abstime`: rejects a reused PID (T2).
+    var startAbstime: UInt64
+    /// `ri_proc_exit_abstime`: non-zero marks a zombie (T6 skip).
+    var exitAbstime: UInt64
+    /// `ri_phys_footprint` in bytes: Activity Monitor "Memory" semantics.
+    var physFootprint: UInt64
+    /// `ri_resident_size` in bytes: fallback when the footprint is 0 (T6).
+    var residentSize: UInt64
+}
+
+/// Anchor for one PID's CPU delta (T2): the tick counter, the
+/// process-start stamp, and the sampling instant captured at the
+/// previous accepted sample.
+struct ProcessTickAnchor: Sendable, Equatable {
+    /// Mach tick counter (`ri_user_time + ri_system_time`) at the anchor.
+    var cpuTicks: UInt64
+    /// `ri_proc_start_abstime` at the anchor: a mismatch means the PID
+    /// was recycled and the anchor is stale.
+    var startAbstime: UInt64
+    /// The instant this anchor was taken: the CPU fraction divides by
+    /// the time from here to the current pass, never a hard-coded 1 s.
+    var instant: ContinuousClock.Instant
+}
+
+/// One ranked row in a Top Processes list (plan §4.3).
+struct ProcessMetricItem: Sendable, Equatable, Identifiable {
+    /// Process identifier; also the list identity (`id`).
+    var pid: Int32
+    /// Resolved display name (T7).
+    var name: String
+    /// Share in 0...1. CPU: of total core capacity. Memory: of total RAM.
+    var fraction: Double
+    /// Display value: "84.2%" for CPU, "6.8 GB" or "780 MB" for memory.
+    var valueLabel: String
+
+    var id: Int32 { pid }
+}
+
+/// One process scan's output (T1): a single scan serves both the CPU
+/// and the memory rankings.
+struct ProcessSampleResult: Sendable, Equatable {
+    /// Top processes by instantaneous CPU %, descending, at most 5.
+    /// Empty on the anchoring scan: CPU needs two samples (R5).
+    var topCPU: [ProcessMetricItem]
+    /// Top processes by memory footprint, descending, at most 5.
+    /// Populated on the first scan (R6, no delta needed).
+    var topMemory: [ProcessMetricItem]
+}
+
+/// Which card's Top Processes list is expanded (R4). The accordion
+/// allows one open list at a time; `.gpu` expands only the
+/// unavailable container and never starts sampling (R7).
+enum ProcessCategory: Sendable, Equatable {
+    case cpu
+    case memory
+    case gpu
+}
+
+/// Collapsed-disclosure cue from the parent metric's usage level
+/// (plan §4.3): three dot colors, one per case.
+enum ProcessCueState: Sendable, Equatable {
+    case normal
+    case warning
+    case critical
+}
