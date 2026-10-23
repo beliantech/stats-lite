@@ -17,10 +17,12 @@ enum MenuBarAccessibility {
         showRAM: Bool,
         showGPU: Bool,
         showNetwork: Bool = false,
+        showTemperature: Bool = false,
         cpuPercent: Double?,
         pressurePercent: Double?,
         pressure: MemoryPressureState,
         gpuPercent: Double?,
+        temperature: TemperatureMetrics? = nil,
         downloadRate: Double? = nil,
         uploadRate: Double? = nil
     ) -> String {
@@ -44,6 +46,17 @@ enum MenuBarAccessibility {
         if showGPU {
             parts.append(gpuPercent.map { "GPU \(wholePercent($0)) percent" } ?? "GPU unavailable")
         }
+        if showTemperature {
+            // "Temperature: CPU 84 degrees, GPU 61 degrees" in the
+            // network position (after GPU, before Network). A nil
+            // subsystem reads "unavailable" on its own row (VAC-10).
+            // Whole-degree rounding matches MetricFormatters.degrees.
+            parts.append(
+                "Temperature: "
+                    + "CPU \(temperature?.cpuCelsius.map(wholeDegrees) ?? "unavailable"), "
+                    + "GPU \(temperature?.gpuCelsius.map(wholeDegrees) ?? "unavailable")"
+            )
+        }
         if showNetwork {
             // latestNetwork is one optional pair: both rates arrive
             // together or the block reads "unavailable".
@@ -61,5 +74,9 @@ enum MenuBarAccessibility {
 
     private static func wholePercent(_ value: Double) -> Int {
         Int((min(max(value, 0), 1) * 100).rounded())
+    }
+
+    private static func wholeDegrees(_ value: Double) -> String {
+        "\(Int(value.rounded())) degrees"
     }
 }

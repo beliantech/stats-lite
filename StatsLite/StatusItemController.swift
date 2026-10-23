@@ -321,10 +321,12 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
             showNetwork: preferences.showNetwork,
+            showTemperature: preferences.showTemperature,
             cpuPercent: snapshot?.cpu?.totalUsage,
             pressurePercent: pressure?.pressurePercentage,
             pressure: pressureState,
             gpuPercent: snapshot?.gpu?.deviceUtilization,
+            temperature: snapshot?.temperature,
             downloadRate: monitor.latestNetwork?.downloadBytesPerSecond,
             uploadRate: monitor.latestNetwork?.uploadBytesPerSecond
         )
