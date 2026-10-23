@@ -51,7 +51,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
         XCTAssertTrue(store.showRAM)
         XCTAssertTrue(store.showGPU)
         XCTAssertEqual(store.activeMetricCount, 3)
-        XCTAssertEqual(store.enabledMetrics, .all)
+        XCTAssertEqual(store.enabledMetrics, .all.union(.temperature))
         XCTAssertEqual(store.refreshInterval, 1)
         XCTAssertEqual(store.historyDuration, 60)
         XCTAssertTrue(store.showCoreBreakdown)
@@ -70,7 +70,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
         XCTAssertFalse(store.showRAM)
         XCTAssertFalse(store.showGPU)
         XCTAssertEqual(store.activeMetricCount, 1)
-        XCTAssertEqual(store.enabledMetrics, [.cpu])
+        XCTAssertEqual(store.enabledMetrics, [.cpu, .temperature])
     }
 
     // MARK: - didSet guard
@@ -87,7 +87,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
 
         XCTAssertTrue(store.showCPU)
         XCTAssertEqual(store.activeMetricCount, 1)
-        XCTAssertEqual(store.enabledMetrics, [.cpu])
+        XCTAssertEqual(store.enabledMetrics, [.cpu, .temperature])
     }
 
     func testDisablingOneOfTwoMetricsStaysDisabled() {
@@ -110,7 +110,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
 
         XCTAssertFalse(store.showGPU)
         XCTAssertEqual(store.activeMetricCount, 2)
-        XCTAssertEqual(store.enabledMetrics, [.cpu, .memory])
+        XCTAssertEqual(store.enabledMetrics, [.cpu, .memory, .temperature])
     }
 
     // MARK: - Persistence
@@ -164,7 +164,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
         store.showNetwork = false
 
         XCTAssertEqual(store.activeMetricCount, 3, "F10/D4: network never enters the count")
-        XCTAssertEqual(store.enabledMetrics, .all)
+        XCTAssertEqual(store.enabledMetrics, .all.union(.temperature))
 
         store.showRAM = false
         store.showGPU = false
@@ -175,7 +175,7 @@ final class PreferencesStoreGuardTests: XCTestCase {
             1,
             "count still counts only CPU/RAM/GPU while network is ON"
         )
-        XCTAssertEqual(store.enabledMetrics, [.cpu])
+        XCTAssertEqual(store.enabledMetrics, [.cpu, .temperature])
     }
 
     /// The lock helper counts only the three standard metrics, so the

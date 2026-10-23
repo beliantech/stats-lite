@@ -109,6 +109,7 @@ final class PreferencesStore {
         if showCPU { enabled.insert(.cpu) }
         if showRAM { enabled.insert(.memory) }
         if showGPU { enabled.insert(.gpu) }
+        if showTemperature { enabled.insert(.temperature) }
         return enabled
     }
 
