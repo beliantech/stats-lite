@@ -1,0 +1,663 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS,arch=arm64 -derivedDataPath .derivedData CODE_SIGN_IDENTITY=-
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+
+Build Preparation
+Build task concurrency set to 4 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'StatsLiteTests' in project 'StatsLite'
+        ➜ Explicit dependency on target 'StatsLite' in project 'StatsLite'
+    Target 'StatsLite' in project 'StatsLite' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLite.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+SwiftDriver StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block -experimental-emit-module-separately -disable-cmo
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    
+
+SwiftCompile normal arm64 Compiling\ EnabledMetricsGuardTests.swift,\ FakeSystemMetricsProvider.swift,\ HistoryBufferTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/EnabledMetricsGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/FakeSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/HistoryBufferTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/EnabledMetricsGuardTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile EnabledMetricsGuardTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/FakeSystemMetricsProvider.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile FakeSystemMetricsProvider.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/HistoryBufferTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile HistoryBufferTests.swift
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/HistoryBufferTests.swift:222:13: warning: variable 'naiveValues' was written to, but never read
+220 |         // build configuration.
+221 |         var naivePoints: [HistoryPoint] = []
+222 |         var naiveValues: [Double] = []
+    |             `- warning: variable 'naiveValues' was written to, but never read
+223 |         for index in 0..<(capacity * 2) {
+224 |             naivePoints.append(
+SwiftCompile normal arm64 Compiling\ TemperatureMetricsTests.swift,\ TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureMetricsTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile TemperatureMetricsTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile TemperatureSamplerGatingTests.swift
+
+SwiftCompile normal arm64 Compiling\ BrandStringTests.swift,\ CoreGraphicsSparklineTests.swift,\ CPUTicksTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/BrandStringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CoreGraphicsSparklineTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/BrandStringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile BrandStringTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CoreGraphicsSparklineTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile CoreGraphicsSparklineTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile CPUTicksTests.swift
+
+SwiftCompile normal arm64 Compiling\ SystemMetricsParsingTests.swift,\ SystemMetricsProviderContractTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsParsingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsParsingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SystemMetricsParsingTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SystemMetricsProviderContractTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling TemperatureMetricsTests.swift, TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MetricSamplerActorTests.swift,\ MetricTypesTests.swift,\ NetworkSparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricSamplerActorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricTypesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/NetworkSparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricSamplerActorTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricSamplerActorTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricTypesTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricTypesTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/NetworkSparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile NetworkSparklineViewTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriver\ Compilation\ Requirements StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling EnabledMetricsGuardTests.swift, FakeSystemMetricsProvider.swift, HistoryBufferTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MenuBarValueTypographyTests.swift,\ MetricFormatterDegreesTests.swift,\ MetricFormatterHistoryDurationAxisTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarValueTypographyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterDegreesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarValueTypographyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarValueTypographyTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterDegreesTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricFormatterDegreesTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricFormatterHistoryDurationAxisTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling BrandStringTests.swift, CoreGraphicsSparklineTests.swift, CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftMergeGeneratedHeaders /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-swiftHeaderTool -arch arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ LaunchAtLoginServiceTests.swift,\ MenuBarAccessibilityTests.swift,\ MenuBarBlockBuilderTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/LaunchAtLoginServiceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarAccessibilityTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarBlockBuilderTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/LaunchAtLoginServiceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile LaunchAtLoginServiceTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarAccessibilityTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarAccessibilityTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarBlockBuilderTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarBlockBuilderTests.swift
+
+SwiftCompile normal arm64 Compiling\ StatsLiteTests.swift,\ StatusItemControllerPopoverTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatsLiteTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatusItemControllerPopoverTests.swift:27:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+ 25 |     /// AppKit does when the button is clicked.
+ 26 |     private func toggle(_ controller: StatusItemController) {
+ 27 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+ 28 |     }
+ 29 | 
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatsLiteTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile StatsLiteTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile StatusItemControllerPopoverTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling SystemMetricsParsingTests.swift, SystemMetricsProviderContractTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MetricFormatterTests.swift,\ MetricMathCPUPercentTests.swift,\ MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricFormatterTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricMathCPUPercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricMathCPUPercentTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MetricProcessSamplerTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MenuBarValueTypographyTests.swift, MetricFormatterDegreesTests.swift, MetricFormatterHistoryDurationAxisTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling StatsLiteTests.swift, StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ PreferencesStoreGuardTests.swift,\ PressurePercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesStoreGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PressurePercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesStoreGuardTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile PreferencesStoreGuardTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PressurePercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile PressurePercentTests.swift
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckPolicyTests.swift,\ UpdateCheckServicePersistenceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckServicePersistenceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckPolicyTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckServicePersistenceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckServicePersistenceTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling LaunchAtLoginServiceTests.swift, MenuBarAccessibilityTests.swift, MenuBarBlockBuilderTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ SystemMonitorNetworkTests.swift,\ SystemMonitorProcessSamplingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorNetworkTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorNetworkTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SystemMonitorNetworkTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SystemMonitorProcessSamplingTests.swift
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:250:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+248 |         await fulfillment(of: [warm], timeout: 3)
+249 | 
+250 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+251 |         let shown = expectation(
+252 |             for: NSPredicate(format: "isShown == true"),
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:264:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+262 |         // Close through the normal path (covers outside-click and
+263 |         // Escape too: both end in popoverDidClose, T5).
+264 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+265 |         let released = expectation(
+266 |             for: NSPredicate(format: "contentViewController == nil"),
+SwiftDriverJobDiscovery normal arm64 Compiling MetricSamplerActorTests.swift, MetricTypesTests.swift, NetworkSparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ ProcessDisclosureTests.swift,\ SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/ProcessDisclosureTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile ProcessDisclosureTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SettingsWindowTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling PreferencesStoreGuardTests.swift, PressurePercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckSourceTests.swift,\ UpdateCheckVersionTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckSourceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckSourceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckSourceTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckVersionTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling MetricFormatterTests.swift, MetricMathCPUPercentTests.swift, MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckFixtureFloorTests.swift,\ UpdateCheckLaunchPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckFixtureFloorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckFixtureFloorTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckFixtureFloorTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile UpdateCheckLaunchPolicyTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckPolicyTests.swift, UpdateCheckServicePersistenceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ MenuBarLayoutTests.swift,\ MenuBarRedrawChurnTests.swift,\ MenuBarTempBlockTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarLayoutTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarRedrawChurnTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:55:35: error: extra arguments at positions #5, #10 in call
+ 53 |         uploadRate: Double? = nil
+ 54 |     ) -> [MenuBarBlock] {
+ 55 |         MenuBarBlockBuilder.blocks(
+    |                                   `- error: extra arguments at positions #5, #10 in call
+ 56 |             showCPU: showCPU,
+ 57 |             showRAM: showRAM,
+
+StatsLite.MenuBarBlockBuilder.blocks:2:22: note: 'blocks(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressureState:gpuPercent:downloadRate:uploadRate:)' declared here
+1 | enum MenuBarBlockBuilder {
+2 | internal static func blocks(showCPU: Bool, showRAM: Bool, showGPU: Bool, showNetwork: Bool = false, cpuPercent: Double?, pressurePercent: Double?, pressureState: StatsLite.MemoryPressureState?, gpuPercent: Double?, downloadRate: Double? = nil, uploadRate: Double? = nil) -> [StatsLite.MenuBarBlock]}
+  |                      `- note: 'blocks(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressureState:gpuPercent:downloadRate:uploadRate:)' declared here
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:95:40: error: type 'MenuBarBlockKind' has no member 'temp'
+ 93 |         )
+ 94 |         return try XCTUnwrap(
+ 95 |             result.first { $0.kind == .temp },
+    |                                        `- error: type 'MenuBarBlockKind' has no member 'temp'
+ 96 |             "FM-T4-5: no .temp block — MenuBarBlockBuilder must append kind .temp when showTemperature is on"
+ 97 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:197:33: error: type 'MenuBarBlockKind' has no member 'temp'
+195 |         XCTAssertEqual(
+196 |             result.map(\.kind),
+197 |             [.cpu, .ram, .gpu, .temp, .network],
+    |                                 `- error: type 'MenuBarBlockKind' has no member 'temp'
+198 |             """
+199 |             FM-T4-1 (VAC-1): with temperature enabled the order must be \
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:222:20: error: type '(_) -> Bool' cannot conform to 'Collection' [#ProtocolTypeNonConformance]
+220 |         )
+221 |         XCTAssertFalse(
+222 |             result.contains { $0.kind == .temp },
+    |                    |- error: type '(_) -> Bool' cannot conform to 'Collection' [#ProtocolTypeNonConformance]
+    |                    |- note: only concrete types such as structs, enums and classes can conform to protocols
+    |                    `- note: required by instance method 'contains' where 'C' = '(_) -> Bool'
+223 |             "FM-T4-2: no TEMP block may appear while showTemperature is off"
+224 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:222:20: error: instance method 'contains' requires the types 'MenuBarBlock' and '((_) -> Bool).Element' be equivalent
+220 |         )
+221 |         XCTAssertFalse(
+222 |             result.contains { $0.kind == .temp },
+    |                    `- error: instance method 'contains' requires the types 'MenuBarBlock' and '((_) -> Bool).Element' be equivalent
+223 |             "FM-T4-2: no TEMP block may appear while showTemperature is off"
+224 |         )
+
+_StringProcessing.Collection.contains:3:15: note: where 'Self.Element' = 'MenuBarBlock', 'C.Element' = '((_) -> Bool).Element'
+1 | protocol Collection {
+2 | @available(macOS 13.0, iOS 16.0, watchOS 9.0, tvOS 16.0, *)
+3 |   public func contains<C>(_ other: C) -> Bool where C : Collection, Self.Element == C.Element}
+  |               `- note: where 'Self.Element' = 'MenuBarBlock', 'C.Element' = '((_) -> Bool).Element'
+4 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:222:29: error: cannot infer type of closure parameter '$0' without a type annotation
+220 |         )
+221 |         XCTAssertFalse(
+222 |             result.contains { $0.kind == .temp },
+    |                             `- error: cannot infer type of closure parameter '$0' without a type annotation
+223 |             "FM-T4-2: no TEMP block may appear while showTemperature is off"
+224 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:222:43: error: cannot infer contextual base in reference to member 'temp'
+220 |         )
+221 |         XCTAssertFalse(
+222 |             result.contains { $0.kind == .temp },
+    |                                           `- error: cannot infer contextual base in reference to member 'temp'
+223 |             "FM-T4-2: no TEMP block may appear while showTemperature is off"
+224 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:244:34: error: extra argument 'showTemperature' in call
+242 |                 showGPU: true,
+243 |                 showNetwork: networkOn,
+244 |                 showTemperature: true
+    |                                  `- error: extra argument 'showTemperature' in call
+245 |             )
+246 |             let off = MenuBarLayout.length(
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:251:34: error: extra argument 'showTemperature' in call
+249 |                 showGPU: true,
+250 |                 showNetwork: networkOn,
+251 |                 showTemperature: false
+    |                                  `- error: extra argument 'showTemperature' in call
+252 |             )
+253 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:256:31: error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+254 |             XCTAssertEqual(
+255 |                 on - off,
+256 |                 MenuBarLayout.tempBlockWidth + MenuBarLayout.gap,
+    |                               `- error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+257 |                 accuracy: 0.0001,
+258 |                 """
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:290:30: error: extra argument 'showTemperature' in call
+288 |             showGPU: false,
+289 |             showNetwork: false,
+290 |             showTemperature: true
+    |                              `- error: extra argument 'showTemperature' in call
+291 |         )
+292 |         XCTAssertEqual(
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:294:55: error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+292 |         XCTAssertEqual(
+293 |             temperatureOnly,
+294 |             2 * MenuBarLayout.padding + MenuBarLayout.tempBlockWidth,
+    |                                                       `- error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+295 |             accuracy: 0.0001,
+296 |             "FM-T4-3: temperature alone totals padding plus its pinned width"
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:314:27: error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+312 | 
+313 |         XCTAssertGreaterThanOrEqual(
+314 |             MenuBarLayout.tempBlockWidth,
+    |                           `- error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+315 |             worstCase,
+316 |             """
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:329:27: error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+327 |         XCTAssertEqual(
+328 |             hot.width,
+329 |             MenuBarLayout.tempBlockWidth,
+    |                           `- error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+330 |             "FM-T4-4: the TEMP block pins to MenuBarLayout.tempBlockWidth"
+331 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:334:27: error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+332 |         XCTAssertEqual(
+333 |             missing.width,
+334 |             MenuBarLayout.tempBlockWidth,
+    |                           `- error: type 'MenuBarLayout' has no member 'tempBlockWidth'
+335 |             "FM-T4-4: the block width never varies with the value (a --° reading keeps the pin)"
+336 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:430:55: error: extra arguments at positions #5, #10 in call
+428 |     /// reads "unavailable" on its own row.
+429 |     func testCompositeLabelCarriesTemperatureSegmentIncludingUnavailableRows() throws {
+430 |         let full = MenuBarAccessibility.compositeLabel(
+    |                                                       `- error: extra arguments at positions #5, #10 in call
+431 |             showCPU: true,
+432 |             showRAM: false,
+
+StatsLite.MenuBarAccessibility.compositeLabel:2:22: note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+1 | enum MenuBarAccessibility {
+2 | internal static func compositeLabel(showCPU: Bool, showRAM: Bool, showGPU: Bool, showNetwork: Bool = false, cpuPercent: Double?, pressurePercent: Double?, pressure: StatsLite.MemoryPressureState, gpuPercent: Double?, downloadRate: Double? = nil, uploadRate: Double? = nil) -> String}
+  |                      `- note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:452:30: error: generic parameter 'T' could not be inferred
+450 |         )
+451 | 
+452 |         let gpuSegment = try XCTUnwrap(
+    |                              `- error: generic parameter 'T' could not be inferred
+453 |             full.range(of: "GPU 28 percent"),
+454 |             "FM-T4-6: GPU segment missing from \(full)"
+
+XCTest.XCTUnwrap:1:13: note: in call to function 'XCTUnwrap(_:_:file:line:)'
+1 | public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) throws -> T
+  |             `- note: in call to function 'XCTUnwrap(_:_:file:line:)'
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:456:38: error: generic parameter 'T' could not be inferred
+454 |             "FM-T4-6: GPU segment missing from \(full)"
+455 |         )
+456 |         let temperatureSegment = try XCTUnwrap(
+    |                                      `- error: generic parameter 'T' could not be inferred
+457 |             full.range(of: "Temperature:"),
+458 |             "FM-T4-6: Temperature segment missing from \(full)"
+
+XCTest.XCTUnwrap:1:13: note: in call to function 'XCTUnwrap(_:_:file:line:)'
+1 | public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) throws -> T
+  |             `- note: in call to function 'XCTUnwrap(_:_:file:line:)'
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:460:34: error: generic parameter 'T' could not be inferred
+458 |             "FM-T4-6: Temperature segment missing from \(full)"
+459 |         )
+460 |         let networkSegment = try XCTUnwrap(
+    |                                  `- error: generic parameter 'T' could not be inferred
+461 |             full.range(of: "Network Upload"),
+462 |             "FM-T4-6: Network segment missing from \(full)"
+
+XCTest.XCTUnwrap:1:13: note: in call to function 'XCTUnwrap(_:_:file:line:)'
+1 | public func XCTUnwrap<T>(_ expression: @autoclosure () throws -> T?, _ message: @autoclosure () -> String = "", file: StaticString = #filePath, line: UInt = #line) throws -> T
+  |             `- note: in call to function 'XCTUnwrap(_:_:file:line:)'
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:476:61: error: extra arguments at positions #5, #10 in call
+474 | 
+475 |         // Missing GPU sensor: unavailable on that row only.
+476 |         let gpuMissing = MenuBarAccessibility.compositeLabel(
+    |                                                             `- error: extra arguments at positions #5, #10 in call
+477 |             showCPU: true,
+478 |             showRAM: false,
+
+StatsLite.MenuBarAccessibility.compositeLabel:2:22: note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+1 | enum MenuBarAccessibility {
+2 | internal static func compositeLabel(showCPU: Bool, showRAM: Bool, showGPU: Bool, showNetwork: Bool = false, cpuPercent: Double?, pressurePercent: Double?, pressure: StatsLite.MemoryPressureState, gpuPercent: Double?, downloadRate: Double? = nil, uploadRate: Double? = nil) -> String}
+  |                      `- note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift:498:61: error: extra arguments at positions #5, #10 in call
+496 | 
+497 |         // Missing CPU sensor: unavailable on that row only.
+498 |         let cpuMissing = MenuBarAccessibility.compositeLabel(
+    |                                                             `- error: extra arguments at positions #5, #10 in call
+499 |             showCPU: true,
+500 |             showRAM: false,
+
+StatsLite.MenuBarAccessibility.compositeLabel:2:22: note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+1 | enum MenuBarAccessibility {
+2 | internal static func compositeLabel(showCPU: Bool, showRAM: Bool, showGPU: Bool, showNetwork: Bool = false, cpuPercent: Double?, pressurePercent: Double?, pressure: StatsLite.MemoryPressureState, gpuPercent: Double?, downloadRate: Double? = nil, uploadRate: Double? = nil) -> String}
+  |                      `- note: 'compositeLabel(showCPU:showRAM:showGPU:showNetwork:cpuPercent:pressurePercent:pressure:gpuPercent:downloadRate:uploadRate:)' declared here
+3 | 
+
+[#ProtocolTypeNonConformance]: <https://docs.swift.org/compiler/documentation/diagnostics/protocol-type-non-conformance>
+Failed frontend command:
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarLayoutTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarLayoutTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarRedrawChurnTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarRedrawChurnTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile MenuBarTempBlockTests.swift
+
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/BrandStringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CoreGraphicsSparklineTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/CPUTicksTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/EnabledMetricsGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/FakeSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/HistoryBufferTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/LaunchAtLoginServiceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarAccessibilityTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarBlockBuilderTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarLayoutTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarRedrawChurnTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarValueTypographyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterDegreesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricFormatterTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricSamplerActorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MetricTypesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/NetworkSparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesStoreGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PressurePercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineTimeAxisGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatsLiteTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/StatusItemControllerPopoverTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsParsingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMetricsProviderContractTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorNetworkTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SystemMonitorProcessSamplingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckFixtureFloorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckServicePersistenceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckSourceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/UpdateCheckVersionTests.swift -supplementary-output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/supplementaryOutputs-4 -target arm64-apple-macos14.0 -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -profile-generate -profile-coverage-mapping -swift-version 6 -Onone -D DEBUG -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name StatsLiteTests -const-gather-protocols-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos27.0 -target-sdk-version 27.0 -target-sdk-name macosx27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarLayoutTests.o -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarRedrawChurnTests.o -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarTempBlockTests.o -debug-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarLayoutTests.o -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarRedrawChurnTests.o -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/MenuBarTempBlockTests.o -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Index.noindex/DataStore -index-system-modules
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckSourceTests.swift, UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ PopoverVersionLabelTests.swift,\ PreferencesShowTemperatureWiringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift:16:40: warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+13 | final class PopoverVersionLabelTests: XCTestCase {
+14 | 
+15 |     func testPureVersionLabelFormatsBuild1() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionLabelFormatsBuild1()' part of global actor 'MainActor'
+16 |         let label = PopoverContentView.versionLabel(version: "1.0.0", build: "1")
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+17 |         XCTAssertEqual(label, "v1.0.0 (1)")
+18 |     }
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift:21:40: warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+18 |     }
+19 | 
+20 |     func testPureVersionLabelFormatsBuild9999() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionLabelFormatsBuild9999()' part of global actor 'MainActor'
+21 |         let label = PopoverContentView.versionLabel(version: "1.0.0", build: "9999")
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+22 |         XCTAssertEqual(label, "v1.0.0 (9999)")
+23 |     }
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift:26:40: warning: call to main actor-isolated static method 'versionAccessibilityLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+23 |     }
+24 | 
+25 |     func testPureVersionAccessibilityLabel() {
+   |          `- note: add '@MainActor' to make instance method 'testPureVersionAccessibilityLabel()' part of global actor 'MainActor'
+26 |         let label = PopoverContentView.versionAccessibilityLabel(version: "1.0.0", build: "1")
+   |                                        `- warning: call to main actor-isolated static method 'versionAccessibilityLabel(version:build:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+27 |         XCTAssertEqual(label, "Version 1.0.0, build 1")
+28 |     }
+
+StatsLite.PopoverContentView.versionAccessibilityLabel:2:33: note: calls to static method 'versionAccessibilityLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionAccessibilityLabel(version: String, build: String) -> String}
+  |                                 `- note: calls to static method 'versionAccessibilityLabel(version:build:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift:31:40: warning: call to main actor-isolated static method 'versionLabel(bundle:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+28 |     }
+29 | 
+30 |     func testBundleSourcedVersionLabelMatchesPattern() {
+   |          `- note: add '@MainActor' to make instance method 'testBundleSourcedVersionLabelMatchesPattern()' part of global actor 'MainActor'
+31 |         let label = PopoverContentView.versionLabel()
+   |                                        `- warning: call to main actor-isolated static method 'versionLabel(bundle:)' in a synchronous nonisolated context [#ActorIsolatedCall]
+32 |         let pattern = #"^v[0-9][0-9.]* \([0-9]+\)$"#
+33 |         XCTAssertNotNil(
+
+StatsLite.PopoverContentView.versionLabel:2:33: note: calls to static method 'versionLabel(bundle:)' from outside of its actor context are implicitly asynchronous
+1 | struct PopoverContentView {
+2 | @MainActor internal static func versionLabel(bundle: Bundle = .main) -> String}
+  |                                 `- note: calls to static method 'versionLabel(bundle:)' from outside of its actor context are implicitly asynchronous
+3 | 
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PopoverVersionLabelTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile PopoverVersionLabelTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile PreferencesShowTemperatureWiringTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling ProcessDisclosureTests.swift, SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ SparklineTimeAxisGuardTests.swift,\ SparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineTimeAxisGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineTimeAxisGuardTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SparklineTimeAxisGuardTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/SparklineViewTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block
+    builtin-SwiftPerFileCompile SparklineViewTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckFixtureFloorTests.swift, UpdateCheckLaunchPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling PopoverVersionLabelTests.swift, PreferencesShowTemperatureWiringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriverJobDiscovery normal arm64 Compiling SystemMonitorNetworkTests.swift, SystemMonitorProcessSamplingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/SDKExplicitPrecompiledModules
+
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_18-50-52-+0800.xcresult
+
+Testing failed:
+	Extra arguments at positions #5, #10 in call
+	Type 'MenuBarBlockKind' has no member 'temp'
+	Type 'MenuBarBlockKind' has no member 'temp'
+	Type '(_) -> Bool' cannot conform to 'Collection'
+	Instance method 'contains' requires the types 'MenuBarBlock' and '((_) -> Bool).Element' be equivalent
+	Cannot infer type of closure parameter '$0' without a type annotation
+	Cannot infer contextual base in reference to member 'temp'
+	Extra argument 'showTemperature' in call
+	Extra argument 'showTemperature' in call
+	Type 'MenuBarLayout' has no member 'tempBlockWidth'
+	Extra argument 'showTemperature' in call
+	Type 'MenuBarLayout' has no member 'tempBlockWidth'
+	Type 'MenuBarLayout' has no member 'tempBlockWidth'
+	Type 'MenuBarLayout' has no member 'tempBlockWidth'
+	Type 'MenuBarLayout' has no member 'tempBlockWidth'
+	Extra arguments at positions #5, #10 in call
+	Generic parameter 'T' could not be inferred
+	Generic parameter 'T' could not be inferred
+	Generic parameter 'T' could not be inferred
+	Extra arguments at positions #5, #10 in call
+	Extra arguments at positions #5, #10 in call
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	SwiftCompile normal arm64 Compiling\ MenuBarLayoutTests.swift,\ MenuBarRedrawChurnTests.swift,\ MenuBarTempBlockTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarLayoutTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarRedrawChurnTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t4-ui-block/StatsLiteTests/MenuBarTempBlockTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	Testing project StatsLite with scheme StatsLite
+(3 failures)
