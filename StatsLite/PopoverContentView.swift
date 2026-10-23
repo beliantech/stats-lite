@@ -158,7 +158,7 @@ struct PopoverContentView: View {
         }
     }
 
-    // MARK: - Header (28 pt, gear and quit 24x24 targets)
+    // MARK: - Header (28 pt, Activity Monitor, gear, and quit 24x24 targets)
 
     private var header: some View {
         HStack(spacing: 8) {
@@ -167,6 +167,19 @@ struct PopoverContentView: View {
                 .foregroundStyle(.primary)
 
             Spacer()
+
+            Button {
+                openActivityMonitor()
+            } label: {
+                Image(systemName: "waveform.path.ecg.rectangle")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(Self.activityMonitorButtonLabel)
+            .accessibilityLabel(Self.activityMonitorButtonLabel)
 
             Button {
                 NSApplication.shared.activate(ignoringOtherApps: true)
@@ -195,6 +208,36 @@ struct PopoverContentView: View {
         }
         .padding(.horizontal, 12)
         .padding(.top, 4)
+    }
+
+    // MARK: - Activity Monitor seams
+
+    /// Bundle identifier for macOS Activity Monitor (VAC-11 launch path).
+    static let activityMonitorBundleIdentifier = "com.apple.ActivityMonitor"
+
+    /// Fallback app bundle path when the bundle identifier does not resolve.
+    static let activityMonitorFallbackPath =
+        "/System/Applications/Utilities/Activity Monitor.app"
+
+    /// Tooltip and VoiceOver label for the header shortcut button (VAC-8/VAC-9).
+    static let activityMonitorButtonLabel = "Open Activity Monitor"
+
+    // MARK: - Actions
+
+    /// Opens macOS Activity Monitor via bundle identifier or fallback app bundle path.
+    private func openActivityMonitor() {
+        if let url = NSWorkspace.shared.urlForApplication(
+            withBundleIdentifier: Self.activityMonitorBundleIdentifier
+        ) {
+            NSWorkspace.shared.openApplication(
+                at: url,
+                configuration: NSWorkspace.OpenConfiguration()
+            )
+        } else {
+            NSWorkspace.shared.open(
+                URL(fileURLWithPath: Self.activityMonitorFallbackPath)
+            )
+        }
     }
 
     // MARK: - Footer (22 pt)
