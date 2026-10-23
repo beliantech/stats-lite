@@ -57,6 +57,12 @@ enum MenuBarLayout {
     /// truncated rate string "999 MB/s" (42.91 pt) plus the 5 pt dot
     /// with 2.89 pt clearance (appendix B §1).
     static let networkBlockWidth: CGFloat = 50
+    /// Pinned width of the two-line temperature block. Fits the
+    /// widest row "GPU 100°" (44.19 pt at 9 pt regular mono) with
+    /// 2.90 pt clearance per side, satisfying the >= 2.5 pt rule.
+    /// Row text never resizes the block (VAC-9, never-resize
+    /// invariant).
+    static let tempBlockWidth: CGFloat = 50
     /// Pinned height of each line within a block. Two 11 pt rows yield
     /// a 22 pt block height that matches NSStatusBar.system.thickness
     /// and aligns line 1 and line 2 across standard and network blocks.
