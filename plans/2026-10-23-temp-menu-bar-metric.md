@@ -9,7 +9,10 @@
 - [x] **T1b** — baseline dark/light screenshots before first code edit. green `a458ed1`
 - [x] **T2** — Phase 1+2: `TemperatureMetrics`, degrees formatter, `sampleTemperature()` on provider + SMC impl in `LiveSystemMetricsProvider`, fake conformance, contract tests. red `667b04a` · green `7cd7b82` (rebased; suite 369/0) · review GO
 - [x] **T3** — Phase 3 remainder: `PreferencesStore.showTemperature` + `enabledMetrics` insert (F1 critical) + `@AppStorage` seeding. (Bleed already merged in T2: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` joined into `==`, `collectSnapshot` gating.) red `0488f27` · green `09dd330` (suite 375/0) · review GO
-- [ ] **T4** — Phase 4: `MenuBarBlockKind.temp`, two-row `MenuBarTempBlockView`, layout/width/accessibility/SettingsView toggle wiring (blueprint verbatim). red ⏳ · green ⏳ · review ⏳
+- [x] **T4** — Phase 4: `MenuBarBlockKind.temp`, two-row `MenuBarTempBlockView`, layout/width/accessibility/SettingsView toggle wiring (blueprint verbatim). red `3daf568` + amendment `fc5291c` (rounding pin 61.6→62) · green `5716ca1` (suite 384/0) · review GO
+- [ ] **T5** — Phase 5: 32-permutation guards, equality/gating/width tests + live visual VAC verification (dark/light vs baseline `a458ed1`). red ⏳ · green ⏳ · review ⏳
+
+T4 review notes: FM-T4-4 asserts widest "CPU 100°" (43.91 pt) but true widest is "GPU 130°" (44.19 pt, clamp max) — pin 50 pt covers it, T5 may add the 130° case; `MenuBarTempBlockView` folds warning/critical tints to primary (latent divergence from Network mapping, unreachable today — T5 decides fix or document); call-site line refs drift (:290/:291-296/:319 — verify by rg, not line numbers).
 - [ ] **T5** — Phase 5: 32-permutation guards, equality/gating/width tests + VAC verification (dark/light vs baseline). red ⏳ · green ⏳ · review ⏳
 
 Note: GPU-side keys unproven (0 in band; Tg* +9.8..+10.5°C directional) — GPU row uses 8 strongest measured Tg responders as candidates (unverified prior), `--°` fallback load-bearing, support statement in Phase 0 report.
