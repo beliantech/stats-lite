@@ -1,0 +1,9 @@
+# mode=latency n=1000 key=TB0p
+# success=1000 errors=0
+p50_us=315 p50_ms=0.315
+p95_us=358 p95_ms=0.358
+p99_us=964 p99_ms=0.964
+max_us=1060 max_ms=1.060
+min_us=165 min_ms=0.166
+mean_us=336 mean_ms=0.336
+# verdict_h2: p99_ns=964042 (threshold priors: p99<5ms ride 1Hz loop, p99>~50ms own cadence; both unverified prior)
