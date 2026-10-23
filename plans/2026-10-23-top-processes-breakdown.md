@@ -17,7 +17,8 @@ for unprivileged apps. **[Superseded by §10 D2: the GPU section is removed enti
 
 Scope:
 - In scope: per-process sampling subsystem (libproc), lazy start/stop tied to disclosure
-  state, disclosure rows in CPU/Memory/GPU cards, accordion policy, tests, VAC evidence.
+  state, disclosure rows in CPU/Memory/GPU cards [GPU item superseded by §10 D2],
+  accordion policy, tests, VAC evidence.
 - Out of scope: per-process sparklines (banned — RAM contracts), per-process GPU metrics,
   a Settings toggle for the section (v1 keeps it always visible, collapsed), menu-bar
   (status item) changes.
@@ -27,6 +28,7 @@ Scope:
 User-facing behavior:
 - R1. Each of the CPU, Memory, GPU cards shows a collapsed `> Top Processes` disclosure
   row in the established `> Cores Breakdown (18 Cores)` style (`StatsLite/CPUCardView.swift:66-83`).
+  **[GPU card: superseded by §10 D2 — the GPU card shows no disclosure at all.]**
 - R2. Expanding shows up to 5 rows, sorted descending: process name + PID, a proportional
   capsule gauge, and a right-aligned monospaced value (`84.2%` for CPU, `6.8 GB` for
   Memory). Fewer rows render when fewer scannable processes exist — no blank slots.
@@ -434,25 +436,32 @@ User report (with screenshots):
     those PIDs, THEN the instrumented log shows rc≠0 / zero-byte results on candidates
     that were looked up. H2 is **dead** if looked-up candidates succeed but names are
     still absent from the published rows.
-  - **Outcome → action**: H1 only → Appendix D Part 2 item 1 (union budget) suffices;
-    H2 only → item 3 (drop unnamed rows) applies and the rc/errno cause must be reported
-    to the user as the D1 root cause; both → both items; neither → the measurement is
-    invalid, re-run it before any code edit (plan stops).
+  - **Outcome → action**: items 2–3 (drop unnamed candidates, `pidText` always
+    renders) apply unconditionally in EVERY branch — they are the D1 end-state and
+    VAC-B1 is unconditional. The matrix only decides the budget change and the
+    root-cause report: H1 only → also apply item 1 (union budget); H2 only → also
+    capture and report the rc/errno cause to the user as the D1 root cause; both →
+    item 1 + rc/errno report; neither → the measurement is invalid, re-run it before
+    any code edit (plan stops).
   - **Attribution measurement is mandatory before finalizing D1's fix** (evidence-before-
     hypothesis): one logged scan run capturing per-candidate lookup outcome + budget
     consumption, saved under `artifacts/2026-10-23-top-processes-breakdown/fix/`.
 - D2: no attribution needed — user directive. Removal list R1–R10, compiler enforces
   completeness (removing `case gpu` turns strays into build errors).
 - **VAC-B2 reachability (reviewer item 3)**: the loading line must not persist beyond the
-  first completed sampling pass for the active category. After that pass, an empty list
-  renders `No process data available` — never a stuck `Sampling top processes…`. This
-  tightens the T-C loading contract (`isSamplingProcesses && list.isEmpty`) and needs a
-  regression test: memory category + all-name-fail → empty-state copy, not loading copy.
+  first pass that can publish rows for the active category — for CPU that is the +250 ms
+  warm-up pass (the t=0 anchoring pass does not count, so the VAC-13/R5 250 ms bootstrap
+  window stays intact); for Memory it is tick 0. After that pass, an empty list renders
+  `No process data available` — never a stuck `Sampling top processes…`. This tightens
+  the T-C loading contract (`isSamplingProcesses && list.isEmpty`) and needs regression
+  tests for BOTH categories: memory + all-name-fail AND cpu + all-name-fail → empty-state
+  copy, not loading copy.
 
 ### Fix tasks (sequential, one reviewer gate over the task pair)
 
-- **T-F (D1)**: capture the pre-edit baseline first (G1: memory expanded + GPU card +
-  collapsed, dark+light → `artifacts/2026-10-23-top-processes-breakdown/fix/baseline-before/`),
+- **T-F (D1)**: capture the pre-edit baseline first (G1: memory expanded + CPU expanded +
+  GPU card BOTH collapsed and expanded (VAC-B3/B4 before-state) + fully collapsed view,
+  dark+light → `artifacts/2026-10-23-top-processes-breakdown/fix/baseline-before/`),
   then the attribution run (H1/H2 outcome matrix above), then implement Appendix D Part 2
   change items 1–4: union-of-both-lists name resolution (≤10 distinct lookups/pass, no
   early stop, dedup via `nameByPid`), drop unnamed candidates from the pass (never
