@@ -15,6 +15,7 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     var gpu: GPUMetrics?
     var pressure: MemoryPressureMetrics
     var networkBytes: NetworkBytes?
+    var temperature: TemperatureMetrics?
 
     /// Process fixtures (plan 2026-10-23 T-A): the full-scan result
     /// and the PID display-name table. nil `processSamples` simulates
@@ -28,6 +29,7 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     private(set) var gpuSampleCount = 0
     private(set) var pressureSampleCount = 0
     private(set) var networkSampleCount = 0
+    private(set) var temperatureSampleCount = 0
     private(set) var processSampleCount = 0
     private(set) var processNameLookupCount = 0
 
@@ -80,13 +82,15 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
             state: .normal,
             pressurePercentage: 0.15
         ),
-        networkBytes: NetworkBytes? = nil
+        networkBytes: NetworkBytes? = nil,
+        temperature: TemperatureMetrics? = nil
     ) {
         self.cpuTicks = cpuTicks
         self.memory = memory
         self.gpu = gpu
         self.pressure = pressure
         self.networkBytes = networkBytes
+        self.temperature = temperature
     }
 
     func sampleCPUTicks() -> CPUTicks? {
@@ -112,6 +116,11 @@ final class FakeSystemMetricsProvider: SystemMetricsProvider, @unchecked Sendabl
     func sampleNetworkBytes() -> NetworkBytes? {
         networkSampleCount += 1
         return networkBytes
+    }
+
+    func sampleTemperature() -> TemperatureMetrics? {
+        temperatureSampleCount += 1
+        return temperature
     }
 
     func sampleProcesses() -> [RawProcessSample]? {

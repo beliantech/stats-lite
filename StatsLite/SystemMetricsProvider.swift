@@ -2,13 +2,14 @@
 //  SystemMetricsProvider.swift
 //  StatsLite
 //
-//  Read-once access to the kernel counters behind the three metrics.
+//  Read-once access to the kernel counters behind the metrics.
 //  The sampler actor owns the previous-sample state; the provider only
 //  reads the system. No method throws and no method crashes: a `nil`
 //  return means the read failed or the source is unavailable.
 //
 
-/// Source of CPU, memory, GPU, and memory-pressure readings.
+/// Source of CPU, memory, GPU, temperature, and memory-pressure
+/// readings.
 protocol SystemMetricsProvider: Sendable {
 
     /// One CPU sample: one tick entry per core plus the aggregate sum.
@@ -31,6 +32,13 @@ protocol SystemMetricsProvider: Sendable {
     /// Cumulative non-loopback interface byte counters. Returns `nil`
     /// when the interface walk fails or when no usable interface exists.
     func sampleNetworkBytes() -> NetworkBytes?
+
+    /// CPU and GPU die temperatures in °C (plan 2026-10-23-
+    /// temp-menu-bar-metric, Phase 2). Returns `nil` when the whole
+    /// read fails (no sensor source at all). A present sample can
+    /// still carry nil subsystems: a nil `cpuCelsius` or
+    /// `gpuCelsius` means that row is unreadable.
+    func sampleTemperature() -> TemperatureMetrics?
 
     /// One full process scan (T1). Returns per PID: `pid`, `cpuTicks`
     /// (`ri_user_time + ri_system_time`), `startAbstime`
