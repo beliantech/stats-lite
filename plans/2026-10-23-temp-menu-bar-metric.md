@@ -1,7 +1,7 @@
 # Plan: TEMP menu-bar metric (two-row, CPU/GPU die sensors)
 
 **Plan ID:** 2026-10-23-temp-menu-bar-metric
-**Status:** IN PROGRESS — Phase 0 merged (`fa6b697`), baseline captured (`a458ed1`)
+**Status:** DONE — all tasks green and merged; visual VAC PASS (`7200386`)
 
 ## Tasks
 
