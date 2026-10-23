@@ -1,0 +1,44 @@
+GREEN-TG — T-G green phase, full xcodebuild test output summary
+==============================================================
+Command:
+  caffeinate -dis env DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData
+Run: 2026-10-23, after the T-G D2 implementation (removal list R1-R10,
+commits e077752 test delta + cd9d89e removal).
+
+Expectation (task T-G): 0 failures. The 1 red test from red-tg.txt goes
+green (negative source asserts now hold: the GPU card source carries no
+TopProcessesDisclosureButton, no GPUUnavailableProcessesView, no
+expandedProcessCategory). Suite count 351 -> 348 = the 3 deleted GPU
+tests (accordion :132-138, copy pin :140-148, L5 .gpu sampling). No
+assertion was relaxed: the PopoverContentView binding-threading count
+tightened from >=3 to ==2 (only CPU and Memory cards receive it after
+the removal).
+
+Pre-run completeness checks:
+- xcodebuild build: exit=0, ** BUILD SUCCEEDED ** (compiler as the
+  completeness checklist for `case gpu` removal — 0 errors).
+- rg sweep: no ProcessCategory `.gpu` or `GPUUnavailable` stragglers in
+  StatsLite/; remaining `.gpu` hits are the distinct EnabledMetrics.gpu
+  and MenuBarBlockModel.Kind.gpu types (kept per Appendix D).
+
+Result:
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.010 (0.014) seconds
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.012 (0.017) seconds
+	 Executed 348 tests, with 0 failures (0 unexpected) in 64.883 (64.964) seconds
+	 Executed 348 tests, with 0 failures (0 unexpected) in 64.883 (64.965) seconds
+** TEST SUCCEEDED **
+
+--- failing tests ---
+(none)
+
+--- suite summary tail ---
+	 Executed 348 tests, with 0 failures (0 unexpected) in 64.883 (64.964) seconds
+Test Suite 'All tests' passed at 2026-10-23.
+	 Executed 348 tests, with 0 failures (0 unexpected) in 64.883 (64.965) seconds
+
+Test session results, code coverage, and logs:
+	<derivedData>/Logs/Test/Test-StatsLite-2026.10.23.xcresult
+
+** TEST SUCCEEDED **

@@ -297,12 +297,10 @@ struct ProcessSampleResult: Sendable, Equatable {
 }
 
 /// Which card's Top Processes list is expanded (R4). The accordion
-/// allows one open list at a time; `.gpu` expands only the
-/// unavailable container and never starts sampling (R7).
+/// allows one open list at a time.
 enum ProcessCategory: Sendable, Equatable {
     case cpu
     case memory
-    case gpu
 }
 
 /// Collapsed-disclosure cue from the parent metric's usage level

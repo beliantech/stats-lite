@@ -91,18 +91,19 @@ final class SystemMonitor {
     /// True while the 1 s network loop runs.
     var isNetworkSampling: Bool { networkSamplingTask != nil }
 
-    /// True while the lazy per-process loop has not yet published
-    /// its first CPU ranking (R3/R5 bootstrap window): set by
-    /// `startProcessSampling`, cleared when the first pass carries
-    /// CPU rows or when sampling stops. The disclosure renders
-    /// `Sampling top processes…` only while this is true AND the
-    /// active category's list is still empty — a memory expand
-    /// publishes rows on tick 0 (R6) and must not be masked until
-    /// +250 ms. That is the T-D view contract:
-    /// `isSamplingProcesses && processes.isEmpty` for the active
-    /// category (VAC-13, FT-4). Steady-state ticks after the first
-    /// publish leave the flag false; loop liveness lives on
-    /// `processSamplingTask` (T4).
+    /// True while the lazy per-process loop has not yet completed the
+    /// active category's first publish-capable pass (R3/R5 bootstrap
+    /// window): set by `startProcessSampling`, cleared when that pass
+    /// completes — the +250 ms warm-up pass for CPU (the t=0
+    /// anchoring pass does not count), tick 0 for Memory — or when
+    /// sampling stops. The disclosure renders `Sampling top
+    /// processes…` only while this is true AND the active category's
+    /// list is still empty. After that pass an empty list renders the
+    /// R2b empty line, never a stuck loading line (VAC-B2, §10), so
+    /// the view contract stays `isSamplingProcesses &&
+    /// processes.isEmpty` for the active category (VAC-13, FT-4).
+    /// Steady-state ticks after the first publish leave the flag
+    /// false; loop liveness lives on `processSamplingTask` (T4).
     private(set) var isSamplingProcesses = false
 
     /// Incremented each time `restartSampling()` starts a new
@@ -279,22 +280,16 @@ final class SystemMonitor {
     /// (R3/T4). One task scans on tick zero, sleeps a single 250 ms
     /// warm-up, then follows `refreshInterval` (§3 bootstrap, R5).
     /// Memory publishes on the first scan (R6); CPU publishes from
-    /// the warm-up scan on, and the first non-empty CPU ranking
-    /// closes the loading window (`isSamplingProcesses`). `.gpu`
-    /// expands only the unavailable container and never samples
-    /// (R7): it stops the loop instead. A running loop is left
-    /// alone, so an accordion category switch never restarts it,
-    /// and neither start nor stop touches the standard loop (T4).
+    /// the warm-up scan on. The loading window (`isSamplingProcesses`)
+    /// closes at the active category's first publish-capable pass —
+    /// tick 0 for Memory, the warm-up pass for CPU (VAC-B2) — so a
+    /// scan that ships zero rows (for example all names failed and
+    /// every candidate dropped, D1) renders the empty state instead
+    /// of a stuck loading line. A running loop is left alone, so an
+    /// accordion category switch never restarts it, and neither
+    /// start nor stop touches the standard loop (T4).
     func startProcessSampling(category: ProcessCategory) {
         activeProcessCategory = category
-        guard category != .gpu else {
-            // R7: no scans for GPU. Stop any running sampler so no
-            // stale ranking outlives the switch; the recorded
-            // category still mirrors the expanded disclosure.
-            stopProcessSampling()
-            activeProcessCategory = category
-            return
-        }
         guard processSamplingTask == nil else { return }
 
         // Loading-line contract for T-D: render `Sampling top
@@ -305,6 +300,11 @@ final class SystemMonitor {
         processSamplingTask = Task {
             let clock = ContinuousClock()
             var isFirstPass = true
+            // Successful passes count toward the CPU loading window:
+            // the anchoring pass cannot publish CPU rows, so CPU's
+            // first publish-capable pass is the second one (VAC-B2).
+            // A nil scan publishes nothing and counts for nothing.
+            var completedPasses = 0
             while !Task.isCancelled {
                 let result = await self.sampler.sampleProcesses()
                 // A cancel during the read must not publish into a
@@ -317,7 +317,15 @@ final class SystemMonitor {
                     // keeps the last lists and the base.
                     self.topMemoryProcesses = result.topMemory
                     self.topCPUProcesses = result.topCPU
-                    if !result.topCPU.isEmpty {
+                    completedPasses += 1
+                    // VAC-B2 (§10): close the loading window at the
+                    // active category's first publish-capable pass.
+                    // Memory can publish from tick 0; CPU needs the
+                    // warm-up pass. A non-empty CPU ranking closes it
+                    // too (covers every category).
+                    if !result.topCPU.isEmpty
+                        || self.activeProcessCategory == .memory
+                        || completedPasses >= 2 {
                         self.isSamplingProcesses = false
                     }
                 }

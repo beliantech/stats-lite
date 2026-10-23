@@ -70,6 +70,16 @@ final class MetricProcessSamplerTests: XCTestCase {
         return (MetricSamplerActor(provider: provider), provider)
     }
 
+    /// D1 contract (Appendix D item 2): a pass drops any candidate
+    /// whose name never resolves. Fixture tests that expect published
+    /// rows install names for their PIDs, in the same `Proc<pid>`
+    /// shape the P11 union tests use. No assertion is relaxed.
+    private func name(_ pids: Int32..., on provider: FakeSystemMetricsProvider) {
+        for pid in pids {
+            provider.processNames[pid] = "Proc\(pid)"
+        }
+    }
+
     // MARK: - P1: CPU % from Mach-tick deltas across two samples
 
     func testCPUPercentFromTickDeltaAcrossTwoSamples() async throws {
@@ -77,6 +87,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let t0 = ContinuousClock().now
         let base: UInt64 = 10_000
         let delta = ticks(forFraction: 0.5)
+        name(42, on: provider)
 
         provider.processSamples = [raw(pid: 42, ticks: base)]
         let first = await sampler.sampleProcesses(now: t0)
@@ -104,6 +115,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let (sampler, provider) = makeSampler()
         let t0 = ContinuousClock().now
         let base: UInt64 = 500
+        name(7, on: provider)
 
         provider.processSamples = [raw(pid: 7, ticks: base)]
         _ = await sampler.sampleProcesses(now: t0)
@@ -124,6 +136,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let t0 = ContinuousClock().now
 
         // Scan 1 anchors pid 42 as the process that started at 1000.
+        name(42, on: provider)
         provider.processSamples = [raw(pid: 42, ticks: 5_000, startAbstime: 1_000)]
         _ = await sampler.sampleProcesses(now: t0)
 
@@ -155,6 +168,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let (sampler, provider) = makeSampler()
         let t0 = ContinuousClock().now
         let zombieFootprint = UInt64(3) * 1_073_741_824
+        name(3, on: provider)
 
         let zombie = raw(
             pid: 99,
@@ -196,6 +210,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let (sampler, provider) = makeSampler()
         let t0 = ContinuousClock().now
 
+        name(7, on: provider)
         provider.processSamples = [raw(pid: 7, ticks: 5_000, startAbstime: 99)]
         _ = await sampler.sampleProcesses(now: t0)
 
@@ -223,6 +238,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let (sampler, provider) = makeSampler()
         let t0 = ContinuousClock().now
 
+        name(10, 20, on: provider)
         provider.processSamples = [
             raw(pid: 10, ticks: 1_000, footprint: 524_288_000),
             raw(pid: 20, ticks: 1_000, footprint: 1_048_576_000),
@@ -245,6 +261,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let (sampler, provider) = makeSampler()
         let t0 = ContinuousClock().now
 
+        name(5, on: provider)
         provider.processSamples = [
             raw(pid: 0, ticks: 1_000, footprint: 1_048_576_000),
             raw(pid: -1, ticks: 1_000, footprint: 1_048_576_000),
@@ -277,6 +294,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         provider.processSamples = fixtures.map {
             raw(pid: $0.0, ticks: 1_000, footprint: $0.1, resident: $0.1)
         }
+        name(11, 12, 13, 14, 15, 16, on: provider)
 
         let first = await sampler.sampleProcesses(now: t0)
         let result = try XCTUnwrap(first, "P7: memory ranks on the first scan (R6)")
@@ -302,6 +320,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let t0 = ContinuousClock().now
         let mib = UInt64(1_048_576)
 
+        name(4, 6, on: provider)
         provider.processSamples = [
             raw(pid: 4, ticks: 900, footprint: 0, resident: 512 * mib),
             raw(pid: 6, ticks: 900, footprint: 0, resident: 128 * mib),
@@ -321,6 +340,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let t0 = ContinuousClock().now
         let base: UInt64 = 2_000
 
+        name(8, on: provider)
         provider.processSamples = [raw(pid: 8, ticks: base, footprint: 10 * 1_048_576)]
         _ = await sampler.sampleProcesses(now: t0)
         let readsAfterAnchor = provider.processSampleCount
@@ -352,6 +372,7 @@ final class MetricProcessSamplerTests: XCTestCase {
         let t0 = ContinuousClock().now
         let base: UInt64 = 3_000
 
+        name(8, on: provider)
         provider.processSamples = [raw(pid: 8, ticks: base, footprint: 10 * 1_048_576)]
         _ = await sampler.sampleProcesses(now: t0)
 
@@ -372,17 +393,34 @@ final class MetricProcessSamplerTests: XCTestCase {
         XCTAssertEqual(result.topMemory.count, 1, "P10: memory still ranks on the anchor pass")
     }
 
-    // MARK: - P11: name resolution capped at Top-8 candidates (T7)
+    // MARK: - P11: union-of-both-lists name resolution (D1, Appendix D item 1/2)
 
-    func testNameResolutionCappedAndRowsCarryNames() async throws {
-        let (sampler, provider) = makeSampler()
-        let t0 = ContinuousClock().now
-
+    /// Twelve candidates whose tick deltas tie: CPU ranks by ascending
+    /// PID (1...5) while footprints rank memory by descending PID
+    /// (12...8). The two top-5 lists are disjoint, so the pre-fix
+    /// `lookups < 8, resolved < 5` budget stops after the CPU five and
+    /// the memory rows ship the `Process NNNNN` fallback — exactly the
+    /// production starvation (§10 attribution, H1). Red against that
+    /// code; green only when one pass resolves the union of both lists
+    /// within 10 distinct lookups.
+    private func unionFixtures() -> [RawProcessSample] {
         var fixtures: [RawProcessSample] = []
         for pid in Int32(1)...Int32(12) {
             fixtures.append(raw(pid: pid, ticks: 1_000, footprint: UInt64(pid) * 10 * 1_048_576))
-            provider.processNames[pid] = "Proc\(pid)"
         }
+        return fixtures
+    }
+
+    /// Anchoring pass plus warm-up pass over `fixtures`, returning the
+    /// warm-up result and the lookup delta of that pass. The first
+    /// pass anchors the CPU base (R5); only the second publishes CPU
+    /// rows.
+    private func warmUpPass(
+        fixtures: [RawProcessSample],
+        sampler: MetricSamplerActor,
+        provider: FakeSystemMetricsProvider,
+        t0: ContinuousClock.Instant
+    ) async throws -> (result: ProcessSampleResult, lookupsThisPass: Int) {
         provider.processSamples = fixtures
         _ = await sampler.sampleProcesses(now: t0)
         let lookupsAfterAnchor = provider.processNameLookupCount
@@ -399,19 +437,91 @@ final class MetricProcessSamplerTests: XCTestCase {
             )
         }
         let second = await sampler.sampleProcesses(now: t0.advanced(by: .seconds(1)))
-        let result = try XCTUnwrap(second, "P11: the second scan publishes")
-        XCTAssertEqual(result.topCPU.count, 5, "P11: the ranking fills 5 rows")
+        let result = try XCTUnwrap(second, "P11: the warm-up scan publishes")
+        return (result, provider.processNameLookupCount - lookupsAfterAnchor)
+    }
 
-        let lookupsThisPass = provider.processNameLookupCount - lookupsAfterAnchor
-        XCTAssertLessThanOrEqual(
-            lookupsThisPass, 8,
-            "P11: names resolve only for Top-8 candidates, never the full scan (T7)"
+    func testBothListsShipResolvedNamesWithinTenLookupsPerPass() async throws {
+        let (sampler, provider) = makeSampler()
+        let t0 = ContinuousClock().now
+        let fixtures = unionFixtures()
+        for pid in Int32(1)...Int32(12) {
+            provider.processNames[pid] = "Proc\(pid)"
+        }
+
+        let (result, lookupsThisPass) = try await warmUpPass(
+            fixtures: fixtures,
+            sampler: sampler,
+            provider: provider,
+            t0: t0
         )
-        for item in result.topCPU {
+
+        XCTAssertLessThanOrEqual(
+            lookupsThisPass, 10,
+            "P11: one pass resolves at most the 10 distinct union candidates (Appendix D item 1)"
+        )
+        XCTAssertEqual(result.topCPU.count, 5, "P11: the CPU ranking fills 5 rows")
+        XCTAssertEqual(result.topMemory.count, 5, "P11: the memory ranking fills 5 rows")
+        for item in result.topCPU + result.topMemory {
             XCTAssertEqual(
                 item.name, "Proc\(item.pid)",
-                "P11: every ranked row carries its resolved name"
+                "P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)"
+            )
+            XCTAssertFalse(
+                item.name.hasPrefix("Process "),
+                "P11: the Process NNNNN fallback never reaches a published row (VAC-B1)"
             )
         }
+    }
+
+    func testUnnamedCandidateDropsFromThatPassList() async throws {
+        let (sampler, provider) = makeSampler()
+        let t0 = ContinuousClock().now
+        let fixtures = unionFixtures()
+        // pid 12 tops the memory ranking but has no resolved name.
+        for pid in Int32(1)...Int32(11) {
+            provider.processNames[pid] = "Proc\(pid)"
+        }
+
+        let (result, _) = try await warmUpPass(
+            fixtures: fixtures,
+            sampler: sampler,
+            provider: provider,
+            t0: t0
+        )
+
+        XCTAssertEqual(
+            result.topMemory.map(\.pid), [11, 10, 9, 8],
+            "P11: the unnamed candidate drops from the pass, the rest shift up, no blank slot (Appendix D item 2)"
+        )
+        XCTAssertFalse(
+            (result.topCPU + result.topMemory).contains { $0.name.hasPrefix("Process ") },
+            "P11: a dropped row beats a Process NNNNN row (VAC-B1)"
+        )
+        for item in result.topCPU + result.topMemory {
+            XCTAssertEqual(item.name, "Proc\(item.pid)")
+        }
+    }
+
+    func testAllNameFailuresYieldEmptyLists() async throws {
+        let (sampler, provider) = makeSampler()
+        let t0 = ContinuousClock().now
+        // No name table: every lookup fails.
+
+        let (result, _) = try await warmUpPass(
+            fixtures: unionFixtures(),
+            sampler: sampler,
+            provider: provider,
+            t0: t0
+        )
+
+        XCTAssertTrue(
+            result.topCPU.isEmpty,
+            "P11: all-name-fail yields an empty CPU list — the section shows the R2b empty line, never fallback rows"
+        )
+        XCTAssertTrue(
+            result.topMemory.isEmpty,
+            "P11: all-name-fail yields an empty memory list"
+        )
     }
 }

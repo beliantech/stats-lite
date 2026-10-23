@@ -1,0 +1,61 @@
+RED-TF — T-F red phase, D1 fix-cycle tests (plan 2026-10-23-top-processes-breakdown, G1)
+======================================================================
+Command:
+  caffeinate -dis env DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData \
+    -only-testing:StatsLiteTests/MetricProcessSamplerTests \
+    -only-testing:StatsLiteTests/ProcessDisclosureTests \
+    -only-testing:StatsLiteTests/SystemMonitorProcessSamplingTests
+Run: 2026-10-23 16:29:57 +08, against pre-fix code (revert commit 7798ee0).
+
+Expectation (task T-F): exactly 6 new tests red against the deployed
+fallback code — 3 in MetricProcessSamplerTests (P11 rewrite: union of
+both top-5 lists, <=10 lookups/pass, unnamed drops, all-fail empty),
+1 in ProcessDisclosureTests (PID suffix on every row), 2 in
+SystemMonitorProcessSamplingTests (VAC-B2 loading window). All other
+tests green.
+
+Result: 40 tests, 24 failed assertions in exactly 6 unique failing
+tests = EXPECTED RED. xcodebuild compile errors: 0.
+
+--- failing tests ---
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testAllNameFailuresYieldEmptyLists]' failed (0.056 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass]' failed (0.005 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList]' failed (0.002 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testPIDSuffixRendersOnEveryRow]' failed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass]' failed (0.280 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero]' failed (0.277 seconds).
+
+--- assertion detail (the pre-fix behaviors) ---
+StatsLiteTests/MetricProcessSamplerTests.swift:497: error: -[StatsLiteTests.MetricProcessSamplerTests testAllNameFailuresYieldEmptyLists] : XCTAssertTrue failed - P11: all-name-fail yields an empty CPU list — the section shows the R2b empty line, never fallback rows
+StatsLiteTests/MetricProcessSamplerTests.swift:501: error: -[StatsLiteTests.MetricProcessSamplerTests testAllNameFailuresYieldEmptyLists] : XCTAssertTrue failed - P11: all-name-fail yields an empty memory list
+StatsLiteTests/MetricProcessSamplerTests.swift:445: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertEqual failed: ("Process 12") is not equal to ("Proc12") - P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)
+StatsLiteTests/MetricProcessSamplerTests.swift:449: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertFalse failed - P11: the Process NNNNN fallback never reaches a published row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:445: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertEqual failed: ("Process 11") is not equal to ("Proc11") - P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)
+StatsLiteTests/MetricProcessSamplerTests.swift:449: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertFalse failed - P11: the Process NNNNN fallback never reaches a published row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:445: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertEqual failed: ("Process 10") is not equal to ("Proc10") - P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)
+StatsLiteTests/MetricProcessSamplerTests.swift:449: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertFalse failed - P11: the Process NNNNN fallback never reaches a published row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:445: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertEqual failed: ("Process 9") is not equal to ("Proc9") - P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)
+StatsLiteTests/MetricProcessSamplerTests.swift:449: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertFalse failed - P11: the Process NNNNN fallback never reaches a published row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:445: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertEqual failed: ("Process 8") is not equal to ("Proc8") - P11: every row of BOTH lists ships its resolved name — the memory list must not starve (H1)
+StatsLiteTests/MetricProcessSamplerTests.swift:449: error: -[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass] : XCTAssertFalse failed - P11: the Process NNNNN fallback never reaches a published row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:472: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("[12, 11, 10, 9, 8]") is not equal to ("[11, 10, 9, 8]") - P11: the unnamed candidate drops from the pass, the rest shift up, no blank slot (Appendix D item 2)
+StatsLiteTests/MetricProcessSamplerTests.swift:476: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertFalse failed - P11: a dropped row beats a Process NNNNN row (VAC-B1)
+StatsLiteTests/MetricProcessSamplerTests.swift:481: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("Process 12") is not equal to ("Proc12")
+StatsLiteTests/MetricProcessSamplerTests.swift:481: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("Process 11") is not equal to ("Proc11")
+StatsLiteTests/MetricProcessSamplerTests.swift:481: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("Process 10") is not equal to ("Proc10")
+StatsLiteTests/MetricProcessSamplerTests.swift:481: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("Process 9") is not equal to ("Proc9")
+StatsLiteTests/MetricProcessSamplerTests.swift:481: error: -[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList] : XCTAssertEqual failed: ("Process 8") is not equal to ("Proc8")
+StatsLiteTests/ProcessDisclosureTests.swift:394: error: -[StatsLiteTests.ProcessDisclosureTests testPIDSuffixRendersOnEveryRow] : XCTAssertEqual failed: ("nil") is not equal to ("Optional("(4821)")") - the PID suffix renders on every row (Appendix D item 3)
+StatsLiteTests/SystemMonitorProcessSamplingTests.swift:443: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass] : XCTAssertTrue failed - all candidates failed name resolution, so the warm-up pass ships no CPU rows
+StatsLiteTests/SystemMonitorProcessSamplingTests.swift:448: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass] : XCTAssertEqual failed: ("nil") is not equal to ("Optional("No process data available")") - VAC-B2: the CPU section shows the empty state, never a stuck Sampling top processes…
+StatsLiteTests/SystemMonitorProcessSamplingTests.swift:413: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero] : XCTAssertTrue failed - all candidates failed name resolution, so the pass ships no rows
+StatsLiteTests/SystemMonitorProcessSamplingTests.swift:418: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero] : XCTAssertEqual failed: ("nil") is not equal to ("Optional("No process data available")") - VAC-B2: the memory section shows the empty state, never a stuck Sampling top processes…
+
+--- suite summaries ---
+	 Executed 14 tests, with 19 failures (0 unexpected) in 0.071 (0.073) seconds
+	 Executed 16 tests, with 1 failure (0 unexpected) in 0.014 (0.016) seconds
+	 Executed 10 tests, with 4 failures (0 unexpected) in 6.012 (6.018) seconds
+	 Executed 40 tests, with 24 failures (0 unexpected) in 6.096 (6.107) seconds
+	 Executed 40 tests, with 24 failures (0 unexpected) in 6.096 (6.108) seconds

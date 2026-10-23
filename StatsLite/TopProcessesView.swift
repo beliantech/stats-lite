@@ -56,11 +56,12 @@ struct TopProcessesSectionView: View {
         return nil
     }
 
-    /// The trailing PID text, nil when the name is already the
-    /// `Process \(pid)` fallback, so a row never renders
-    /// `Process 4821 (4821)`.
-    static func pidText(for process: ProcessMetricItem) -> String? {
-        process.name == "Process \(process.pid)" ? nil : "(\(process.pid))"
+    /// The trailing PID text on every row (D1, Appendix D item 3):
+    /// rows only ever carry a real resolved name now — an unnamed
+    /// candidate drops from the pass instead of shipping the
+    /// `Process NNNNN` fallback — so the suffix always renders.
+    static func pidText(for process: ProcessMetricItem) -> String {
+        "(\(process.pid))"
     }
 
     /// One row's accessibility label (§4.5): name, Process ID, value.
@@ -78,12 +79,10 @@ struct TopProcessesSectionView: View {
                     .foregroundStyle(.primary)
                     .lineLimit(1)
                     .truncationMode(.tail)
-                if let pidText = Self.pidText(for: process) {
-                    Text(pidText)
-                        .font(.system(size: 8.5, design: .monospaced))
-                        .foregroundStyle(.tertiary)
-                        .lineLimit(1)
-                }
+                Text(Self.pidText(for: process))
+                    .font(.system(size: 8.5, design: .monospaced))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
             }
             .frame(width: 140, alignment: .leading)
 
@@ -171,36 +170,5 @@ struct TopProcessesDisclosureButton: View {
         case .warning: Color(nsColor: .systemOrange)
         case .critical: Color(nsColor: .systemRed)
         }
-    }
-}
-
-/// GPU expanded state: the dashed unavailable container (R7, VAC-9).
-struct GPUUnavailableProcessesView: View {
-    /// The exact copy the dashed container shows (VAC-9).
-    static let message = "Per-process GPU metrics unavailable"
-
-    var body: some View {
-        HStack(alignment: .top, spacing: 6) {
-            Image(systemName: "exclamationmark.triangle")
-                .font(.system(size: 10))
-                .foregroundStyle(.secondary)
-            Text(Self.message)
-                .font(.system(size: 9.5))
-                .foregroundStyle(.secondary)
-                // Wrap allowed, never clipped [AMD-4].
-                .fixedSize(horizontal: false, vertical: true)
-            Spacer(minLength: 0)
-        }
-        .padding(6)
-        .frame(maxWidth: .infinity, minHeight: 48, alignment: .leading)
-        .background(
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .stroke(
-                    Color(nsColor: .separatorColor).opacity(0.6),
-                    style: StrokeStyle(lineWidth: 0.6, dash: [4, 4])
-                )
-        )
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(Self.message)
     }
 }

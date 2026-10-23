@@ -1,0 +1,34 @@
+RED-TG — T-G red phase, D2 GPU-removal negative asserts (plan 2026-10-23-top-processes-breakdown, G1)
+==================================================================================================
+Command:
+  caffeinate -dis env DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData \
+    -only-testing:StatsLiteTests/ProcessDisclosureTests \
+    -only-testing:StatsLiteTests/SystemMonitorProcessSamplingTests
+Run: 2026-10-23, against pre-removal code (HEAD 2f0e73e, T-F final). Test file already carries
+the T-G delta: the GPU accordion test (:132-138) and GPU copy pin (:140-148) deleted, the GPU
+wiring asserts (:266-282) replaced by negative source asserts, the L5 .gpu test
+(SystemMonitorProcessSamplingTests:236-263) deleted.
+
+Expectation (task T-G): the negative source asserts FAIL against the pre-removal GPU card
+(exactly 1 unique failing test, 3 failed assertions — R1/R2/R3 each still present in
+GPUCardView.swift). Everything else green.
+
+Result: exit 65, 23 tests, 3 failures in exactly 1 unique failing test = EXPECTED RED.
+xcodebuild compile errors: 0.
+
+--- failing tests ---
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract]' failed (0.057 seconds).
+
+--- assertion detail (the pre-removal behaviors the removal must delete) ---
+StatsLiteTests/ProcessDisclosureTests.swift:252: error: -[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract] : XCTAssertFalse failed - T-G: the GPU card carries no Top Processes disclosure (D2 removal R2)
+StatsLiteTests/ProcessDisclosureTests.swift:256: error: -[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract] : XCTAssertFalse failed - T-G: the GPU card never renders the unavailable container (D2 removal R3)
+StatsLiteTests/ProcessDisclosureTests.swift:260: error: -[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract] : XCTAssertFalse failed - T-G: the GPU card carries no accordion binding (D2 removal R1)
+
+--- suite summary tail ---
+	 Executed 14 tests, with 3 failures (0 unexpected) in 0.068 (0.071) seconds
+	 Executed 9 tests, with 0 failures (0 unexpected) in 5.405 (5.411) seconds
+	 Executed 23 tests, with 3 failures (0 unexpected) in 5.473 (5.483) seconds
+	 Executed 23 tests, with 3 failures (0 unexpected) in 5.473 (5.484) seconds
+** TEST FAILED **

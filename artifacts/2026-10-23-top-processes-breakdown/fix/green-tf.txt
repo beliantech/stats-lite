@@ -1,0 +1,43 @@
+GREEN-TF — T-F green phase, full xcodebuild test output summary
+==============================================================
+Command:
+  caffeinate -dis env DEVELOPER_DIR=/Applications/Xcode.app/Contents/Developer xcodebuild test \
+    -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS \
+    -derivedDataPath .derivedData
+Run: 2026-10-23 16:43:50 +08, after the T-F D1 implementation
+(Appendix D items 1-4 + the VAC-B2 loading-window tightening).
+
+Expectation (task T-F): 0 failures. The 6 red tests from red-tf.txt
+go green: 3 MetricProcessSamplerTests (P11 rewrite), 1
+ProcessDisclosureTests (PID suffix on every row), 2
+SystemMonitorProcessSamplingTests (VAC-B2 loading window). The
+P1-P10 fixtures gain name fixtures (a pass drops unnamed
+candidates now); no assertion was relaxed.
+
+Result:
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.012 (0.017) seconds
+	 Executed 351 tests, with 0 failures (0 unexpected) in 65.548 (65.628) seconds
+	 Executed 351 tests, with 0 failures (0 unexpected) in 65.548 (65.629) seconds
+** TEST SUCCEEDED **
+
+--- failing tests ---
+(none)
+
+--- suite summary tail ---
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' passed (0.001 seconds).
+Test Suite 'UpdateCheckVersionTests' passed at 2026-10-23 16:43:14.561.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.012 (0.017) seconds
+Test Suite 'StatsLiteTests.xctest' passed at 2026-10-23 16:43:14.561.
+	 Executed 351 tests, with 0 failures (0 unexpected) in 65.548 (65.628) seconds
+Test Suite 'All tests' passed at 2026-10-23 16:43:14.562.
+	 Executed 351 tests, with 0 failures (0 unexpected) in 65.548 (65.629) seconds
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-top-processes-breakdown-fix/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_16-42-07-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started

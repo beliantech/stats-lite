@@ -1,0 +1,79 @@
+D1 ATTRIBUTION RUN — plan 2026-10-23-top-processes-breakdown §10
+date: 2026-10-23 16:23:43 +08
+build: Release, instrumented commit 7232dd5 (transient, reverted after this run)
+launch: --open-popover --popover-cycles 1 --popover-hold 20 --capture-appearance dark --expand-processes memory
+env: STATSLITE_D1_ATTRIB_FILE=/tmp/statslite-d1-attribution.log
+refreshInterval: 5 s (tick 0, warm-up +250 ms, then +5 s)
+symptom shot during run: attribution-memory-symptom.png
+line format:
+  pass=N pid=P lists=cpu|memory|cpu+memory budget=K/8 lookedUp=yes name=... pathRC=... pathErrno=... nameRC=... nameErrno=...
+  pass=N pid=P lists=... budget=n/a lookedUp=no reason=budget-cap(8)|resolved-cap(5)|...
+  pass=N summary lookups=L resolved=R stop=... cpuPids=[...] memoryPids=[...]
+  pass=N published cpu=[...] memory=[...]   (fallback names prove the symptom)
+pathRC/nameRC: bytes written by proc_pidpath/proc_name; 0 = failure; nameRC -1 = proc_name not called.
+---- raw log ----
+# D1 attribution log started epoch=1792743807
+pass=1 pid=76517 lists=memory budget=1/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=1 pid=11066 lists=memory budget=2/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=1 pid=46752 lists=memory budget=3/8 lookedUp=yes name="SourceKitService" pathRC=140 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=1 pid=97335 lists=memory budget=4/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=1 pid=1510 lists=memory budget=5/8 lookedUp=yes name="VTDecoderXPCService" pathRC=131 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=1 summary lookups=5 resolved=5 stop=resolved-cap(5) cpuPids=[] memoryPids=[76517, 11066, 46752, 97335, 1510]
+pass=1 published cpu=[] memory=["node", "node", "SourceKitService", "node", "VTDecoderXPCService"]
+pass=2 pid=76519 lists=cpu budget=1/8 lookedUp=yes name="opengrep-core" pathRC=65 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=2 pid=14871 lists=cpu budget=2/8 lookedUp=yes name="bash" pathRC=9 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=2 pid=1581 lists=cpu budget=3/8 lookedUp=yes name="avconferenced" pathRC=26 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=2 pid=76517 lists=cpu+memory budget=4/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=2 pid=1747 lists=cpu budget=5/8 lookedUp=yes name="VTEncoderXPCService" pathRC=131 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=2 pid=76517 lists=cpu+memory budget=n/a lookedUp=no reason=resolved-cap(5)+already-resolved
+pass=2 pid=11066 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=2 pid=46752 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=2 pid=97335 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=2 pid=1510 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=2 summary lookups=5 resolved=5 stop=resolved-cap(5) cpuPids=[76519, 14871, 1581, 76517, 1747] memoryPids=[76517, 11066, 46752, 97335, 1510]
+pass=2 published cpu=["opengrep-core", "bash", "avconferenced", "node", "VTEncoderXPCService"] memory=["node", "Process 11066", "Process 46752", "Process 97335", "Process 1510"]
+pass=3 pid=76517 lists=cpu+memory budget=1/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=3 pid=1581 lists=cpu budget=2/8 lookedUp=yes name="avconferenced" pathRC=26 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=3 pid=76519 lists=cpu budget=3/8 lookedUp=yes name="opengrep-core" pathRC=65 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=3 pid=1747 lists=cpu budget=4/8 lookedUp=yes name="VTEncoderXPCService" pathRC=131 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=3 pid=1480 lists=cpu budget=5/8 lookedUp=yes name="WallpaperAerialsExtension" pathRC=112 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=3 pid=76517 lists=cpu+memory budget=n/a lookedUp=no reason=resolved-cap(5)+already-resolved
+pass=3 pid=11066 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=3 pid=46752 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=3 pid=97335 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=3 pid=1510 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=3 summary lookups=5 resolved=5 stop=resolved-cap(5) cpuPids=[76517, 1581, 76519, 1747, 1480] memoryPids=[76517, 11066, 46752, 97335, 1510]
+pass=3 published cpu=["node", "avconferenced", "opengrep-core", "VTEncoderXPCService", "WallpaperAerialsExtension"] memory=["node", "Process 11066", "Process 46752", "Process 97335", "Process 1510"]
+pass=4 pid=76517 lists=cpu+memory budget=1/8 lookedUp=yes name="node" pathRC=44 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=4 pid=1581 lists=cpu budget=2/8 lookedUp=yes name="avconferenced" pathRC=26 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=4 pid=76519 lists=cpu budget=3/8 lookedUp=yes name="opengrep-core" pathRC=65 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=4 pid=1747 lists=cpu budget=4/8 lookedUp=yes name="VTEncoderXPCService" pathRC=131 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=4 pid=1480 lists=cpu budget=5/8 lookedUp=yes name="WallpaperAerialsExtension" pathRC=112 pathErrno=0 nameRC=-1 nameErrno=-1
+pass=4 pid=76517 lists=cpu+memory budget=n/a lookedUp=no reason=resolved-cap(5)+already-resolved
+pass=4 pid=11066 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=4 pid=46752 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=4 pid=97335 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=4 pid=1510 lists=memory budget=n/a lookedUp=no reason=resolved-cap(5)
+pass=4 summary lookups=5 resolved=5 stop=resolved-cap(5) cpuPids=[76517, 1581, 76519, 1747, 1480] memoryPids=[76517, 11066, 46752, 97335, 1510]
+pass=4 published cpu=["node", "avconferenced", "opengrep-core", "VTEncoderXPCService", "WallpaperAerialsExtension"] memory=["node", "Process 11066", "Process 46752", "Process 97335", "Process 1510"]
+---- verdict (§10 outcome matrix) ----
+H1 (budget starvation): CONFIRMED.
+  Evidence: passes 2-4 end with `summary lookups=5 resolved=5 stop=resolved-cap(5)`.
+  The CPU top-5 consumes budget entries 1-5, and the four memory-only
+  candidates (pids 11066, 46752, 97335, 1510) log
+  `lookedUp=no reason=resolved-cap(5)` on every pass: the memory list
+  never receives a lookup once the CPU list exists.
+  The published rows prove the symptom during the same passes:
+  `published memory=["node", "Process 11066", "Process 46752", "Process 97335", "Process 1510"]`
+  = 4 of 5 fallback rows, matching attribution-memory-symptom.png and
+  the user's 4-5 of 5 rows report. `node` resolves only because pid
+  76517 sits in BOTH top-5 lists (lists=cpu+memory, budget=1/8).
+H2 (genuine lookup failure): DEAD.
+  Evidence: every looked-up candidate in all four passes returned
+  pathRC in 44...140 bytes with pathErrno=0 (e.g.
+  `pass=2 pid=76519 ... pathRC=65 pathErrno=0`). No rc=0/zero-byte
+  result and no non-zero errno appears anywhere in the log. The names
+  were resolvable; the memory candidates were never requested.
+Verdict: H1 alone. Root cause = the lookups<8 / resolved<5 budget
+consumed by the CPU candidates. No rc/errno defect exists, so there is
+no H2 rc/errno headline to report.

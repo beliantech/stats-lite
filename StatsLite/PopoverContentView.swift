@@ -25,7 +25,7 @@ struct PopoverContentView: View {
     // MARK: - Capture verification hook (T-E, plan 2026-10-23)
 
     /// Verification hook for the T-E screenshot harness: the launch
-    /// argument `--expand-processes <cpu|memory|gpu>` seeds the
+    /// argument `--expand-processes <cpu|memory>` seeds the
     /// initial disclosure state so the harness can capture the
     /// expanded Top Processes lists (VAC-3…9, VAC-13 evidence).
     /// Inert in normal runs — production launches never pass the
@@ -39,7 +39,6 @@ struct PopoverContentView: View {
         switch arguments[index + 1] {
         case "cpu": return ProcessCategory.cpu
         case "memory": return ProcessCategory.memory
-        case "gpu": return ProcessCategory.gpu
         default: return nil
         }
     }
@@ -109,8 +108,7 @@ struct PopoverContentView: View {
                 }
                 if preferences.showGPU {
                     GPUCardView(
-                        monitor: monitor,
-                        expandedProcessCategory: $expandedProcessCategory
+                        monitor: monitor
                     )
                     .transition(.opacity)
                 }
@@ -149,9 +147,8 @@ struct PopoverContentView: View {
         // popover content goes away.
         .onDisappear { monitor.stopProcessSampling() }
         // R3/T8: the disclosure drives the lazy sampler. Expanding
-        // starts the category's loop (the .gpu case stops it instead,
-        // R7); collapsing to nil stops it. Popover only — the status
-        // item never runs this animation.
+        // starts the category's loop; collapsing to nil stops it.
+        // Popover only — the status item never runs this animation.
         .onChange(of: expandedProcessCategory) { _, category in
             if let category {
                 monitor.startProcessSampling(category: category)

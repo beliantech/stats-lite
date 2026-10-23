@@ -7,9 +7,8 @@
 //  and drive the fake provider, starting must not restart the
 //  standard loop (standardLoopGeneration isolation), collapse-to-nil
 //  stops the sampler and clears the published lists with zero further
-//  provider reads (FT-2), the .gpu category never samples (R7), stop
-//  clears the delta base, and both close paths (popoverDidClose and
-//  view disappearance) stop the sampler.
+//  provider reads (FT-2), stop clears the delta base, and both close
+//  paths (popoverDidClose and view disappearance) stop the sampler.
 //
 //  Every test fails against the RED stubs: startProcessSampling is a
 //  no-op, so no process read ever happens.
@@ -233,35 +232,6 @@ final class SystemMonitorProcessSamplingTests: XCTestCase {
         monitor.stop()
     }
 
-    // MARK: - L5: the .gpu category never samples (R7)
-
-    func testGPUCategoryStartsNoProcessSampling() async throws {
-        let (monitor, provider, preferences) = makeMonitor()
-        monitor.apply(preferences)
-
-        monitor.startProcessSampling(category: .cpu)
-        let started = try await waitUntil { provider.processSampleCount >= 1 }
-        XCTAssertTrue(started, "seed: the CPU category scans before the GPU switch")
-
-        monitor.startProcessSampling(category: .gpu)
-        let readsAtGPU = provider.processSampleCount
-        try await Task.sleep(nanoseconds: 300_000_000)
-        XCTAssertEqual(
-            provider.processSampleCount, readsAtGPU,
-            "R7: the GPU disclosure expands only the unavailable container; no scans"
-        )
-        XCTAssertFalse(
-            monitor.isSamplingProcesses,
-            "R7: switching the expanded list to .gpu stops process sampling"
-        )
-        XCTAssertTrue(
-            monitor.topCPUProcesses.isEmpty && monitor.topMemoryProcesses.isEmpty,
-            "R7: a stale ranking must not outlive the switch to .gpu"
-        )
-
-        monitor.stop()
-    }
-
     // MARK: - L6: popoverDidClose stops the sampler (FT-2 close path)
 
     func testPopoverCloseStopsProcessSampling() async throws {
@@ -358,6 +328,99 @@ final class SystemMonitorProcessSamplingTests: XCTestCase {
 
         monitor.stopProcessSampling()
         XCTAssertFalse(monitor.isSamplingProcesses, "FT-4: stop keeps the window closed")
+        monitor.stop()
+    }
+
+    // MARK: - VAC-B2: all-name-fail reaches the empty state, never a stuck loading line
+    //
+    // §10 ISC (fix cycle): the loading line must not persist beyond
+    // the first pass that can publish rows for the active category —
+    // memory at tick 0, CPU at the +250 ms warm-up pass. When every
+    // name lookup fails, the D1 fix drops all candidates, so the
+    // section must show `No process data available`, never a stuck
+    // `Sampling top processes…`. The placeholder expression below is
+    // the card's view-model expression (pinned by
+    // ProcessDisclosureTests source tokens).
+
+    /// Five candidates, none named: every lookup fails.
+    private func installAllNameFailFixtures(_ provider: FakeSystemMetricsProvider) {
+        provider.processNames = [:]
+        provider.processSamples = (1...5).map { index in
+            RawProcessSample(
+                pid: Int32(100 + index),
+                cpuTicks: 10_000,
+                startAbstime: 1_000,
+                exitAbstime: 0,
+                physFootprint: UInt64(index) * 536_870_912,
+                residentSize: UInt64(index) * 536_870_912
+            )
+        }
+    }
+
+    private func placeholder(
+        for monitor: SystemMonitor,
+        list: [ProcessMetricItem]
+    ) -> String? {
+        TopProcessesSectionView.placeholderText(
+            processCount: list.count,
+            isLoading: monitor.isSamplingProcesses && list.isEmpty
+        )
+    }
+
+    func testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero() async throws {
+        let (monitor, provider, preferences) = makeMonitor()
+        installAllNameFailFixtures(provider)
+        monitor.apply(preferences)
+
+        monitor.startProcessSampling(category: .memory)
+        let windowClosed = try await waitUntil(timeout: 5) {
+            !monitor.isSamplingProcesses
+        }
+        XCTAssertTrue(
+            windowClosed,
+            "VAC-B2: tick 0 is memory's first publish-capable pass; the loading window must close there, not hang"
+        )
+        XCTAssertTrue(
+            monitor.topMemoryProcesses.isEmpty,
+            "all candidates failed name resolution, so the pass ships no rows"
+        )
+        let shown = placeholder(for: monitor, list: monitor.topMemoryProcesses)
+        XCTAssertEqual(
+            shown, "No process data available",
+            "VAC-B2: the memory section shows the empty state, never a stuck Sampling top processes…"
+        )
+
+        monitor.stopProcessSampling()
+        monitor.stop()
+    }
+
+    func testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass() async throws {
+        let (monitor, provider, preferences) = makeMonitor()
+        installAllNameFailFixtures(provider)
+        monitor.apply(preferences)
+
+        monitor.startProcessSampling(category: .cpu)
+        // The t=0 anchoring pass does not count (VAC-13/R5 keeps its
+        // 250 ms bootstrap window): the window closes on the warm-up
+        // pass, the first CPU-publish-capable pass.
+        let windowClosed = try await waitUntil(timeout: 5) {
+            !monitor.isSamplingProcesses
+        }
+        XCTAssertTrue(
+            windowClosed,
+            "VAC-B2: the +250 ms warm-up pass is CPU's first publish-capable pass; the loading window must close there"
+        )
+        XCTAssertTrue(
+            monitor.topCPUProcesses.isEmpty,
+            "all candidates failed name resolution, so the warm-up pass ships no CPU rows"
+        )
+        let shown = placeholder(for: monitor, list: monitor.topCPUProcesses)
+        XCTAssertEqual(
+            shown, "No process data available",
+            "VAC-B2: the CPU section shows the empty state, never a stuck Sampling top processes…"
+        )
+
+        monitor.stopProcessSampling()
         monitor.stop()
     }
 

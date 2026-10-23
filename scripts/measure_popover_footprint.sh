@@ -5,7 +5,7 @@
 # Usage:
 #   scripts/measure_popover_footprint.sh --output <file> \
 #       [--binary <StatsLite.app>] [--cycles N] [--hold N] [--tail N]
-#       [--expand-processes <cpu|memory|gpu>]
+#       [--expand-processes <cpu|memory>]
 #
 # T-E deviation hook (plan 2026-10-23-top-processes-breakdown):
 # `--expand-processes` forwards the same verification launch flag to
@@ -78,7 +78,7 @@ validate_int --hold "$HOLD"
 validate_int --tail "$TAIL"
 case "$EXPAND" in
   ""|cpu|memory|gpu) ;;
-  *) echo "error: --expand-processes must be cpu, memory or gpu (got: $EXPAND)" >&2; exit 2 ;;
+  *) echo "error: --expand-processes must be cpu or memory (got: $EXPAND)" >&2; exit 2 ;;
 esac
 
 build_release() {

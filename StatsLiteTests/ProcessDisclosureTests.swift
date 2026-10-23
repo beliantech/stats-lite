@@ -129,24 +129,6 @@ final class ProcessDisclosureTests: XCTestCase {
         )
     }
 
-    func testGPUCategoryParticipatesInTheAccordion() {
-        let next = PopoverContentView.toggledProcessCategory(.memory, to: .gpu)
-        XCTAssertEqual(
-            next, .gpu,
-            "R4: expanding the GPU unavailable container also collapses the memory list"
-        )
-    }
-
-    // MARK: - VAC-9 / R7: GPU unavailable branch copy
-
-    func testGPUUnavailableMessageMatchesPlanCopy() {
-        XCTAssertEqual(
-            GPUUnavailableProcessesView.message,
-            "Per-process GPU metrics unavailable",
-            "VAC-9: the dashed container shows exactly the plan copy"
-        )
-    }
-
     // MARK: - VAC-13 / R5 and R2b: section placeholder lines
 
     func testLoadingStateShowsStaticSamplingLine() {
@@ -212,9 +194,9 @@ final class ProcessDisclosureTests: XCTestCase {
         let flat = squashed(try loadSource("StatsLite/PopoverContentView.swift"))
 
         let threading = "expandedProcessCategory:$expandedProcessCategory"
-        XCTAssertGreaterThanOrEqual(
-            occurrences(of: threading, in: flat), 3,
-            "FT-1 wiring: CPU, Memory, and GPU cards must all receive the shared @State binding"
+        XCTAssertEqual(
+            occurrences(of: threading, in: flat), 2,
+            "T-G: after the D2 removal only the CPU and Memory cards receive the shared @State binding"
         )
         XCTAssertTrue(
             flat.contains(".onChange(of:expandedProcessCategory)"),
@@ -263,22 +245,21 @@ final class ProcessDisclosureTests: XCTestCase {
             "T-C contract: the memory loading line follows isSamplingProcesses && list empty"
         )
 
+        // T-G / D2 negative contract: the GPU card carries no Top
+        // Processes wiring. These asserts fail against the pre-removal
+        // source and pass once the R1-R3 removal lands.
         let gpu = squashed(try loadSource("StatsLite/GPUCardView.swift"))
-        XCTAssertTrue(
-            gpu.contains("PopoverContentView.toggleProcessCategory($expandedProcessCategory,to:.gpu)"),
-            "FT-1 wiring: the GPU disclosure taps the shared rule with .gpu"
-        )
-        XCTAssertTrue(
-            gpu.contains("expandedProcessCategory==.gpu"),
-            "FT-1 wiring: the GPU section renders while the shared state says .gpu"
-        )
-        XCTAssertTrue(
-            gpu.contains("GPUUnavailableProcessesView("),
-            "R7: the GPU disclosure expands the unavailable container"
+        XCTAssertFalse(
+            gpu.contains("TopProcessesDisclosureButton"),
+            "T-G: the GPU card carries no Top Processes disclosure (D2 removal R2)"
         )
         XCTAssertFalse(
-            gpu.contains("startProcessSampling"),
-            "R7: the GPU card never starts sampling itself — the monitor stops on .gpu"
+            gpu.contains("GPUUnavailableProcessesView"),
+            "T-G: the GPU card never renders the unavailable container (D2 removal R3)"
+        )
+        XCTAssertFalse(
+            gpu.contains("expandedProcessCategory"),
+            "T-G: the GPU card carries no accordion binding (D2 removal R1)"
         )
     }
 
@@ -367,20 +348,9 @@ final class ProcessDisclosureTests: XCTestCase {
         )
     }
 
-    // MARK: - §4.3 row helpers: PID dedupe and row label format
+    // MARK: - §4.3 row helpers: PID suffix on every row (D1, Appendix D item 3)
 
-    func testPIDTextOmitsDuplicateForTheNameFallback() {
-        let fallback = ProcessMetricItem(
-            pid: 4821,
-            name: "Process 4821",
-            fraction: 0.5,
-            valueLabel: "84.2%"
-        )
-        XCTAssertNil(
-            TopProcessesSectionView.pidText(for: fallback),
-            "the fallback name already carries the PID; the row must not render Process 4821 (4821)"
-        )
-
+    func testPIDSuffixRendersOnEveryRow() {
         let named = ProcessMetricItem(
             pid: 4821,
             name: "Xcode",
@@ -391,6 +361,21 @@ final class ProcessDisclosureTests: XCTestCase {
             TopProcessesSectionView.pidText(for: named),
             "(4821)",
             "a resolved name keeps the parenthesized PID"
+        )
+
+        // pidText has no fallback-dedupe branch anymore: even a name
+        // that looks like the removed `Process NNNNN` string still
+        // renders the suffix, so every row reads `name (pid)`.
+        let anyName = ProcessMetricItem(
+            pid: 4821,
+            name: "Process 4821",
+            fraction: 0.5,
+            valueLabel: "84.2%"
+        )
+        XCTAssertEqual(
+            TopProcessesSectionView.pidText(for: anyName),
+            "(4821)",
+            "the PID suffix renders on every row (Appendix D item 3)"
         )
     }
 

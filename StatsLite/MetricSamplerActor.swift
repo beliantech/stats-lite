@@ -155,7 +155,12 @@ actor MetricSamplerActor {
     /// (T6). `pid <= 0` rows and zombies (`exitAbstime != 0`) never
     /// enter a ranking, and a PID that vanishes from the scan drops
     /// its anchor (T6, P6). Memory ranks the top 5 by footprint with a
-    /// resident-size fallback and no delta (R6).
+    /// resident-size fallback and no delta (R6). One pass resolves
+    /// names for the union of both top-5 lists, and a top candidate
+    /// whose name never resolves drops from that pass's list instead
+    /// of shipping the `Process NNNNN` fallback (D1, Appendix D
+    /// items 1-2). The scan loop allocates no `String`: names, value
+    /// labels, and publication happen after the top-5 prefixes (T7).
     func sampleProcesses(now: ContinuousClock.Instant = .now) -> ProcessSampleResult? {
         guard let samples = provider.sampleProcesses() else { return nil }
 
@@ -175,7 +180,7 @@ actor MetricSamplerActor {
         let cores = Double(ProcessInfo.processInfo.activeProcessorCount)
         let totalRAM = Double(ProcessInfo.processInfo.physicalMemory)
 
-        var cpuRows: [ProcessMetricItem] = []
+        var cpuRows: [CPURankingRow] = []
         var memoryCandidates: [MemoryCandidate] = []
 
         for sample in live {
@@ -198,12 +203,7 @@ actor MetricSamplerActor {
                 // Mismatch or rollback falls through with fraction 0:
                 // a re-anchor, never a stale or wrapped delta (P3, P5).
                 cpuRows.append(
-                    ProcessMetricItem(
-                        pid: sample.pid,
-                        name: "Process \(sample.pid)",
-                        fraction: fraction,
-                        valueLabel: MetricFormatters.percentTenth(fraction)
-                    )
+                    CPURankingRow(pid: sample.pid, fraction: fraction)
                 )
             }
             processAnchors[sample.pid] = ProcessTickAnchor(
@@ -239,35 +239,41 @@ actor MetricSamplerActor {
             }
             .prefix(5)
 
-        // Names resolve only for the top candidates until 5 succeed,
-        // capped at 8 lookups per pass (T7). CPU rows lead so the
-        // stricter test list always carries its names (P11).
+        // One pass resolves the union of the top-5 CPU and top-5
+        // memory PIDs: at most 10 distinct lookups, no early stop,
+        // dedup across the lists via `nameByPid`. CPU leads the
+        // iteration order but holds no exclusive budget, so the
+        // memory list can no longer starve (D1, Appendix D item 1;
+        // §10 attribution confirmed H1: the old lookups<8 /
+        // resolved<5 budget stopped after the CPU five).
         var nameByPid: [Int32: String] = [:]
-        var lookups = 0
-        var resolved = 0
         for pid in topCPU.map(\.pid) + topMemory.map(\.pid) {
-            guard lookups < 8, resolved < 5, nameByPid[pid] == nil else { continue }
-            lookups += 1
+            guard nameByPid[pid] == nil else { continue }
             if let name = provider.resolveProcessName(pid: pid), !name.isEmpty {
                 nameByPid[pid] = name
-                resolved += 1
             }
         }
 
-        let topMemoryItems = topMemory.map { candidate in
-            ProcessMetricItem(
+        // A candidate whose name never resolves drops from this pass's
+        // list; `Process NNNNN` never publishes (Appendix D item 2).
+        // The PID exited or became unreadable between scan and lookup,
+        // so the row heals or disappears on the next pass (item 4).
+        let topMemoryItems = topMemory.compactMap { candidate -> ProcessMetricItem? in
+            guard let name = nameByPid[candidate.pid] else { return nil }
+            return ProcessMetricItem(
                 pid: candidate.pid,
-                name: nameByPid[candidate.pid] ?? "Process \(candidate.pid)",
+                name: name,
                 fraction: Double(candidate.bytes) / totalRAM,
                 valueLabel: Self.memoryValueLabel(candidate.bytes)
             )
         }
-        let topCPUItems = topCPU.map { item in
-            ProcessMetricItem(
-                pid: item.pid,
-                name: nameByPid[item.pid] ?? item.name,
-                fraction: item.fraction,
-                valueLabel: item.valueLabel
+        let topCPUItems = topCPU.compactMap { row -> ProcessMetricItem? in
+            guard let name = nameByPid[row.pid] else { return nil }
+            return ProcessMetricItem(
+                pid: row.pid,
+                name: name,
+                fraction: row.fraction,
+                valueLabel: MetricFormatters.percentTenth(row.fraction)
             )
         }
 
@@ -296,6 +302,16 @@ actor MetricSamplerActor {
         }
         let mebibyte: Double = 1_048_576
         return "\(Int((Double(bytes) / mebibyte).rounded())) MB"
+    }
+
+    /// One CPU ranking row before name resolution: pid and fraction
+    /// only. The scan loop builds these without touching a `String`
+    /// (T7); value labels and the published `ProcessMetricItem` are
+    /// built after the top-5 prefix, once a name resolved (D1
+    /// Appendix D items 1-2).
+    private struct CPURankingRow: Sendable {
+        var pid: Int32
+        var fraction: Double
     }
 
     // MARK: - CPU delta

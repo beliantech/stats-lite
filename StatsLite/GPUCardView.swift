@@ -11,7 +11,6 @@ import SwiftUI
 
 struct GPUCardView: View {
     let monitor: SystemMonitor
-    @Binding var expandedProcessCategory: ProcessCategory?
 
     private var gpu: GPUMetrics? { monitor.latestSnapshot?.gpu }
 
@@ -48,22 +47,6 @@ struct GPUCardView: View {
                     .font(.system(size: 9.5))
                     .foregroundStyle(.tertiary)
                     .fixedSize(horizontal: false, vertical: true)
-            }
-
-            TopProcessesDisclosureButton(
-                isExpanded: expandedProcessCategory == .gpu,
-                usageState: .normal,
-                metricTitle: "GPU Usage",
-                action: {
-                    PopoverContentView.toggleProcessCategory($expandedProcessCategory, to: .gpu)
-                }
-            )
-
-            // R7: GPU expands only the dashed unavailable container;
-            // the monitor stops any sampler on the .gpu category.
-            if expandedProcessCategory == .gpu {
-                GPUUnavailableProcessesView()
-                    .transition(.opacity)
             }
         }
         .metricCardStyle()
