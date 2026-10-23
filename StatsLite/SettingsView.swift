@@ -90,6 +90,10 @@ struct SettingsView: View {
                 .disabled(preferences.isToggleLocked(preferences.showRAM))
             Toggle("GPU Utilization", isOn: $preferences.showGPU)
                 .disabled(preferences.isToggleLocked(preferences.showGPU))
+            // No .disabled on this row either: like network,
+            // temperature stays out of isToggleLocked (F10/plan
+            // Phase 3 carve-out).
+            Toggle("Temperature", isOn: $preferences.showTemperature)
             // No .disabled on this row: isToggleLocked counts only
             // the three standard metrics, so the network toggle must
             // never inherit the lock (F10).
