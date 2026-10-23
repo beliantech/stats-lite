@@ -64,7 +64,7 @@ Technical requirements (paths from the scout recon; verbatim citations in §5):
   under `task_lock`).
 - T2. `MetricSamplerActor` (`StatsLite/MetricSamplerActor.swift:13`) owns per-PID CPU
   delta anchors `[Int32: ProcessTickAnchor]` (Mach ticks + `ri_proc_start_abstime` for
-  PID-reuse rejection), beside `previousCPUTicks` (`:16`).
+  PID-reuse rejection + per-anchor measurement `instant` for Δt), beside `previousCPUTicks` (`:16`).
 - T3. Publish process results OUTSIDE `SystemSnapshot`: add published properties
   `topCPUProcesses: [ProcessMetricItem]`, `topMemoryProcesses: [ProcessMetricItem]`,
   `isSamplingProcesses: Bool`, `activeProcessCategory: ProcessCategory?` on
