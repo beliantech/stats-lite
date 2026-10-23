@@ -1,0 +1,1118 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS,arch=arm64 -derivedDataPath .derivedData CODE_SIGN_IDENTITY=-
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+
+Build Preparation
+Build task concurrency set to 4 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'StatsLiteTests' in project 'StatsLite'
+        ➜ Explicit dependency on target 'StatsLite' in project 'StatsLite'
+    Target 'StatsLite' in project 'StatsLite' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -x c -c /dev/null
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
+
+Build description signature: 99fbd04fd98376757d3822b9cce73fd3
+Build description path: /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/XCBuildData/99fbd04fd98376757d3822b9cce73fd3.xcbuilddata
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLite.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+CopySwiftLibs /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Frameworks --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Library/SystemExtensions --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Frameworks --strip-bitcode --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+
+ProcessInfoPlistFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Info.plist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-infoPlistUtility /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/empty-StatsLite.plist -producttype com.apple.product-type.application -genpkginfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PkgInfo -expandbuildsettings -platform macosx -additionalcontentfile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/assetcatalog_generated_info.plist -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/Info.plist
+
+ProcessInfoPlistFile /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Info.plist /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/empty-StatsLiteTests.plist (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-infoPlistUtility /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/empty-StatsLiteTests.plist -producttype com.apple.product-type.bundle.unit-test -expandbuildsettings -platform macosx -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Info.plist
+
+CopySwiftLibs /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-swiftStdLibTool --copy --verbose --sign - --scan-executable /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/MacOS/StatsLiteTests --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Frameworks --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/PlugIns --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Library/SystemExtensions --scan-folder /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Extensions --platform macosx --toolchain /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --destination /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/PlugIns/StatsLiteTests.xctest/Contents/Frameworks --strip-bitcode --scan-executable /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/libXCTestSwiftSupport.dylib --strip-bitcode-tool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/bitcode_strip --emit-dependency-info /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/SwiftStdLibToolInputDependencies.dep --filter-for-swift-os --back-deploy-swift-span
+
+CodeSign /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/StatsLite.debug.dylib: replacing existing signature
+
+CodeSign /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/__preview.dylib (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --timestamp\=none --generate-entitlement-der /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/__preview.dylib
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app/Contents/MacOS/__preview.dylib: replacing existing signature
+
+CodeSign /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    
+    Signing Identity:     "Sign to Run Locally"
+    
+    /usr/bin/codesign --force --sign - --entitlements /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLite.build/StatsLite.app.xcent --timestamp\=none --generate-entitlement-der /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app: replacing existing signature
+
+Validate /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-validationUtility /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app -no-validate-extension -infoplist-subpath Contents/Info.plist
+
+RegisterWithLaunchServices /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app (in target 'StatsLite' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification
+    builtin-lsregisterurl --record-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/XCBuildData/registered-launchservices.txt -- /System/Library/Frameworks/CoreServices.framework/Versions/Current/Frameworks/LaunchServices.framework/Versions/Current/Support/lsregister -f -R -trusted /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Products/Debug/StatsLite.app
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/SDKExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+2026-10-23 20:03:51.666331+0800 StatsLite[15201:133621172] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.666475+0800 StatsLite[15201:133621172] [Application] Error registering app with intents framework: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.667327+0800 StatsLite[15201:133621174] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.667341+0800 StatsLite[15201:133621174] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.668307+0800 StatsLite[15201:133621173] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.668322+0800 StatsLite[15201:133621173] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.669199+0800 StatsLite[15201:133621173] [Connection] Will NOT re-try to establish the connection
+2026-10-23 20:03:51.669225+0800 StatsLite[15201:133621172] [Connection] Unable to get synchronousRemoteObjectProxy, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.669236+0800 StatsLite[15201:133621172] [Connection] Unable to re-register with Process Instance Registry, error: Error Domain=NSCocoaErrorDomain Code=4097 "connection to service named com.apple.linkd.autoShortcut" UserInfo={NSDebugDescription=connection to service named com.apple.linkd.autoShortcut}
+2026-10-23 20:03:51.766539+0800 StatsLite[15201:133621157] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+Test Suite 'All tests' started at 2026-10-23 20:03:51.802.
+Test Suite 'StatsLiteTests.xctest' started at 2026-10-23 20:03:51.802.
+Test Suite 'BrandStringTests' started at 2026-10-23 20:03:51.802.
+Test Case '-[StatsLiteTests.BrandStringTests testPopoverHeaderBrandTextReadsStatsLite]' started.
+2026-10-23 20:03:51.803546+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+2026-10-23 20:03:51.803623+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.803666+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.803695+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.803730+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.804156+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.804296+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+2026-10-23 20:03:51.804326+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.804357+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testPopoverHeaderBrandTextReadsStatsLite] : Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testPopoverHeaderBrandTextReadsStatsLite] : Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testPopoverHeaderBrandTextReadsStatsLite] : Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+Test Case '-[StatsLiteTests.BrandStringTests testPopoverHeaderBrandTextReadsStatsLite]' passed (0.029 seconds).
+Test Case '-[StatsLiteTests.BrandStringTests testQuitTooltipReadsQuitStatsLite]' started.
+2026-10-23 20:03:51.831834+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+2026-10-23 20:03:51.831877+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.831904+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.831931+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.833397+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.833422+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+2026-10-23 20:03:51.833486+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+2026-10-23 20:03:51.833507+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+2026-10-23 20:03:51.833530+0800 StatsLite[15201:133621157] [SwiftUI] Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testQuitTooltipReadsQuitStatsLite] : Accessing State<Bool>'s value without being installed on a View. This will create a new Bool instance each time.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testQuitTooltipReadsQuitStatsLite] : Accessing State's value outside of being installed on a View. This will result in a constant Binding of the initial value and will not update.
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/StatsLiteTests/BrandStringTests.swift:49: warning: -[StatsLiteTests.BrandStringTests testQuitTooltipReadsQuitStatsLite] : Accessing State<Optional<ProcessCategory>>'s value without being installed on a View. This will create a new Optional<ProcessCategory> instance each time.
+Test Case '-[StatsLiteTests.BrandStringTests testQuitTooltipReadsQuitStatsLite]' passed (0.005 seconds).
+Test Case '-[StatsLiteTests.BrandStringTests testStatusItemAccessibilityTitleReadsStatsLite]' started.
+Test Case '-[StatsLiteTests.BrandStringTests testStatusItemAccessibilityTitleReadsStatsLite]' passed (0.005 seconds).
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerA11yLabelReadsStatsLite]' started.
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerA11yLabelReadsStatsLite]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerBodyTextReadsStatsLite]' started.
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerBodyTextReadsStatsLite]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerReleaseButtonLabelReadsStatsLite]' started.
+Test Case '-[StatsLiteTests.BrandStringTests testUpdateBannerReleaseButtonLabelReadsStatsLite]' passed (0.001 seconds).
+Test Suite 'BrandStringTests' passed at 2026-10-23 20:03:51.844.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.041 (0.042) seconds
+Test Suite 'CPUTicksTests' started at 2026-10-23 20:03:51.845.
+Test Case '-[StatsLiteTests.CPUTicksTests testAggregatesCoresIntoOneSample]' started.
+Test Case '-[StatsLiteTests.CPUTicksTests testAggregatesCoresIntoOneSample]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.CPUTicksTests testAggregateTotalAndBusyMatchSumOfCores]' started.
+Test Case '-[StatsLiteTests.CPUTicksTests testAggregateTotalAndBusyMatchSumOfCores]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.CPUTicksTests testEmptyCoreListGivesZeroAggregate]' started.
+Test Case '-[StatsLiteTests.CPUTicksTests testEmptyCoreListGivesZeroAggregate]' passed (0.000 seconds).
+Test Suite 'CPUTicksTests' passed at 2026-10-23 20:03:51.846.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'CoreGraphicsSparklineTests' started at 2026-10-23 20:03:51.846.
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM1PointSequencesPinCurrentCanvasMath]' started.
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM1PointSequencesPinCurrentCanvasMath]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM2EmptySingleAndFlatInputsStaySafe]' started.
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM2EmptySingleAndFlatInputsStaySafe]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM3DualSeriesScaleIndependentlyWithPerSeriesSlicing]' started.
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM3DualSeriesScaleIndependentlyWithPerSeriesSlicing]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM4ValueHolderEqualityMatchesRedrawContract]' started.
+Test Case '-[StatsLiteTests.CoreGraphicsSparklineTests testFM4ValueHolderEqualityMatchesRedrawContract]' passed (0.000 seconds).
+Test Suite 'CoreGraphicsSparklineTests' passed at 2026-10-23 20:03:51.850.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'EnabledMetricsGuardTests' started at 2026-10-23 20:03:51.850.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testAllCoversEveryMetric]' started.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testAllCoversEveryMetric]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testCombinedSetIsAllowed]' started.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testCombinedSetIsAllowed]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testEmptySetIsRejectedByMonitorGuard]' started.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testEmptySetIsRejectedByMonitorGuard]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testEverySingleMetricIsAllowed]' started.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testEverySingleMetricIsAllowed]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testMembersAreIndependentOptions]' started.
+Test Case '-[StatsLiteTests.EnabledMetricsGuardTests testMembersAreIndependentOptions]' passed (0.000 seconds).
+Test Suite 'EnabledMetricsGuardTests' passed at 2026-10-23 20:03:51.852.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.002 (0.002) seconds
+Test Suite 'HistoryBufferTests' started at 2026-10-23 20:03:51.852.
+Test Case '-[StatsLiteTests.HistoryBufferTests testAppendDropsPointsOlderThanMaxAge]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testAppendDropsPointsOlderThanMaxAge]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testAppendKeepsAtMostCapacityPoints]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testAppendKeepsAtMostCapacityPoints]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testCapacityFloorIsOne]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testCapacityFloorIsOne]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testEmptyBufferHasNoValues]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testEmptyBufferHasNoValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testPointsCarryTimestampsOldestFirst]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testPointsCarryTimestampsOldestFirst]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testSteadyStateAppendPerformsZeroHeapAllocations]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testSteadyStateAppendPerformsZeroHeapAllocations]' passed (0.158 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterCapacityTruncation]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterCapacityTruncation]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterInitialFill]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterInitialFill]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterMultiPointAgeEviction]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsAfterMultiPointAgeEviction]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsWhenAgeAndCapacityTrimOnOneAppend]' started.
+Test Case '-[StatsLiteTests.HistoryBufferTests testValuesMatchPointsWhenAgeAndCapacityTrimOnOneAppend]' passed (0.000 seconds).
+Test Suite 'HistoryBufferTests' passed at 2026-10-23 20:03:52.015.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.161 (0.162) seconds
+Test Suite 'LaunchAtLoginServiceTests' started at 2026-10-23 20:03:52.015.
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testEnabledMapsToEnabled]' started.
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testEnabledMapsToEnabled]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testNotFoundMapsToNotRegistered]' started.
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testNotFoundMapsToNotRegistered]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testNotRegisteredMapsToNotRegistered]' started.
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testNotRegisteredMapsToNotRegistered]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testRequiresApprovalMapsToApprovalNeeded]' started.
+Test Case '-[StatsLiteTests.LaunchAtLoginServiceTests testRequiresApprovalMapsToApprovalNeeded]' passed (0.000 seconds).
+Test Suite 'LaunchAtLoginServiceTests' passed at 2026-10-23 20:03:52.017.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'MenuBarAccessibilityTests' started at 2026-10-23 20:03:52.017.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelAllThreeMetrics]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelAllThreeMetrics]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelCPUUnavailable]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelCPUUnavailable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelGPUUnavailable]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelGPUUnavailable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelIgnoresRatesWhenNetworkOff]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelIgnoresRatesWhenNetworkOff]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelMemoryPressureUnavailable]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelMemoryPressureUnavailable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkFollowsCPUWhenOtherMetricsOff]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkFollowsCPUWhenOtherMetricsOff]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkOnly]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkOnly]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkUnavailableWhenRatesMissing]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelNetworkUnavailableWhenRatesMissing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelRoundsAndClampsPercent]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelRoundsAndClampsPercent]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelSingleMetricOmitsOtherParts]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelSingleMetricOmitsOtherParts]' passed (0.003 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelWithNetworkRates]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testCompositeLabelWithNetworkRates]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testKnownStateWinsOverPressureFigure]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testKnownStateWinsOverPressureFigure]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testPercentTenthFormats]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testPercentTenthFormats]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testUnknownStateDerivesFromPressureThresholds]' started.
+Test Case '-[StatsLiteTests.MenuBarAccessibilityTests testUnknownStateDerivesFromPressureThresholds]' passed (0.000 seconds).
+Test Suite 'MenuBarAccessibilityTests' passed at 2026-10-23 20:03:52.027.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.007 (0.010) seconds
+Test Suite 'MenuBarBlockBuilderTests' started at 2026-10-23 20:03:52.027.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testAllThreeEnabledProducesThreeBlocksWithLabels]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testAllThreeEnabledProducesThreeBlocksWithLabels]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testCPUGPUBlocksHaveNoDotState]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testCPUGPUBlocksHaveNoDotState]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testCPUValueTintThresholds]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testCPUValueTintThresholds]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testEveryBlockHasPinnedWidth]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testEveryBlockHasPinnedWidth]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testEveryEnabledCombinationProducesCorrectCountAndOrder]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testEveryEnabledCombinationProducesCorrectCountAndOrder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testGPUValueTintThresholds]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testGPUValueTintThresholds]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMBlockCarriesLabelValueTintAndDotTogether]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMBlockCarriesLabelValueTintAndDotTogether]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateDerivesFromPercentWhenStateMissing]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateDerivesFromPercentWhenStateMissing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateNeverNil]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateNeverNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateUsesPressureStateWhenKnown]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMDotStateUsesPressureStateWhenKnown]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueFormatsPressurePercent]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueFormatsPressurePercent]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueTintIsTertiaryWhenPercentMissing]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueTintIsTertiaryWhenPercentMissing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueTintStaysPrimaryInAllPressureStates]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testMEMValueTintStaysPrimaryInAllPressureStates]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNaNValueShowsPlaceholder]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNaNValueShowsPlaceholder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockAppendsAfterGPUWithEmptyLabelAndPinnedWidth]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockAppendsAfterGPUWithEmptyLabelAndPinnedWidth]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockOrderAcrossToggleSubsets]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockOrderAcrossToggleSubsets]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockRendersPlaceholderWhenRatesMissing]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockRendersPlaceholderWhenRatesMissing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockTintsKeyToTheirOwnRateNil]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkBlockTintsKeyToTheirOwnRateNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkOffProducesNoNetworkBlock]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkOffProducesNoNetworkBlock]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkOnlyProducesSingleNetworkBlock]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testNetworkOnlyProducesSingleNetworkBlock]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testOutOfRangeValuesClampToFull]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testOutOfRangeValuesClampToFull]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testSingleEnabledMetricProducesExactlyOneBlock]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testSingleEnabledMetricProducesExactlyOneBlock]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testValuesFormatAsWholePercent]' started.
+Test Case '-[StatsLiteTests.MenuBarBlockBuilderTests testValuesFormatAsWholePercent]' passed (0.000 seconds).
+Test Suite 'MenuBarBlockBuilderTests' passed at 2026-10-23 20:03:52.038.
+	 Executed 23 tests, with 0 failures (0 unexpected) in 0.008 (0.010) seconds
+Test Suite 'MenuBarLayoutTests' started at 2026-10-23 20:03:52.038.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllFourMetricsTotal183]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllFourMetricsTotal183]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllMetricsOffIsPaddingOnly4]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllMetricsOffIsPaddingOnly4]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllThreeMetricsTotal129]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testAllThreeMetricsTotal129]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUGPUPairTotal86]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUGPUPairTotal86]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUPlusNetworkTotal97]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUPlusNetworkTotal97]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPURAMPairTotal86]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPURAMPairTotal86]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUSingleTotal43]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testCPUSingleTotal43]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testGPUSingleTotal43]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testGPUSingleTotal43]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkBlockWidthIsPinnedTo50]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkBlockWidthIsPinnedTo50]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkOffKeepsThreeMetricTotal129]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkOffKeepsThreeMetricTotal129]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkOnlyTotal54]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testNetworkOnlyTotal54]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testRAMGPUPairTotal86]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testRAMGPUPairTotal86]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testRAMSingleTotal43]' started.
+Test Case '-[StatsLiteTests.MenuBarLayoutTests testRAMSingleTotal43]' passed (0.000 seconds).
+Test Suite 'MenuBarLayoutTests' passed at 2026-10-23 20:03:52.044.
+	 Executed 13 tests, with 0 failures (0 unexpected) in 0.004 (0.006) seconds
+Test Suite 'MenuBarRedrawChurnTests' started at 2026-10-23 20:03:52.044.
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testHostingViewTracksButtonBoundsAcrossLengthChanges]' started.
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testHostingViewTracksButtonBoundsAcrossLengthChanges]' passed (0.006 seconds).
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testHostingViewUsesFrameBasedLayoutWithoutSizingOptions]' started.
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testHostingViewUsesFrameBasedLayoutWithoutSizingOptions]' passed (0.009 seconds).
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testMenuBarBlockViewBodyHasNoAnimation]' started.
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testMenuBarBlockViewBodyHasNoAnimation]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testStackedItemBodyHasNoAnimationOrContentTransition]' started.
+Test Case '-[StatsLiteTests.MenuBarRedrawChurnTests testStackedItemBodyHasNoAnimationOrContentTransition]' passed (0.004 seconds).
+Test Suite 'MenuBarRedrawChurnTests' passed at 2026-10-23 20:03:52.065.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.021 (0.021) seconds
+Test Suite 'MenuBarTempBlockTests' started at 2026-10-23 20:03:52.065.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testCompositeLabelCarriesTemperatureSegmentIncludingUnavailableRows]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testCompositeLabelCarriesTemperatureSegmentIncludingUnavailableRows]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testLayoutLengthAddsPinnedTempWidthOnlyWhenEnabled]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testLayoutLengthAddsPinnedTempWidthOnlyWhenEnabled]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testPopoverCompositionContainsNoTemperatureCard]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testPopoverCompositionContainsNoTemperatureCard]' passed (0.024 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testSettingsViewHasTemperatureToggleBetweenGPUAndNetwork]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testSettingsViewHasTemperatureToggleBetweenGPUAndNetwork]' passed (0.006 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempBlockWidthFitsCPU100DegreesAndNeverVariesWithValue]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempBlockWidthFitsCPU100DegreesAndNeverVariesWithValue]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTemperatureDisabledRevertsToCPUMEMGPUNetworkOrder]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTemperatureDisabledRevertsToCPUMEMGPUNetworkOrder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTemperatureEnabledOrdersBlocksWithTempBetweenGPUAndNetwork]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTemperatureEnabledOrdersBlocksWithTempBetweenGPUAndNetwork]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempRowsRenderPerSubsystemDegreesWithRowPlaceholders]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempRowsRenderPerSubsystemDegreesWithRowPlaceholders]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempViewSourceDeclaresNoAnimatedModifiers]' started.
+Test Case '-[StatsLiteTests.MenuBarTempBlockTests testTempViewSourceDeclaresNoAnimatedModifiers]' passed (0.005 seconds).
+Test Suite 'MenuBarTempBlockTests' passed at 2026-10-23 20:03:52.103.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.037 (0.038) seconds
+Test Suite 'MenuBarTempVerificationTests' started at 2026-10-23 20:03:52.103.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testEveryMetricPermutationKeepsLengthIdentityAndCanonicalOrder]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testEveryMetricPermutationKeepsLengthIdentityAndCanonicalOrder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testSnapshotInequalityWhenTemperatureChangesAlone]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testSnapshotInequalityWhenTemperatureChangesAlone]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTempBlockWidthFitsClampMaxGPUDegreesRow]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTempBlockWidthFitsClampMaxGPUDegreesRow]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTemperatureGatingEndToEndAcrossSamplerAndSnapshot]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTemperatureGatingEndToEndAcrossSamplerAndSnapshot]' passed (0.006 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTemperatureOnlyChangeDrivesSignalWhileTimestampOnlyDoesNot]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTemperatureOnlyChangeDrivesSignalWhileTimestampOnlyDoesNot]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTempRowTintsFollowNetworkPrimaryByDesign]' started.
+Test Case '-[StatsLiteTests.MenuBarTempVerificationTests testTempRowTintsFollowNetworkPrimaryByDesign]' passed (0.001 seconds).
+Test Suite 'MenuBarTempVerificationTests' passed at 2026-10-23 20:03:52.114.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.010 (0.011) seconds
+Test Suite 'MenuBarValueTypographyTests' started at 2026-10-23 20:03:52.114.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testBlockFittingHeightsAreEqualAndMatchStatusBarThickness]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testBlockFittingHeightsAreEqualAndMatchStatusBarThickness]' passed (0.002 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testClearanceForWidestValueAtTwelvePointRegularMeetsTwoAndAHalfPointPerSideRule]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testClearanceForWidestValueAtTwelvePointRegularMeetsTwoAndAHalfPointPerSideRule]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testLabelFontIsEightPointRegularSecondary]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testLabelFontIsEightPointRegularSecondary]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testLabelRowClearanceForMemRowAtEightPointRegularMeetsThreeAndAHalfPoints]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testLabelRowClearanceForMemRowAtEightPointRegularMeetsThreeAndAHalfPoints]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testMenuBarBlockViewAppliesValueYOffsetModifier]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testMenuBarBlockViewAppliesValueYOffsetModifier]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testMetricBlockStackUsesZeroVerticalSpacing]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testMetricBlockStackUsesZeroVerticalSpacing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkBlockClearanceForWidestRateStringMeetsSpacerMinimum]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkBlockClearanceForWidestRateStringMeetsSpacerMinimum]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkBlockStackUsesZeroRowSpacing]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkBlockStackUsesZeroRowSpacing]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkFontsAreNinePointRegularAndValueStaysSizeTwelve]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testNetworkFontsAreNinePointRegularAndValueStaysSizeTwelve]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testRowFramesUseRowHeightConstantInBothBlocks]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testRowFramesUseRowHeightConstantInBothBlocks]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueBaselineOffsetAndGeometryInvariants]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueBaselineOffsetAndGeometryInvariants]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueFontIsTwelvePointRegularMonospacedDigit]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueFontIsTwelvePointRegularMonospacedDigit]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueFontKeepsMonospacedDigit]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueFontKeepsMonospacedDigit]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueYOffsetConstantIsMinusOne]' started.
+Test Case '-[StatsLiteTests.MenuBarValueTypographyTests testValueYOffsetConstantIsMinusOne]' passed (0.000 seconds).
+Test Suite 'MenuBarValueTypographyTests' passed at 2026-10-23 20:03:52.124.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.008 (0.010) seconds
+Test Suite 'MetricFormatterDegreesTests' started at 2026-10-23 20:03:52.124.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsMissingValueAsPlaceholder]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsMissingValueAsPlaceholder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsNegativeValue]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsNegativeValue]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsNonFiniteValueAsPlaceholder]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsNonFiniteValueAsPlaceholder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsThreeDigitValue]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsThreeDigitValue]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsWholeValues]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesFormatsWholeValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesRoundsToWholeDegree]' started.
+Test Case '-[StatsLiteTests.MetricFormatterDegreesTests testDegreesRoundsToWholeDegree]' passed (0.000 seconds).
+Test Suite 'MetricFormatterDegreesTests' passed at 2026-10-23 20:03:52.127.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'MetricFormatterHistoryDurationAxisTests' started at 2026-10-23 20:03:52.127.
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisClampsNegativeSecondsToZero]' started.
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisClampsNegativeSecondsToZero]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisFormatsAllDurationSettings]' started.
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisFormatsAllDurationSettings]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisReturnsZeroSecondsForNonFiniteInput]' started.
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisReturnsZeroSecondsForNonFiniteInput]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisUsesSecondsUnderSixty]' started.
+Test Case '-[StatsLiteTests.MetricFormatterHistoryDurationAxisTests testHistoryDurationAxisUsesSecondsUnderSixty]' passed (0.000 seconds).
+Test Suite 'MetricFormatterHistoryDurationAxisTests' passed at 2026-10-23 20:03:52.129.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'MetricFormatterTests' started at 2026-10-23 20:03:52.129.
+Test Case '-[StatsLiteTests.MetricFormatterTests testGigabytesFormatsOneDecimal]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testGigabytesFormatsOneDecimal]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateDropsDecimalsAtDoubleDigitBoundaries]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateDropsDecimalsAtDoubleDigitBoundaries]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsGBRange]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsGBRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsKBRangeAsInteger]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsKBRangeAsInteger]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsMBRange]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateFormatsMBRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateNeverExceedsThreeCharacterMantissa]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateNeverExceedsThreeCharacterMantissa]' passed (0.044 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateReturnsPlaceholderForMissingAndNonFiniteValues]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testNetworkRateReturnsPlaceholderForMissingAndNonFiniteValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentClampsOutOfRangeValues]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentClampsOutOfRangeValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsIntegerValues]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsIntegerValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsMissingValueAsDoubleDash]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsMissingValueAsDoubleDash]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsNonFiniteValueAsDoubleDash]' started.
+Test Case '-[StatsLiteTests.MetricFormatterTests testPercentFormatsNonFiniteValueAsDoubleDash]' passed (0.000 seconds).
+Test Suite 'MetricFormatterTests' passed at 2026-10-23 20:03:52.178.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.048 (0.049) seconds
+Test Suite 'MetricMathCPUPercentTests' started at 2026-10-23 20:03:52.178.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testBusyShareIsComputedFromDeltas]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testBusyShareIsComputedFromDeltas]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testCounterRolloverReturnsZero]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testCounterRolloverReturnsZero]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testFirstSampleReturnsZero]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testFirstSampleReturnsZero]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testNiceTicksCountAsBusy]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testNiceTicksCountAsBusy]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testOutputStaysInRangeForLongSizedDeltas]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testOutputStaysInRangeForLongSizedDeltas]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testResultClampsToUnitRange]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testResultClampsToUnitRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testZeroDeltaReturnsZero]' started.
+Test Case '-[StatsLiteTests.MetricMathCPUPercentTests testZeroDeltaReturnsZero]' passed (0.000 seconds).
+Test Suite 'MetricMathCPUPercentTests' passed at 2026-10-23 20:03:52.181.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.002 (0.003) seconds
+Test Suite 'MetricProcessSamplerTests' started at 2026-10-23 20:03:52.181.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testAllNameFailuresYieldEmptyLists]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testAllNameFailuresYieldEmptyLists]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testBothListsShipResolvedNamesWithinTenLookupsPerPass]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testClearProcessBaseForcesAFreshAnchor]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testClearProcessBaseForcesAFreshAnchor]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testCPUPercentClampsToFullCapacity]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testCPUPercentClampsToFullCapacity]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testCPUPercentFromTickDeltaAcrossTwoSamples]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testCPUPercentFromTickDeltaAcrossTwoSamples]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testFailedScanReturnsNilAndKeepsAnchor]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testFailedScanReturnsNilAndKeepsAnchor]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testMemoryFallsBackToResidentSizeWhenFootprintZero]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testMemoryFallsBackToResidentSizeWhenFootprintZero]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testMemoryRanksByPhysFootprintWithLabelsAndRAMFraction]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testMemoryRanksByPhysFootprintWithLabelsAndRAMFraction]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testNonPositivePIDsAreSkipped]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testNonPositivePIDsAreSkipped]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testPIDReuseWithNewStartStampReanchorsInsteadOfDelta]' started.
+2026-10-23 20:03:52.187968+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd6265ac0>
+2026-10-23 20:03:52.188008+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testPIDReuseWithNewStartStampReanchorsInsteadOfDelta]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testPIDVanishingFromScanDropsOutAndStaleEntriesNeverAppear]' started.
+2026-10-23 20:03:52.188577+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd63d5f00>
+2026-10-23 20:03:52.188599+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testPIDVanishingFromScanDropsOutAndStaleEntriesNeverAppear]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testTickCounterRollbackReportsZeroAndReanchors]' started.
+2026-10-23 20:03:52.189158+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd64129c0>
+2026-10-23 20:03:52.189173+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testTickCounterRollbackReportsZeroAndReanchors]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testUnnamedCandidateDropsFromThatPassList]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testZombieProcessesNeverEnterEitherRanking]' started.
+Test Case '-[StatsLiteTests.MetricProcessSamplerTests testZombieProcessesNeverEnterEitherRanking]' passed (0.000 seconds).
+Test Suite 'MetricProcessSamplerTests' passed at 2026-10-23 20:03:52.191.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'MetricSamplerActorTests' started at 2026-10-23 20:03:52.191.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testClearNetworkBaseMakesNextSampleReturnNil]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testClearNetworkBaseMakesNextSampleReturnNil]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testContinuousCPUSampleReportsDeltaUsage]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testContinuousCPUSampleReportsDeltaUsage]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCoreCountChangeKeepsAggregateAndResetsPerCore]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCoreCountChangeKeepsAggregateAndResetsPerCore]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCPUDisabledClearsPreviousTicks]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCPUDisabledClearsPreviousTicks]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCPUIsNotSampledWhenDisabled]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testCPUIsNotSampledWhenDisabled]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testDisabledNetworkSampleReturnsNilWithoutReadingProvider]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testDisabledNetworkSampleReturnsNilWithoutReadingProvider]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testDisablingNetworkClearsBaseSoReenableNeedsFirstSample]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testDisablingNetworkClearsBaseSoReenableNeedsFirstSample]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testEmptyEnabledSetSamplesNothing]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testEmptyEnabledSetSamplesNothing]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testEnabledSetRoutesEveryMetric]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testEnabledSetRoutesEveryMetric]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFailedCPUReadYieldsNilAndKeepsPreviousTicks]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFailedCPUReadYieldsNilAndKeepsPreviousTicks]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFailedNetworkReadKeepsBaseAnchor]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFailedNetworkReadKeepsBaseAnchor]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFirstCPUSampleReportsZeroUsage]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFirstCPUSampleReportsZeroUsage]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFirstNetworkSampleReturnsNilThenSecondPublishesRate]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testFirstNetworkSampleReturnsNilThenSecondPublishesRate]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testMemoryAndGPUIsNotSampledWhenDisabled]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testMemoryAndGPUIsNotSampledWhenDisabled]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkCounterRollbackReturnsNilAndReanchors]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkCounterRollbackReturnsNilAndReanchors]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkGapOfThreeSecondsReanchorsThenPublishesRate]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkGapOfThreeSecondsReanchorsThenPublishesRate]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkRateDividesByMeasuredElapsedTime]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkRateDividesByMeasuredElapsedTime]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkSampleGapOverTwoAndAHalfSecondsReturnsNil]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkSampleGapOverTwoAndAHalfSecondsReturnsNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkSamplesHalfAMillisecondApartReturnNil]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkSamplesHalfAMillisecondApartReturnNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkZeroOrNegativeElapsedTimeReturnsNil]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testNetworkZeroOrNegativeElapsedTimeReturnsNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testPerCoreUsageUsesMatchingPreviousCoreTicks]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testPerCoreUsageUsesMatchingPreviousCoreTicks]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testRapidRestartWithIdenticalTicksIsZeroDelta]' started.
+Test Case '-[StatsLiteTests.MetricSamplerActorTests testRapidRestartWithIdenticalTicksIsZeroDelta]' passed (0.000 seconds).
+Test Suite 'MetricSamplerActorTests' passed at 2026-10-23 20:03:52.203.
+	 Executed 22 tests, with 0 failures (0 unexpected) in 0.009 (0.012) seconds
+Test Suite 'MetricTypesTests' started at 2026-10-23 20:03:52.203.
+Test Case '-[StatsLiteTests.MetricTypesTests testCoreTickSampleTotals]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testCoreTickSampleTotals]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testCPUMetricsClampsToUnitRange]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testCPUMetricsClampsToUnitRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testDomainTypesConformToSendable]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testDomainTypesConformToSendable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testGPUMetricsClampsUtilizationAndKeepsMissingFieldsNil]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testGPUMetricsClampsUtilizationAndKeepsMissingFieldsNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testMemoryMetricsUsedPercentageIsOccupancy]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testMemoryMetricsUsedPercentageIsOccupancy]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testMemoryMetricsUsedPercentageWithZeroTotalIsZero]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testMemoryMetricsUsedPercentageWithZeroTotalIsZero]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureMetricsClampsStoredPercentage]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureMetricsClampsStoredPercentage]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureMetricsComposesStateAndFallbackPercentage]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureMetricsComposesStateAndFallbackPercentage]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateDisplayNames]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateDisplayNames]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateMapsUnmappedKernelValuesToUnknown]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateMapsUnmappedKernelValuesToUnknown]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateRawValuesMatchKernelLevels]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testPressureStateRawValuesMatchKernelLevels]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotEqualityIgnoresTimestamp]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotEqualityIgnoresTimestamp]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenCPUChanges]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenCPUChanges]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenEnabledChanges]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenEnabledChanges]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenGPUChanges]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenGPUChanges]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenMemoryChanges]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenMemoryChanges]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenMemoryPressureChanges]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotInequalityWhenMemoryPressureChanges]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotKeepsAllMembersWhenAllMetricsEnabled]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotKeepsAllMembersWhenAllMetricsEnabled]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotKeepsOnlyEnabledMembers]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotKeepsOnlyEnabledMembers]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotStartsWithoutMembersWhenNoneAreSupplied]' started.
+Test Case '-[StatsLiteTests.MetricTypesTests testSnapshotStartsWithoutMembersWhenNoneAreSupplied]' passed (0.000 seconds).
+Test Suite 'MetricTypesTests' passed at 2026-10-23 20:03:52.211.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.006 (0.009) seconds
+Test Suite 'NetworkSparklineViewTests' started at 2026-10-23 20:03:52.211.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testDownloadStaysInLowerHalf]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testDownloadStaysInLowerHalf]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEmptyValuesProduceNoPoints]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEmptyValuesProduceNoPoints]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEquatableIsFalseForAnyChangedInput]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEquatableIsFalseForAnyChangedInput]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEquatableIsTrueForEqualInputs]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testEquatableIsTrueForEqualInputs]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testFullCapacitySpansFullActiveWidth]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testFullCapacitySpansFullActiveWidth]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testMidDomainSitsAtHalfTheHalfHeight]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testMidDomainSitsAtHalfTheHalfHeight]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testMirroredPairsAreSymmetricAcrossBaseline]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testMirroredPairsAreSymmetricAcrossBaseline]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testNegativeValueClampsToBaselineNotBeyond]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testNegativeValueClampsToBaselineNotBeyond]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testOverflowSlicesToNewestCapacitySamples]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testOverflowSlicesToNewestCapacitySamples]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testSingleSampleDrawsAtRightEdge]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testSingleSampleDrawsAtRightEdge]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testUploadStaysInUpperHalf]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testUploadStaysInUpperHalf]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testValueAboveDomainMaxClampsToChartEdge]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testValueAboveDomainMaxClampsToChartEdge]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testWarmupSpansRightAnchoredWithFixedStep]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testWarmupSpansRightAnchoredWithFixedStep]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testZeroDomainMaxUsesEpsilonFloor]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testZeroDomainMaxUsesEpsilonFloor]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testZeroValuesSitExactlyOnTheBaseline]' started.
+Test Case '-[StatsLiteTests.NetworkSparklineViewTests testZeroValuesSitExactlyOnTheBaseline]' passed (0.000 seconds).
+Test Suite 'NetworkSparklineViewTests' passed at 2026-10-23 20:03:52.218.
+	 Executed 15 tests, with 0 failures (0 unexpected) in 0.005 (0.006) seconds
+Test Suite 'PopoverVersionLabelTests' started at 2026-10-23 20:03:52.218.
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testBundleSourcedVersionLabelMatchesPattern]' started.
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testBundleSourcedVersionLabelMatchesPattern]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionAccessibilityLabel]' started.
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionAccessibilityLabel]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionLabelFormatsBuild1]' started.
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionLabelFormatsBuild1]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionLabelFormatsBuild9999]' started.
+Test Case '-[StatsLiteTests.PopoverVersionLabelTests testPureVersionLabelFormatsBuild9999]' passed (0.000 seconds).
+Test Suite 'PopoverVersionLabelTests' passed at 2026-10-23 20:03:52.220.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'PreferencesShowTemperatureWiringTests' started at 2026-10-23 20:03:52.220.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testEnabledMetricsFollowsShowTemperatureBothDirections]' started.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testEnabledMetricsFollowsShowTemperatureBothDirections]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperatureDefaultsOnWhenKeyIsAbsent]' started.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperatureDefaultsOnWhenKeyIsAbsent]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperaturePersistsUnderItsOwnKeyAcrossInstances]' started.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperaturePersistsUnderItsOwnKeyAcrossInstances]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperatureStaysOutsideCountGuardAndToggleLock]' started.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testShowTemperatureStaysOutsideCountGuardAndToggleLock]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testStoreEnabledMetricsDrivesTemperatureSampling]' started.
+Test Case '-[StatsLiteTests.PreferencesShowTemperatureWiringTests testStoreEnabledMetricsDrivesTemperatureSampling]' passed (0.005 seconds).
+Test Suite 'PreferencesShowTemperatureWiringTests' passed at 2026-10-23 20:03:52.229.
+	 Executed 5 tests, with 0 failures (0 unexpected) in 0.008 (0.009) seconds
+Test Suite 'PreferencesStoreGuardTests' started at 2026-10-23 20:03:52.229.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testAllFalseKeysResetToShowCPU]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testAllFalseKeysResetToShowCPU]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDefaultsEnableAllThreeMetrics]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDefaultsEnableAllThreeMetrics]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingLastEnabledMetricReEnablesIt]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingLastEnabledMetricReEnablesIt]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingOneOfThreeMetricsStaysDisabled]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingOneOfThreeMetricsStaysDisabled]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingOneOfTwoMetricsStaysDisabled]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testDisablingOneOfTwoMetricsStaysDisabled]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testIntervalAndHistoryPersistAcrossInstances]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testIntervalAndHistoryPersistAcrossInstances]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDefaultsToTrue]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDefaultsToTrue]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDoesNotAffectStandardToggleLock]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDoesNotAffectStandardToggleLock]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDoesNotChangeActiveMetricCountOrEnabledMetrics]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkDoesNotChangeActiveMetricCountOrEnabledMetrics]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkPersistsAcrossInstances]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testShowNetworkPersistsAcrossInstances]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testToggleStatePersistsAcrossInstances]' started.
+Test Case '-[StatsLiteTests.PreferencesStoreGuardTests testToggleStatePersistsAcrossInstances]' passed (0.001 seconds).
+Test Suite 'PreferencesStoreGuardTests' passed at 2026-10-23 20:03:52.237.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'PressurePercentTests' started at 2026-10-23 20:03:52.237.
+Test Case '-[StatsLiteTests.PressurePercentTests testFallbackUsesFixedValuePerLevelWhenReadFailed]' started.
+Test Case '-[StatsLiteTests.PressurePercentTests testFallbackUsesFixedValuePerLevelWhenReadFailed]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PressurePercentTests testPressureClampsAvailabilityToUnitRange]' started.
+Test Case '-[StatsLiteTests.PressurePercentTests testPressureClampsAvailabilityToUnitRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PressurePercentTests testPressureUsesAvailabilityReadWhenPresent]' started.
+Test Case '-[StatsLiteTests.PressurePercentTests testPressureUsesAvailabilityReadWhenPresent]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.PressurePercentTests testUnknownStateReturnsZero]' started.
+Test Case '-[StatsLiteTests.PressurePercentTests testUnknownStateReturnsZero]' passed (0.000 seconds).
+Test Suite 'PressurePercentTests' passed at 2026-10-23 20:03:52.239.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.001 (0.002) seconds
+Test Suite 'ProcessDisclosureTests' started at 2026-10-23 20:03:52.239.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testCardRootsContainChildrenWhileTheHeaderIgnoresThem]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testCardRootsContainChildrenWhileTheHeaderIgnoresThem]' passed (0.002 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testCardsRouteDisclosureTapsThroughTheSharedRuleWithTheLoadingContract]' passed (0.002 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testDisclosureAndRowLabelsFollowTheSectionAccessibilityContract]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testDisclosureAndRowLabelsFollowTheSectionAccessibilityContract]' passed (0.002 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testEmptyStateShowsNoProcessDataLine]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testEmptyStateShowsNoProcessDataLine]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testExpandingAnotherCardCollapsesTheOpenList]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testExpandingAnotherCardCollapsesTheOpenList]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testExpandingFromCollapsedSetsTheCategory]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testExpandingFromCollapsedSetsTheCategory]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testLoadingLineWinsOverRowCountWhileBootstrapHolds]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testLoadingLineWinsOverRowCountWhileBootstrapHolds]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testLoadingStateShowsStaticSamplingLine]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testLoadingStateShowsStaticSamplingLine]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testPIDSuffixRendersOnEveryRow]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testPIDSuffixRendersOnEveryRow]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testPopoverThreadsTheAccordionBindingIntoEveryCardAndTheSamplingHooks]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testPopoverThreadsTheAccordionBindingIntoEveryCardAndTheSamplingHooks]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRealRowsShowNoPlaceholder]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRealRowsShowNoPlaceholder]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRetappingTheOpenCardCollapsesToNil]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRetappingTheOpenCardCollapsesToNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRowAccessibilityLabelFormatMatchesThePlan]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testRowAccessibilityLabelFormatMatchesThePlan]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testWiredToggleThroughBindingCollapsesTheOpenCard]' started.
+Test Case '-[StatsLiteTests.ProcessDisclosureTests testWiredToggleThroughBindingCollapsesTheOpenCard]' passed (0.000 seconds).
+Test Suite 'ProcessDisclosureTests' passed at 2026-10-23 20:03:52.252.
+	 Executed 14 tests, with 0 failures (0 unexpected) in 0.011 (0.013) seconds
+Test Suite 'SettingsWindowTests' started at 2026-10-23 20:03:52.252.
+Test Case '-[StatsLiteTests.SettingsWindowTests testNoToggleLockedWhenAllThreeEnabled]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testNoToggleLockedWhenAllThreeEnabled]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SettingsWindowTests testNoToggleLockedWhileTwoMetricsEnabled]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testNoToggleLockedWhileTwoMetricsEnabled]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SettingsWindowTests testSettingsViewHasNoShowCategoryLabelsToggle]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testSettingsViewHasNoShowCategoryLabelsToggle]' passed (0.004 seconds).
+Test Case '-[StatsLiteTests.SettingsWindowTests testSoleEnabledToggleIsLocked]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testSoleEnabledToggleIsLocked]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SettingsWindowTests testSoleEnabledToggleIsRAMWhenOthersOff]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testSoleEnabledToggleIsRAMWhenOthersOff]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SettingsWindowTests testVersionLabelReadsBundleInfo]' started.
+Test Case '-[StatsLiteTests.SettingsWindowTests testVersionLabelReadsBundleInfo]' passed (0.000 seconds).
+Test Suite 'SettingsWindowTests' passed at 2026-10-23 20:03:52.260.
+	 Executed 6 tests, with 0 failures (0 unexpected) in 0.007 (0.008) seconds
+Test Suite 'SparklineTimeAxisGuardTests' started at 2026-10-23 20:03:52.260.
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AllFourMetricCardsKeepTheSharedAxis]' started.
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AllFourMetricCardsKeepTheSharedAxis]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AxisLabelSetIsHumanDurationsEndingInNow]' started.
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AxisLabelSetIsHumanDurationsEndingInNow]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AxisViewKeepsNinePointMonospacedTertiaryAndA11yHidden]' started.
+Test Case '-[StatsLiteTests.SparklineTimeAxisGuardTests testFM5AxisViewKeepsNinePointMonospacedTertiaryAndA11yHidden]' passed (0.002 seconds).
+Test Suite 'SparklineTimeAxisGuardTests' passed at 2026-10-23 20:03:52.264.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.003 (0.003) seconds
+Test Suite 'SparklineViewTests' started at 2026-10-23 20:03:52.264.
+Test Case '-[StatsLiteTests.SparklineViewTests testEquatableIsFalseForAnyChangedInput]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testEquatableIsFalseForAnyChangedInput]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testEquatableIsTrueForEqualValuesTintAndCapacity]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testEquatableIsTrueForEqualValuesTintAndCapacity]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testFullCapacitySpansFullActiveWidth]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testFullCapacitySpansFullActiveWidth]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testOverflowSlicesToNewestCapacitySamples]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testOverflowSlicesToNewestCapacitySamples]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testSingleSampleDrawsDotAtRightEdgeNotFullWidthStroke]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testSingleSampleDrawsDotAtRightEdgeNotFullWidthStroke]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testSparklineCapacityForEveryHistoryAndIntervalCombination]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testSparklineCapacityForEveryHistoryAndIntervalCombination]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testSparklineCapacityHasFloorOfTwoSamples]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testSparklineCapacityHasFloorOfTwoSamples]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testValueAboveDomainMaxClampsToTopInset]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testValueAboveDomainMaxClampsToTopInset]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testValueBelowZeroClampsToBottomInset]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testValueBelowZeroClampsToBottomInset]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testWarmupSpansRightAnchoredWithFixedStep]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testWarmupSpansRightAnchoredWithFixedStep]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testZeroDomainMaxUsesEpsilonFloor]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testZeroDomainMaxUsesEpsilonFloor]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SparklineViewTests testZeroSamplesProduceNoPath]' started.
+Test Case '-[StatsLiteTests.SparklineViewTests testZeroSamplesProduceNoPath]' passed (0.000 seconds).
+Test Suite 'SparklineViewTests' passed at 2026-10-23 20:03:52.269.
+	 Executed 12 tests, with 0 failures (0 unexpected) in 0.004 (0.006) seconds
+Test Suite 'StatsLiteTests' started at 2026-10-23 20:03:52.269.
+Test Case '-[StatsLiteTests.StatsLiteTests testAppModuleIsImportable]' started.
+Test Case '-[StatsLiteTests.StatsLiteTests testAppModuleIsImportable]' passed (0.000 seconds).
+Test Suite 'StatsLiteTests' passed at 2026-10-23 20:03:52.270.
+	 Executed 1 test, with 0 failures (0 unexpected) in 0.000 (0.001) seconds
+Test Suite 'StatusItemControllerPopoverTests' started at 2026-10-23 20:03:52.270.
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests test_statusItem_imageSetForInactiveDisplayDimEligibility]' started.
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests test_statusItem_imageSetForInactiveDisplayDimEligibility]' passed (0.004 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testClickMonitorsInstalledOnOpenAndRemovedOnClose]' started.
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testClickMonitorsInstalledOnOpenAndRemovedOnClose]' passed (3.399 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testInitDoesNotMountPopoverContent]' started.
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testInitDoesNotMountPopoverContent]' passed (0.010 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnOtherWindowClosesPopoverAndSecondCallIsSafe]' started.
+2026-10-23 20:03:55.690314+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd6449540>
+2026-10-23 20:03:55.690368+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:55.690423+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:4CEBE40C-2E93-4943-BF7E-720798DC8A0D-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:03:55.690456+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd63a2300>
+2026-10-23 20:03:55.690476+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:55.690748+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd63d7840>
+2026-10-23 20:03:55.690778+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:55.690812+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:374EC374-9FD0-4CF3-80A8-9B66CD3819A1-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:03:55.690830+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd63a2440>
+2026-10-23 20:03:55.690842+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:56.789283+0800 StatsLite[15201:133621157] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnOtherWindowClosesPopoverAndSecondCallIsSafe]' passed (3.350 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnPopoverWindowPassesThroughWithoutClosing]' started.
+2026-10-23 20:03:59.044471+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd5982580>
+2026-10-23 20:03:59.044529+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:59.044586+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:335D5771-3DA3-46CD-889B-08987CA28BA1-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:03:59.044611+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd65a1860>
+2026-10-23 20:03:59.044629+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:59.044929+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd6461080>
+2026-10-23 20:03:59.044964+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:03:59.045062+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:36D6776F-743E-453C-B3C3-843C250EE945-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:03:59.045097+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd65a1900>
+2026-10-23 20:03:59.045120+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnPopoverWindowPassesThroughWithoutClosing]' passed (2.302 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnStatusButtonWindowPassesThroughWithoutClosing]' started.
+2026-10-23 20:04:01.349026+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd5a11c40>
+2026-10-23 20:04:01.349088+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:01.349148+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:DE8E6670-5041-40F5-B79B-B4CE1E3B79F5-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:01.349175+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd63a3e80>
+2026-10-23 20:04:01.349198+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:03.449615+0800 StatsLite[15201:133621157] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testLocalClickOnStatusButtonWindowPassesThroughWithoutClosing]' passed (2.314 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testMonitorsDoNotOutliveController]' started.
+2026-10-23 20:04:03.664692+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd63d4e00>
+2026-10-23 20:04:03.664756+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:03.665036+0800 StatsLite[15201:133621173] [SceneClient] [com.apple.appkit.status-items:12F16BD4-2324-4063-8EE0-6FC7C90CC915-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:03.665092+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd65a3160>
+2026-10-23 20:04:03.665133+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testMonitorsDoNotOutliveController]' passed (4.406 seconds).
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testTogglePopoverCyclesMountAndRelease]' started.
+2026-10-23 20:04:08.070251+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd56e2500>
+2026-10-23 20:04:08.070305+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:08.070358+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:EDBF85F5-F5E5-4F68-B06F-B6459F8EE5A5-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:08.070384+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd5b3cfa0>
+2026-10-23 20:04:08.070402+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:08.070450+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd6771880>
+2026-10-23 20:04:08.070466+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:08.070499+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:AF0819AE-A606-4183-89C0-5781F2384807-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:08.070514+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd63a2120>
+2026-10-23 20:04:08.070527+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:09.175778+0800 StatsLite[15201:133621157] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+Test Case '-[StatsLiteTests.StatusItemControllerPopoverTests testTogglePopoverCyclesMountAndRelease]' passed (6.028 seconds).
+Test Suite 'StatusItemControllerPopoverTests' passed at 2026-10-23 20:04:14.087.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 21.813 (21.817) seconds
+Test Suite 'SystemMetricsParsingTests' started at 2026-10-23 20:04:14.087.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesDeviceUtilizationAcrossDevices]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesDeviceUtilizationAcrossDevices]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesOnlyOverDevicesWithDeviceKey]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesOnlyOverDevicesWithDeviceKey]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesRendererOnlyOverDevicesThatReportIt]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUAveragesRendererOnlyOverDevicesThatReportIt]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUClampsOutOfRangeDeviceValues]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUClampsOutOfRangeDeviceValues]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReadsRendererAndTilerKeys]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReadsRendererAndTilerKeys]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReturnsNilWhenDeviceKeyMissing]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReturnsNilWhenDeviceKeyMissing]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReturnsNilWhenNoDeviceReportExists]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUReturnsNilWhenNoDeviceReportExists]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUSingleDeviceMapsPercentToFraction]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testGPUSingleDeviceMapsPercentToFraction]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilForEmptyInterfaceList]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilForEmptyInterfaceList]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenCountersAreNegative]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenCountersAreNegative]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenEveryInterfaceIsLoopback]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenEveryInterfaceIsLoopback]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenIfDataIsAbsent]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesReturnsNilWhenIfDataIsAbsent]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesSumsAllNonLoopbackInterfaces]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesSumsAllNonLoopbackInterfaces]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesSumsWithoutSignedOverflowTrap]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testNetworkBytesSumsWithoutSignedOverflowTrap]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureBothReadsFail]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureBothReadsFail]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureClampsOutOfRangeAvailability]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureClampsOutOfRangeAvailability]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureFallsBackToFixedValueWhenAvailabilityReadFails]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureFallsBackToFixedValueWhenAvailabilityReadFails]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureMissingLevelReadMapsToUnknownState]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureMissingLevelReadMapsToUnknownState]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureUnknownRawLevelMapsToUnknownState]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureUnknownRawLevelMapsToUnknownState]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureUsesKernelAvailabilityWhenBothReadsSucceed]' started.
+Test Case '-[StatsLiteTests.SystemMetricsParsingTests testPressureUsesKernelAvailabilityWhenBothReadsSucceed]' passed (0.001 seconds).
+Test Suite 'SystemMetricsParsingTests' passed at 2026-10-23 20:04:14.107.
+	 Executed 20 tests, with 0 failures (0 unexpected) in 0.015 (0.020) seconds
+Test Suite 'SystemMetricsProviderContractTests' started at 2026-10-23 20:04:14.108.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultNetworkBytesAreUnavailable]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultNetworkBytesAreUnavailable]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultsWithoutConfigurationReturnUnavailable]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultsWithoutConfigurationReturnUnavailable]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultTemperatureIsUnreadable]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeDefaultTemperatureIsUnreadable]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeProviderHonorsContract]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeProviderHonorsContract]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredNetworkBytes]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredNetworkBytes]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredTemperature]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredTemperature]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredValues]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testFakeReturnsConfiguredValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderHonorsContract]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderHonorsContract]' passed (0.015 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderReadsRealSystemValues]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderReadsRealSystemValues]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderReadsTemperatureOnThisMachine]' started.
+Test Case '-[StatsLiteTests.SystemMetricsProviderContractTests testLiveProviderReadsTemperatureOnThisMachine]' passed (0.007 seconds).
+Test Suite 'SystemMetricsProviderContractTests' passed at 2026-10-23 20:04:14.137.
+	 Executed 10 tests, with 0 failures (0 unexpected) in 0.027 (0.029) seconds
+Test Suite 'SystemMonitorNetworkTests' started at 2026-10-23 20:04:14.137.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testEachNetworkTickAppendsOnePointToBothBuffers]' started.
+2026-10-23 20:04:14.140208+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd5b6b400>
+2026-10-23 20:04:14.140257+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:14.140321+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:2DC03A97-0AC8-48D1-8DD2-31BD59344912-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:14.140340+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd5b3cfa0>
+2026-10-23 20:04:14.140355+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testEachNetworkTickAppendsOnePointToBothBuffers]' passed (3.061 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkBuffersRespectCapacityAndAgeTrim]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkBuffersRespectCapacityAndAgeTrim]' passed (21.143 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOffClearsBothHistoryBuffers]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOffClearsBothHistoryBuffers]' passed (2.027 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOffClearsLatestNetworkAndBase]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOffClearsLatestNetworkAndBase]' passed (4.046 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOnlyFlipDoesNotRestartStandardLoop]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkOnlyFlipDoesNotRestartStandardLoop]' passed (0.177 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkSparklineCapacityForHistoryWindows]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNetworkSparklineCapacityForHistoryWindows]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNilNetworkPassSkipsAppendAndKeepsLastRealSample]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testNilNetworkPassSkipsAppendAndKeepsLastRealSample]' passed (5.270 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testTenRapidNetworkFlipsLeaveExactlyOneRunningLoop]' started.
+Test Case '-[StatsLiteTests.SystemMonitorNetworkTests testTenRapidNetworkFlipsLeaveExactlyOneRunningLoop]' passed (0.045 seconds).
+Test Suite 'SystemMonitorNetworkTests' passed at 2026-10-23 20:04:49.909.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 35.769 (35.772) seconds
+Test Suite 'SystemMonitorProcessSamplingTests' started at 2026-10-23 20:04:49.909.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testCollapseWhileOpenStopsSamplerClearsListsAndReadsZero]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testCollapseWhileOpenStopsSamplerClearsListsAndReadsZero]' passed (0.329 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testFT4LoadingWindowHoldsWhileFirstCPUSampleIsHeldAndClosesWhenItResolves]' passed (0.299 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling]' started.
+2026-10-23 20:04:50.559288+0800 StatsLite[15201:133621157] [General] Accessibility: Not vending elements because elementWindow(25) is lower than shield(2001)
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling]' passed (3.549 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverContentDisappearStopsProcessSampling]' started.
+2026-10-23 20:04:54.087315+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected scene <NSStatusItemScene: 0x7cd6771000>
+2026-10-23 20:04:54.087358+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+2026-10-23 20:04:54.087411+0800 StatsLite[15201:133621157] [SceneClient] [com.apple.appkit.status-items:7CED926F-3035-4554-B396-B4FB6E34DC12-Variant[Presentation]] No matching scene to invalidate for this identity.
+2026-10-23 20:04:54.087428+0800 StatsLite[15201:133621157] [StatusBar] Unhandled disconnected variant scene <NSStatusItemVariantScene: 0x7cd65a3ac0>
+2026-10-23 20:04:54.087441+0800 StatsLite[15201:133621157] [Common] [BSBlockSentinel:FBSWorkspaceScenesClient] failed!
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverContentDisappearStopsProcessSampling]' passed (0.408 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingDoesNotRestartStandardLoop]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingDoesNotRestartStandardLoop]' passed (0.198 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStartProcessSamplingReadsProviderAndPublishesCategory]' passed (0.021 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testStopClearsBaseSoRestartDoesNotRateTheGap]' passed (0.279 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2CPUAllNameFailShowsEmptyStateAfterWarmUpPass]' passed (0.279 seconds).
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero]' started.
+Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testVACB2MemoryAllNameFailShowsEmptyStateAfterTickZero]' passed (0.023 seconds).
+Test Suite 'SystemMonitorProcessSamplingTests' passed at 2026-10-23 20:04:55.297.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 5.385 (5.388) seconds
+Test Suite 'TemperatureMetricsTests' started at 2026-10-23 20:04:55.297.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitClampsEachSubsystemIndependently]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitClampsEachSubsystemIndependently]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitClampsOutOfRangeSubsystemValues]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitClampsOutOfRangeSubsystemValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitKeepsMissingSubsystemNil]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitKeepsMissingSubsystemNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitKeepsValuesInsidePlausibleRange]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitKeepsValuesInsidePlausibleRange]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitStoresNonFiniteSubsystemValuesAsUnreadable]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testInitStoresNonFiniteSubsystemValuesAsUnreadable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixBothPresentExposesBothReadings]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixBothPresentExposesBothReadings]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixCPUOnlyLeavesGPURowNil]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixCPUOnlyLeavesGPURowNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixGPUOnlyLeavesCPURowNil]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixGPUOnlyLeavesCPURowNil]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixNeitherIsBothRowsNil]' started.
+Test Case '-[StatsLiteTests.TemperatureMetricsTests testRowMatrixNeitherIsBothRowsNil]' passed (0.000 seconds).
+Test Suite 'TemperatureMetricsTests' passed at 2026-10-23 20:04:55.302.
+	 Executed 9 tests, with 0 failures (0 unexpected) in 0.004 (0.005) seconds
+Test Suite 'TemperatureSamplerGatingTests' started at 2026-10-23 20:04:55.302.
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testAllEnabledSetNeverSamplesTemperature]' started.
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testAllEnabledSetNeverSamplesTemperature]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testCollectSnapshotKeepsTemperatureNilWhenUnreadable]' started.
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testCollectSnapshotKeepsTemperatureNilWhenUnreadable]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testCollectSnapshotSamplesTemperatureWhenEnabled]' started.
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testCollectSnapshotSamplesTemperatureWhenEnabled]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testDisabledTemperatureIsNeverSampled]' started.
+Test Case '-[StatsLiteTests.TemperatureSamplerGatingTests testDisabledTemperatureIsNeverSampled]' passed (0.001 seconds).
+Test Suite 'TemperatureSamplerGatingTests' passed at 2026-10-23 20:04:55.307.
+	 Executed 4 tests, with 0 failures (0 unexpected) in 0.003 (0.005) seconds
+Test Suite 'UpdateCheckFixtureFloorTests' started at 2026-10-23 20:04:55.307.
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testFixtureIgnoresLaunchFloor]' started.
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testFixtureIgnoresLaunchFloor]' passed (0.127 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testLaunchFloorStillThrottlesWithoutFixture]' started.
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testLaunchFloorStillThrottlesWithoutFixture]' passed (1.111 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testStaleEpochRunsRealCheckWithoutFixture]' started.
+Test Case '-[StatsLiteTests.UpdateCheckFixtureFloorTests testStaleEpochRunsRealCheckWithoutFixture]' passed (0.023 seconds).
+Test Suite 'UpdateCheckFixtureFloorTests' passed at 2026-10-23 20:04:56.570.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 1.261 (1.262) seconds
+Test Suite 'UpdateCheckLaunchPolicyTests' started at 2026-10-23 20:04:56.570.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testDismissedFixtureVersionStaysHidden]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testDismissedFixtureVersionStaysHidden]' passed (0.125 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureKeyOverridesPopoverSkip]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureKeyOverridesPopoverSkip]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureKeyWithoutFlagDoesNotSkip]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureKeyWithoutFlagDoesNotSkip]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseIsNilWithoutKey]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseIsNilWithoutKey]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseParsesPlainVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseParsesPlainVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseParsesVPrefixedVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseParsesVPrefixedVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseRejectsMalformedValues]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testFixtureReleaseRejectsMalformedValues]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testNoFlagAndNoFixtureDoesNotSkip]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testNoFlagAndNoFixtureDoesNotSkip]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testPopoverFlagSubstringDoesNotCountAsFlag]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testPopoverFlagSubstringDoesNotCountAsFlag]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testServiceFixturePromptsWithoutTouchingSource]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testServiceFixturePromptsWithoutTouchingSource]' passed (0.133 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testSkipCheckIsTrueWhenPopoverFlagHasNoFixture]' started.
+Test Case '-[StatsLiteTests.UpdateCheckLaunchPolicyTests testSkipCheckIsTrueWhenPopoverFlagHasNoFixture]' passed (0.000 seconds).
+Test Suite 'UpdateCheckLaunchPolicyTests' passed at 2026-10-23 20:04:56.833.
+	 Executed 11 tests, with 0 failures (0 unexpected) in 0.262 (0.264) seconds
+Test Suite 'UpdateCheckPolicyTests' started at 2026-10-23 20:04:56.834.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testDismissedValueWithLeadingVPrefixMatchesLatest]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testDismissedValueWithLeadingVPrefixMatchesLatest]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testDismissedValueWithoutPrefixMatchesVPrefixedLatestTag]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testDismissedValueWithoutPrefixMatchesVPrefixedLatestTag]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testEqualVersionsProduceNone]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testEqualVersionsProduceNone]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerAndNotDismissedPrompts]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerAndNotDismissedPrompts]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerWithDismissedMatchingVersionProducesNone]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerWithDismissedMatchingVersionProducesNone]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerWithDismissedOlderVersionStillPrompts]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testNewerWithDismissedOlderVersionStillPrompts]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testOlderLatestProducesNone]' started.
+Test Case '-[StatsLiteTests.UpdateCheckPolicyTests testOlderLatestProducesNone]' passed (0.001 seconds).
+Test Suite 'UpdateCheckPolicyTests' passed at 2026-10-23 20:04:56.838.
+	 Executed 7 tests, with 0 failures (0 unexpected) in 0.003 (0.004) seconds
+Test Suite 'UpdateCheckServicePersistenceTests' started at 2026-10-23 20:04:56.838.
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testDismissRoundTripPersistsNormalizedVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testDismissRoundTripPersistsNormalizedVersion]' passed (0.023 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testIsDismissedIsFalseWhenNoVersionWasDismissed]' started.
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testIsDismissedIsFalseWhenNoVersionWasDismissed]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testStartCalledTwiceRunsOneCheckLoop]' started.
+Test Case '-[StatsLiteTests.UpdateCheckServicePersistenceTests testStartCalledTwiceRunsOneCheckLoop]' passed (0.225 seconds).
+Test Suite 'UpdateCheckServicePersistenceTests' passed at 2026-10-23 20:04:57.090.
+	 Executed 3 tests, with 0 failures (0 unexpected) in 0.250 (0.252) seconds
+Test Suite 'UpdateCheckSourceTests' started at 2026-10-23 20:04:57.090.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestIgnoresUnknownExtraFields]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestIgnoresUnknownExtraFields]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestParsesThreeKeyFixture]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestParsesThreeKeyFixture]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsOnMalformedJSON]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsOnMalformedJSON]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsWhenHTMLOnlyMissing]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsWhenHTMLOnlyMissing]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsWhenTagNameMissing]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testDecodeLatestThrowsWhenTagNameMissing]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testFakeSourceReturnsNilForSilentFailurePath]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testFakeSourceReturnsNilForSilentFailurePath]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testReleaseInfoEquatableComparesEqualValues]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testReleaseInfoEquatableComparesEqualValues]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testReleaseInfoIsSendable]' started.
+Test Case '-[StatsLiteTests.UpdateCheckSourceTests testReleaseInfoIsSendable]' passed (0.001 seconds).
+Test Suite 'UpdateCheckSourceTests' passed at 2026-10-23 20:04:57.100.
+	 Executed 8 tests, with 0 failures (0 unexpected) in 0.007 (0.010) seconds
+Test Suite 'UpdateCheckVersionTests' started at 2026-10-23 20:04:57.100.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testEqualVersionsAreNotGreater]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testEqualVersionsAreNotGreater]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testMajorTwoIsGreaterThanMajorOne]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testMajorTwoIsGreaterThanMajorOne]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testMinorTenIsGreaterThanMinorNine]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testMinorTenIsGreaterThanMinorNine]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesLowercaseVPrefixedVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesLowercaseVPrefixedVersion]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesPlainVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesPlainVersion]' passed (0.001 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesUppercaseVPrefixedVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testParsesUppercaseVPrefixedVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testPatchOneIsGreaterThanPatchZero]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testPatchOneIsGreaterThanPatchZero]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsEmptyString]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsEmptyString]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsFourComponentVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsFourComponentVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsNonNumericPatchComponent]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsNonNumericPatchComponent]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsNonNumericString]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsNonNumericString]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsSecondLeadingV]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsSecondLeadingV]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsSurroundingWhitespace]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsSurroundingWhitespace]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsTwoComponentVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsTwoComponentVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testRejectsVPrefixedFourComponentVersion]' passed (0.000 seconds).
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' started.
+Test Case '-[StatsLiteTests.UpdateCheckVersionTests testVPrefixedAndPlainParseToEqualVersions]' passed (0.000 seconds).
+Test Suite 'UpdateCheckVersionTests' passed at 2026-10-23 20:04:57.113.
+	 Executed 16 tests, with 0 failures (0 unexpected) in 0.008 (0.013) seconds
+Test Suite 'StatsLiteTests.xctest' passed at 2026-10-23 20:04:57.113.
+	 Executed 390 tests, with 0 failures (0 unexpected) in 65.236 (65.311) seconds
+Test Suite 'All tests' passed at 2026-10-23 20:04:57.114.
+	 Executed 390 tests, with 0 failures (0 unexpected) in 65.236 (65.312) seconds
+2026-10-23 20:05:00.888 xcodebuild[15071:133620826] [MT] IDETestOperationsObserverDebug: 69.469 elapsed -- Testing started completed.
+2026-10-23 20:05:00.888 xcodebuild[15071:133620826] [MT] IDETestOperationsObserverDebug: 0.000 sec, +0.000 sec -- start
+2026-10-23 20:05:00.888 xcodebuild[15071:133620826] [MT] IDETestOperationsObserverDebug: 69.469 sec, +69.469 sec -- end
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t5-verification/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_20-03-50-+0800.xcresult
+
+** TEST SUCCEEDED **
+
+Testing started
