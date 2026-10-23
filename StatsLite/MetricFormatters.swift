@@ -27,6 +27,16 @@ enum MetricFormatters {
         return String(format: "%.1f%%", clamped * 100)
     }
 
+    /// Formats a whole-degree temperature reading: "84°", "-5°",
+    /// "100°". Returns "--°" for a missing or non-finite reading,
+    /// like percent's "--%" placeholder: "nan°" or "inf°" in the
+    /// menu bar is a display defect. The provider clamps readings to
+    /// -20...130 °C; this formatter only rounds.
+    static func degrees(_ value: Double?) -> String {
+        guard let value, value.isFinite else { return "--°" }
+        return "\(Int(value.rounded()))°"
+    }
+
     /// Formats bytes as GB with one decimal: "9.9 GB". Uses binary GB
     /// (1024³) to match how macOS reports physical memory.
     static func gigabytes(_ bytes: UInt64) -> String {
