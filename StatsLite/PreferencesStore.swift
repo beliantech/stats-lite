@@ -62,7 +62,12 @@ final class PreferencesStore {
     /// it stays out of `activeMetricCount` and carries no
     /// last-one-enabled lock, but it does join `enabledMetrics`:
     /// temperature rides `collectSnapshot` through that set (F1).
-    var showTemperature: Bool = true
+    var showTemperature: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            showTemperatureStorage = showTemperature
+        }
+    }
 
     // MARK: - Sampling and history
 
@@ -122,6 +127,7 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("showRAM") private var showRAMStorage: Bool = true
     @ObservationIgnored @AppStorage("showGPU") private var showGPUStorage: Bool = true
     @ObservationIgnored @AppStorage("showNetwork") private var showNetworkStorage: Bool = true
+    @ObservationIgnored @AppStorage("showTemperature") private var showTemperatureStorage: Bool = true
     @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 1
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
     @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
@@ -134,6 +140,7 @@ final class PreferencesStore {
         showRAM = showRAMStorage
         showGPU = showGPUStorage
         showNetwork = showNetworkStorage
+        showTemperature = showTemperatureStorage
         refreshInterval = refreshIntervalStorage
         historyDuration = historyDurationStorage
         showCoreBreakdown = showCoreBreakdownStorage
