@@ -7,7 +7,7 @@
 //
 //  T3-dependent: these tests reference the Phase 3 API
 //  (`EnabledMetrics.temperature` and `SystemSnapshot.temperature`).
-//  They stay red until T3 lands. Do not weaken them in T2 green.
+//  T3 landed the Phase 3 plumbing; these tests pass with it.
 //
 
 import XCTest
