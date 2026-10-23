@@ -80,21 +80,25 @@ enum MenuBarLayout {
 
     /// Total menu bar item length for the enabled metrics. Counts
     /// blocks plus inter-block gaps plus outer padding. The network
-    /// block adds its own width. All metrics off leaves the padding
-    /// alone (4 pt).
+    /// and temperature blocks add their own pinned widths. All
+    /// metrics off leaves the padding alone (4 pt).
     static func length(
         showCPU: Bool,
         showRAM: Bool,
         showGPU: Bool,
-        showNetwork: Bool = false
+        showNetwork: Bool = false,
+        showTemperature: Bool = false
     ) -> CGFloat {
         let metricCount =
             (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
         let totalBlocks = metricCount + (showNetwork ? 1 : 0)
+            + (showTemperature ? 1 : 0)
         let metricLength = CGFloat(metricCount) * blockWidth
         let networkLength = showNetwork ? networkBlockWidth : 0
+        let tempLength = showTemperature ? tempBlockWidth : 0
         let gapsLength = CGFloat(max(totalBlocks - 1, 0)) * gap
-        return 2 * padding + metricLength + networkLength + gapsLength
+        return 2 * padding + metricLength + networkLength + tempLength
+            + gapsLength
     }
 }
 

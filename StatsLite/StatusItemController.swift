@@ -70,7 +70,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
                 showCPU: preferences.showCPU,
                 showRAM: preferences.showRAM,
                 showGPU: preferences.showGPU,
-                showNetwork: preferences.showNetwork
+                showNetwork: preferences.showNetwork,
+                showTemperature: preferences.showTemperature
             )
         )
 
@@ -291,7 +292,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
-            showNetwork: preferences.showNetwork
+            showNetwork: preferences.showNetwork,
+            showTemperature: preferences.showTemperature
         )
     }
 
