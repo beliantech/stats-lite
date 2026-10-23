@@ -57,6 +57,10 @@ final class PreferencesStore {
         }
     }
 
+    /// Temperature row visibility. Ships ON when the key is absent,
+    /// mirroring the `showNetwork` default (F2).
+    var showTemperature: Bool = true
+
     // MARK: - Sampling and history
 
     /// Refresh interval in seconds. The picker offers 1, 2, 3, and 5.
