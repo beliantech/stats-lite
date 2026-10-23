@@ -406,3 +406,203 @@ touches views; E is read-only + merge.
   and stop the sampler (cover with a test in T-C if cheap).
 - If macOS ever exposes per-process GPU stats to unprivileged apps, replace the
   unavailable container with real data.
+
+---
+
+## 10. Fix cycle (reopened 2026-10-23): production defects D1 / D2
+
+Status: reopened — defect report after close. Design authority = Appendix D (below), designer
+visual pass reproduced both defects on the deployed build (`/tmp/designer/shots/`).
+
+User report (with screenshots):
+- **D1**: Top-process rows render `Process NNNNN` instead of real names (4–5 of 5 rows on
+  the Memory card). Requirement: every row shows the real executable name (`node`, `pi`, …).
+- **D2**: GPU card's Top Processes section cannot display anything useful — remove the
+  feature entirely from the GPU card (user directive).
+
+### ISC update (fix cycle)
+
+- D1 hypotheses (oracle/designer claims are priors until measured):
+  - **H1**: the name-lookup budget (≤8 lookups, stop at 5, CPU-first, `MetricSamplerActor.swift:242-255`)
+    is consumed before memory candidates get looked up. Falsification: an instrumented
+    pass while the symptom is active shows the budget exhausted with memory PIDs never
+    looked up.
+  - **H2**: `proc_pid_rusage` succeeds but `proc_pidpath`/`proc_name` genuinely fail for
+    those PIDs. Falsification: instrumented rc/errno log shows real lookup failures on
+    candidates that never consumed the budget.
+  - **Attribution measurement is mandatory before finalizing D1's fix** (evidence-before-
+    hypothesis): one logged scan run capturing per-candidate lookup outcome + budget
+    consumption, saved under `artifacts/2026-10-23-top-processes-breakdown/fix/`.
+    The end-state (Appendix D Part 2) is fixed regardless; the measurement decides whether
+    extra hardening is needed and must be cited in the report.
+- D2: no attribution needed — user directive. Removal list R1–R10, compiler enforces
+  completeness (removing `case gpu` turns strays into build errors).
+
+### Fix tasks (sequential, one reviewer gate over the task pair)
+
+- **T-F (D1)**: attribution run first (H1/H2), then implement Appendix D Part 2 change
+  items 1–4: union-of-both-lists name resolution (≤10 distinct lookups/pass, no early
+  stop, dedup via `nameByPid`), drop unnamed candidates from the pass (never
+  `Process NNNNN`), `pidText` always `"(pid)"`, zero String allocation in the scan loop
+  preserved (T7). RED first: fixture-driven test that reproduces the starvation fallback
+  pre-fix (fails) and asserts both lists ship resolved names + ≤10 lookups.
+- **T-G (D2)**: removal list R1–R10 + test deltas from Appendix D Part 2 (GPU tests
+  replaced by negative source asserts; P11 rewritten; fallback-dedupe test replaced by
+  PID-suffix-on-every-row). RED first: negative assert fails pre-removal.
+- **T-H (verify/merge)**: full suite green; before/after screenshots (memory expanded,
+  GPU card collapsed+expanded, dark+light) vs VAC-B1..B6; reviewer gate; squash merge to
+  `main`; SHA recorded; plan `status: done (fix cycle)`.
+
+Quality gates for the fix cycle: G1 (red evidence per fix), G2 (reviewer GO), G3 (VAC-B
+screenshot table), G5 (suite green), G6 (merge + SHA). VAC-9 is void (replaced by VAC-B3).
+
+
+## Appendix D: Design Fix Blueprint (designer, 2026-10-23 — verbatim)
+
+# Appendix D: Design Fix Blueprint — plan `plans/2026-10-23-top-processes-breakdown.md`
+
+Fix-cycle design authority for two production defects (merge `7803d55`, deployed v1.0.1). No code. The repo has no `DESIGN.md` (confirmed absent, plan §9 follow-up). Tokens come from `DesignTokens.swift` and the inline card fonts, as in plan §4.
+
+**Evidence (visual pass, 2× captures of the deployed build):**
+- `/tmp/designer/shots/dark-memory-expanded.png` — Defect 1 reproduced: all 5 Memory rows read `Process 89644`, `Process 33039`, `Process 43497`, `Process 89190`, `Process 24083`. No name, no PID suffix.
+- `/tmp/designer/shots/light-memory-expanded.png` — Defect 1 mixed state, matches the user report: 4 fallback rows plus one resolved `node (53810)`.
+- `/tmp/designer/shots/dark-gpu-expanded.png`, `light-gpu-expanded.png` — Defect 2 reproduced: GPU card shows `⌄ Top Processes` and the dashed `Per-process GPU metrics unavailable` box.
+- `/tmp/designer/shots/dark-collapsed.png` — collapsed baseline: GPU card carries the 16 pt `› Top Processes` row.
+- Pre-feature GPU form: `artifacts/2026-10-23-top-processes-breakdown/baseline/dark.png` — header, value, sparkline, axis, no disclosure.
+- The user's own screenshots were not in the session artifacts. My captures reproduce both defects.
+
+**Root cause, Defect 1:** `MetricSamplerActor.swift:242-255` resolves names for the top-8 PID candidates and stops at 5 successes, with CPU rows first. The CPU list consumes the whole budget on every pass, so the Memory list starves: 0–1 of 5 rows carry a name. The fallback `"Process \(pid)"` ships at `MetricSamplerActor.swift:203` (CPU row scaffold) and `:260` (Memory coalesce). `TopProcessesView.swift:62-64` then hides the PID suffix on fallback rows, which is why 4 of 5 rows show no `(pid)`.
+
+**Root cause, Defect 2:** task T-D added the GPU disclosure as an "unavailable" placeholder (plan R7, §4.6: "GPU: no existing disclosure; row at end of `body`"). The user wants the whole feature gone from GPU.
+
+---
+
+## Part 1 — Visual Hierarchy & ASCII Wireframe
+
+**Defect 1 — Memory card, expanded, AFTER (target):**
+
+```text
+|  v Top Processes                                                  |
+|  | node (53810)                [========= ]            403 MB    |  |
+|  | com.docker.backend (911)    [=====     ]            351 MB    |  |
+|  | Safari (653)                [====      ]            336 MB    |  |
+|  | WindowServer (188)          [===       ]            267 MB    |  |
+|  | StatsLite (65970)           [==        ]            256 MB    |  |
+```
+
+BEFORE (`dark-memory-expanded.png`): 5 rows of `Process NNNNN`, no `(pid)` suffix. AFTER: every row is `name (pid)`. Same 18 pt row, same 140 / 44×5 / 44 pt columns. Names longer than 140 pt tail-truncate on one line.
+
+**Defect 1 — failure state (any row whose name does not resolve):**
+
+```text
+|  v Top Processes                                                  |
+|  | node (53810)                [========= ]            403 MB    |  |
+|  | Safari (653)                [===       ]            336 MB    |  |
+|  | StatsLite (65970)           [==        ]            256 MB    |  |   ← fewer rows, no blank slots
+```
+
+If every candidate fails: the existing empty line `No process data available` (9.5 pt tertiary), unchanged from R2b. No new copy string exists.
+
+**Defect 2 — GPU card, AFTER (restored pre-feature form, per `baseline/dark.png`):**
+
+```text
+|  [#] GPU Usage                                            13.0% |
+|  ~~~~~~~~~~~~~~~~~~~~~~\_______________________________________ |
+|  -1m                                                        Now |
+```
+
+BEFORE: header, value, sparkline, axis, `› Top Processes` (16 pt), then on expand the dashed box. AFTER: header, value, `SparklineView`, `SparklineTimeAxisView`. Nothing else. The hardware-state branch (`Unavailable` / dashed `GPU metrics unavailable on this hardware` / footnote, `GPUCardView.swift:42-51`) is a pre-feature element and stays.
+
+---
+
+## Part 2 — Template / Component Skeleton + Removal List
+
+**Row contract (unchanged skeleton, exact tokens, `TopProcessesView.swift:74-104`):**
+
+```text
+HStack(spacing: 6) · frame(height: 18)
+  HStack(spacing: 3), frame(width: 140, alignment: .leading)
+    Text(name)      .font(.system(size: 10))            .foregroundStyle(.primary)   .lineLimit(1) .truncationMode(.tail)
+    Text("(pid)")   .font(.system(size: 8.5, design: .monospaced)) .foregroundStyle(.tertiary) .lineLimit(1)
+  gauge  44×5 pt capsule, separatorColor.opacity(0.3) track + tint fill, min 2 pt, .accessibilityHidden(true)
+  Text(valueLabel)  .font(.system(size: 9.5).monospacedDigit()) .foregroundStyle(.secondary) .frame(width: 44, alignment: .trailing)
+```
+
+**Exact copy strings after the fix:**
+
+| String | Status |
+|---|---|
+| `name (pid)` per row, name is the real executable basename | required, every row |
+| `Process NNNNN` | **never renders anywhere** — both producers removed |
+| `Sampling top processes…` | keep (CPU bootstrap only, VAC-13) |
+| `No process data available` | keep (R2b), now also covers total name-failure |
+| `Top Processes`, `Top processes for \(metricTitle)`, `Expanded`/`Collapsed`, `Double-click to expand or collapse the top five active processes.` | keep on CPU and Memory |
+| `Per-process GPU metrics unavailable` | **deleted with the GPU section** |
+
+**Defect 1 change list:**
+1. `StatsLite/MetricSamplerActor.swift:242-255` — replace the `lookups < 8, resolved < 5` budget with: resolve names for the union of the top-5 CPU and top-5 memory PIDs, at most 10 distinct lookups per pass, no early stop, dedup across lists via `nameByPid`. CPU first ordering stays but consumes no exclusive budget. The full-scan loop keeps zero String allocation (T7's real constraint — lookups run after the scan, over ≤10 candidates).
+2. `StatsLite/MetricSamplerActor.swift:257-272` — a candidate with no resolved name is **dropped from that pass's list**, never coalesced to `"Process \(pid)"`. Both `??` fallbacks at `:260` and `:268` go. `:203` becomes internal scaffolding that never publishes (or is replaced by pid-only internal type) — the string must not survive into any published `ProcessMetricItem.name`.
+3. `StatsLite/TopProcessesView.swift:59-64` — `pidText(for:)` always returns `"(\(pid))"`. The fallback-dedupe branch is dead once the fallback is gone.
+4. Why drop beats substitute: a nil from `resolveProcessName` means the PID exited or became unreadable between scan and lookup microseconds earlier, so the row heals or disappears on the next pass. `proc_pid_rusage` already filtered other-UID processes at scan time, so persistent failure is not reachable for a live process. R2b and VAC-8 already permit fewer rows with no blank slots. `Process NNNNN` copy is never acceptable: the user requirement is a real name in every row.
+
+**Defect 2 removal list (exact components, file/line):**
+
+| # | Location | Remove |
+|---|---|---|
+| R1 | `StatsLite/GPUCardView.swift:14` | `@Binding var expandedProcessCategory` |
+| R2 | `StatsLite/GPUCardView.swift:53-60` | `TopProcessesDisclosureButton(isExpanded:… .gpu …)` call |
+| R3 | `StatsLite/GPUCardView.swift:62-67` | `if expandedProcessCategory == .gpu { GPUUnavailableProcessesView().transition(.opacity) }` |
+| R4 | `StatsLite/TopProcessesView.swift:178-206` | `struct GPUUnavailableProcessesView` (whole struct) |
+| R5 | `StatsLite/MetricTypes.swift:305` | `case gpu` of `ProcessCategory` (keep `EnabledMetrics.gpu` at `:189` — different type) |
+| R6 | `StatsLite/MetricTypes.swift:299-301` | `.gpu` line in the `ProcessCategory` doc comment |
+| R7 | `StatsLite/SystemMonitor.swift:290-297` | `guard category != .gpu else { … }` plus doc lines `:283-285` |
+| R8 | `StatsLite/PopoverContentView.swift:42` | `case "gpu": return ProcessCategory.gpu` and `<cpu\|memory\|gpu>` in the doc at `:27-28` |
+| R9 | `StatsLite/PopoverContentView.swift:152` | stale `.gpu` comment in the onChange doc |
+| R10 | `scripts/measure_popover_footprint.sh` | `--expand-processes <cpu\|memory\|gpu>` help → `<cpu\|memory>` (the `gpu` arg becomes inert) |
+
+Keep: `.accessibilityElement(children: .contain)` at `GPUCardView.swift:70` (AMD-3 accessibility fix), `.metricCardStyle()` at `:69`, the hardware-unavailable branch `:42-51`, `StatusItemController.swift:276` `stopProcessSampling()`, and the whole CPU/Memory wiring (`CPUCardView.swift:62-78`, `MemoryPressureCardView.swift:67-83`).
+
+**Test deltas:** delete `ProcessDisclosureTests.swift:132-138` (GPU accordion), `:140-148` (GPU copy pin), `:266-282` (GPU wiring asserts — replace with negative asserts: the GPU card source contains no `TopProcessesDisclosureButton`, no `GPUUnavailableProcessesView`, no `expandedProcessCategory`), `:372-395` (fallback dedupe — replace with "the PID suffix renders on every row"), `SystemMonitorProcessSamplingTests.swift:236-263` (L5 `.gpu`), `MetricProcessSamplerTests.swift:375-416` (P11 — rewrite: ≤10 lookups per pass, every row of **both** lists carries a resolved name, an unnamed candidate drops, all-fail yields the empty list). Removing `case gpu` is the compiler's cleanup checklist: any missed reference fails the build.
+
+---
+
+## Part 3 — State & Responsive Matrix
+
+Popover is fixed 280 pt width (`PopoverContentView.swift:131` `.frame(width: 280)`), content 240 pt. No breakpoints exist; 375 / 768 / 1440 viewports render identical geometry (plan §4.4).
+
+| State | GPU card renders | Memory/CPU list | Height delta vs deployed |
+|---|---|---|---|
+| Collapsed | header, value, sparkline, axis. No disclosure row | `› Top Processes` (+ cue dot at warning/critical) | popover −16 pt |
+| Expanded memory/cpu | same as collapsed | `v Top Processes` + 5 × 18 pt `name (pid)` rows | −16 pt + 94 pt list |
+| GPU "expanded" | state does not exist — no `.gpu` value, no tap target | unaffected | 0 (the deployed +52 pt dashed box is gone) |
+| Loading (CPU bootstrap) | n/a | `Sampling top processes…`, 9.5 pt tertiary, static | unchanged |
+| Name failure on k rows | n/a | 5−k rows, no fallback text, no blank slots | −18 pt per dropped row |
+| All rows failed | n/a | `No process data available`, 9.5 pt tertiary | unchanged (34 pt section) |
+| Focus-visible | n/a | system focus ring on the disclosure button, 16 pt header | unchanged |
+
+Accordion rule R4 is unchanged with two states: `nil | .cpu | .memory`. Hover/active/disabled: buttons stay `.buttonStyle(.plain)` with `.contentShape(Rectangle())`, no underline in any state. Dark/light: dynamic semantic tokens only (`.primary`, `.secondary`, `.tertiary`, `separatorColor`, `systemOrange`, `systemRed`) — my dark and light captures show both appearances correct.
+
+---
+
+## Part 4 — Accessibility (WCAG 2.2) & Interaction Contracts
+
+- Row label becomes real: `node, Process ID 53810, 403 MB` (`TopProcessesView.swift:67-69`). Before the fix a fallback row announced `Process 89644, Process ID 89644, 403 MB` — duplicated noise. After the fix the name and PID are always distinct.
+- Dropping a failed row never leaves a blank slot in the a11y tree. The gauge stays `.accessibilityHidden(true)`.
+- GPU card: header keeps `.accessibilityElement(children: .ignore)` + `summary` label (`GPUCardView.swift:30-31`); root keeps `.children: .contain` (AMD-3). The disclosure leaves the a11y tree with the widget — Tab order becomes CPU disclosure → Memory disclosure → Network. Nothing gets stuck: `expandedProcessCategory` is `@State`, resets on popover close, and with `case gpu` removed no value can point at GPU. Compile-time proof, no runtime guard needed.
+- Copy: no new strings. Deleted string: `Per-process GPU metrics unavailable`. Microcopy unchanged elsewhere.
+- Contrast and focus: unchanged from plan §4.5 (≥4.5:1 text via semantic tokens, system focus ring, Space/Return toggle, Escape closes the popover).
+
+---
+
+## Part 5 — Numbered Visual Acceptance Checklist (delta)
+
+These items scope the fix cycle. **VAC-B3 replaces plan VAC-9** — the GPU unavailable container no longer exists, so VAC-9 is void. All other plan VAC items (1–8, 12, 13) stand. Popover has no breakpoints: "all viewports" means the fixed 280 pt popover at any screen size.
+
+- **VAC-B1** — `MemoryPressureCardView` expanded section, all viewports: every visible row matches `name (pid)` with a real process name. The string `Process <digits>` appears in zero rows. Applies to the CPU list identically. Evidence today: `dark-memory-expanded.png` (5 fallback rows) is the failing before-state.
+- **VAC-B2** — `TopProcessesSectionView`, all viewports: when k of 5 candidates fail name resolution, the list renders 5−k `name (pid)` rows, no blank slots, no fallback text. When all fail, the section shows exactly `No process data available` at 9.5 pt tertiary.
+- **VAC-B3** — `GPUCardView`, all viewports, every state: no `Top Processes` disclosure row and no dashed per-process box. The card renders header (`display` icon, `GPU Usage`, value), sparkline, and `SparklineTimeAxisView` in the available state, or the pre-feature `Unavailable` block in the hardware-unavailable state. Replaces VAC-9. Evidence: `baseline/dark.png` is the target form.
+- **VAC-B4** — Popover container, all viewports: collapsed height shrinks by the removed 16 pt GPU disclosure row versus `dark-collapsed.png`; expanding GPU contributes zero height. The footer `Updated every …s` and version label remain fully visible, never clipped.
+- **VAC-B5** — Process rows with real names, all viewports: each row stays one 18 pt line (36 px at 2× capture), long names tail-truncate inside the 140 pt column, zero wrap, value column right edge and 44×5 gauge unchanged. Hardens plan VAC-5/6/7 against real names.
+- **VAC-B6** — CPU and Memory disclosures, all viewports: collapsed `› Top Processes` with the 4 pt cue dot (VAC-4), expanded `⌄` + 5 rows, loading line (VAC-13), and the cpu↔memory accordion swap render exactly as merged — the fix changes nothing above the GPU card and nothing inside CPU/Memory except row names.
+
+**Answers to the brief, in short:** (1) every row shows `name (pid)`; a failed lookup drops the row for that pass and the next pass heals it, all-fail shows `No process data available`, and `Process NNNNN` is never acceptable anywhere. (2) Yes — `avconferenced (1581)` is exactly the intended §4.2 format, and the defect is only the 4 rows without it. (3) Nothing else in the deployed UI needs adjustment — my dark/light captures show cue dots, axes, truncation, and spacing correct, so no extra changes are designed. (4) GPU returns to the pre-feature header/value/sparkline/axis form per the removal list R1–R10. (5) `.gpu` is removed from `ProcessCategory`, so selection cannot point at GPU and cannot stick. (6) CPU, Memory, and Network are untouched, and the popover height shrinks by 16 pt collapsed plus the 52 pt GPU expansion state disappears.
