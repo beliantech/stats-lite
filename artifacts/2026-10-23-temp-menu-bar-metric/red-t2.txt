@@ -1,0 +1,404 @@
+Command line invocation:
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild test -project StatsLite.xcodeproj -scheme StatsLite -destination platform=macOS,arch=arm64 -derivedDataPath .derivedData CODE_SIGN_IDENTITY=-
+
+Build settings from command line:
+    CODE_SIGN_IDENTITY = -
+
+Build Preparation
+Build task concurrency set to 4 via user default IDEBuildOperationMaxNumberOfConcurrentCompileTasks
+
+note: Using codesigning identity override: -
+ComputePackagePrebuildTargetDependencyGraph
+
+Prepare packages
+
+CreateBuildRequest
+
+SendProjectDescription
+
+CreateBuildOperation
+
+ComputeTargetDependencyGraph
+note: Building targets in dependency order
+note: Target dependency graph (2 targets)
+    Target 'StatsLiteTests' in project 'StatsLite'
+        ➜ Explicit dependency on target 'StatsLite' in project 'StatsLite'
+    Target 'StatsLite' in project 'StatsLite' (no dependencies)
+
+GatherProvisioningInputs
+
+CreateBuildDescription
+
+ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLite.xcodeproj
+    /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache
+
+SwiftDriver StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftDriver -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider -experimental-emit-module-separately -disable-cmo
+
+SwiftCompile normal arm64 Compiling\ BrandStringTests.swift,\ CoreGraphicsSparklineTests.swift,\ CPUTicksTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/BrandStringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CoreGraphicsSparklineTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/BrandStringTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile BrandStringTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CoreGraphicsSparklineTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile CoreGraphicsSparklineTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile CPUTicksTests.swift
+
+SwiftCompile normal arm64 Compiling\ StatsLiteTests.swift,\ StatusItemControllerPopoverTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatsLiteTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatusItemControllerPopoverTests.swift:27:28: warning: use '#selector' instead of explicitly constructing a 'Selector'
+ 25 |     /// AppKit does when the button is clicked.
+ 26 |     private func toggle(_ controller: StatusItemController) {
+ 27 |         controller.perform(Selector(("togglePopover:")), with: nil)
+    |                            `- warning: use '#selector' instead of explicitly constructing a 'Selector'
+ 28 |     }
+ 29 | 
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatsLiteTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile StatsLiteTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile StatusItemControllerPopoverTests.swift
+
+SwiftCompile normal arm64 Compiling\ MetricMathCPUPercentTests.swift,\ MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricMathCPUPercentTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile MetricMathCPUPercentTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile MetricProcessSamplerTests.swift
+
+SwiftEmitModule normal arm64 Emitting\ module\ for\ StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckFixtureFloorTests.swift,\ UpdateCheckLaunchPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckFixtureFloorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckFixtureFloorTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile UpdateCheckFixtureFloorTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile UpdateCheckLaunchPolicyTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling StatsLiteTests.swift, StatusItemControllerPopoverTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ UpdateCheckSourceTests.swift,\ UpdateCheckVersionTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckSourceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckSourceTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile UpdateCheckSourceTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile UpdateCheckVersionTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Emitting module for StatsLiteTests (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftDriver\ Compilation\ Requirements StatsLiteTests normal arm64 com.apple.xcode.tools.swift.compiler (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-Swift-Compilation-Requirements -- /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc -module-name StatsLiteTests -Onone @/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.SwiftFileList -DDEBUG -plugin-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/plugins/testing -enable-experimental-feature DebugDescriptionMacro -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -target arm64-apple-macos14.0 -g -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex -Xfrontend -serialize-debugging-options -profile-coverage-mapping -profile-generate -enable-testing -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Index.noindex/DataStore -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -swift-version 6 -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -c -j18 -enable-batch-mode -incremental -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -output-file-map /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-OutputFileMap.json -save-temps -no-color-diagnostics -explicit-module-build -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -clang-scanner-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex -sdk-module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKExplicitPrecompiledModules -emit-dependencies -emit-module -emit-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -serialize-diagnostics -dependency-scan-serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependency-scan.dia -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -emit-const-values -const-gather-protocols-list /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -emit-objc-header -emit-objc-header-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -working-directory /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider -experimental-emit-module-separately -disable-cmo
+
+SwiftDriverJobDiscovery normal arm64 Compiling MetricMathCPUPercentTests.swift, MetricProcessSamplerTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ TemperatureMetricsTests.swift,\ TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:18:19: error: cannot find 'TemperatureMetrics' in scope
+ 16 | 
+ 17 |     func testInitClampsOutOfRangeSubsystemValues() {
+ 18 |         let hot = TemperatureMetrics(cpuCelsius: 200, gpuCelsius: 150)
+    |                   `- error: cannot find 'TemperatureMetrics' in scope
+ 19 |         XCTAssertEqual(hot.cpuCelsius, 130, "values above 130 clamp at 130 °C")
+ 20 |         XCTAssertEqual(hot.gpuCelsius, 130, "values above 130 clamp at 130 °C")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:22:22: error: cannot find 'TemperatureMetrics' in scope
+ 20 |         XCTAssertEqual(hot.gpuCelsius, 130, "values above 130 clamp at 130 °C")
+ 21 | 
+ 22 |         let frozen = TemperatureMetrics(cpuCelsius: -40, gpuCelsius: -100)
+    |                      `- error: cannot find 'TemperatureMetrics' in scope
+ 23 |         XCTAssertEqual(frozen.cpuCelsius, -20, "values below -20 clamp at -20 °C")
+ 24 |         XCTAssertEqual(frozen.gpuCelsius, -20, "values below -20 clamp at -20 °C")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:28:22: error: cannot find 'TemperatureMetrics' in scope
+ 26 | 
+ 27 |     func testInitKeepsValuesInsidePlausibleRange() {
+ 28 |         let bounds = TemperatureMetrics(cpuCelsius: -20, gpuCelsius: 130)
+    |                      `- error: cannot find 'TemperatureMetrics' in scope
+ 29 |         XCTAssertEqual(bounds.cpuCelsius, -20, "the lower bound stays untouched")
+ 30 |         XCTAssertEqual(bounds.gpuCelsius, 130, "the upper bound stays untouched")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:32:23: error: cannot find 'TemperatureMetrics' in scope
+ 30 |         XCTAssertEqual(bounds.gpuCelsius, 130, "the upper bound stays untouched")
+ 31 | 
+ 32 |         let typical = TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 33 |         XCTAssertEqual(typical.cpuCelsius, 84)
+ 34 |         XCTAssertEqual(typical.gpuCelsius, 61)
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:44:27: error: cannot find 'TemperatureMetrics' in scope
+ 42 |         // NaN would reach the menu bar as "nan°".
+ 43 |         for nonFinite in [Double.nan, .infinity, -Double.infinity] {
+ 44 |             let metrics = TemperatureMetrics(
+    |                           `- error: cannot find 'TemperatureMetrics' in scope
+ 45 |                 cpuCelsius: nonFinite,
+ 46 |                 gpuCelsius: nonFinite
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:60:23: error: cannot find 'TemperatureMetrics' in scope
+ 58 | 
+ 59 |     func testInitClampsEachSubsystemIndependently() {
+ 60 |         let metrics = TemperatureMetrics(cpuCelsius: .nan, gpuCelsius: 61)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 61 |         XCTAssertNil(metrics.cpuCelsius, "a bad CPU read must not poison the GPU row")
+ 62 |         XCTAssertEqual(metrics.gpuCelsius, 61, "the GPU row keeps its reading")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:66:23: error: cannot find 'TemperatureMetrics' in scope
+ 64 | 
+ 65 |     func testInitKeepsMissingSubsystemNil() {
+ 66 |         let cpuOnly = TemperatureMetrics(cpuCelsius: 84, gpuCelsius: nil)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 67 |         XCTAssertNil(cpuOnly.gpuCelsius, "nil subsystem stays nil")
+ 68 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:69:23: error: cannot find 'TemperatureMetrics' in scope
+ 67 |         XCTAssertNil(cpuOnly.gpuCelsius, "nil subsystem stays nil")
+ 68 | 
+ 69 |         let gpuOnly = TemperatureMetrics(cpuCelsius: nil, gpuCelsius: 61)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 70 |         XCTAssertNil(gpuOnly.cpuCelsius, "nil subsystem stays nil")
+ 71 |     }
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:76:23: error: cannot find 'TemperatureMetrics' in scope
+ 74 | 
+ 75 |     func testRowMatrixBothPresentExposesBothReadings() {
+ 76 |         let metrics = TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 77 |         XCTAssertEqual(metrics.cpuCelsius, 84)
+ 78 |         XCTAssertEqual(metrics.gpuCelsius, 61)
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:81:13: error: cannot find 'TemperatureMetrics' in scope
+ 79 |         XCTAssertEqual(
+ 80 |             metrics,
+ 81 |             TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61),
+    |             `- error: cannot find 'TemperatureMetrics' in scope
+ 82 |             "equal readings must build equal values (Equatable)"
+ 83 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:87:23: error: cannot find 'TemperatureMetrics' in scope
+ 85 | 
+ 86 |     func testRowMatrixCPUOnlyLeavesGPURowNil() {
+ 87 |         let metrics = TemperatureMetrics(cpuCelsius: 84, gpuCelsius: nil)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 88 |         XCTAssertEqual(metrics.cpuCelsius, 84)
+ 89 |         XCTAssertNil(metrics.gpuCelsius, "the GPU row renders '--°' from nil")
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:93:23: error: cannot find 'TemperatureMetrics' in scope
+ 91 | 
+ 92 |     func testRowMatrixGPUOnlyLeavesCPURowNil() {
+ 93 |         let metrics = TemperatureMetrics(cpuCelsius: nil, gpuCelsius: 61)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+ 94 |         XCTAssertNil(metrics.cpuCelsius, "the CPU row renders '--°' from nil")
+ 95 |         XCTAssertEqual(metrics.gpuCelsius, 61)
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift:103:23: error: cannot find 'TemperatureMetrics' in scope
+101 |         // renderer maps each nil to the "--°" placeholder
+102 |         // (MetricFormatterDegreesTests, FM-T2-3).
+103 |         let metrics = TemperatureMetrics(cpuCelsius: nil, gpuCelsius: nil)
+    |                       `- error: cannot find 'TemperatureMetrics' in scope
+104 |         XCTAssertNil(metrics.cpuCelsius)
+105 |         XCTAssertNil(metrics.gpuCelsius)
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:20:26: error: cannot find 'TemperatureMetrics' in scope
+18 |     private func makeEnabledProvider() -> FakeSystemMetricsProvider {
+19 |         FakeSystemMetricsProvider(
+20 |             temperature: TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61)
+   |                          `- error: cannot find 'TemperatureMetrics' in scope
+21 |         )
+22 |     }
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:31:45: error: type 'EnabledMetrics' has no member 'temperature'
+29 | 
+30 |         let snapshot = await sampler.collectSnapshot(
+31 |             enabled: [.cpu, .memory, .gpu, .temperature]
+   |                                             `- error: type 'EnabledMetrics' has no member 'temperature'
+32 |         )
+33 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:35:22: error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+33 | 
+34 |         XCTAssertEqual(
+35 |             provider.temperatureSampleCount,
+   |                      `- error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+36 |             1,
+37 |             "an enabled temperature is sampled exactly once per pass"
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:41:13: error: cannot find 'TemperatureMetrics' in scope
+39 |         XCTAssertEqual(
+40 |             snapshot.temperature,
+41 |             TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61),
+   |             `- error: cannot find 'TemperatureMetrics' in scope
+42 |             "the sampled reading lands in the snapshot"
+43 |         )
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:53:45: error: type 'EnabledMetrics' has no member 'temperature'
+51 | 
+52 |         let snapshot = await sampler.collectSnapshot(
+53 |             enabled: [.cpu, .memory, .gpu, .temperature]
+   |                                             `- error: type 'EnabledMetrics' has no member 'temperature'
+54 |         )
+55 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:56:33: error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+54 |         )
+55 | 
+56 |         XCTAssertEqual(provider.temperatureSampleCount, 1)
+   |                                 `- error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+57 |         XCTAssertNil(snapshot.temperature)
+58 |     }
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:73:22: error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+71 | 
+72 |         XCTAssertEqual(
+73 |             provider.temperatureSampleCount,
+   |                      `- error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+74 |             0,
+75 |             "a disabled metric must never reach the provider"
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:77:31: error: value of type 'SystemSnapshot' has no member 'temperature'
+75 |             "a disabled metric must never reach the provider"
+76 |         )
+77 |         XCTAssertNil(snapshot.temperature)
+   |                               `- error: value of type 'SystemSnapshot' has no member 'temperature'
+78 |     }
+79 | 
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:89:33: error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+87 |         let snapshot = await sampler.collectSnapshot(enabled: .all)
+88 | 
+89 |         XCTAssertEqual(provider.temperatureSampleCount, 0)
+   |                                 `- error: value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+90 |         XCTAssertNil(snapshot.temperature)
+91 |     }
+
+/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift:90:31: error: value of type 'SystemSnapshot' has no member 'temperature'
+88 | 
+89 |         XCTAssertEqual(provider.temperatureSampleCount, 0)
+90 |         XCTAssertNil(snapshot.temperature)
+   |                               `- error: value of type 'SystemSnapshot' has no member 'temperature'
+91 |     }
+92 | }
+Failed frontend command:
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swift-frontend -frontend -c /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/BrandStringTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CoreGraphicsSparklineTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/CPUTicksTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/EnabledMetricsGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/FakeSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/HistoryBufferTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/LaunchAtLoginServiceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MenuBarAccessibilityTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MenuBarBlockBuilderTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MenuBarLayoutTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MenuBarRedrawChurnTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MenuBarValueTypographyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricFormatterDegreesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricFormatterHistoryDurationAxisTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricFormatterTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricMathCPUPercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricProcessSamplerTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricSamplerActorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/MetricTypesTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/NetworkSparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/PopoverVersionLabelTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/PreferencesStoreGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/PressurePercentTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SparklineTimeAxisGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SparklineViewTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatsLiteTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/StatusItemControllerPopoverTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SystemMetricsParsingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SystemMetricsProviderContractTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SystemMonitorNetworkTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SystemMonitorProcessSamplingTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift -primary-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckFixtureFloorTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckLaunchPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckPolicyTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckServicePersistenceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckSourceTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/UpdateCheckVersionTests.swift -emit-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.d -emit-const-values-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.swiftconstvalues -emit-reference-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.swiftdeps -serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.dia -emit-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.d -emit-const-values-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.swiftconstvalues -emit-reference-dependencies-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.swiftdeps -serialize-diagnostics-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.dia -target arm64-apple-macos14.0 -disable-cross-import-overlay-search -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libFoundationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#FoundationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libObservationMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#ObservationMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libPreviewsMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#PreviewsMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftMacros -load-resolved-plugin /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib/swift/host/plugins/libSwiftUIMacros.dylib\#/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/bin/swift-plugin-server\#SwiftUIMacros -disable-implicit-swift-modules -Xcc -fno-implicit-modules -Xcc -fno-implicit-module-maps -explicit-swift-module-map-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-dependencies-1.json -Xllvm -aarch64-use-tbi -enable-objc-interop -stack-check -sdk /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX27.0.sdk -I /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -Isystem /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/usr/lib -F /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug -F /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/Library/Frameworks -module-cache-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules -no-color-diagnostics -Xcc -fno-color-diagnostics -enable-testing -g -debug-info-format\=dwarf -dwarf-version\=4 -profile-generate -profile-coverage-mapping -swift-version 6 -Onone -D DEBUG -serialize-debugging-options -enable-experimental-feature DebugDescriptionMacro -empty-abi-descriptor -validate-clang-modules-once -clang-build-session-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/ModuleCache.noindex/Session.modulevalidation -Xcc -working-directory -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider -enable-anonymous-context-mangled-names -file-compilation-dir /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider -Xcc -D_LIBCPP_HARDENING_MODE\=_LIBCPP_HARDENING_MODE_DEBUG -Xcc -ivfsstatcache -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKStatCaches.noindex/macosx27.0-26A425-7231f6df4def33e022ae2eb8f782df1a.sdkstatcache -Xcc -fmodules-prune-interval\=86400 -Xcc -fmodules-prune-after\=345600 -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-generated-files.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-own-target-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-all-target-headers.hmap -Xcc -iquote -Xcc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/StatsLiteTests-project-headers.hmap -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/include -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources-normal/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/arm64 -Xcc -I/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources -Xcc -DDEBUG\=1 -no-auto-bridging-header-chaining -module-name StatsLiteTests -const-gather-protocols-file /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests_const_extract_protocols.json -disable-clang-spi -clang-target arm64-apple-macos27.0 -target-sdk-version 27.0 -target-sdk-name macosx27.0 -in-process-plugin-server-path /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/lib/swift/host/libSwiftInProcPluginServer.dylib -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.o -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.o -debug-module-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureMetricsTests.o -index-unit-output-path /StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/TemperatureSamplerGatingTests.o -index-store-path /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Index.noindex/DataStore -index-system-modules
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile TemperatureMetricsTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile TemperatureSamplerGatingTests.swift
+
+SwiftMergeGeneratedHeaders /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-swiftHeaderTool -arch arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests-Swift.h -o /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/DerivedSources/StatsLiteTests-Swift.h
+
+SwiftDriverJobDiscovery normal arm64 Compiling BrandStringTests.swift, CoreGraphicsSparklineTests.swift, CPUTicksTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftmodule /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftmodule
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftdoc /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.swiftdoc
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.abi.json /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/arm64-apple-macos.abi.json
+
+Copy /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-copy -exclude .DS_Store -exclude CVS -exclude .svn -exclude .git -exclude .hg -resolve-src-symlinks -rename /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/StatsLite.build/Debug/StatsLiteTests.build/Objects-normal/arm64/StatsLiteTests.swiftsourceinfo /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Products/Debug/StatsLiteTests.swiftmodule/Project/arm64-apple-macos.swiftsourceinfo
+
+SwiftCompile normal arm64 Compiling\ EnabledMetricsGuardTests.swift,\ FakeSystemMetricsProvider.swift,\ HistoryBufferTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/EnabledMetricsGuardTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/FakeSystemMetricsProvider.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/HistoryBufferTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/EnabledMetricsGuardTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile EnabledMetricsGuardTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/FakeSystemMetricsProvider.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile FakeSystemMetricsProvider.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/HistoryBufferTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile HistoryBufferTests.swift
+
+SwiftDriverJobDiscovery normal arm64 Compiling UpdateCheckSourceTests.swift, UpdateCheckVersionTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 Compiling\ ProcessDisclosureTests.swift,\ SettingsWindowTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/ProcessDisclosureTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/ProcessDisclosureTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile ProcessDisclosureTests.swift
+
+SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/SettingsWindowTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+    cd /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider
+    builtin-SwiftPerFileCompile SettingsWindowTests.swift
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/ExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Build/Intermediates.noindex/SwiftExplicitPrecompiledModules
+
+PruneExplicitPrecompiledModules /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/SDKExplicitPrecompiledModules
+
+
+Test session results, code coverage, and logs:
+	/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/.derivedData/Logs/Test/Test-StatsLite-2026.10.23_17-26-00-+0800.xcresult
+
+Testing failed:
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Cannot find 'TemperatureMetrics' in scope
+	Type 'EnabledMetrics' has no member 'temperature'
+	Value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+	Cannot find 'TemperatureMetrics' in scope
+	Type 'EnabledMetrics' has no member 'temperature'
+	Value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+	Value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+	Value of type 'SystemSnapshot' has no member 'temperature'
+	Value of type 'FakeSystemMetricsProvider' has no member 'temperatureSampleCount'
+	Value of type 'SystemSnapshot' has no member 'temperature'
+	Testing cancelled because the build failed.
+
+** TEST FAILED **
+
+
+The following build commands failed:
+	SwiftCompile normal arm64 Compiling\ TemperatureMetricsTests.swift,\ TemperatureSamplerGatingTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureMetricsTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	SwiftCompile normal arm64 /Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-23-temp-menu-bar-metric-t2-types-provider/StatsLiteTests/TemperatureSamplerGatingTests.swift (in target 'StatsLiteTests' from project 'StatsLite')
+	Testing project StatsLite with scheme StatsLite
+(4 failures)

@@ -67,6 +67,59 @@ final class SystemMetricsProviderContractTests: XCTestCase {
         XCTAssertEqual(provider.networkSampleCount, 1)
     }
 
+    // MARK: - Temperature (FM-T2-4, FM-T2-5)
+
+    func testFakeReturnsConfiguredTemperature() {
+        let temperature = TemperatureMetrics(cpuCelsius: 84, gpuCelsius: 61)
+        let provider = FakeSystemMetricsProvider(temperature: temperature)
+
+        XCTAssertEqual(provider.sampleTemperature(), temperature)
+        XCTAssertEqual(provider.sampleTemperature(), temperature)
+        XCTAssertEqual(
+            provider.temperatureSampleCount,
+            2,
+            "every sampleTemperature() call increments the counter (FM-T2-5)"
+        )
+    }
+
+    func testFakeDefaultTemperatureIsUnreadable() {
+        let provider = FakeSystemMetricsProvider()
+
+        XCTAssertNil(
+            provider.sampleTemperature(),
+            "nil means unreadable: no throw and no crash (FM-T2-4)"
+        )
+        XCTAssertEqual(
+            provider.temperatureSampleCount,
+            1,
+            "an unreadable call still counts (FM-T2-5)"
+        )
+    }
+
+    func testLiveProviderReadsTemperatureOnThisMachine() throws {
+        let provider = LiveSystemMetricsProvider()
+
+        // Phase 0 H1 measured 24 readable CPU keys on this machine
+        // (artifacts/2026-10-23-temp-menu-bar-metric/phase0-report.md),
+        // so a nil here means the SMC route broke (FM-T2-4: returns
+        // values when readable). The GPU subsystem stays optional: no
+        // key classified GPU-side in Phase 0.
+        let temperature = try XCTUnwrap(
+            provider.sampleTemperature(),
+            "AppleSMC must expose at least the CPU die sensors"
+        )
+        let cpu = try XCTUnwrap(
+            temperature.cpuCelsius,
+            "the CPU row must read on this machine (Phase 0 H1)"
+        )
+        XCTAssertTrue(cpu.isFinite)
+        XCTAssertTrue((-20...130).contains(cpu), "stored values clamp to -20...130 °C")
+        if let gpu = temperature.gpuCelsius {
+            XCTAssertTrue(gpu.isFinite)
+            XCTAssertTrue((-20...130).contains(gpu))
+        }
+    }
+
     // MARK: - Shared contract
 
     func testFakeProviderHonorsContract() throws {
@@ -201,6 +254,30 @@ final class SystemMetricsProviderContractTests: XCTestCase {
             _ = network.bytesOut
         }
         _ = provider.sampleNetworkBytes()
+
+        // Temperature: nil means both subsystems are unreadable (the
+        // nil-contract, no throw and no trap). A present sample carries
+        // finite values inside the -20...130 °C range, and a repeat
+        // read must not trap.
+        if let temperature = provider.sampleTemperature() {
+            if let cpu = temperature.cpuCelsius {
+                XCTAssertTrue(
+                    cpu.isFinite && (-20...130).contains(cpu),
+                    "cpu \(cpu) °C must be finite and inside -20...130",
+                    file: file,
+                    line: line
+                )
+            }
+            if let gpu = temperature.gpuCelsius {
+                XCTAssertTrue(
+                    gpu.isFinite && (-20...130).contains(gpu),
+                    "gpu \(gpu) °C must be finite and inside -20...130",
+                    file: file,
+                    line: line
+                )
+            }
+        }
+        _ = provider.sampleTemperature()
 
         let pressure = provider.sampleMemoryPressure()
         XCTAssertTrue(
