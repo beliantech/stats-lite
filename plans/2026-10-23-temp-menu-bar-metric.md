@@ -8,7 +8,7 @@
 - [x] **T1** — Phase 0 SMC probe + H1/H2 measurement gate. green `fa6b697` (rebased `3b71025`/`9bef218`/`fa6b697`; H1 GO, H2 GO)
 - [x] **T1b** — baseline dark/light screenshots before first code edit. green `a458ed1`
 - [x] **T2** — Phase 1+2: `TemperatureMetrics`, degrees formatter, `sampleTemperature()` on provider + SMC impl in `LiveSystemMetricsProvider`, fake conformance, contract tests. red `667b04a` · green `7cd7b82` (rebased; suite 369/0) · review GO
-- [ ] **T3** — Phase 3 remainder: `PreferencesStore.showTemperature` + `enabledMetrics` insert (F1 critical) + `@AppStorage` seeding. (Bleed already merged in T2: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` joined into `==`, `collectSnapshot` gating.) red ⏳ · green ⏳ · review ⏳
+- [x] **T3** — Phase 3 remainder: `PreferencesStore.showTemperature` + `enabledMetrics` insert (F1 critical) + `@AppStorage` seeding. (Bleed already merged in T2: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` joined into `==`, `collectSnapshot` gating.) red `0488f27` · green `09dd330` (suite 375/0) · review GO
 - [ ] **T4** — Phase 4: `MenuBarBlockKind.temp`, two-row `MenuBarTempBlockView`, layout/width/accessibility/SettingsView toggle wiring (blueprint verbatim). red ⏳ · green ⏳ · review ⏳
 - [ ] **T5** — Phase 5: 32-permutation guards, equality/gating/width tests + VAC verification (dark/light vs baseline). red ⏳ · green ⏳ · review ⏳
 
