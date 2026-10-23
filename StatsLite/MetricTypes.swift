@@ -160,6 +160,31 @@ struct GPUMetrics: Sendable, Equatable {
     }
 }
 
+/// CPU and GPU die temperatures in degrees Celsius (plan
+/// 2026-10-23-temp-menu-bar-metric, Phase 1). A subsystem with no
+/// readable sensor is nil, so the renderer maps that row to "--°".
+struct TemperatureMetrics: Sendable, Equatable {
+    /// CPU die temperature in °C. Nil when the CPU row is unreadable.
+    var cpuCelsius: Double?
+
+    /// GPU die temperature in °C. Nil when the GPU row is unreadable.
+    var gpuCelsius: Double?
+
+    init(cpuCelsius: Double?, gpuCelsius: Double?) {
+        self.cpuCelsius = Self.sanitized(cpuCelsius)
+        self.gpuCelsius = Self.sanitized(gpuCelsius)
+    }
+
+    /// A non-finite decode is not a reading: it maps to nil. The
+    /// guard runs before the clamp because NaN survives a plain
+    /// `min(max(value, -20), 130)`. A finite value clamps to the
+    /// plausible -20...130 °C band (GPUMetrics clamp style).
+    private static func sanitized(_ value: Double?) -> Double? {
+        guard let value, value.isFinite else { return nil }
+        return min(max(value, -20), 130)
+    }
+}
+
 /// Cumulative byte counters for one network sample: bytes received and
 /// bytes sent across all non-loopback interfaces. Like CPU ticks, the
 /// values only make sense as a delta against a previous sample.
