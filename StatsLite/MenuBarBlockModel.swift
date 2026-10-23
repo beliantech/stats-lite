@@ -29,6 +29,7 @@ enum MenuBarBlockKind: Hashable {
     case cpu
     case ram
     case gpu
+    case temp
     case network
 }
 
@@ -97,9 +98,9 @@ enum MenuBarLayout {
     }
 }
 
-/// Builds the visible blocks in CPU, MEM, GPU, NET order. Nil and
-/// non-finite values become "--%" or "-- KB/s" with a tertiary tint.
-/// Out-of-range values clamp through MetricFormatters.
+/// Builds the visible blocks in CPU, MEM, GPU, TEMP, NET order. Nil
+/// and non-finite values become "--%", "-- KB/s", or "--°" with a
+/// tertiary tint. Out-of-range values clamp through MetricFormatters.
 enum MenuBarBlockBuilder {
 
     static func blocks(
@@ -107,10 +108,12 @@ enum MenuBarBlockBuilder {
         showRAM: Bool,
         showGPU: Bool,
         showNetwork: Bool = false,
+        showTemperature: Bool = false,
         cpuPercent: Double?,
         pressurePercent: Double?,
         pressureState: MemoryPressureState?,
         gpuPercent: Double?,
+        temperature: TemperatureMetrics? = nil,
         downloadRate: Double? = nil,
         uploadRate: Double? = nil
     ) -> [MenuBarBlock] {
@@ -157,6 +160,34 @@ enum MenuBarBlockBuilder {
                     valueText: MetricFormatters.percent(gpuPercent),
                     valueTint: usageTint(gpuPercent),
                     width: MenuBarLayout.blockWidth
+                )
+            )
+        }
+
+        if showTemperature {
+            // The temp block mirrors the network two-row field
+            // mapping: valueText carries the top row ("CPU 84°"),
+            // secondaryValueText the bottom row ("GPU 61°"), and the
+            // label stays empty because each row carries its own
+            // subsystem prefix. Whole-degree rendering comes from
+            // MetricFormatters.degrees, applied per row to the
+            // TemperatureMetrics clamp output (never bypassed). An
+            // unreadable subsystem renders "--°" and tints its own
+            // row tertiary — never "0°", never a hidden block
+            // (VAC-4). Width pins to tempBlockWidth, so readings
+            // never resize the item (VAC-9).
+            let cpuCelsius = temperature?.cpuCelsius
+            let gpuCelsius = temperature?.gpuCelsius
+            blocks.append(
+                MenuBarBlock(
+                    kind: .temp,
+                    label: "",
+                    dotState: nil,
+                    valueText: "CPU " + MetricFormatters.degrees(cpuCelsius),
+                    valueTint: cpuCelsius == nil ? .tertiary : .primary,
+                    width: MenuBarLayout.tempBlockWidth,
+                    secondaryValueText: "GPU " + MetricFormatters.degrees(gpuCelsius),
+                    secondaryValueTint: gpuCelsius == nil ? .tertiary : .primary
                 )
             )
         }
