@@ -58,7 +58,10 @@ final class PreferencesStore {
     }
 
     /// Temperature row visibility. Ships ON when the key is absent,
-    /// mirroring the `showNetwork` default (F2).
+    /// mirroring the `showNetwork` default (F2). Like `showNetwork`
+    /// it stays out of `activeMetricCount` and carries no
+    /// last-one-enabled lock, but it does join `enabledMetrics`:
+    /// temperature rides `collectSnapshot` through that set (F1).
     var showTemperature: Bool = true
 
     // MARK: - Sampling and history
