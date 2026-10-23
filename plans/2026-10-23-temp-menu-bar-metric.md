@@ -1,7 +1,18 @@
 # Plan: TEMP menu-bar metric (two-row, CPU/GPU die sensors)
 
 **Plan ID:** 2026-10-23-temp-menu-bar-metric
-**Status:** APPROVED (user, 2026-10-23) — plan-review GO (F1-F4 folded in)
+**Status:** IN PROGRESS — Phase 0 merged (`fa6b697`), baseline captured (`a458ed1`)
+
+## Tasks
+
+- [x] **T1** — Phase 0 SMC probe + H1/H2 measurement gate. green `fa6b697` (rebased `3b71025`/`9bef218`/`fa6b697`; H1 GO, H2 GO)
+- [x] **T1b** — baseline dark/light screenshots before first code edit. green `a458ed1`
+- [ ] **T2** — Phase 1+2: `TemperatureMetrics`, degrees formatter, `sampleTemperature()` on provider + SMC impl in `LiveSystemMetricsProvider`, fake conformance, contract tests. red ⏳ · green ⏳ · review ⏳
+- [ ] **T3** — Phase 3: `EnabledMetrics.temperature`, `SystemSnapshot.temperature` (joined into `==`), `collectSnapshot` gating, `PreferencesStore.showTemperature` (enabledMetrics insert per F1 + network carve-out). red ⏳ · green ⏳ · review ⏳
+- [ ] **T4** — Phase 4: `MenuBarBlockKind.temp`, two-row `MenuBarTempBlockView`, layout/width/accessibility/SettingsView toggle wiring (blueprint verbatim). red ⏳ · green ⏳ · review ⏳
+- [ ] **T5** — Phase 5: 32-permutation guards, equality/gating/width tests + VAC verification (dark/light vs baseline). red ⏳ · green ⏳ · review ⏳
+
+Note: GPU-side keys unproven (0 in band; Tg* +10.2..10.5°C directional) — GPU row uses `Tg08`/`Tg0O`+ family as candidates, `--°` fallback load-bearing, support statement in Phase 0 report.
 **Risk class:** R1 (new data source + UI ordering edit + undocumented API usage)
 
 ## Goal
