@@ -211,6 +211,14 @@ struct EnabledMetrics: OptionSet, Sendable, Equatable {
     static let cpu = EnabledMetrics(rawValue: 1 << 0)
     static let memory = EnabledMetrics(rawValue: 1 << 1)
     static let gpu = EnabledMetrics(rawValue: 1 << 2)
+
+    /// Temperature rides a separate insert from `showTemperature`
+    /// (plan Phase 3): `.all` must not include it, so the default set
+    /// never samples the SMC.
+    static let temperature = EnabledMetrics(rawValue: 1 << 3)
+
+    /// The default set. Temperature stays out: it rides the separate
+    /// `showTemperature` insert (tests pin this).
     static let all: EnabledMetrics = [.cpu, .memory, .gpu]
 }
 
@@ -232,16 +240,20 @@ struct SystemSnapshot: Sendable, Equatable {
     var memory: MemoryMetrics?
     var memoryPressure: MemoryPressureMetrics?
     var gpu: GPUMetrics?
+    var temperature: TemperatureMetrics?
 
     /// Equality covers the metric payload only. `timestamp` changes on
     /// every tick, so it must not take part: `.onChange(of:)` fires only
-    /// when an enabled metric value actually changed (AC-7).
+    /// when an enabled metric value actually changed (AC-7). A missing
+    /// `temperature` term would freeze the menu bar on temperature-only
+    /// changes (plan Phase 3).
     static func == (lhs: SystemSnapshot, rhs: SystemSnapshot) -> Bool {
         lhs.enabled == rhs.enabled
             && lhs.cpu == rhs.cpu
             && lhs.memory == rhs.memory
             && lhs.memoryPressure == rhs.memoryPressure
             && lhs.gpu == rhs.gpu
+            && lhs.temperature == rhs.temperature
     }
 
     init(
@@ -250,7 +262,8 @@ struct SystemSnapshot: Sendable, Equatable {
         cpu: CPUMetrics? = nil,
         memory: MemoryMetrics? = nil,
         memoryPressure: MemoryPressureMetrics? = nil,
-        gpu: GPUMetrics? = nil
+        gpu: GPUMetrics? = nil,
+        temperature: TemperatureMetrics? = nil
     ) {
         self.timestamp = timestamp
         self.enabled = enabled
@@ -258,6 +271,7 @@ struct SystemSnapshot: Sendable, Equatable {
         self.memory = enabled.contains(.memory) ? memory : nil
         self.memoryPressure = enabled.contains(.memory) ? memoryPressure : nil
         self.gpu = enabled.contains(.gpu) ? gpu : nil
+        self.temperature = enabled.contains(.temperature) ? temperature : nil
     }
 }
 

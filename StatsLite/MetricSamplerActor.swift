@@ -35,6 +35,7 @@ actor MetricSamplerActor {
         var memory: MemoryMetrics?
         var memoryPressure: MemoryPressureMetrics?
         var gpu: GPUMetrics?
+        var temperature: TemperatureMetrics?
 
         if enabled.contains(.cpu) {
             // A failed read returns nil and keeps the tick base so the
@@ -57,12 +58,19 @@ actor MetricSamplerActor {
             gpu = provider.sampleGPU()
         }
 
+        // Temperature is instantaneous (plan Phase 3): no delta base.
+        // A disabled temperature never reaches the provider.
+        if enabled.contains(.temperature) {
+            temperature = provider.sampleTemperature()
+        }
+
         return SystemSnapshot(
             enabled: enabled,
             cpu: cpu,
             memory: memory,
             memoryPressure: memoryPressure,
-            gpu: gpu
+            gpu: gpu,
+            temperature: temperature
         )
     }
 
