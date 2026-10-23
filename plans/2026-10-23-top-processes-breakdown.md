@@ -13,7 +13,7 @@ inside the existing menu-bar popover, without opening Activity Monitor.
 Goal: add a `Top Processes` disclosure to the CPU and Memory metric cards. Expanding it
 shows the top 5 processes by instantaneous CPU % (or by memory footprint). The GPU card
 shows a graceful "unavailable" state because macOS restricts per-process GPU attribution
-for unprivileged apps.
+for unprivileged apps. **[Superseded by §10 D2: the GPU section is removed entirely.]**
 
 Scope:
 - In scope: per-process sampling subsystem (libproc), lazy start/stop tied to disclosure
@@ -45,7 +45,8 @@ User-facing behavior:
   (1/2/3/5 s).
 - R6. Memory first-expand renders on tick 0 (no delta needed).
 - R7. GPU disclosure expands to the dashed unavailable container:
-  "Per-process GPU metrics unavailable".
+  "Per-process GPU metrics unavailable". **[Superseded by §10 D2 — do not restore;
+  Appendix D R1–R10 removes the GPU section entirely.]**
 - R8. Expansion state resets on popover close (existing `@State` reset semantics,
   `StatsLite/StatusItemController.swift:261-269`).
 
@@ -298,7 +299,8 @@ G1. TDD red → green. UI task with a logic core:
 - RED first (commit or artifact) for: `MetricSamplerActor` process-delta logic (PID reuse
   rejection, zombie skip, counter rollback), `SystemMonitor` start/stop lifecycle (loop
   isolation: `standardLoopGeneration` unchanged), disclosure accordion state, and the
-  GPU-unavailable branch. Red evidence = failing test output.
+  GPU-unavailable branch (the GPU-unavailable red item is **superseded by §10 D2** — the
+  fix cycle removes that branch instead). Red evidence = failing test output.
 - Visual red evidence = pre-edit baseline screenshots from `scripts/capture_baseline.sh`
   (dark + light), captured before the first code edit.
 - Functional (non-screenshot) red evidence — automated XCTests under G1/G5:
@@ -422,36 +424,53 @@ User report (with screenshots):
 
 ### ISC update (fix cycle)
 
-- D1 hypotheses (oracle/designer claims are priors until measured):
-  - **H1**: the name-lookup budget (≤8 lookups, stop at 5, CPU-first, `MetricSamplerActor.swift:242-255`)
-    is consumed before memory candidates get looked up. Falsification: an instrumented
-    pass while the symptom is active shows the budget exhausted with memory PIDs never
-    looked up.
-  - **H2**: `proc_pid_rusage` succeeds but `proc_pidpath`/`proc_name` genuinely fail for
-    those PIDs. Falsification: instrumented rc/errno log shows real lookup failures on
-    candidates that never consumed the budget.
+- D1 hypotheses with falsification signatures and action mapping (oracle/designer claims
+  are priors until measured):
+  - **H1 (budget starvation)**: if the ≤8/5-first lookup budget is consumed by CPU
+    candidates, THEN an instrumented pass while the symptom is active shows the budget
+    exhausted with memory candidates never looked up. H1 is **dead** if memory candidates
+    receive lookups yet names still come back missing.
+  - **H2 (genuine lookup failure)**: if `proc_pidpath`/`proc_name` genuinely fail on
+    those PIDs, THEN the instrumented log shows rc≠0 / zero-byte results on candidates
+    that were looked up. H2 is **dead** if looked-up candidates succeed but names are
+    still absent from the published rows.
+  - **Outcome → action**: H1 only → Appendix D Part 2 item 1 (union budget) suffices;
+    H2 only → item 3 (drop unnamed rows) applies and the rc/errno cause must be reported
+    to the user as the D1 root cause; both → both items; neither → the measurement is
+    invalid, re-run it before any code edit (plan stops).
   - **Attribution measurement is mandatory before finalizing D1's fix** (evidence-before-
     hypothesis): one logged scan run capturing per-candidate lookup outcome + budget
     consumption, saved under `artifacts/2026-10-23-top-processes-breakdown/fix/`.
-    The end-state (Appendix D Part 2) is fixed regardless; the measurement decides whether
-    extra hardening is needed and must be cited in the report.
 - D2: no attribution needed — user directive. Removal list R1–R10, compiler enforces
   completeness (removing `case gpu` turns strays into build errors).
+- **VAC-B2 reachability (reviewer item 3)**: the loading line must not persist beyond the
+  first completed sampling pass for the active category. After that pass, an empty list
+  renders `No process data available` — never a stuck `Sampling top processes…`. This
+  tightens the T-C loading contract (`isSamplingProcesses && list.isEmpty`) and needs a
+  regression test: memory category + all-name-fail → empty-state copy, not loading copy.
 
 ### Fix tasks (sequential, one reviewer gate over the task pair)
 
-- **T-F (D1)**: attribution run first (H1/H2), then implement Appendix D Part 2 change
-  items 1–4: union-of-both-lists name resolution (≤10 distinct lookups/pass, no early
-  stop, dedup via `nameByPid`), drop unnamed candidates from the pass (never
+- **T-F (D1)**: capture the pre-edit baseline first (G1: memory expanded + GPU card +
+  collapsed, dark+light → `artifacts/2026-10-23-top-processes-breakdown/fix/baseline-before/`),
+  then the attribution run (H1/H2 outcome matrix above), then implement Appendix D Part 2
+  change items 1–4: union-of-both-lists name resolution (≤10 distinct lookups/pass, no
+  early stop, dedup via `nameByPid`), drop unnamed candidates from the pass (never
   `Process NNNNN`), `pidText` always `"(pid)"`, zero String allocation in the scan loop
-  preserved (T7). RED first: fixture-driven test that reproduces the starvation fallback
-  pre-fix (fails) and asserts both lists ship resolved names + ≤10 lookups.
-- **T-G (D2)**: removal list R1–R10 + test deltas from Appendix D Part 2 (GPU tests
-  replaced by negative source asserts; P11 rewritten; fallback-dedupe test replaced by
-  PID-suffix-on-every-row). RED first: negative assert fails pre-removal.
-- **T-H (verify/merge)**: full suite green; before/after screenshots (memory expanded,
-  GPU card collapsed+expanded, dark+light) vs VAC-B1..B6; reviewer gate; squash merge to
-  `main`; SHA recorded; plan `status: done (fix cycle)`.
+  preserved (T7). **T-F also owns the Appendix D test deltas for D1** — the P11 rewrite
+  (`MetricProcessSamplerTests.swift:375-416`) and the fallback-dedupe replacement
+  (`ProcessDisclosureTests.swift:372-395`) — because T-F's changes break them; plus the
+  VAC-B2 loading-window regression test from §10 ISC. RED first: fixture-driven test that
+  reproduces the starvation fallback pre-fix (fails) and asserts both lists ship resolved
+  names + ≤10 lookups.
+- **T-G (D2)**: removal list R1–R10 + the GPU-only test deltas from Appendix D Part 2
+  (GPU accordion/copy/wiring tests replaced by negative source asserts). RED first:
+  negative assert fails pre-removal.
+- **T-H (verify/merge)**: full suite green; before/after screenshots — memory expanded,
+  CPU expanded, GPU card collapsed+expanded, cue dot, accordion swap (loading line: FT-4/
+  regression-test evidence suffices), dark+light — vs VAC-B1..B6, with the pre-edit
+  baseline from T-F as the VAC-B4 before-state (designer `/tmp` shots do not count);
+  reviewer gate; squash merge to `main`; SHA recorded; plan `status: done (fix cycle)`.
 
 Quality gates for the fix cycle: G1 (red evidence per fix), G2 (reviewer GO), G3 (VAC-B
 screenshot table), G5 (suite green), G6 (merge + SHA). VAC-9 is void (replaced by VAC-B3).
