@@ -37,6 +37,8 @@ struct MenuBarStackedItemView: View {
             ForEach(blocks, id: \.kind) { block in
                 if block.kind == .network {
                     MenuBarNetworkBlockView(block: block)
+                } else if block.kind == .temp {
+                    MenuBarTempBlockView(block: block)
                 } else {
                     MenuBarBlockView(block: block)
                 }
@@ -76,18 +78,20 @@ struct MenuBarStackedItemView: View {
         }
     }
 
-    /// Blocks for the enabled metrics in CPU, RAM, GPU, NET order,
-    /// from the latest snapshot values.
+    /// Blocks for the enabled metrics in CPU, RAM, GPU, TEMP, NET
+    /// order, from the latest snapshot values.
     private var blocks: [MenuBarBlock] {
         MenuBarBlockBuilder.blocks(
             showCPU: preferences.showCPU,
             showRAM: preferences.showRAM,
             showGPU: preferences.showGPU,
             showNetwork: preferences.showNetwork,
+            showTemperature: preferences.showTemperature,
             cpuPercent: snapshot?.cpu?.totalUsage,
             pressurePercent: snapshot?.memoryPressure?.pressurePercentage,
             pressureState: snapshot?.memoryPressure?.state,
             gpuPercent: snapshot?.gpu?.deviceUtilization,
+            temperature: snapshot?.temperature,
             downloadRate: monitor.latestNetwork?.downloadBytesPerSecond,
             uploadRate: monitor.latestNetwork?.uploadBytesPerSecond
         )
@@ -172,6 +176,61 @@ struct MenuBarNetworkBlockView: View {
                 Spacer(minLength: 1)
 
                 Text(block.secondaryValueText ?? "-- KB/s")
+                    .font(.system(size: 9, weight: .regular).monospacedDigit())
+                    .foregroundStyle(secondaryValueColor)
+                    .lineLimit(1)
+            }
+            .frame(height: MenuBarLayout.rowHeight)
+        }
+        .frame(width: block.width)
+    }
+
+    private var valueColor: Color {
+        switch block.valueTint {
+        case .primary, .warning, .critical:
+            Color.primary
+        case .tertiary:
+            Color(nsColor: .tertiaryLabelColor)
+        }
+    }
+
+    private var secondaryValueColor: Color {
+        switch block.secondaryValueTint ?? block.valueTint {
+        case .primary, .warning, .critical:
+            Color.primary
+        case .tertiary:
+            Color(nsColor: .tertiaryLabelColor)
+        }
+    }
+}
+
+/// Dedicated two-line temperature monitor block:
+/// line 1 reads "CPU 84°" from the CPU die sensor row, line 2 reads
+/// "GPU 61°" from the GPU die sensor row. Each row renders "--°"
+/// and tints tertiary when its subsystem is unreadable — the block
+/// never hides per tick (VAC-4) and never shows a fake 0°.
+/// Row composition copies the Network block: 9 pt regular
+/// monospacedDigit text, one row per line, pinned to block.width
+/// (MenuBarLayout.tempBlockWidth), so value changes never resize
+/// the item (VAC-9). Transitions stay discrete: no .animation and
+/// no .contentTransition modifiers (VAC-5).
+struct MenuBarTempBlockView: View {
+    let block: MenuBarBlock
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            // Line 1: CPU die temperature
+            HStack(alignment: .center, spacing: 0) {
+                Text(block.valueText)
+                    .font(.system(size: 9, weight: .regular).monospacedDigit())
+                    .foregroundStyle(valueColor)
+                    .lineLimit(1)
+            }
+            .frame(height: MenuBarLayout.rowHeight)
+
+            // Line 2: GPU die temperature
+            HStack(alignment: .center, spacing: 0) {
+                Text(block.secondaryValueText ?? "GPU --°")
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(secondaryValueColor)
                     .lineLimit(1)
