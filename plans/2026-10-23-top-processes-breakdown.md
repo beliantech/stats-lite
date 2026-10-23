@@ -436,13 +436,12 @@ User report (with screenshots):
     those PIDs, THEN the instrumented log shows rc≠0 / zero-byte results on candidates
     that were looked up. H2 is **dead** if looked-up candidates succeed but names are
     still absent from the published rows.
-  - **Outcome → action**: items 2–3 (drop unnamed candidates, `pidText` always
-    renders) apply unconditionally in EVERY branch — they are the D1 end-state and
-    VAC-B1 is unconditional. The matrix only decides the budget change and the
-    root-cause report: H1 only → also apply item 1 (union budget); H2 only → also
-    capture and report the rc/errno cause to the user as the D1 root cause; both →
-    item 1 + rc/errno report; neither → the measurement is invalid, re-run it before
-    any code edit (plan stops).
+  - **Outcome → action**: items 1–4 apply unconditionally — they are the D1 end-state
+    (VAC-B1 unconditional; the RED test asserts the ≤10-lookup budget). The matrix only
+    decides the root-cause report: H1 or both → the budget mechanism is confirmed as a
+    contributing cause; H2 (alone or with H1) → capture and report the rc/errno cause
+    to the user as the D1 root cause; neither → the measurement is invalid, re-run it
+    before any code edit (plan stops).
   - **Attribution measurement is mandatory before finalizing D1's fix** (evidence-before-
     hypothesis): one logged scan run capturing per-candidate lookup outcome + budget
     consumption, saved under `artifacts/2026-10-23-top-processes-breakdown/fix/`.
