@@ -3,6 +3,7 @@
 - Project design rules live in `DESIGN.md` at the repo root. Check it before UI work.
 - Status item views must not use `.animation` or `.contentTransition`. Transitions stay discrete.
 - Every metric-card sparkline carries the shared `SparklineTimeAxisView` axis: human duration label (`-30s`/`-1m`/`-2m`/`-3m`/`-5m`, never raw `-120s`) … `Now`, 9 pt monospaced-digit tertiary, `.accessibilityHidden(true)`. No axis when the chart itself is absent (GPU unavailable, Network loading/off).
+- Menu bar pixel and visual VACs verify through the offscreen render tests (`StatsLiteTests/MenuBarRenderSnapshotTests.swift`). Live screen captures are end-to-end spot checks only: they need the screen unlocked and the display awake.
 
 ## Evidence before hypothesis
 
