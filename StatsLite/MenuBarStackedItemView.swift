@@ -100,12 +100,13 @@ struct MenuBarStackedItemView: View {
 
 /// One metric block: category label on line 1, value on line 2.
 /// Width pins to block.width so text changes never resize the item.
+/// Trailing alignment pins both lines flush to the block right edge.
 /// Internal so redraw-churn tests can walk its body tree.
 struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
     var body: some View {
-        VStack(alignment: .center, spacing: 0) {
+        VStack(alignment: .trailing, spacing: 0) {
             HStack(alignment: .center, spacing: 2) {
                 if let dotState = block.dotState {
                     Circle()
@@ -125,7 +126,7 @@ struct MenuBarBlockView: View {
                 .frame(height: MenuBarLayout.rowHeight)
                 .offset(y: MenuBarLayout.valueYOffset)
         }
-        .frame(width: block.width)
+        .frame(width: block.width, alignment: .trailing)
     }
 
     private var valueColor: Color {

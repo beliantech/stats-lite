@@ -515,9 +515,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - plan IC-3 (VAC-3): metric block stack spacing is 0
+    // MARK: - plan 2026-10-24 (VAC-1): metric block stack trailing
+    // alignment with zero vertical spacing
 
-    func testMetricBlockStackUsesZeroVerticalSpacing() throws {
+    func testMetricBlockStackUsesTrailingAlignmentAndZeroSpacing() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let line = try XCTUnwrap(
@@ -526,11 +527,33 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         XCTAssertEqual(
             squashed(line),
-            "VStack(alignment:.center,spacing:0){",
+            "VStack(alignment:.trailing,spacing:0){",
             """
             plan IC-3: the MenuBarBlockView stack at \
             MenuBarStackedItemView.swift:103 must be \
-            VStack(alignment: .center, spacing: 0); found \(line).
+            VStack(alignment: .trailing, spacing: 0); found \(line).
+            """
+        )
+    }
+
+    // MARK: - plan 2026-10-24 (VAC-2): metric block frame pins the
+    // block width with trailing alignment
+
+    func testMetricBlockFramePinsWidthTrailingAlignment() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(of: "MenuBarBlockView", in: source)
+        let line = try XCTUnwrap(
+            sourceLine(containing: "width: block.width", in: scope),
+            "no width: block.width frame line found in MenuBarBlockView"
+        )
+        XCTAssertEqual(
+            squashed(line),
+            ".frame(width:block.width,alignment:.trailing)",
+            """
+            plan VAC-2: the MenuBarBlockView frame at \
+            MenuBarStackedItemView.swift:125 must be \
+            .frame(width: block.width, alignment: .trailing); \
+            found \(line).
             """
         )
     }
