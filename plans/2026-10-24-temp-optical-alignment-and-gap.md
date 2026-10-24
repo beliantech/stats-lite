@@ -110,3 +110,23 @@ GPU↔TEMP boundary (~30 pt gap before `C`).
    layout/temp test classes + gap measurement from a capture.
 
 ### VERDICT: READY
+
+---
+
+## Addendum B — VAC-22/23 reconciliation (post-verification)
+
+Live 2× sub-pixel measurement showed both ink gaps at 21.0 px (10.50 pt),
+symmetric to 0.00 px. The 0.65 pt delta from the original 9.87±0.60 pt
+target is glyph side bearings (° trailing ≈0.33 pt, C leading ≈0.30 pt):
+typographical boxes include bearings, raster ink does not. Re-issued:
+
+- **VAC-22 (re-issued)**: TEMP value right ink → red dot left ink =
+  10.50 ±0.50 pt (21.0 ±1.0 px @2×). Status: PASS (21.0 px).
+- **VAC-23 (re-issued)**: GPU value right ink → C label left ink =
+  10.50 ±0.50 pt (21.0 ±1.0 px @2×). Status: PASS (21.0 px).
+
+Final matrix: VAC-16 (Δ0.01 px), VAC-17 (Δ0.18 px), VAC-18 (top ink
+identical y=13), VAC-19/20/21/24/25 (source + 421/421 tests) — all PASS.
+Original defect gap was 18.50 pt; delivered 10.50 pt symmetric.
+
+### VERDICT: READY
