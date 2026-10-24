@@ -140,4 +140,29 @@ final class MenuBarLayoutTests: XCTestCase {
             accuracy: accuracy
         )
     }
+
+    // MARK: - TEMP block width (VAC-21, VAC-22)
+
+    /// The temperature block pins to 36 pt: the widest composite
+    /// row "G 130°" measures 30.10 pt, so 36 pt gives 2.95 pt
+    /// clearance per side and satisfies the >= 2.5 pt rule.
+    func testTempBlockWidthIsPinnedTo36() {
+        XCTAssertEqual(MenuBarLayout.tempBlockWidth, 36, accuracy: accuracy)
+    }
+
+    /// All five metrics (CPU, MEM, GPU, TEMP, NET) total 223 pt:
+    /// 2 × 2 pt padding + 3 × 39 pt + 36 pt + 50 pt + 4 × 4 pt gap.
+    func testAllFiveMetricsTotal223() {
+        XCTAssertEqual(
+            MenuBarLayout.length(
+                showCPU: true,
+                showRAM: true,
+                showGPU: true,
+                showNetwork: true,
+                showTemperature: true
+            ),
+            223,
+            accuracy: accuracy
+        )
+    }
 }

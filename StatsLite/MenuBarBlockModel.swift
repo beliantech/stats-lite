@@ -66,10 +66,11 @@ enum MenuBarLayout {
     /// Pinned width of the two-line temperature block. Fits the
     /// widest composite row "G 130°" (30.10 pt = 6.18 pt "G"
     /// at 8 pt regular + 2 pt gap + 21.92 pt "130°" at 9 pt regular
-    /// mono) with 9.95 pt clearance per side, satisfying the
-    /// >= 2.5 pt rule. Row text never resizes the block (VAC-9,
-    /// never-resize invariant).
-    static let tempBlockWidth: CGFloat = 50
+    /// mono) with 2.95 pt clearance per side, satisfying the
+    /// >= 2.5 pt rule (35 pt would give 2.45 pt, a violation).
+    /// Row text never resizes the block (VAC-9, never-resize
+    /// invariant). Plan 2026-10-24-temp-optical-alignment-and-gap.
+    static let tempBlockWidth: CGFloat = 36
     /// Pinned height of each line within a block. Two 11 pt rows yield
     /// a 22 pt block height that matches NSStatusBar.system.thickness
     /// and aligns line 1 and line 2 across standard and network blocks.

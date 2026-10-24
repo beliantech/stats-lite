@@ -303,18 +303,18 @@ final class MenuBarTempBlockTests: XCTestCase {
     // MARK: - FM-T4-4 (pinned width: VAC-9 3-digit clip guard)
 
     /// The pinned `tempBlockWidth` fits the worst-case composite
-    /// "G" row (8 pt regular "G" label + 2 pt gap + "100°" at the
-    /// 9 pt regular monospacedDigit value font), and the block width
-    /// never varies with the value. Measurement harness:
-    /// MenuBarValueTypographyTests NSString.size(withAttributes:)
-    /// pattern.
-    func testTempBlockWidthFitsCPU100DegreesAndNeverVariesWithValue() throws {
+    /// "G" row (8 pt regular "G" label + 2 pt gap + the clamp-max
+    /// "130°" at the 9 pt regular monospacedDigit value font), and
+    /// the block width never varies with the value. Measurement
+    /// harness: MenuBarValueTypographyTests
+    /// NSString.size(withAttributes:) pattern.
+    func testTempBlockWidthFitsWidestG130DegreesRowAndNeverVariesWithValue() throws {
         let labelFont = NSFont.systemFont(ofSize: 8, weight: .regular)
         let valueFont = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
         let worstCase = ("G" as NSString)
                 .size(withAttributes: [.font: labelFont]).width
             + 2.0
-            + ("100°" as NSString)
+            + ("130°" as NSString)
                 .size(withAttributes: [.font: valueFont]).width
 
         XCTAssertGreaterThanOrEqual(
@@ -323,8 +323,8 @@ final class MenuBarTempBlockTests: XCTestCase {
             """
             FM-T4-4 (VAC-9): MenuBarLayout.tempBlockWidth must fit the \
             worst-case composite "G" row ("G" at 8 pt regular + 2 pt gap \
-            + "100°" at 9 pt regular monospacedDigit) = \(worstCase) pt, \
-            so a 3-digit reading never clips, wraps, or shifts neighbors.
+            + "130°" at 9 pt regular monospacedDigit) = \(worstCase) pt, \
+            so a clamp-max reading never clips, wraps, or shifts neighbors.
             """
         )
 

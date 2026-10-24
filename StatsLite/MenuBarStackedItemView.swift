@@ -228,6 +228,7 @@ struct MenuBarTempBlockView: View {
                     .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .offset(y: -0.5)
 
                 Text(block.valueText)
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
@@ -242,6 +243,7 @@ struct MenuBarTempBlockView: View {
                     .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)
+                    .offset(y: -0.5)
 
                 Text(block.secondaryValueText ?? "--°")
                     .font(.system(size: 9, weight: .regular).monospacedDigit())

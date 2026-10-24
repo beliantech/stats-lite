@@ -317,6 +317,60 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
+    /// The TEMP block raises both 8 pt subsystem labels by 0.5 pt:
+    /// the `.firstTextBaseline` stack ties them to the 9 pt value
+    /// baseline, which sits the label center 0.58 pt below the dot
+    /// center. Both label `Text` views must carry
+    /// `.offset(y: -0.5)` (VAC-16, VAC-17). The blueprint
+    /// (2026-10-24-temp-optical-alignment-and-gap) measures a
+    /// post-fix residual of at most 0.02 pt against the dots.
+    func testTempBlockLabelsApplyVerticalOpticalOffset() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(of: "MenuBarTempBlockView", in: source)
+
+        let cpuStart = try XCTUnwrap(
+            scope.range(of: "Text(block.label)"),
+            "TEMP alignment: CPU label anchor not found in MenuBarTempBlockView"
+        )
+        let cpuValueStart = try XCTUnwrap(
+            scope.range(of: "Text(block.valueText)"),
+            "TEMP alignment: CPU value anchor not found in MenuBarTempBlockView"
+        )
+        XCTAssertTrue(
+            cpuStart.upperBound < cpuValueStart.lowerBound,
+            "TEMP alignment: the CPU label line must precede the CPU value line"
+        )
+        let cpuRegion = squashed(scope[cpuStart.upperBound..<cpuValueStart.lowerBound])
+        XCTAssertTrue(
+            cpuRegion.contains(".offset(y:-0.5)"),
+            """
+            VAC-16: the CPU subsystem label must carry .offset(y: -0.5); \
+            found \(cpuRegion).
+            """
+        )
+
+        let gpuStart = try XCTUnwrap(
+            scope.range(of: "Text(block.secondaryLabel"),
+            "TEMP alignment: GPU label anchor not found in MenuBarTempBlockView"
+        )
+        let gpuValueStart = try XCTUnwrap(
+            scope.range(of: "Text(block.secondaryValueText"),
+            "TEMP alignment: GPU value anchor not found in MenuBarTempBlockView"
+        )
+        XCTAssertTrue(
+            gpuStart.upperBound < gpuValueStart.lowerBound,
+            "TEMP alignment: the GPU label line must precede the GPU value line"
+        )
+        let gpuRegion = squashed(scope[gpuStart.upperBound..<gpuValueStart.lowerBound])
+        XCTAssertTrue(
+            gpuRegion.contains(".offset(y:-0.5)"),
+            """
+            VAC-17: the GPU subsystem label must carry .offset(y: -0.5); \
+            found \(gpuRegion).
+            """
+        )
+    }
+
     // MARK: - IC-10: network flips to 9 pt regular, value size stays 12
 
     func testNetworkFontsAreNinePointRegularAndValueStaysSizeTwelve() throws {
