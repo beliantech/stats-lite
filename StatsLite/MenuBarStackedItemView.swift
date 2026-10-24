@@ -206,9 +206,9 @@ struct MenuBarNetworkBlockView: View {
 }
 
 /// Dedicated two-line temperature monitor block:
-/// line 1 displays label "CPU" in 8 pt regular secondary text plus
+/// line 1 displays label "C" in 8 pt regular secondary text plus
 /// the CPU reading in 9 pt monospacedDigit text.
-/// line 2 displays label "GPU" in 8 pt regular secondary text plus
+/// line 2 displays label "G" in 8 pt regular secondary text plus
 /// the GPU reading in 9 pt monospacedDigit text.
 /// Each row displays "--°" and tints tertiary when its subsystem is
 /// unreadable — the block never hides per tick (VAC-4) and never
@@ -238,7 +238,7 @@ struct MenuBarTempBlockView: View {
 
             // Line 2: GPU die temperature
             HStack(alignment: .firstTextBaseline, spacing: 2) {
-                Text(block.secondaryLabel ?? "GPU")
+                Text(block.secondaryLabel ?? "G")
                     .font(.system(size: 8, weight: .regular))
                     .foregroundStyle(.secondary)
                     .lineLimit(1)

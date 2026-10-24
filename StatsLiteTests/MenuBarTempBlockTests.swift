@@ -14,7 +14,7 @@
 //    `temperature: TemperatureMetrics? = nil` directly after
 //    `gpuPercent:`. The temp block carries discrete subsystem
 //    labels (parity with the standard metric labels): `label`
-//    holds "CPU" and `secondaryLabel` holds "GPU" at 8 pt regular
+//    holds "C" and `secondaryLabel` holds "G" at 8 pt regular
 //    secondary, while `valueText` holds the CPU degrees ("84°")
 //    and `secondaryValueText` the GPU degrees ("61°") at 9 pt
 //    regular monospacedDigit. `width` pins to
@@ -302,8 +302,8 @@ final class MenuBarTempBlockTests: XCTestCase {
 
     // MARK: - FM-T4-4 (pinned width: VAC-9 3-digit clip guard)
 
-    /// The pinned `tempBlockWidth` fits the worst-case composite CPU
-    /// row (8 pt regular "CPU" label + 2 pt gap + "100°" at the
+    /// The pinned `tempBlockWidth` fits the worst-case composite
+    /// "G" row (8 pt regular "G" label + 2 pt gap + "100°" at the
     /// 9 pt regular monospacedDigit value font), and the block width
     /// never varies with the value. Measurement harness:
     /// MenuBarValueTypographyTests NSString.size(withAttributes:)
@@ -311,7 +311,7 @@ final class MenuBarTempBlockTests: XCTestCase {
     func testTempBlockWidthFitsCPU100DegreesAndNeverVariesWithValue() throws {
         let labelFont = NSFont.systemFont(ofSize: 8, weight: .regular)
         let valueFont = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
-        let worstCase = ("CPU" as NSString)
+        let worstCase = ("G" as NSString)
                 .size(withAttributes: [.font: labelFont]).width
             + 2.0
             + ("100°" as NSString)
@@ -322,7 +322,7 @@ final class MenuBarTempBlockTests: XCTestCase {
             worstCase,
             """
             FM-T4-4 (VAC-9): MenuBarLayout.tempBlockWidth must fit the \
-            worst-case composite CPU row ("CPU" at 8 pt regular + 2 pt gap \
+            worst-case composite "G" row ("G" at 8 pt regular + 2 pt gap \
             + "100°" at 9 pt regular monospacedDigit) = \(worstCase) pt, \
             so a 3-digit reading never clips, wraps, or shifts neighbors.
             """
@@ -351,7 +351,7 @@ final class MenuBarTempBlockTests: XCTestCase {
     // MARK: - FM-T4-5 (two-row content matrix, VAC-2/3/4)
 
     /// The temp block carries discrete subsystem labels:
-    /// `label` = "CPU" and `secondaryLabel` = "GPU" (8 pt regular
+    /// `label` = "C" and `secondaryLabel` = "G" (8 pt regular
     /// secondary), `valueText` = CPU degrees, `secondaryValueText`
     /// = GPU degrees, whole-degree ROUNDING from
     /// MetricFormatters.degrees (61.6 → 62, never truncation). A nil
@@ -361,12 +361,12 @@ final class MenuBarTempBlockTests: XCTestCase {
         let both = try tempBlock(cpuCelsius: 84.4, gpuCelsius: 61.6)
         XCTAssertEqual(
             both.label,
-            "CPU",
+            "C",
             "FM-T4-5: the top row carries the discrete CPU subsystem label (label parity with the standard metric labels)"
         )
         XCTAssertEqual(
             both.secondaryLabel,
-            "GPU",
+            "G",
             "FM-T4-5: the bottom row carries the discrete GPU subsystem label (label parity with the standard metric labels)"
         )
         XCTAssertEqual(
@@ -434,12 +434,12 @@ final class MenuBarTempBlockTests: XCTestCase {
         XCTAssertEqual(neither.secondaryValueText, "--°", "FM-T4-5 (VAC-4): neither sensor → bottom row placeholder")
         XCTAssertEqual(
             neither.label,
-            "CPU",
+            "C",
             "FM-T4-5: an unreadable reading keeps the CPU subsystem label on the top row"
         )
         XCTAssertEqual(
             neither.secondaryLabel,
-            "GPU",
+            "G",
             "FM-T4-5: an unreadable reading keeps the GPU subsystem label on the bottom row"
         )
     }

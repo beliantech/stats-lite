@@ -614,14 +614,14 @@ final class MenuBarValueTypographyTests: XCTestCase {
         let tempBlock = MenuBarTempBlockView(
             block: MenuBarBlock(
                 kind: .temp,
-                label: "CPU",
+                label: "C",
                 dotState: nil,
                 valueText: "84°",
                 valueTint: .primary,
                 width: MenuBarLayout.tempBlockWidth,
                 secondaryValueText: "62°",
                 secondaryValueTint: .primary,
-                secondaryLabel: "GPU"
+                secondaryLabel: "G"
             )
         )
 

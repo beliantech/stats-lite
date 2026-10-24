@@ -38,8 +38,8 @@ enum MenuBarBlockKind: Hashable {
 /// blocks keep dotState nil. The network block carries a second line:
 /// secondaryValueText holds the download rate below the upload rate.
 /// The temp block carries discrete subsystem labels for parity with
-/// the standard metric labels: label holds "CPU", secondaryLabel
-/// holds "GPU", and the two value fields hold only the degree
+/// the standard metric labels: label holds "C", secondaryLabel
+/// holds "G", and the two value fields hold only the degree
 /// strings.
 struct MenuBarBlock: Equatable {
     var kind: MenuBarBlockKind
@@ -64,9 +64,9 @@ enum MenuBarLayout {
     /// with 2.89 pt clearance (appendix B §1).
     static let networkBlockWidth: CGFloat = 50
     /// Pinned width of the two-line temperature block. Fits the
-    /// widest composite row "GPU 130°" (41.48 pt = 17.56 pt "GPU"
+    /// widest composite row "G 130°" (30.10 pt = 6.18 pt "G"
     /// at 8 pt regular + 2 pt gap + 21.92 pt "130°" at 9 pt regular
-    /// mono) with 4.26 pt clearance per side, satisfying the
+    /// mono) with 9.95 pt clearance per side, satisfying the
     /// >= 2.5 pt rule. Row text never resizes the block (VAC-9,
     /// never-resize invariant).
     static let tempBlockWidth: CGFloat = 50
@@ -176,8 +176,8 @@ enum MenuBarBlockBuilder {
 
         if showTemperature {
             // The temp block carries discrete subsystem labels,
-            // matching the standard metric labels: label holds "CPU"
-            // and secondaryLabel holds "GPU" at 8 pt regular
+            // matching the standard metric labels: label holds "C"
+            // and secondaryLabel holds "G" at 8 pt regular
             // secondary in the view, while valueText and
             // secondaryValueText carry only the degree values
             // ("84°", "61°") at 9 pt regular monospacedDigit.
@@ -193,14 +193,14 @@ enum MenuBarBlockBuilder {
             blocks.append(
                 MenuBarBlock(
                     kind: .temp,
-                    label: "CPU",
+                    label: "C",
                     dotState: nil,
                     valueText: MetricFormatters.degrees(cpuCelsius),
                     valueTint: cpuCelsius == nil ? .tertiary : .primary,
                     width: MenuBarLayout.tempBlockWidth,
                     secondaryValueText: MetricFormatters.degrees(gpuCelsius),
                     secondaryValueTint: gpuCelsius == nil ? .tertiary : .primary,
-                    secondaryLabel: "GPU"
+                    secondaryLabel: "G"
                 )
             )
         }

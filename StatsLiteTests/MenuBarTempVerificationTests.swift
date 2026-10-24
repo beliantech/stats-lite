@@ -283,7 +283,7 @@ final class MenuBarTempVerificationTests: XCTestCase {
 
     /// The T4 review flagged the measurement gap: FM-T4-4 pins the
     /// 100 °C CPU row but the widest composite row the view can
-    /// render is the GPU row at the clamp max (8 pt "GPU" label +
+    /// render is the GPU row at the clamp max (8 pt "G" label +
     /// 2 pt gap + "130°" value), because init clamps readings at
     /// 130 °C. The row text below comes from the builder fed a
     /// clamp-max TemperatureMetrics, so the measurement never
@@ -313,7 +313,7 @@ final class MenuBarTempVerificationTests: XCTestCase {
         )
         XCTAssertEqual(
             block.secondaryLabel,
-            "GPU",
+            "G",
             "the widest composite row pairs the GPU subsystem label with the clamp-max value"
         )
         XCTAssertEqual(
@@ -344,7 +344,7 @@ final class MenuBarTempVerificationTests: XCTestCase {
             widest,
             """
             FM-T5-3 (VAC-9): tempBlockWidth must fit the true widest \
-            composite row ("GPU" at 8 pt regular + 2 pt gap + "130°" at \
+            composite row ("G" at 8 pt regular + 2 pt gap + "130°" at \
             9 pt regular monospacedDigit) = \(widest) pt, so a \
             clamp-max reading never clips, wraps, or shifts neighbors.
             """
@@ -576,12 +576,12 @@ final class MenuBarTempVerificationTests: XCTestCase {
         )
         XCTAssertEqual(
             built.first?.label,
-            "CPU",
+            "C",
             "FM-T5-5: an unreadable reading keeps the CPU subsystem label"
         )
         XCTAssertEqual(
             built.first?.secondaryLabel,
-            "GPU",
+            "G",
             "FM-T5-5: an unreadable reading keeps the GPU subsystem label"
         )
     }
