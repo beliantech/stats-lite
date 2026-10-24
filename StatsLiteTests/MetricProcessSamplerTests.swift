@@ -48,18 +48,15 @@ final class MetricProcessSamplerTests: XCTestCase {
         return Double(timebase.numer) / Double(timebase.denom)
     }
 
-    private var cores: Int {
-        ProcessInfo.processInfo.activeProcessorCount
-    }
-
     private var totalRAM: UInt64 {
         ProcessInfo.processInfo.physicalMemory
     }
 
-    /// Tick delta that reports `fraction` after exactly 1 s on every
-    /// core count (T6: delta x timebase / (elapsed ns x cores)).
+    /// Tick delta that reports `fraction` after exactly 1 s under
+    /// the R1 percent-of-one-core basis (delta x timebase / elapsed
+    /// ns, no core divisor — plan 2026-10-24 R1).
     private func ticks(forFraction fraction: Double, elapsedSeconds: Double = 1) -> UInt64 {
-        UInt64((fraction * elapsedSeconds * 1e9 * Double(cores)) / nsPerTick)
+        UInt64((fraction * elapsedSeconds * 1e9) / nsPerTick)
     }
 
     private func makeSampler(
@@ -109,7 +106,15 @@ final class MetricProcessSamplerTests: XCTestCase {
         XCTAssertEqual(item.valueLabel, "50.0%", "P1: CPU rows label as one-decimal percent")
     }
 
-    // MARK: - P2: CPU fraction clamps to 0...1
+    // MARK: - P2: CPU fraction is percent-of-one-core (basis change,
+    // plan 2026-10-24 R1)
+    //
+    // The original P2 asserted the old T6 contract: delta x timebase
+    // / (elapsed ns x cores), clamped 0...1 — "full capacity". R1
+    // removes the core-count divisor so rows match Activity Monitor
+    // (percent-of-one-core, ≥100% allowed). The same 4 core-seconds
+    // now report 4.0 → "400.0%". The P2 marker and test name are
+    // kept; only the basis changed.
 
     func testCPUPercentClampsToFullCapacity() async throws {
         let (sampler, provider) = makeSampler()
@@ -120,13 +125,21 @@ final class MetricProcessSamplerTests: XCTestCase {
         provider.processSamples = [raw(pid: 7, ticks: base)]
         _ = await sampler.sampleProcesses(now: t0)
 
-        // Four core-seconds of work in one elapsed second: the T6
-        // formula yields > 1 and the clamp caps it at 1.0.
+        // Four core-seconds of work in one elapsed second: the R1
+        // basis reports 4.0 (400.0%), never a full-capacity 1.0.
         provider.processSamples = [raw(pid: 7, ticks: base + self.ticks(forFraction: 4))]
         let second = await sampler.sampleProcesses(now: t0.advanced(by: .seconds(1)))
         let item = try XCTUnwrap(second?.topCPU.first, "P2: the second scan publishes")
-        XCTAssertEqual(item.fraction, 1.0, accuracy: 1e-9, "P2: fraction clamps to 1.0")
-        XCTAssertEqual(item.valueLabel, "100.0%", "P2: clamped value labels as 100.0%")
+        XCTAssertEqual(item.fraction, 4.0, accuracy: 1e-6, "P2: 4 core-seconds over 1 s report 4.0 (R1)")
+        XCTAssertEqual(item.valueLabel, "400.0%", "P2: process rows label via processPercentTenth")
+
+        // The display clamp sits at 9.999: 15 core-seconds label as
+        // "999.9%", never wider (R1).
+        provider.processSamples = [raw(pid: 7, ticks: base + self.ticks(forFraction: 15))]
+        let third = await sampler.sampleProcesses(now: t0.advanced(by: .seconds(2)))
+        let clamped = try XCTUnwrap(third?.topCPU.first, "P2: the third scan publishes")
+        XCTAssertEqual(clamped.fraction, 9.999, accuracy: 1e-9, "P2: the fraction clamps at 9.999")
+        XCTAssertEqual(clamped.valueLabel, "999.9%", "P2: the clamp labels as 999.9%")
     }
 
     // MARK: - P3: PID reuse rejected via startAbstime mismatch

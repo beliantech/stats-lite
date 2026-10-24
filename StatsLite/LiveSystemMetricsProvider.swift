@@ -471,34 +471,68 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
         return samples
     }
 
-    /// Display name for one PID (T7): `proc_pidpath` first, basename
-    /// only; `proc_name` as the fallback. Returns `nil` when the PID
-    /// is gone or both reads fail. No NSWorkspace or
-    /// NSRunningApplication: both spin up per-call machinery that a
-    /// top-8-per-tick lookup does not need.
+    /// Display name for one PID (R2, title chain): `KERN_PROCARGS2`
+    /// argv[0] basename first — the name the user launched, for
+    /// example `pi` where proc_pidpath reports `node` — then
+    /// `proc_pidpath` basename, then `proc_name`. Returns nil when
+    /// every source fails; the sampler then drops the row (D1). No
+    /// NSWorkspace or NSRunningApplication: both spin up per-call
+    /// machinery that a top-10-per-tick lookup does not need.
     func resolveProcessName(pid: Int32) -> String? {
         guard pid > 0 else { return nil }
+        return Self.resolvedProcessName(
+            argv0: { self.argv0FromProcArgs(pid: pid) },
+            path: { self.executablePath(pid: pid) },
+            procName: { self.procName(pid: pid) }
+        )
+    }
 
-        // proc_pidpath: the executable's absolute path; keep the
-        // basename only. The pre-zeroed buffer makes cString reads
-        // terminate even when the call writes no NUL.
+    // MARK: - R2 title chain
+
+    /// The R2 title chain in order, first success wins. Sources are
+    /// closures so the ordering tests drive each step without live
+    /// syscalls (U2), and a later source never runs after an earlier
+    /// one succeeded. A path-shaped candidate keeps only its
+    /// basename.
+    static func resolvedProcessName(
+        argv0: () -> String?,
+        path: () -> String?,
+        procName: () -> String?
+    ) -> String? {
+        // argv[0] basename first (R2, V2): the name the user
+        // launched, for example `pi` where proc_pidpath reports the
+        // interpreter `node`.
+        if let name = argv0(), let base = basenameCandidate(name) { return base }
+        if let name = path(), let base = basenameCandidate(name) { return base }
+        if let name = procName(), let base = basenameCandidate(name) { return base }
+        return nil
+    }
+
+    /// One candidate's display form: non-empty after basename.
+    private static func basenameCandidate(_ candidate: String) -> String? {
+        guard !candidate.isEmpty else { return nil }
+        let base = candidate.split(separator: "/").last.map(String.init) ?? candidate
+        return base.isEmpty ? nil : base
+    }
+
+    /// The executable's absolute path via `proc_pidpath` (R2 chain
+    /// step 2). The pre-zeroed buffer makes cString reads terminate
+    /// even when the call writes no NUL.
+    private func executablePath(pid: Int32) -> String? {
         var pathBuffer = [CChar](repeating: 0, count: 4096)
         let pathLength = pathBuffer.withUnsafeMutableBufferPointer { buffer -> Int32 in
             guard let base = buffer.baseAddress else { return 0 }
             return proc_pidpath(pid, base, UInt32(buffer.count))
         }
-        if pathLength > 0 {
-            let path = pathBuffer.withUnsafeBufferPointer { buffer -> String? in
-                guard let base = buffer.baseAddress else { return nil }
-                return String(cString: base)
-            }
-            if let name = path?.split(separator: "/").last.map(String.init),
-               !name.isEmpty {
-                return name
-            }
+        guard pathLength > 0 else { return nil }
+        return pathBuffer.withUnsafeBufferPointer { buffer -> String? in
+            guard let base = buffer.baseAddress else { return nil }
+            return String(cString: base)
         }
+    }
 
-        // Fallback: proc_name's short process name.
+    /// The short process name via `proc_name` (R2 chain step 3).
+    private func procName(pid: Int32) -> String? {
         var nameBuffer = [CChar](repeating: 0, count: 128)
         let nameLength = nameBuffer.withUnsafeMutableBufferPointer { buffer -> Int32 in
             guard let base = buffer.baseAddress else { return 0 }
@@ -510,6 +544,61 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
             let name = String(cString: base)
             return name.isEmpty ? nil : name
         }
+    }
+
+    // MARK: - R2: KERN_PROCARGS2 argv[0]
+
+    /// argv[0] for one PID via `KERN_PROCARGS2` (R2 chain step 1):
+    /// the executable name the user launched. EINVAL for other-user
+    /// and uninspectable PIDs is an expected miss for an
+    /// unprivileged read — the chain continues silently, never
+    /// logged as an error. The buffer grows once to 8192 on ENOMEM.
+    private func argv0FromProcArgs(pid: Int32) -> String? {
+        var mib: [Int32] = [CTL_KERN, KERN_PROCARGS2, pid]
+        var size = 4096
+        var buffer = [UInt8](repeating: 0, count: size)
+        var rc = buffer.withUnsafeMutableBufferPointer { base -> Int32 in
+            guard let first = base.baseAddress else { return -1 }
+            return sysctl(&mib, u_int(mib.count), first, &size, nil, 0)
+        }
+        if rc != 0 && errno == ENOMEM {
+            size = 8192
+            buffer = [UInt8](repeating: 0, count: size)
+            rc = buffer.withUnsafeMutableBufferPointer { base -> Int32 in
+                guard let first = base.baseAddress else { return -1 }
+                return sysctl(&mib, u_int(mib.count), first, &size, nil, 0)
+            }
+        }
+        guard rc == 0, size >= 4 else { return nil }
+        return Self.argv0(fromProcArgs: Array(buffer.prefix(Int(size))))
+    }
+
+    /// Parses argv[0] out of a KERN_PROCARGS2 buffer (R2): int32
+    /// argc, exec_path NUL-terminated, zero or more NUL padding
+    /// bytes, then argc NUL-terminated strings, the first being
+    /// argv[0].
+    ///
+    /// argv[0] is the first non-NUL byte after exec_path and its
+    /// padding run, read to its own terminating NUL. A real process
+    /// always has a non-empty argv[0], so this never confuses the
+    /// padding with argv[0]. Only argv[0] is read; later strings can
+    /// be truncated. Returns nil on a malformed or exhausted buffer,
+    /// never an empty name.
+    static func argv0(fromProcArgs bytes: [UInt8]) -> String? {
+        guard bytes.count > 4 else { return nil }
+        var index = 4
+        // exec_path: skip to its terminating NUL.
+        while index < bytes.count, bytes[index] != 0 { index += 1 }
+        guard index < bytes.count else { return nil }
+        // Zero or more NUL padding bytes: skip the whole run to the
+        // first non-NUL byte, the start of argv[0].
+        while index < bytes.count, bytes[index] == 0 { index += 1 }
+        guard index < bytes.count else { return nil }
+        // argv[0]: the first NUL-terminated string after the padding.
+        let start = index
+        while index < bytes.count, bytes[index] != 0 { index += 1 }
+        guard index < bytes.count, index > start else { return nil }
+        return String(decoding: bytes[start..<index], as: UTF8.self)
     }
 }
 

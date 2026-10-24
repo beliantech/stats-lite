@@ -77,7 +77,8 @@ struct MemoryPressureCardView: View {
                 TopProcessesSectionView(
                     processes: monitor.topMemoryProcesses,
                     tintColor: processGaugeTint,
-                    isLoading: monitor.isSamplingProcesses && monitor.topMemoryProcesses.isEmpty
+                    isLoading: monitor.isSamplingProcesses && monitor.topMemoryProcesses.isEmpty,
+                    gaugeBasis: .ramFraction
                 )
                 .transition(.opacity)
             }

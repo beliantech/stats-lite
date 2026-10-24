@@ -316,12 +316,31 @@ struct ProcessMetricItem: Sendable, Equatable, Identifiable {
     var pid: Int32
     /// Resolved display name (T7).
     var name: String
-    /// Share in 0...1. CPU: of total core capacity. Memory: of total RAM.
+    /// Display fraction, Activity Monitor style. CPU: percent-of-one-core in
+    /// 0...9.999 (≥100% allowed on multi-core machines, R1). Memory: of total RAM.
     var fraction: Double
-    /// Display value: "84.2%" for CPU, "6.8 GB" or "780 MB" for memory.
+    /// Display value: "191.8%" for CPU, "6.8 GB" or "780 MB" for memory.
     var valueLabel: String
 
     var id: Int32 { pid }
+
+    /// One CPU row's display fraction, percent-of-one-core (R1): the
+    /// tick delta scaled through the Mach timebase is the work in
+    /// nanoseconds; dividing by the elapsed nanoseconds yields
+    /// core-seconds per second. There is no core-count divisor —
+    /// Activity Monitor reports the same per-core scale, so a busy
+    /// process can exceed 1.0 (191.8%). Clamps 0...9.999, the
+    /// formatter's "999.9%" ceiling. The timebase is passed in and
+    /// nothing global is queried, so tests run deterministic on any
+    /// architecture (plan 2026-10-24 R1, U1).
+    static func cpuDisplayFraction(
+        deltaTicks: UInt64,
+        elapsedSeconds: Double,
+        nanosecondsPerTick: Double
+    ) -> Double {
+        let computed = Double(deltaTicks) * nanosecondsPerTick / (elapsedSeconds * 1e9)
+        return min(max(computed, 0), 9.999)
+    }
 }
 
 /// One process scan's output (T1): a single scan serves both the CPU

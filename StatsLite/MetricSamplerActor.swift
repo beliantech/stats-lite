@@ -25,6 +25,10 @@ actor MetricSamplerActor {
 
     init(provider: any SystemMetricsProvider) {
         self.provider = provider
+        // Read the VAC-2 fixture once at init so the actor-isolated
+        // sampling path never touches the environment again.
+        let raw = ProcessInfo.processInfo.environment[Self.vac2FixtureFractionKey]
+        self.vac2FixtureFraction = raw.flatMap(Double.init)
     }
 
     /// One sampling pass. A snapshot member is non-nil only when its
@@ -159,8 +163,9 @@ actor MetricSamplerActor {
     /// A start-stamp mismatch (recycled PID), a tick-counter rollback,
     /// or a non-positive elapsed time reports 0 for that pass and
     /// re-anchors (P3, P5). The fraction is
-    /// delta ticks x timebase / (elapsed ns x cores), clamped 0...1
-    /// (T6). `pid <= 0` rows and zombies (`exitAbstime != 0`) never
+    /// delta ticks x timebase / elapsed ns, percent-of-one-core with
+    /// no core-count divisor, clamped 0...9.999 (plan 2026-10-24 R1;
+    /// formerly divided by cores and clamped 0...1). `pid <= 0` rows and zombies (`exitAbstime != 0`) never
     /// enter a ranking, and a PID that vanishes from the scan drops
     /// its anchor (T6, P6). Memory ranks the top 5 by footprint with a
     /// resident-size fallback and no delta (R6). One pass resolves
@@ -185,7 +190,6 @@ actor MetricSamplerActor {
         processAnchors = processAnchors.filter { seenPids.contains($0.key) }
 
         let timebase = Self.nanosecondsPerTick
-        let cores = Double(ProcessInfo.processInfo.activeProcessorCount)
         let totalRAM = Double(ProcessInfo.processInfo.physicalMemory)
 
         var cpuRows: [CPURankingRow] = []
@@ -203,9 +207,14 @@ actor MetricSamplerActor {
                     let seconds = Double(components.seconds)
                         + Double(components.attoseconds) / 1e18
                     if seconds > 0 {
-                        let deltaTicks = Double(sample.cpuTicks - anchor.cpuTicks)
-                        let computed = deltaTicks * timebase / (seconds * 1e9 * cores)
-                        fraction = min(max(computed, 0), 1)
+                        // R1: percent-of-one-core, no core-count
+                        // divisor — the row matches Activity
+                        // Monitor's scale and can exceed 1.0.
+                        fraction = ProcessMetricItem.cpuDisplayFraction(
+                            deltaTicks: sample.cpuTicks - anchor.cpuTicks,
+                            elapsedSeconds: seconds,
+                            nanosecondsPerTick: timebase
+                        )
                     }
                 }
                 // Mismatch or rollback falls through with fraction 0:
@@ -281,11 +290,49 @@ actor MetricSamplerActor {
                 pid: row.pid,
                 name: name,
                 fraction: row.fraction,
-                valueLabel: MetricFormatters.percentTenth(row.fraction)
+                valueLabel: MetricFormatters.processPercentTenth(row.fraction)
             )
         }
 
-        return ProcessSampleResult(topCPU: topCPUItems, topMemory: topMemoryItems)
+        return Self.applyVAC2Fixture(
+            ProcessSampleResult(topCPU: topCPUItems, topMemory: topMemoryItems),
+            fraction: vac2FixtureFraction
+        )
+    }
+
+    // MARK: - VAC-2 capture fixture (harness only, inert in production)
+
+    /// Environment key that forces the top CPU row to a fixed ≥100%
+    /// display fraction so the capture harness can prove the R1 label
+    /// path renders a value above one core. Read once at init from
+    /// the launching process environment; absent in production, where
+    /// the app is never launched with this key set.
+    static let vac2FixtureFractionKey = "STATSLITE_VAC2_FAKE_CPU_FRACTION"
+
+    /// The fixture fraction, nil when the env key is absent (the
+    /// production case). Captured at init so an actor-isolated read
+    /// never touches the environment again.
+    private let vac2FixtureFraction: Double?
+
+    /// Prepends one synthetic ≥100% CPU row when the VAC-2 fixture is
+    /// active. The row's label runs through the same
+    /// `processPercentTenth` formatter as every sampled row, so the
+    /// capture proves the production label path; a nil fixture
+    /// returns the input unchanged.
+    nonisolated static func applyVAC2Fixture(
+        _ result: ProcessSampleResult,
+        fraction: Double?
+    ) -> ProcessSampleResult {
+        guard let fraction, fraction.isFinite else { return result }
+        let fixture = ProcessMetricItem(
+            pid: 0,
+            name: "capture-fixture",
+            fraction: fraction,
+            valueLabel: MetricFormatters.processPercentTenth(fraction)
+        )
+        var mutated = result
+        mutated.topCPU = [fixture] + result.topCPU
+        return mutated
     }
 
     /// Drops the per-PID process delta base, so the next pass anchors

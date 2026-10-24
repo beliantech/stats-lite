@@ -339,12 +339,217 @@ final class ProcessDisclosureTests: XCTestCase {
         let section = TopProcessesSectionView(
             processes: [item],
             tintColor: .blue,
-            isLoading: false
+            isLoading: false,
+            gaugeBasis: .maxNormalized
         )
         let rowStrings = collectViewStrings(section.row(for: item))
         XCTAssertTrue(
             rowStrings.contains("Xcode, Process ID 4821, 84.2%"),
             "§4.5: a row's accessibility label reaches the row body (got: \(rowStrings))"
+        )
+    }
+
+    // MARK: - U3 / R3: gauge basis (plan 2026-10-24 §3)
+
+    func testMaxNormalizedGaugeFractionsScaleToTheRowMax() {
+        let fractions = [4.0, 2.0, 0.1].map {
+            TopProcessesSectionView.gaugeFraction(
+                basis: .maxNormalized, rowValue: $0, maxValue: 4.0
+            )
+        }
+        XCTAssertEqual(fractions[0]!, 1.0, accuracy: 1e-12, "U3: the top row fills edge-to-edge")
+        XCTAssertEqual(fractions[1]!, 0.5, accuracy: 1e-12, "U3: half the max fills half the track")
+        XCTAssertEqual(fractions[2]!, 0.025, accuracy: 1e-12, "U3: small rows scale proportionally")
+    }
+
+    func testMaxNormalizedAllZeroPassRendersTrackOnlyWithoutNaN() {
+        // The sampler can publish an all-zero pass; maxValue 0 must
+        // never divide 0/0. nil means track-only, no fill capsule.
+        for rowValue in [0.0, 0.0, 0.0] {
+            let fraction = TopProcessesSectionView.gaugeFraction(
+                basis: .maxNormalized, rowValue: rowValue, maxValue: 0
+            )
+            XCTAssertNil(
+                fraction,
+                "U3: an all-zero pass renders track-only gauges, no NaN path"
+            )
+        }
+    }
+
+    func testMaxNormalizedNegativeOrNaNMaxNeverProducesAFill() {
+        XCTAssertNil(
+            TopProcessesSectionView.gaugeFraction(
+                basis: .maxNormalized, rowValue: 0.5, maxValue: -1
+            ),
+            "U3: a non-positive max renders track-only"
+        )
+        XCTAssertNil(
+            TopProcessesSectionView.gaugeFraction(
+                basis: .maxNormalized, rowValue: 0.5, maxValue: .nan
+            ),
+            "U3: a NaN max renders track-only, never a NaN width"
+        )
+    }
+
+    func testMaxNormalizedZeroRowBesidePositiveRowsKeepsTheTwoPointMinimum() {
+        let fraction = TopProcessesSectionView.gaugeFraction(
+            basis: .maxNormalized, rowValue: 0, maxValue: 4.0
+        )
+        XCTAssertEqual(fraction!, 0.0, accuracy: 1e-12)
+        let width = Swift.max(44 * fraction!, 2)
+        XCTAssertEqual(width, 2, "U3: a zero row beside positive rows keeps the 2 pt minimum fill")
+        XCTAssertFalse(width.isNaN, "U3: produced widths are never NaN")
+    }
+
+    func testRamFractionGaugeKeepsTheBytesOverTotalRAMClamp() {
+        // Regression: .ramFraction behaves exactly like the old
+        // clamp for every value the memory rows can carry.
+        let regular = TopProcessesSectionView.gaugeFraction(
+            basis: .ramFraction, rowValue: 0.42, maxValue: 0
+        )
+        XCTAssertEqual(regular!, 0.42, accuracy: 1e-12, "U3: memory gauges stay bytes / total RAM")
+        XCTAssertEqual(
+            Swift.max(44 * regular!, 2), Swift.max(44 * 0.42, 2), accuracy: 1e-12,
+            "U3: memory gauge widths are byte-identical to the old formula"
+        )
+        XCTAssertEqual(
+            TopProcessesSectionView.gaugeFraction(basis: .ramFraction, rowValue: 1.5, maxValue: 0)!,
+            1.0, accuracy: 1e-12, "U3: over-total footprints clamp at the full track"
+        )
+        XCTAssertEqual(
+            TopProcessesSectionView.gaugeFraction(basis: .ramFraction, rowValue: -0.2, maxValue: 0)!,
+            0.0, accuracy: 1e-12, "U3: negative values clamp at 0"
+        )
+    }
+
+    // MARK: - U4 / R3: the helper-gap caption (plan 2026-10-24 §3)
+
+    func testHelperGapCaptionTokensPlaceItInTheExpandedCPUSectionOnly() throws {
+        let section = squashed(try loadSource("StatsLite/TopProcessesView.swift"))
+        XCTAssertTrue(
+            section.contains("\"Systemdaemonsnotincluded\""),
+            "U4: the caption copy is exact (R3)"
+        )
+        XCTAssertTrue(
+            section.contains("Text(Self.helperGapCaption)"),
+            "U4: the caption renders as one Text in the shared section view"
+        )
+        XCTAssertTrue(
+            section.contains("ifshowsHelperGapCaption"),
+            "U4: the caption is gated behind the explicit CPU-only flag"
+        )
+        XCTAssertTrue(section.contains(".font(.system(size:9))"), "U4: 9 pt regular (§3 blueprint)")
+        XCTAssertTrue(section.contains(".foregroundStyle(.tertiary)"), "U4: tertiary color (§3 blueprint)")
+        XCTAssertTrue(section.contains(".lineLimit(1)"), "U4: one line, tail truncation as belt-and-braces")
+        XCTAssertTrue(
+            section.contains(".padding(.top,8)"),
+            "U4: the 8 pt top gap below the last row / loading / empty line"
+        )
+        // VAC-6: the caption is readable VoiceOver text, never
+        // accessibility-hidden. The section's only
+        // `.accessibilityHidden(true)` belongs to the gauge (line
+        // 147); the caption block is the `Text(Self.helperGapCaption)`
+        // chain, which carries none.
+        let captionChain = section
+            .components(separatedBy: "Text(Self.helperGapCaption)")
+            .dropFirst()
+            .first ?? ""
+        XCTAssertFalse(
+            captionChain.hasPrefix(".accessibilityHidden(true)"),
+            "VAC-6: the caption is readable text, not accessibility-hidden"
+        )
+        XCTAssertEqual(
+            section.components(separatedBy: ".accessibilityHidden(true)").count - 1, 1,
+            "VAC-6: the only hidden element in the section is the gauge — the caption stays readable"
+        )
+
+        let cpu = squashed(try loadSource("StatsLite/CPUCardView.swift"))
+        XCTAssertTrue(
+            cpu.contains("showsHelperGapCaption:true"),
+            "U4: the CPU card renders the caption"
+        )
+        XCTAssertTrue(
+            cpu.contains("gaugeBasis:.maxNormalized"),
+            "U4: the CPU card passes the max-normalized gauge basis"
+        )
+
+        let memory = squashed(try loadSource("StatsLite/MemoryPressureCardView.swift"))
+        XCTAssertFalse(
+            memory.contains("Systemdaemons"),
+            "U4: the Memory section carries no caption"
+        )
+        XCTAssertFalse(
+            memory.contains("showsHelperGapCaption:true"),
+            "U4: the Memory card never enables the caption"
+        )
+        XCTAssertTrue(
+            memory.contains("gaugeBasis:.ramFraction"),
+            "U4: the Memory card passes the RAM-fraction gauge basis"
+        )
+    }
+
+    func testHelperGapCaptionRendersInAllThreeExpandedSectionStates() {
+        let caption = "System daemons not included"
+        let populated = TopProcessesSectionView(
+            processes: [
+                ProcessMetricItem(pid: 1918, name: "fixture-burn", fraction: 1.918, valueLabel: "191.8%")
+            ],
+            tintColor: .blue,
+            isLoading: false,
+            gaugeBasis: .maxNormalized,
+            showsHelperGapCaption: true
+        )
+        XCTAssertTrue(
+            collectViewStrings(populated.body).contains(caption),
+            "U4: the populated state carries the caption"
+        )
+
+        let loading = TopProcessesSectionView(
+            processes: [],
+            tintColor: .blue,
+            isLoading: true,
+            gaugeBasis: .maxNormalized,
+            showsHelperGapCaption: true
+        )
+        let loadingStrings = collectViewStrings(loading.body)
+        XCTAssertTrue(loadingStrings.contains("Sampling top processes…"), "U4: the loading line still renders")
+        XCTAssertTrue(loadingStrings.contains(caption), "U4: the loading state carries the caption")
+
+        let empty = TopProcessesSectionView(
+            processes: [],
+            tintColor: .blue,
+            isLoading: false,
+            gaugeBasis: .maxNormalized,
+            showsHelperGapCaption: true
+        )
+        let emptyStrings = collectViewStrings(empty.body)
+        XCTAssertTrue(emptyStrings.contains("No process data available"), "U4: the empty line still renders")
+        XCTAssertTrue(emptyStrings.contains(caption), "U4: the empty state carries the caption")
+
+        let memoryStyle = TopProcessesSectionView(
+            processes: [
+                ProcessMetricItem(pid: 5, name: "Safari", fraction: 0.1, valueLabel: "1.2 GB")
+            ],
+            tintColor: .blue,
+            isLoading: false,
+            gaugeBasis: .ramFraction
+        )
+        XCTAssertFalse(
+            collectViewStrings(memoryStyle.body).contains(caption),
+            "U4: without the flag the section renders no caption (Memory path)"
+        )
+    }
+
+    func testCollapsedDisclosureButtonCarriesNoHelperGapCaption() {
+        let button = TopProcessesDisclosureButton(
+            isExpanded: false,
+            usageState: .normal,
+            metricTitle: "CPU Total",
+            action: {}
+        )
+        XCTAssertFalse(
+            collectViewStrings(button.body).contains("System daemons not included"),
+            "U4: the collapsed disclosure button never renders the caption (R3)"
         )
     }
 

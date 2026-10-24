@@ -19,6 +19,23 @@ struct TopProcessesSectionView: View {
     let processes: [ProcessMetricItem]
     let tintColor: Color
     let isLoading: Bool
+    /// The gauge fill basis (plan 2026-10-24 R3): CPU rows
+    /// normalize to the row max, Memory rows are fractions of total
+    /// RAM. The shared view never guesses from values.
+    let gaugeBasis: GaugeBasis
+    /// Renders the Phase-1 helper-gap caption below the last row /
+    /// loading / empty line (R3). CPU passes true; Memory omits it.
+    var showsHelperGapCaption: Bool = false
+
+    /// How one row's gauge fill is derived (R3 §3 blueprint).
+    enum GaugeBasis {
+        case maxNormalized
+        case ramFraction
+    }
+
+    /// The R3 helper-gap caption: states that root/system daemons
+    /// are outside the unprivileged scan (Phase 2 territory).
+    static let helperGapCaption = "System daemons not included"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -37,6 +54,13 @@ struct TopProcessesSectionView: View {
                 ForEach(Array(processes.prefix(5))) { process in
                     row(for: process)
                 }
+            }
+            if showsHelperGapCaption {
+                Text(Self.helperGapCaption)
+                    .font(.system(size: 9))
+                    .foregroundStyle(.tertiary)
+                    .lineLimit(1)
+                    .padding(.top, 8)
             }
         }
     }
@@ -100,19 +124,51 @@ struct TopProcessesSectionView: View {
     }
 
     /// The 44×5 pt capsule gauge: separator track plus tinted fill
-    /// with a 2 pt minimum. Hidden from VoiceOver (§4.5) — the value
-    /// text is authoritative.
+    /// with a 2 pt minimum, per the row's gauge basis. An all-zero
+    /// pass renders track-only (no fill, no NaN). Hidden from
+    /// VoiceOver (§4.5) — the value text is authoritative.
     private func gauge(for process: ProcessMetricItem) -> some View {
-        let clamped = Swift.min(Swift.max(process.fraction, 0), 1)
+        let maxValue = processes.map(\.fraction).max() ?? 0
+        let fraction = Self.gaugeFraction(
+            basis: gaugeBasis,
+            rowValue: process.fraction,
+            maxValue: maxValue
+        )
         return ZStack(alignment: .leading) {
             Capsule()
                 .fill(Color(nsColor: .separatorColor).opacity(0.3))
-            Capsule()
-                .fill(tintColor)
-                .frame(width: Swift.max(44 * clamped, 2))
+            if let fraction {
+                Capsule()
+                    .fill(tintColor)
+                    .frame(width: Swift.max(44 * fraction, 2))
+            }
         }
         .frame(width: 44, height: 5)
         .accessibilityHidden(true)
+    }
+
+    /// One row's gauge fill in 0...1, nil for an all-zero pass
+    /// (plan 2026-10-24 R3, U3). `.maxNormalized` divides by the
+    /// largest row value so the top row fills edge-to-edge; when
+    /// that max is 0 or non-finite every gauge renders track-only,
+    /// never a 0/0 NaN. `.ramFraction` is the unchanged bytes /
+    /// total-RAM clamp. The shared view never guesses the basis
+    /// from the values.
+    static func gaugeFraction(
+        basis: GaugeBasis,
+        rowValue: Double,
+        maxValue: Double
+    ) -> Double? {
+        switch basis {
+        case .maxNormalized:
+            guard maxValue > 0, maxValue.isFinite else { return nil }
+            let fraction = rowValue / maxValue
+            guard fraction.isFinite else { return nil }
+            return Swift.min(Swift.max(fraction, 0), 1)
+        case .ramFraction:
+            guard rowValue.isFinite else { return nil }
+            return Swift.min(Swift.max(rowValue, 0), 1)
+        }
     }
 }
 

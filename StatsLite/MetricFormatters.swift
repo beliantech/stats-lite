@@ -27,6 +27,19 @@ enum MetricFormatters {
         return String(format: "%.1f%%", clamped * 100)
     }
 
+    /// Formats a CPU process-row fraction in 0...9.999 as a
+    /// one-decimal percent-of-one-core, Activity Monitor style:
+    /// "191.8%", "999.9%". Returns "--%" for a missing or non-finite
+    /// value, like `percentTenth`. Clamps out-of-range values to
+    /// 0...9.999 first. Only CPU Top Processes rows use it; CPU
+    /// Total and GPU keep `percentTenth`'s 0...1 whole-machine
+    /// semantics (plan 2026-10-24 R1, U1b).
+    static func processPercentTenth(_ value: Double?) -> String {
+        guard let value, value.isFinite else { return "--%" }
+        let clamped = min(max(value, 0), 9.999)
+        return String(format: "%.1f%%", clamped * 100)
+    }
+
     /// Formats a whole-degree temperature reading: "84°", "-5°",
     /// "100°". Returns "--°" for a missing or non-finite reading,
     /// like percent's "--%" placeholder: "nan°" or "inf°" in the

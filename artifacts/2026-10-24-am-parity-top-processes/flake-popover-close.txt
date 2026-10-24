@@ -1,0 +1,6 @@
+964:Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling]' started.
+965:/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-24-am-parity-top-processes/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:255: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling] : Asynchronous wait failed: Exceeded timeout of 5 seconds, with unfulfilled expectations: "Expect predicate `isShown == 1` for object <NSPopover: 0x7955bb1dc0, animates=0, behavior=1>".
+966:/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-24-am-parity-top-processes/StatsLiteTests/SystemMonitorProcessSamplingTests.swift:256: error: -[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling] : XCTAssertTrue failed
+967:Test Case '-[StatsLiteTests.SystemMonitorProcessSamplingTests testPopoverCloseStopsProcessSampling]' failed (8.525 seconds).
+1145:	SystemMonitorProcessSamplingTests.testPopoverCloseStopsProcessSampling()
+1146:	SystemMonitorProcessSamplingTests.testPopoverCloseStopsProcessSampling()
