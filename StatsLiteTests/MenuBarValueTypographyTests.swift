@@ -590,24 +590,26 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - plan 2026-10-24 (VAC-2): metric block frame pins the
-    // block width with trailing alignment
+    // MARK: - plan 2026-10-24 VAC-2 / plan 2026-10-25: the metric
+    // block sizes to intrinsic width (fixedSize), and the trailing
+    // alignment stays on the stack (checked by the test above)
 
-    func testMetricBlockFramePinsWidthTrailingAlignment() throws {
+    func testMetricBlockFrameUsesIntrinsicFixedSizeWidth() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let line = try XCTUnwrap(
-            sourceLine(containing: "width: block.width", in: scope),
-            "no width: block.width frame line found in MenuBarBlockView"
+            sourceLine(containing: "fixedSize(", in: scope),
+            "no fixedSize( sizing line found in MenuBarBlockView"
         )
         XCTAssertEqual(
             squashed(line),
-            ".frame(width:block.width,alignment:.trailing)",
+            ".fixedSize(horizontal:true,vertical:false)",
             """
-            plan VAC-2: the MenuBarBlockView frame at \
-            MenuBarStackedItemView.swift:125 must be \
-            .frame(width: block.width, alignment: .trailing); \
-            found \(line).
+            plan 2026-10-25-menubar-item-gap-uniform-minimum: the \
+            MenuBarBlockView sizing line in MenuBarStackedItemView.swift \
+            must be .fixedSize(horizontal: true, vertical: false) so \
+            standard blocks render at intrinsic width and both gaps stay \
+            MenuBarLayout.gap; found \(line).
             """
         )
     }

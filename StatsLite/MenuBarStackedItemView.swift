@@ -4,11 +4,16 @@
 //
 //  Menu bar label as one stacked block per metric (blueprint): the
 //  category label sits on line 1, the percent value on line 2, and
-//  every block pins its width to MenuBarLayout.blockWidth, so the
-//  status item never resizes. The network block is a dedicated
-//  two-line view: networkUpload dot plus upload rate above
-//  networkDownload dot plus download rate, pinned to
-//  MenuBarLayout.networkBlockWidth. Blocks
+//  every standard block sizes to its intrinsic content, so the ink
+//  gap between blocks stays MenuBarLayout.gap (plan
+//  2026-10-25-menubar-item-gap-uniform-minimum). MenuBarLayout
+//  blockWidth is only the length budget summed by
+//  MenuBarLayout.length, so the status item length never changes.
+//  The root HStack centers the block group in the slot, so the
+//  leftover width splits symmetrically around the group. The
+//  network block is a dedicated two-line view: networkUpload dot
+//  plus upload rate above networkDownload dot plus download rate,
+//  pinned to MenuBarLayout.networkBlockWidth. Blocks
 //  come from MenuBarBlockBuilder — the single source of truth for
 //  text, tint, and width. The MEM block carries a 4 pt pressure dot
 //  left of the label. No frame height: the controller centers the
@@ -44,6 +49,7 @@ struct MenuBarStackedItemView: View {
                 }
             }
         }
+        .frame(maxWidth: .infinity, alignment: .center)
         .padding(.horizontal, MenuBarLayout.padding)
         .accessibilityHidden(true)
         .onAppear { monitor.apply(preferences) }
@@ -99,9 +105,11 @@ struct MenuBarStackedItemView: View {
 }
 
 /// One metric block: category label on line 1, value on line 2.
-/// Width pins to block.width so text changes never resize the item.
-/// Trailing alignment pins both lines flush to the block right edge.
-/// Internal so redraw-churn tests can walk its body tree.
+/// Width is intrinsic (fixedSize), so the ink gap to the next block
+/// stays MenuBarLayout.gap; block.width is only the length budget
+/// in MenuBarLayout.length, and the item length never changes.
+/// Trailing alignment pins both lines flush to the block right
+/// edge. Internal so redraw-churn tests can walk its body tree.
 struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
@@ -126,7 +134,7 @@ struct MenuBarBlockView: View {
                 .frame(height: MenuBarLayout.rowHeight)
                 .offset(y: MenuBarLayout.valueYOffset)
         }
-        .frame(width: block.width, alignment: .trailing)
+        .fixedSize(horizontal: true, vertical: false)
     }
 
     private var valueColor: Color {

@@ -1,0 +1,29 @@
+After capture — environmental note
+Date: 2026-10-25 (Asia/Kuala_Lumpur)
+
+Attempt 1 (exit 0, INVALID):
+  bash /Users/jonathan/beliantech/stats-lite-macos/scripts/capture_menubar.sh
+  The script launches the main repo's prebuilt Release app
+  (.derivedData/Build/Products/Release/StatsLite.app). That binary was
+  built 2026-10-24 09:52 — before the plan and before this worktree's
+  changes. The strips from this run are old code and were discarded.
+
+Rebuild:
+  xcodebuild -project StatsLite.xcodeproj -scheme StatsLite \
+      -configuration Release \
+      -derivedDataPath /Users/jonathan/beliantech/stats-lite-macos/.derivedData build
+  -> BUILD SUCCEEDED, binary relinked 2026-10-25 07:40:53 from this
+  worktree's sources.
+
+Attempt 2 (exit 0, strips copied here):
+  menubar-dark.png, menubar-light.png (520x48 px).
+  Pixel analysis: both captures contain ZERO menu-bar glyphs. The top
+  26 rows of full-dark.png and full-light.png (1920x1080) carry 0
+  near-white and 0 near-black pixels — wallpaper only. The capture ran
+  fine, but the menu bar is not on the captured display/space (screen
+  configuration changed: the 2026-10-24 baseline came from a
+  3840-wide capture; this host now reports 1920x1080).
+
+Result: the live spot check is environmentally void. The offscreen
+render tests are the gate (AGENTS.md) and they pass: 435 tests,
+0 failures, with measured gaps reported in the commit.

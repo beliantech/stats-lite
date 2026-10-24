@@ -1,0 +1,22 @@
+Baseline capture (before) — aborted for environmental reasons
+Date: 2026-10-25 (Asia/Kuala_Lumpur)
+
+Command run:
+  bash /Users/jonathan/beliantech/stats-lite-macos/scripts/capture_menubar.sh
+
+Exit code: 3
+Output:
+  error: a StatsLite instance is already running; refusing to touch it
+
+Reasons:
+1. scripts/capture_menubar.sh is not tracked in this worktree's branch
+   (it is an untracked file in the main repo, created for plan
+   2026-10-24-temp-labels-cg). The script was run from the main repo path.
+2. A StatsLite instance (pid 332) is already running. The script refuses
+   to touch a parallel session's process by contract (exit 3), so no live
+   screenshot strip was captured.
+
+Per the task instruction, the capture attempt is recorded and work
+continues. The offscreen render tests in
+StatsLiteTests/MenuBarRenderSnapshotTests.swift are the gate; live
+captures are end-to-end spot checks only (AGENTS.md).

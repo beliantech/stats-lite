@@ -54,6 +54,41 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// forced appearances.
     private let appearanceLuminanceDelta: Double = 40
 
+    /// VAC-A (plan 2026-10-25-menubar-item-gap-uniform-minimum,
+    /// correction 3): standard-block ink-gap bounds in bitmap pixels
+    /// at 2x. Floor = MenuBarLayout.gap design token at 2x (8 px,
+    /// never lowered). Ceiling = token + glyph side bearings
+    /// (2 px per edge), so a regression to the pre-fix 38–45 px
+    /// fixed-frame gaps fails.
+    private let minimalGapFloor: Double = 8
+    private let minimalGapCeiling: Double = 12
+
+    /// VAC-A: maximum pixel delta between the CPU→MEM and MEM→GPU
+    /// gap minima (uniformity at 2x). Raised to 2 only with
+    /// recorded bearing evidence, never above (correction 3).
+    private let gapUniformityTolerance: Double = 1
+
+    /// VAC-B: collision floor at extreme values (`100%`, `--%`) —
+    /// the closest-approach gap must not merge below 7 px at 2x.
+    private let extremeGapFloor: Double = 7
+
+    /// VAC-B: ceiling at extreme values, measured 13 px on `100%`.
+    /// Frame gap 8 px + `%` right bearing 2 px + digit `1` left
+    /// bearing 3 px at 2x (measured: CPU frame ends x=68, `%` ink
+    /// ends x=65, MEM frame starts x=76, `1` ink starts x=79).
+    /// The blueprint assumed ≤ 2 px per edge; the `1` bearing is
+    /// 3 px. A regression to the pre-fix 38–45 px still fails.
+    private let extremeGapCeiling: Double = 13
+
+    /// VAC-D: per-block trailing flush — right ink of line 1 and
+    /// line 2 within 1 px at 2x (the 2026-10-24 right-alignment
+    /// directive).
+    private let trailingFlushTolerance: Double = 1
+
+    /// VAC-C: left/right void split of the centered block group in
+    /// the 129 pt slot, in bitmap pixels at 2x.
+    private let voidDeltaTolerance: Double = 2
+
     private let appearances: [NSAppearance.Name] = [.darkAqua, .aqua]
 
     // MARK: - Production fixtures (MenuBarBlockBuilder, ISC-6)
@@ -192,23 +227,28 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
         }
     }
 
-    /// ISC-6 + FM2/FM4: every render box measures exactly the
-    /// production geometry at the pinned 2x scale — widths from
-    /// MenuBarLayout, height 2 x rowHeight. The measurements in
-    /// this suite verify production layout, not re-declared
-    /// numbers.
+    /// ISC-6 + FM2/FM4: every render box measures the production
+    /// geometry at the pinned 2x scale — height 2 x rowHeight, widths
+    /// from MenuBarLayout. TEMP and NET keep exact pinned widths.
+    /// Standard blocks render at intrinsic content width, bounded by
+    /// the blockWidth length budget (plan 2026-10-25, correction 1),
+    /// so their width asserts as a ceiling, not equality. The
+    /// measurements in this suite verify production layout, not
+    /// re-declared numbers.
     func testRenderDimensionsMatchProductionGeometry() throws {
         let blocks = try builtBlocks()
         let network = try networkBlock()
         let expectedHeight = Int(MenuBarLayout.rowHeight * scale * 2)
-        let cases: [(String, MenuBarRenderHarness.Render, CGFloat)] = [
+        /// (name, render, width in pt, width is pinned exactly)
+        let cases: [(String, MenuBarRenderHarness.Render, CGFloat, Bool)] = [
             (
                 "temp",
                 MenuBarRenderHarness.render(
                     MenuBarTempBlockView(block: blocks.temp),
                     appearance: .darkAqua
                 ),
-                MenuBarLayout.tempBlockWidth
+                MenuBarLayout.tempBlockWidth,
+                true
             ),
             (
                 "network",
@@ -216,7 +256,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     MenuBarNetworkBlockView(block: network),
                     appearance: .darkAqua
                 ),
-                MenuBarLayout.networkBlockWidth
+                MenuBarLayout.networkBlockWidth,
+                true
             ),
             (
                 "cpu",
@@ -224,7 +265,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     MenuBarBlockView(block: blocks.cpu),
                     appearance: .darkAqua
                 ),
-                MenuBarLayout.blockWidth
+                MenuBarLayout.blockWidth,
+                false
             ),
             (
                 "mem",
@@ -232,7 +274,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     MenuBarBlockView(block: blocks.mem),
                     appearance: .darkAqua
                 ),
-                MenuBarLayout.blockWidth
+                MenuBarLayout.blockWidth,
+                false
             ),
             (
                 "gpu",
@@ -240,15 +283,27 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     MenuBarBlockView(block: blocks.gpu),
                     appearance: .darkAqua
                 ),
-                MenuBarLayout.blockWidth
+                MenuBarLayout.blockWidth,
+                false
             ),
         ]
-        for (name, bitmap, width) in cases {
-            XCTAssertEqual(
-                bitmap.pixelsWide,
-                Int(width * scale),
-                "ISC-6 (FM2/FM4): \(name) render width must be the MenuBarLayout width at 2x"
-            )
+        for (name, bitmap, width, isWidthPinned) in cases {
+            if isWidthPinned {
+                XCTAssertEqual(
+                    bitmap.pixelsWide,
+                    Int(width * scale),
+                    "ISC-6 (FM2/FM4): \(name) render width must be the MenuBarLayout width at 2x"
+                )
+            } else {
+                // The production geometry of a standard block is its
+                // content width, bounded by the blockWidth length
+                // budget that MenuBarLayout.length sums.
+                XCTAssertLessThanOrEqual(
+                    bitmap.pixelsWide,
+                    Int(width * scale),
+                    "ISC-6 (FM2/FM4): \(name) render width must fit the MenuBarLayout.blockWidth length budget at 2x"
+                )
+            }
             XCTAssertEqual(
                 bitmap.pixelsHigh,
                 expectedHeight,
@@ -420,11 +475,20 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 ),
                 appearance: appearance
             )
-            let gpuEnd = Int(MenuBarLayout.blockWidth * scale)
+            // The GPU block renders at intrinsic content width, so
+            // the boundary comes from a single-block render instead
+            // of blockWidth (plan 2026-10-25, correction 2). The
+            // expected 21 ±1 px does not change: the GPU ink edge
+            // and the TEMP frame shift left by the same amount.
+            let gpuWidth = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.gpu),
+                appearance: appearance
+            ).pixelsWide
+            let gpuEnd = gpuWidth + Int(MenuBarLayout.gap * scale)
             let gpuValueRight = try XCTUnwrap(
                 gpuTemp.rightmostInkX(
                     yRange: line2,
-                    xRange: 0..<gpuEnd,
+                    xRange: 0..<gpuWidth,
                     threshold: inkThreshold
                 ),
                 "ISC-3 (FM1): no GPU value ink on line 2 of the \(appearance.rawValue) render"
@@ -446,6 +510,367 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 ISC-3 (VAC-23): GPU value right ink → C label left ink = \
                 \(cLeft - gpuValueRightEdge) px under \(appearance.rawValue); \
                 the re-issued gap is 21 ±1 px at 2x.
+                """
+            )
+        }
+    }
+
+    // MARK: - VAC-A/B/C (plan 2026-10-25): uniform minimal gaps
+
+    /// Per-band ink gaps at one block boundary inside an adjacency
+    /// render. The boundary is the left block's single-block render
+    /// width in bitmap pixels (production-derived). Gap convention
+    /// matches ISC-3: the empty span between the two inks, from the
+    /// first background column after one ink to the first inked
+    /// column of the other.
+    private func bandGaps(
+        _ bitmap: MenuBarRenderHarness.Render,
+        boundary: Int
+    ) throws -> (line1: Int, line2: Int) {
+        func bandGap(_ band: Range<Int>) throws -> Int {
+            let leftBlockRightInk = try XCTUnwrap(
+                bitmap.rightmostInkX(
+                    yRange: band,
+                    xRange: 0..<boundary,
+                    threshold: inkThreshold
+                ),
+                "VAC (FM1): no left-block ink on band \(band) before boundary \(boundary)"
+            )
+            let rightBlockLeftInk = try XCTUnwrap(
+                bitmap.leftmostInkX(
+                    yRange: band,
+                    xRange: boundary..<bitmap.pixelsWide,
+                    threshold: inkThreshold
+                ),
+                "VAC (FM1): no right-block ink on band \(band) after boundary \(boundary)"
+            )
+            return rightBlockLeftInk - (leftBlockRightInk + 1)
+        }
+        let g1 = try bandGap(line1)
+        let g2 = try bandGap(line2)
+        return (g1, g2)
+    }
+
+    /// The three standard blocks from explicit percents: nil builds
+    /// `--%` with a tertiary tint, exactly what a fresh monitor
+    /// renders before its first snapshot (VAC-B extremes, VAC-C).
+    private func standardTriple(
+        cpuPercent: Double?,
+        pressurePercent: Double?,
+        gpuPercent: Double?
+    ) throws -> (cpu: MenuBarBlock, mem: MenuBarBlock, gpu: MenuBarBlock) {
+        let blocks = MenuBarBlockBuilder.blocks(
+            showCPU: true,
+            showRAM: true,
+            showGPU: true,
+            cpuPercent: cpuPercent,
+            pressurePercent: pressurePercent,
+            pressureState: .normal,
+            gpuPercent: gpuPercent
+        )
+        func block(_ kind: MenuBarBlockKind) throws -> MenuBarBlock {
+            try XCTUnwrap(
+                blocks.first { $0.kind == kind },
+                "fixture missing block \(kind) for an enabled metric"
+            )
+        }
+        return try (block(.cpu), block(.ram), block(.gpu))
+    }
+
+    /// VAC-A (plan 2026-10-25): both standard-block boundaries hold
+    /// a minimal, uniform ink gap. Per band the gap measures, then
+    /// the band minimum (closest approach) must sit in [8, 12] px at
+    /// 2x, and the two boundaries' minima must differ by at most
+    /// 1 px, under both forced appearances. VAC-D rides along: each
+    /// block's line-1 and line-2 right ink stay within 1 px, so both
+    /// rows remain flush to the trailing edge (2026-10-24 directive).
+    func testStandardBlockGapsAreUniformAndMinimal() throws {
+        let blocks = try builtBlocks()
+        let boundaries: [(String, MenuBarBlock, MenuBarBlock)] = [
+            ("CPU→MEM", blocks.cpu, blocks.mem),
+            ("MEM→GPU", blocks.mem, blocks.gpu),
+        ]
+        for appearance in appearances {
+            var gapMinima: [Int] = []
+            for (name, leftBlock, rightBlock) in boundaries {
+                let boundary = MenuBarRenderHarness.render(
+                    MenuBarBlockView(block: leftBlock),
+                    appearance: appearance
+                ).pixelsWide
+                let bitmap = MenuBarRenderHarness.render(
+                    adjacent(
+                        MenuBarBlockView(block: leftBlock),
+                        MenuBarBlockView(block: rightBlock)
+                    ),
+                    appearance: appearance
+                )
+                let gaps = try bandGaps(bitmap, boundary: boundary)
+                let minimum = min(gaps.line1, gaps.line2)
+                gapMinima.append(minimum)
+                XCTAssertGreaterThanOrEqual(
+                    Double(minimum),
+                    minimalGapFloor,
+                    """
+                    VAC-A: \(name) closest-approach gap = \(minimum) px under \
+                    \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
+                    \(gaps.line2) px); the floor is MenuBarLayout.gap at 2x \
+                    (8 px), never lowered.
+                    """
+                )
+                XCTAssertLessThanOrEqual(
+                    Double(minimum),
+                    minimalGapCeiling,
+                    """
+                    VAC-A: \(name) closest-approach gap = \(minimum) px under \
+                    \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
+                    \(gaps.line2) px); the ceiling is 12 px (8 px token + \
+                    glyph bearings), so a fixed 39 pt frame cannot come back.
+                    """
+                )
+            }
+            let uniformity = abs(gapMinima[0] - gapMinima[1])
+            XCTAssertLessThanOrEqual(
+                Double(uniformity),
+                gapUniformityTolerance,
+                """
+                VAC-A: |gap(CPU→MEM) − gap(MEM→GPU)| = \(uniformity) px under \
+                \(appearance.rawValue) (minima \(gapMinima)); both gaps must \
+                be equal within 1 px at 2x.
+                """
+            )
+        }
+
+        // VAC-D: both rows of each standard block stay flush to the
+        // trailing edge — line-1 and line-2 right ink within 1 px.
+        let standard: [(String, MenuBarBlock)] = [
+            ("CPU", blocks.cpu),
+            ("MEM", blocks.mem),
+            ("GPU", blocks.gpu),
+        ]
+        for appearance in appearances {
+            for (name, block) in standard {
+                let bitmap = MenuBarRenderHarness.render(
+                    MenuBarBlockView(block: block),
+                    appearance: appearance
+                )
+                let line1Right = try XCTUnwrap(
+                    bitmap.rightmostInkX(
+                        yRange: line1,
+                        xRange: 0..<bitmap.pixelsWide,
+                        threshold: inkThreshold
+                    ),
+                    "VAC-D (FM1): no line-1 ink for \(name) under \(appearance.rawValue)"
+                )
+                let line2Right = try XCTUnwrap(
+                    bitmap.rightmostInkX(
+                        yRange: line2,
+                        xRange: 0..<bitmap.pixelsWide,
+                        threshold: inkThreshold
+                    ),
+                    "VAC-D (FM1): no line-2 ink for \(name) under \(appearance.rawValue)"
+                )
+                let delta = abs(line1Right - line2Right)
+                XCTAssertLessThanOrEqual(
+                    Double(delta),
+                    trailingFlushTolerance,
+                    """
+                    VAC-D: \(name) line-1 vs line-2 right ink delta = \
+                    \(delta) px under \(appearance.rawValue) (line1 \
+                    \(line1Right) px, line2 \(line2Right) px); both rows must \
+                    stay flush to the trailing edge within 1 px.
+                    """
+                )
+            }
+        }
+    }
+
+    /// VAC-B (plan 2026-10-25): extreme values never collide.
+    /// `100%` everywhere and `--%` everywhere (missing metrics),
+    /// both boundaries, both appearances: the closest-approach gap
+    /// stays in [7, 12] px at 2x — no ink merge, no fixed-frame
+    /// regression.
+    func testExtremeValuesKeepBlockGapsOpen() throws {
+        let extremes: [(String, Double?, Double?, Double?)] = [
+            ("100%", 1.0, 1.0, 1.0),
+            ("--%", nil, nil, nil),
+        ]
+        for (valueLabel, cpuPercent, pressurePercent, gpuPercent) in extremes {
+            let blocks = try standardTriple(
+                cpuPercent: cpuPercent,
+                pressurePercent: pressurePercent,
+                gpuPercent: gpuPercent
+            )
+            let boundaries: [(String, MenuBarBlock, MenuBarBlock)] = [
+                ("CPU→MEM", blocks.cpu, blocks.mem),
+                ("MEM→GPU", blocks.mem, blocks.gpu),
+            ]
+            for appearance in appearances {
+                for (name, leftBlock, rightBlock) in boundaries {
+                    let boundary = MenuBarRenderHarness.render(
+                        MenuBarBlockView(block: leftBlock),
+                        appearance: appearance
+                    ).pixelsWide
+                    let bitmap = MenuBarRenderHarness.render(
+                        adjacent(
+                            MenuBarBlockView(block: leftBlock),
+                            MenuBarBlockView(block: rightBlock)
+                        ),
+                        appearance: appearance
+                    )
+                    let gaps = try bandGaps(bitmap, boundary: boundary)
+                    let minimum = min(gaps.line1, gaps.line2)
+                    XCTAssertGreaterThanOrEqual(
+                        Double(minimum),
+                        extremeGapFloor,
+                        """
+                        VAC-B (\(valueLabel)): \(name) closest-approach gap = \
+                        \(minimum) px under \(appearance.rawValue) (line1 \
+                        \(gaps.line1) px, line2 \(gaps.line2) px); the gaps must \
+                        not merge below 7 px at 2x.
+                        """
+                    )
+                    XCTAssertLessThanOrEqual(
+                        Double(minimum),
+                        extremeGapCeiling,
+                        """
+                        VAC-B (\(valueLabel)): \(name) closest-approach gap = \
+                        \(minimum) px under \(appearance.rawValue) (line1 \
+                        \(gaps.line1) px, line2 \(gaps.line2) px); the measured \
+                        ceiling is 13 px at 2x (8 px token + 5 px bearings).
+                        """
+                    )
+                }
+            }
+        }
+    }
+
+    /// VAC-C (plan 2026-10-25): the production composition at the
+    /// 129 pt slot. The stacked view renders inside the fixed item
+    /// length with a fresh monitor (no snapshot yet, so every block
+    /// shows `--%`). Both standard boundaries must hold [8, 12] px,
+    /// and the leftover slot void must split symmetrically around
+    /// the centered group (≤ 2 px side delta).
+    func testStackedItemCompositionKeepsGapsAndCenteredVoid() throws {
+        let preferences = PreferencesStore()
+        preferences.showCPU = true
+        preferences.showRAM = true
+        preferences.showGPU = true
+        preferences.showNetwork = false
+        preferences.showTemperature = false
+        defer {
+            // Restore the documented defaults for later tests; the
+            // @AppStorage-backed store persists across tests.
+            preferences.showCPU = true
+            preferences.showRAM = true
+            preferences.showGPU = true
+            preferences.showNetwork = true
+            preferences.showTemperature = true
+        }
+        let blocks = try standardTriple(
+            cpuPercent: nil,
+            pressurePercent: nil,
+            gpuPercent: nil
+        )
+        let view = MenuBarStackedItemView(
+            monitor: SystemMonitor(provider: FakeSystemMetricsProvider()),
+            preferences: preferences
+        )
+        .frame(
+            width: MenuBarLayout.length(
+                showCPU: true,
+                showRAM: true,
+                showGPU: true
+            )
+        )
+        let gapPixels = Int(MenuBarLayout.gap * scale)
+        // The composition's root padding shifts every block, so the
+        // boundaries include the leading padding term.
+        let paddingPixels = Int(MenuBarLayout.padding * scale)
+        for appearance in appearances {
+            let bitmap = MenuBarRenderHarness.render(
+                view,
+                appearance: appearance
+            )
+            let cpuWidth = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.cpu),
+                appearance: appearance
+            ).pixelsWide
+            let memWidth = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.mem),
+                appearance: appearance
+            ).pixelsWide
+            // The root frame centers the block group in the slot, so
+            // the group starts at padding + (inner slot − content)/2
+            // and every boundary shifts with it (the leading padding
+            // term alone was not enough — red-phase measurement).
+            // Splits sit at the gap midpoints: a ±1 px drift in the
+            // analytic group left cannot reach either ink edge (the
+            // gap zone is 8 px wide).
+            let gpuWidth = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.gpu),
+                appearance: appearance
+            ).pixelsWide
+            let innerSlot = bitmap.pixelsWide - 2 * paddingPixels
+            let content = cpuWidth + gapPixels + memWidth + gapPixels + gpuWidth
+            let groupLeft = paddingPixels + (innerSlot - content) / 2
+            let boundaries: [(String, Int)] = [
+                ("CPU→MEM", groupLeft + cpuWidth + gapPixels / 2),
+                (
+                    "MEM→GPU",
+                    groupLeft + cpuWidth + gapPixels + memWidth + gapPixels / 2
+                ),
+            ]
+            for (name, boundary) in boundaries {
+                let gaps = try bandGaps(bitmap, boundary: boundary)
+                let minimum = min(gaps.line1, gaps.line2)
+                XCTAssertGreaterThanOrEqual(
+                    Double(minimum),
+                    minimalGapFloor,
+                    """
+                    VAC-C: \(name) closest-approach gap = \(minimum) px under \
+                    \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
+                    \(gaps.line2) px); the composition floor is MenuBarLayout.gap \
+                    at 2x (8 px).
+                    """
+                )
+                XCTAssertLessThanOrEqual(
+                    Double(minimum),
+                    minimalGapCeiling,
+                    """
+                    VAC-C: \(name) closest-approach gap = \(minimum) px under \
+                    \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
+                    \(gaps.line2) px); the composition ceiling is 12 px at 2x.
+                    """
+                )
+            }
+
+            let leftInk = try XCTUnwrap(
+                bitmap.leftmostInkX(
+                    yRange: 0..<bitmap.pixelsHigh,
+                    xRange: 0..<bitmap.pixelsWide,
+                    threshold: inkThreshold
+                ),
+                "VAC-C (FM1): no ink at all under \(appearance.rawValue)"
+            )
+            let rightInk = try XCTUnwrap(
+                bitmap.rightmostInkX(
+                    yRange: 0..<bitmap.pixelsHigh,
+                    xRange: 0..<bitmap.pixelsWide,
+                    threshold: inkThreshold
+                ),
+                "VAC-C (FM1): no ink at all under \(appearance.rawValue)"
+            )
+            let leftVoid = leftInk
+            let rightVoid = bitmap.pixelsWide - 1 - rightInk
+            let delta = abs(leftVoid - rightVoid)
+            XCTAssertLessThanOrEqual(
+                Double(delta),
+                voidDeltaTolerance,
+                """
+                VAC-C: |leftVoid − rightVoid| = \(delta) px under \
+                \(appearance.rawValue) (left \(leftVoid) px, right \
+                \(rightVoid) px of \(bitmap.pixelsWide) px); the block group \
+                must stay centered in the slot within 2 px.
                 """
             )
         }
@@ -476,9 +901,15 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     MenuBarBlockView(block: block),
                     appearance: appearance
                 )
+                // Column 0 can carry a full-height black edge
+                // column from the harness window (measured:
+                // lum(0, *) = 0, lum(1, *) = 128 in fixedSize
+                // single renders). It is never glyph ink — glyph
+                // ink starts at x >= 16 — so the edge measurement
+                // starts at column 1.
                 let edge = try XCTUnwrap(
                     bitmap.subpixelTopInkY(
-                        columns: 0..<bitmap.pixelsWide,
+                        columns: 1..<bitmap.pixelsWide,
                         yRange: line1,
                         threshold: inkThreshold
                     ),
@@ -493,7 +924,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             let cCluster = try XCTUnwrap(
                 tempBitmap.leftmostInkCluster(
                     yRange: line1,
-                    xRange: 0..<tempBitmap.pixelsWide,
+                    // Column 1 mirrors the standard-block range above:
+                    // the harness edge column at x = 0 is skipped.
+                    xRange: 1..<tempBitmap.pixelsWide,
                     threshold: inkThreshold
                 ),
                 "ISC-4 (FM1): no C-label ink under \(appearance.rawValue)"
