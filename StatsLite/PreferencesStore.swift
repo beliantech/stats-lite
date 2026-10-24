@@ -87,15 +87,6 @@ final class PreferencesStore {
         }
     }
 
-    // MARK: - Display options
-
-    var showCoreBreakdown: Bool = true {
-        didSet {
-            guard !isSeeding else { return }
-            showCoreBreakdownStorage = showCoreBreakdown
-        }
-    }
-
     // MARK: - Derived state
 
     /// Number of visible metrics. The guard uses this value; the
@@ -130,7 +121,6 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("showTemperature") private var showTemperatureStorage: Bool = true
     @ObservationIgnored @AppStorage("refreshInterval") private var refreshIntervalStorage: Int = 1
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
-    @ObservationIgnored @AppStorage("showCoreBreakdown") private var showCoreBreakdownStorage: Bool = true
 
     /// Seeds the observable state from UserDefaults while `isSeeding`
     /// suppresses the didSet bodies. When all three keys are false,
@@ -143,7 +133,6 @@ final class PreferencesStore {
         showTemperature = showTemperatureStorage
         refreshInterval = refreshIntervalStorage
         historyDuration = historyDurationStorage
-        showCoreBreakdown = showCoreBreakdownStorage
         isSeeding = false
 
         if activeMetricCount == 0 {

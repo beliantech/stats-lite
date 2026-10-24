@@ -13,16 +13,15 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
 ## Features
 
 - **Menu bar blocks**: one stacked block per metric. Each block shows a category label and a value. Block widths stay fixed, so the status item never resizes.
-  - CPU: total usage, with an optional per-core breakdown.
+  - CPU: total usage.
   - Memory: pressure percentage with a 4 pt pressure dot.
   - GPU: utilization percentage.
   - Network: upload rate in red, download rate in blue.
-- **Popover**: per-metric cards, sparklines, a per-core CPU list, and buttons for Settings and Quit.
+- **Popover**: per-metric cards, sparklines, and buttons for Settings and Quit.
 - **Settings window**:
   - Refresh interval: 1, 2, 3, or 5 seconds.
   - Visible metrics: toggle each metric on or off.
   - History duration: 30 seconds to 5 minutes.
-  - Per-core CPU breakdown.
   - Launch at login.
 - **Real system data**: the app reads metrics from Mach APIs, IOKit, `sysctl`, and `getifaddrs`.
 

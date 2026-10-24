@@ -20,7 +20,6 @@ private let preferencesKeys = [
     "showNetwork",
     "refreshInterval",
     "historyDuration",
-    "showCoreBreakdown",
 ]
 
 private func clearPreferencesKeys() {
@@ -54,7 +53,6 @@ final class PreferencesStoreGuardTests: XCTestCase {
         XCTAssertEqual(store.enabledMetrics, .all.union(.temperature))
         XCTAssertEqual(store.refreshInterval, 1)
         XCTAssertEqual(store.historyDuration, 60)
-        XCTAssertTrue(store.showCoreBreakdown)
     }
 
     // MARK: - Corrupted init

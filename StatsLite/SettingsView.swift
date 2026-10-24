@@ -109,7 +109,6 @@ struct SettingsView: View {
 
     private var displayOptionsSection: some View {
         Section("Display Options") {
-            Toggle("Show Per-Core CPU Breakdown", isOn: $preferences.showCoreBreakdown)
             Picker("History Duration", selection: $preferences.historyDuration) {
                 Text("30 s").tag(30)
                 Text("1 min").tag(60)

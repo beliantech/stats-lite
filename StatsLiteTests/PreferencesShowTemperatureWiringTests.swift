@@ -25,7 +25,6 @@ private let wiringPreferencesKeys = [
     "showTemperature",
     "refreshInterval",
     "historyDuration",
-    "showCoreBreakdown",
 ]
 
 private func clearWiringPreferencesKeys() {

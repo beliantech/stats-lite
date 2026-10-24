@@ -3,20 +3,17 @@
 //  StatsLite
 //
 //  CPU card per the base blueprint: header with title and value,
-//  38 pt sparkline, per-core disclosure with an optional
-//  two-column core grid (+80 pt).
+//  38 pt sparkline with time axis, and the Top Processes
+//  disclosure.
 //
 
 import SwiftUI
 
 struct CPUCardView: View {
     let monitor: SystemMonitor
-    let preferences: PreferencesStore
-    @Binding var coresExpanded: Bool
     @Binding var expandedProcessCategory: ProcessCategory?
 
     private var cpu: CPUMetrics? { monitor.latestSnapshot?.cpu }
-    private var coreCount: Int { cpu?.perCore.count ?? 0 }
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -50,15 +47,6 @@ struct CPUCardView: View {
 
             SparklineTimeAxisView(duration: monitor.historyDuration).equatable()
 
-            if preferences.showCoreBreakdown {
-                disclosure
-            }
-
-            if coresExpanded {
-                coreGrid
-                    .transition(.opacity)
-            }
-
             TopProcessesDisclosureButton(
                 isExpanded: expandedProcessCategory == .cpu,
                 usageState: cpuCueState,
@@ -83,66 +71,11 @@ struct CPUCardView: View {
         .accessibilityElement(children: .contain)
     }
 
-    // MARK: - Disclosure
-
-    private var disclosure: some View {
-        Button {
-            withAnimation(.easeInOut(duration: 0.2)) {
-                coresExpanded.toggle()
-            }
-        } label: {
-            HStack(spacing: 4) {
-                Image(systemName: coresExpanded ? "chevron.down" : "chevron.right")
-                    .font(.system(size: 9, weight: .semibold))
-                Text("Cores Breakdown (\(coreCount) Cores)")
-                    .font(.system(size: 10, weight: .medium))
-                Spacer(minLength: 0)
-            }
-            .foregroundStyle(.secondary)
-            .contentShape(Rectangle())
-        }
-        .buttonStyle(.plain)
-    }
-
-    private var coreGrid: some View {
-        LazyVGrid(
-            columns: [GridItem(.flexible(), spacing: 8), GridItem(.flexible(), spacing: 8)],
-            spacing: 4
-        ) {
-            ForEach(Array((cpu?.perCore ?? []).enumerated()), id: \.offset) { index, value in
-                coreRow(index: index, value: value)
-            }
-        }
-    }
-
-    private func coreRow(index: Int, value: Double) -> some View {
-        HStack(spacing: 4) {
-            Text("Core \(index + 1)")
-                .font(.system(size: 9))
-                .foregroundStyle(.tertiary)
-                .frame(width: 36, alignment: .leading)
-            GeometryReader { proxy in
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(Color(nsColor: .separatorColor).opacity(0.4))
-                    Capsule()
-                        .fill(coreColor(value))
-                        .frame(width: max(proxy.size.width * value, 2))
-                }
-            }
-            .frame(height: 5)
-            Text(MetricFormatters.percent(value))
-                .font(.system(size: 9).monospacedDigit())
-                .foregroundStyle(.secondary)
-                .frame(width: 26, alignment: .trailing)
-        }
-    }
-
     // MARK: - Derived state
 
     /// The disclosure cue from the same window average that tints
     /// the sparkline: at or above 80 % warning, at or above 95 %
-    /// critical (VAC-4; boundaries match coreColor exactly).
+    /// critical (VAC-4).
     private var cpuCueState: ProcessCueState {
         let values = monitor.cpuHistory.values
         guard !values.isEmpty else { return .normal }
@@ -163,19 +96,12 @@ struct CPUCardView: View {
     }
 
     /// Blue normally, amber when the window average is at or above
-    /// 80 % (the coreColor orange boundary), per the base blueprint
-    /// state matrix.
+    /// 80 %, per the base blueprint state matrix.
     private var sparkTint: Color {
         let values = monitor.cpuHistory.values
         guard !values.isEmpty else { return .blue }
         let average = values.reduce(0, +) / Double(values.count)
         return average >= 0.80 ? .orange : .blue
-    }
-
-    private func coreColor(_ value: Double) -> Color {
-        if value >= 0.95 { return .red }
-        if value >= 0.80 { return .orange }
-        return .blue
     }
 
     private var cpuSummary: String {

@@ -278,8 +278,8 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
         lastCloseTimestamp = ProcessInfo.processInfo.systemUptime
         button?.isHighlighted = false
         // Release the controller so no popover view evaluates while
-        // closed. @State in PopoverContentView (coresExpanded) resets
-        // on close by design.
+        // closed. @State in PopoverContentView resets on close by
+        // design.
         popover.contentViewController = nil
     }
 

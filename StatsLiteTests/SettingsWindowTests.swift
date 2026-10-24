@@ -19,7 +19,6 @@ private let settingsPreferencesKeys = [
     "showGPU",
     "refreshInterval",
     "historyDuration",
-    "showCoreBreakdown",
 ]
 
 private func clearSettingsPreferencesKeys() {
@@ -113,12 +112,8 @@ final class SettingsWindowTests: XCTestCase {
         )
         let strings = collectViewStrings(view.body)
 
-        // Sanity checks: the reflection must find known strings or
+        // Sanity check: the reflection must find known strings or
         // the absence check below passes vacuously.
-        XCTAssertTrue(
-            strings.contains("Show Per-Core CPU Breakdown"),
-            "View introspection failed: no known Display Options toggle found."
-        )
         XCTAssertTrue(
             strings.contains("Visible Metrics"),
             "View introspection failed: no known section header found."

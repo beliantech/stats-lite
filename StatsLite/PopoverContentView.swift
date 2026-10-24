@@ -6,7 +6,7 @@
 //  header with Settings and Quit, cards for enabled metrics only,
 //  footer. The window sizes to its content via fixedSize; height is
 //  never clamped, so the GPU card and the footer stay visible. 200 ms
-//  ease-in-out transitions on metric and core-toggle changes.
+//  ease-in-out transitions on metric and Top Processes changes.
 //
 
 import AppKit
@@ -18,7 +18,6 @@ struct PopoverContentView: View {
     var updateChecker: UpdateCheckService? = nil
 
     @Environment(\.openSettings) private var openSettings
-    @State private var coresExpanded = false
     @State private var expandedProcessCategory: ProcessCategory? =
         Self.captureExpandedCategory()
 
@@ -93,8 +92,6 @@ struct PopoverContentView: View {
                 if preferences.showCPU {
                     CPUCardView(
                         monitor: monitor,
-                        preferences: preferences,
-                        coresExpanded: $coresExpanded,
                         expandedProcessCategory: $expandedProcessCategory
                     )
                     .transition(.opacity)
@@ -131,7 +128,6 @@ struct PopoverContentView: View {
         .background(.regularMaterial)
         .animation(.easeInOut(duration: 0.2), value: preferences.activeMetricCount)
         .animation(.easeInOut(duration: 0.2), value: preferences.showNetwork)
-        .animation(.easeInOut(duration: 0.2), value: coresExpanded)
         .animation(.easeInOut(duration: 0.2), value: expandedProcessCategory)
         .onAppear {
             monitor.apply(preferences)

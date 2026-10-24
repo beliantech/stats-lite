@@ -195,14 +195,10 @@ final class RemoveCoresBreakdownTests: XCTestCase {
     /// Top Processes button. The disclosure button and the per-core
     /// grid go, so no value tree carries the Cores Breakdown label
     /// and no source token keeps the private helpers. The test pins
-    /// the current CPUCardView initializer; when the removal drops
-    /// the `preferences` and `coresExpanded` parameters, update this
-    /// construction to match.
+    /// the current CPUCardView initializer.
     func testCPUCardBodyHasNoCoreGridElements() throws {
         let card = CPUCardView(
             monitor: SystemMonitor(),
-            preferences: PreferencesStore(),
-            coresExpanded: Binding.constant(false),
             expandedProcessCategory: Binding.constant(nil)
         )
         let strings = collectViewStrings(card.body)
