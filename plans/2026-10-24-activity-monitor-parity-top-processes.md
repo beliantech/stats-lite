@@ -1,7 +1,7 @@
 # Plan: Activity Monitor parity for Top Processes
 
 Date: 2026-10-24
-Status: approved (Phase 1 GO, 2026-10-24) — plan-review NO GO on v1, v2; revised v3
+Status: Phase 1 done — merged to `main` via squash as 07b5f7b (plan-review GO on v3, code-review GO 2026-10-24). Phase 2 (§6) not started.
 Branch (planned): `feat/2026-10-24-am-parity-top-processes`
 
 ## 0. Scope gate
