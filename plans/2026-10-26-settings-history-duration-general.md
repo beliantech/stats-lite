@@ -181,3 +181,10 @@ Worktree: `/Users/jonathan/beliantech/stats-lite-macos/worktrees/2026-10-26-sett
 ## Open questions
 
 None. The user's instruction fixed the destination (General, 2nd row); the designer blueprint fixed the resulting row order and the removal of the emptied Display Options section.
+
+## Receipts
+
+- **T1** (coder): red `c0b9d58` (test-only; 2 non-vacuous failures: row order + Display Options string) · green `5ec88fc` (`SettingsView.swift` only) · suite 442 tests / 0 failures · build clean · diff = 3 expected files.
+- **T2** (tester): GO — F1–F8, FM1–FM5, VAC-1–VAC-12 all yes with named evidence; offscreen renders dark/light at 380/320 pt in `/tmp/tester-evidence-t2-settings-history-duration/`; rendered content height 461.5 pt matches the blueprint prediction; F6 proven end-to-end (`onChange` → `monitor.historyDuration`); F7 seed-300 renders `5 min`.
+- **Review gate** (reviewer `[code-review]` on `diff main...HEAD`): GO — red/green discipline, scope (3 files), test quality, no red flags.
+- **Merge**: `git merge --ff-only feat/2026-10-26-settings-history-duration-general` → **merge SHA `5ec88fc`** (2026-10-26). Worktree and branch cleaned up.
