@@ -79,3 +79,33 @@ extension Color {
 extension CGFloat {
     static let networkDotSize: CGFloat = 5
 }
+
+extension Color {
+    /// Adaptive menu bar category label color: 80% white in dark appearance
+    /// for crisp contrast on dark and colorful translucent menu bars,
+    /// 75% black in light appearance for crisp contrast on light menu bars.
+    static let menuBarLabel = Color(nsColor: NSColor(name: nil) { appearance in
+        appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+            ? NSColor.white.withAlphaComponent(0.80)
+            : NSColor.black.withAlphaComponent(0.75)
+    })
+}
+
+/// Menu bar metric category label style: 8 pt regular text with the
+/// adaptive menuBarLabel foreground style and lineLimit(1).
+struct MenuBarMetricLabelStyle: ViewModifier {
+    func body(content: Content) -> some View {
+        content
+            .font(.system(size: 8, weight: .regular))
+            .foregroundStyle(Color.menuBarLabel)
+            .lineLimit(1)
+    }
+}
+
+extension View {
+    /// Applies the standard 8 pt regular typography and adaptive high-contrast
+    /// color to a menu bar metric category label.
+    func menuBarMetricLabel() -> some View {
+        modifier(MenuBarMetricLabelStyle())
+    }
+}

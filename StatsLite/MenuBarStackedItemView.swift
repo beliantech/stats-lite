@@ -134,8 +134,7 @@ struct MenuBarBlockView: View {
                         .offset(y: -0.5)
                 }
                 Text(block.label)
-                    .font(.system(size: 8, weight: .regular))
-                    .foregroundStyle(.secondary)
+                    .menuBarMetricLabel()
             }
             .frame(height: MenuBarLayout.rowHeight)
             // Trailing inset of 0.5 pt = 1 px at 2x (measured in
@@ -239,10 +238,12 @@ struct MenuBarNetworkBlockView: View {
 }
 
 /// Dedicated two-line temperature monitor block:
-/// line 1 displays label "C" in 8 pt regular secondary text plus
-/// the CPU reading in 9 pt monospacedDigit text.
-/// line 2 displays label "G" in 8 pt regular secondary text plus
-/// the GPU reading in 9 pt monospacedDigit text.
+/// line 1 displays label "C" in 8 pt regular adaptive text through
+/// .menuBarMetricLabel() plus the CPU reading in 9 pt
+/// monospacedDigit text.
+/// line 2 displays label "G" in 8 pt regular adaptive text through
+/// .menuBarMetricLabel() plus the GPU reading in 9 pt
+/// monospacedDigit text.
 /// Each row displays "--°" and tints tertiary when its subsystem is
 /// unreadable — the block never hides per tick (VAC-4) and never
 /// shows a fake 0°.
@@ -258,9 +259,7 @@ struct MenuBarTempBlockView: View {
             // Line 1: CPU die temperature
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(block.label)
-                    .font(.system(size: 8, weight: .regular))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .menuBarMetricLabel()
                     .offset(y: -0.5)
 
                 Text(block.valueText)
@@ -273,9 +272,7 @@ struct MenuBarTempBlockView: View {
             // Line 2: GPU die temperature
             HStack(alignment: .firstTextBaseline, spacing: 2) {
                 Text(block.secondaryLabel ?? "G")
-                    .font(.system(size: 8, weight: .regular))
-                    .foregroundStyle(.secondary)
-                    .lineLimit(1)
+                    .menuBarMetricLabel()
                     .offset(y: -0.5)
 
                 Text(block.secondaryValueText ?? "--°")

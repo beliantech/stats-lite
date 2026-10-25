@@ -186,8 +186,8 @@ enum MenuBarBlockBuilder {
         if showTemperature {
             // The temp block carries discrete subsystem labels,
             // matching the standard metric labels: label holds "C"
-            // and secondaryLabel holds "G" at 8 pt regular
-            // secondary in the view, while valueText and
+            // and secondaryLabel holds "G"; the view renders both
+            // through .menuBarMetricLabel(), while valueText and
             // secondaryValueText carry only the degree values
             // ("84°", "61°") at 9 pt regular monospacedDigit.
             // Whole-degree rendering comes from
