@@ -417,6 +417,34 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
+    // MARK: - Layer 2 (plan 2026-10-25, VAC-1/VAC-2/VAC-3): the
+    // adaptive Color.menuBarLabel resolves to white 0.80 in dark
+    // appearance and black 0.75 in light appearance
+
+    func testMenuBarLabelAdaptiveColorResolvesTargetOpacityInBothAppearances() throws {
+        let darkAppearance = try XCTUnwrap(NSAppearance(named: .darkAqua))
+        var darkColor: NSColor?
+        darkAppearance.performAsCurrentDrawingAppearance {
+            darkColor = NSColor(Color.menuBarLabel).usingColorSpace(.deviceRGB)
+        }
+        let unwrappedDark = try XCTUnwrap(darkColor)
+        XCTAssertEqual(unwrappedDark.redComponent, 1.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedDark.greenComponent, 1.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedDark.blueComponent, 1.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedDark.alphaComponent, 0.80, accuracy: 0.01)
+
+        let lightAppearance = try XCTUnwrap(NSAppearance(named: .aqua))
+        var lightColor: NSColor?
+        lightAppearance.performAsCurrentDrawingAppearance {
+            lightColor = NSColor(Color.menuBarLabel).usingColorSpace(.deviceRGB)
+        }
+        let unwrappedLight = try XCTUnwrap(lightColor)
+        XCTAssertEqual(unwrappedLight.redComponent, 0.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedLight.greenComponent, 0.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedLight.blueComponent, 0.0, accuracy: 0.01)
+        XCTAssertEqual(unwrappedLight.alphaComponent, 0.75, accuracy: 0.01)
+    }
+
     /// The TEMP block raises both 8 pt subsystem labels by 0.5 pt:
     /// the `.firstTextBaseline` stack ties them to the 9 pt value
     /// baseline, which sits the label center 0.58 pt below the dot
