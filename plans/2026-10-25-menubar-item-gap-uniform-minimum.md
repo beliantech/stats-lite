@@ -235,3 +235,199 @@ Kept for reference only: standard blocks pin `MenuBarLayout.standardBlockWidth =
 - [ ] **VAC-107 (Status Item Length Contract)**: `MenuBarLayout.length` equals 129.0 / 86.0 / 43.0 pt.
 - [ ] **VAC-108 (Discrete Transition Invariant)**: no `.animation` or `.contentTransition` in `MenuBarBlockView` / `MenuBarStackedItemView`.
 - [ ] **VAC-109 (Downstream Block Gap Parity)**: GPU→TEMP and TEMP→NET ink gaps stay 21 ± 1 px at 2× (ISC-3).
+
+---
+
+## T3 — Natural Values Clipped to 99 and Minimal Slot Geometry (Appendix C)
+
+- Status: [ ] **T3** — implement Appendix C (natural text, clip 99, blockWidth 39→27, length 129→93). red ⏳ · green ⏳ · review ⏳ · merged ⏳
+- Approval: user confirmed 2026-10-25 after the Appendix C gap table was presented. The three approval items: (1) ~25 px gap in front of a single-digit value (idle GPU `0%`), (2) slot width 129 → 93 pt, (3) VoiceOver keeps announcing the true `100 percent` while the menu bar clips to `99%`.
+- VACs: **VAC-C101…C110 below replace VAC-101…109 for T3.** ISC-3 parity and no-animation rules carry over.
+- Supersession: this supersedes T2/S1 in the plan — `standardBlockWidth` is deleted, `blockWidth` becomes 27, length totals change to 93/62/31 (the old "Non-goals" lines about `blockWidth = 39` and 129/86/43 are superseded by Appendix C; `MenuBarLayout.gap = 4` and `padding = 2` remain untouched).
+- Scope: `MetricFormatters.percent` (menu bar only — popover `percentTenth` and VoiceOver `wholePercent` untouched); `MenuBarBlockModel`; `MenuBarStackedItemView`; docs/comments. `StatusItemController` reads `length()` dynamically — no change (verified Appendix C §7.6).
+- TDD: red authors failing tests only (compile-clean, no new production symbols referenced); green implements Appendix C §7.
+- Risk class: R2 (UI text + layout + length contract change).
+
+### T3 red-phase scope (must compile and fail at runtime on T2 code)
+
+1. `MetricFormatterTests` → natural + clip contract: `percent(1.0) == "99%"`, `percent(1.5) == "99%"`, `percent(0) == "0%"`, `percent(0.144) == "14%"`, `percent(nil/.nan) == "--%"` (fails: T2 emits padded/`−−−%` strings).
+2. `MenuBarBlockBuilderTests` → natural strings + `width == 27` expectations (fails: T2 pads and uses 34).
+3. `MenuBarLayoutTests` → new totals 93/62/31/147/85/187 (fails: T2 returns 129/86/43/183/97/223).
+4. `MenuBarRenderSnapshotTests`: VAC-C101 sweep fixtures → `"0%"`,`"5%"`,`"10%"`,`"50%"`,`"99%"`, `1.0`→`"99%"`, `nil`→`"--%"` with string-integrity assertion (fails on T2 formatter); VAC-C104 hand-built single-digit gap bound 23–27 px (fails: T2 frame 34 renders ~40 px for a hand-built `"0%"` block); VAC-C107 slot-fill void ≤ 1 px at `length()` slot (fails: T2 voids are ~15 px).
+5. Typography pin → assert source line `.frame(width: block.width, alignment: .trailing)` (fails: T2 pins `standardBlockWidth` line).
+- Tests whose bounds already pass on T2 (VAC-C102 two-digit [8,12] px with T2's padded fixture, VAC-C101 spread 0.0, VAC-C106/C109/C110) are written in red as guards but may pass — the red report must list which failed and which were guards, exactly like T2 did.
+
+### Appendix C — Design Fix Blueprint (designer, 2026-10-25; copied verbatim)
+
+# Appendix C: Design Fix Blueprint — Natural Values Clipped to 99% and Minimal Slot Geometry
+
+## 1. Visual Hierarchy & ASCII Wireframe
+
+This fix blueprint supersedes Task 2 (Solution S1) for this plan. It directly implements the user directive:
+> *"no leading zeroes, and pls let's clip to 99, no need to show 100 corner case, and thus cut down the unnecessary spacing."*
+
+Baseline: `artifacts/2026-10-24-temp-labels-cg/visual-vac/menubar-dark-v2.png` (2×). Verification: offscreen suite `StatsLiteTests/MenuBarRenderSnapshotTests.swift`.
+
+### ASCII Wireframe (3 Standard Metrics at F = 27 pt)
+
+```text
+|<-------------------------------- NSStatusItem (93 pt = 186 px @ 2x) -------------------------------->|
+| 2 pt |<------- CPU (27 pt) ------->| 4 pt |<------- MEM (27 pt) ------->| 4 pt |<------- GPU (27 pt) ------->| 2 pt |
++------+-----------------------------+------+-----------------------------+------+-----------------------------+------+
+| Pad  |                  Text("CPU")| Gap  |       ●  4pt   Text("MEM")  | Gap  |                  Text("GPU")| Pad  |
+| 2 pt |          8 pt reg secondary | 4 pt | 4pt dot + 2pt + 8 pt reg    | 4 pt |          8 pt reg secondary | 2 pt |
+|      |               (width 17.32) |      |        (total width 25.36)  |      |               (width 17.56) |      |
+|      |                 flush right |      |                 flush right |      |                 flush right |      |
++------+-----------------------------+------+-----------------------------+------+-----------------------------+------+
+|      |                  Text("45%")|      |                  Text("99%")|      |                   Text("0%")|      |
+|      | 12 pt reg monospacedDigit   |      | 12 pt reg monospacedDigit   |      | 12 pt reg monospacedDigit   |      |
+|      |               (width 26.22) |      |               (width 26.22) |      |               (width 18.66) |      |
+|      |                 flush right |      |                 flush right |      |                 flush right |      |
+|      |          leading slack 0.78 |      |          leading slack 0.78 |      |          leading slack 8.34 |      |
++------+-----------------------------+------+-----------------------------+------+-----------------------------+------+
+       |<-- visible gap: ~10-11 px ->|      |<-- visible gap: ~25-26 px ->|
+```
+
+### Key Spatial Relationships
+1. **Outer Padding**: Pinned at 2.0 pt leading and 2.0 pt trailing (`MenuBarLayout.padding = 2`).
+2. **Standard Block Frame (F)**: Fixed at **27.0 pt** (54 px at 2×). It replaces `blockWidth = 39` and retires `standardBlockWidth = 34`.
+3. **Inter-Block Frame Spacing**: Fixed at **4.0 pt** (8 px at 2×, `MenuBarLayout.gap = 4`).
+4. **Slot Fill**: 3 × 27 pt + 2 × 4 pt + 2 × 2 pt = **93.0 pt** (186 px at 2×). The block group matches the inner slot width (89 pt) edge-to-edge. Side voids drop from ~15 px to 0 px.
+
+## 2. Template / Component Skeleton
+
+### A. Layout Constants (`StatsLite/MenuBarBlockModel.swift:58-99`)
+
+```swift
+enum MenuBarLayout {
+    /// Pinned width of standard metric blocks (CPU, MEM, GPU).
+    /// Accommodates "99%" (26.22 pt) with 0.78 pt clearance,
+    /// MEM's label row (25.36 pt) with 1.64 pt clearance,
+    /// and "--%" (22.42 pt) with 4.58 pt clearance.
+    static let blockWidth: CGFloat = 27
+
+    static let networkBlockWidth: CGFloat = 50
+    static let tempBlockWidth: CGFloat = 36
+    static let rowHeight: CGFloat = 11
+    static let valueYOffset: CGFloat = -1
+    static let gap: CGFloat = 4
+    static let padding: CGFloat = 2
+
+    /// Total menu bar item length for enabled metrics.
+    static func length(
+        showCPU: Bool, showRAM: Bool, showGPU: Bool,
+        showNetwork: Bool = false, showTemperature: Bool = false
+    ) -> CGFloat {
+        let metricCount = (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
+        let totalBlocks = metricCount + (showNetwork ? 1 : 0) + (showTemperature ? 1 : 0)
+        let metricLength = CGFloat(metricCount) * blockWidth
+        let networkLength = showNetwork ? networkBlockWidth : 0
+        let tempLength = showTemperature ? tempBlockWidth : 0
+        let gapsLength = CGFloat(max(totalBlocks - 1, 0)) * gap
+        return 2 * padding + metricLength + networkLength + tempLength + gapsLength
+    }
+}
+```
+
+### B. Menu Bar Value Formatter (`StatsLite/MetricFormatters.swift:15-19`)
+
+```swift
+/// Formats a fraction in 0...1 as an integer percent string.
+/// Clamps values to 0...0.99 so the display clips to "99%".
+/// Returns natural unpadded text ("0%", "5%", "45%", "99%").
+/// Missing or non-finite values return "--%".
+static func percent(_ value: Double?) -> String {
+    guard let value, value.isFinite else { return "--%" }
+    let clamped = min(max(value, 0), 0.99)
+    return "\(Int((clamped * 100).rounded()))%"
+}
+```
+
+### C. Standard Block View (`StatsLite/MenuBarStackedItemView.swift:125-144`)
+
+Same body as today; the sizing line becomes `.frame(width: block.width, alignment: .trailing)` (back to the block model field, which equals the new 27 pt constant through the builder).
+
+### D. Root Container Skeleton
+
+Keep `.frame(maxWidth: .infinity, alignment: .center)` — a no-op when group width equals slot inner width; it prevents edge clipping if AppKit rounds the host button width.
+
+## 3. State Matrix: Geometry and Clearance (F = 27.0 pt)
+
+| Element | Content | Measured Width | Clearance in 27.0 pt | Clearance at 2× |
+|---|---|---|---|---|
+| Max percent | `"99%"` | 26.22 pt | 0.78 pt | 1.56 px |
+| Typical | `"45%"` | 26.22 pt | 0.78 pt | 1.56 px |
+| Single digit | `"0%"`…`"9%"` | 18.66 pt | 8.34 pt | 16.68 px |
+| Placeholder | `"--%"` | 22.42 pt | 4.58 pt | 9.15 px |
+| MEM label row | 4 pt dot + 2 pt + `"MEM"` | 25.36 pt | 1.64 pt | 3.28 px |
+| CPU label row | `"CPU"` | 17.32 pt | 9.68 pt | 19.37 px |
+| GPU label row | `"GPU"` | 17.56 pt | 9.44 pt | 18.88 px |
+
+### Visual Gap Mathematics at 2× (The Approval Artifact)
+
+gap(N→N+1) = MenuBarLayout.gap + (F − contentW(N+1)) + bearings, where contentW = max(labelRowWidth, valueRowWidth); bearings ≈ 0.5–1.5 px per edge at 2×.
+
+| Boundary | Next Block State | contentW | Frame Gap | Bitmap Ink Gap |
+|---|---|---|---|---|
+| CPU→MEM | MEM 2-digit (`10%`..`99%`) | 26.22 pt | 4.78 pt (9.56 px) | **10–11 px** |
+| CPU→MEM | MEM 1-digit (`0%`..`9%`) | 25.36 pt (label floor) | 5.64 pt (11.28 px) | **12–13 px** |
+| CPU→MEM | MEM `"--%"` | 25.36 pt (label floor) | 5.64 pt | **12–13 px** |
+| MEM→GPU | GPU 2-digit | 26.22 pt | 4.78 pt (9.56 px) | **10–11 px** |
+| MEM→GPU | GPU 1-digit | 18.66 pt | 12.34 pt (24.68 px) | **25–26 px** |
+| MEM→GPU | GPU `"--%"` | 22.42 pt | 8.58 pt (17.15 px) | **18–19 px** |
+
+Cross-boundary deltas: Active `45/50/32` → 10–11 / 10–11 (Δ0). Full load `99/99/99` → 10–11 / 10–11 (Δ0). Idle GPU `45/50/0` → 10–11 / 25–26 (Δ15 px). Low+idle `5/99/9` → 10–11 / 25–26 (Δ15 px). Cold `nil/nil/nil` → 12–13 / 18–19 (Δ6 px).
+
+### Status Item Length Permutations (formula: 4 + n×27 + (n−1)×4 + extras)
+
+| Configuration | New Total | Old Total | Reduction |
+|---|---|---|---|
+| 3 Standard | **93.0 pt** | 129.0 | −36.0 pt |
+| 2 Standard | **62.0 pt** | 86.0 | −24.0 pt |
+| 1 Standard | **31.0 pt** | 43.0 | −12.0 pt |
+| 3 Standard + Network | **147.0 pt** | 183.0 | −36.0 pt |
+| 1 Standard + Network | **85.0 pt** | 97.0 | −12.0 pt |
+| All 5 Metrics | **187.0 pt** | 223.0 | −36.0 pt |
+| Network only / Temp only / none | 54.0 / 40.0 / 4.0 | unchanged | 0 |
+
+## 4. Accessibility (WCAG 2.2) & Interaction Contracts
+
+- Contrast ≥ 4.5:1 both appearances; click target full status-bar thickness (22 pt), width 31–187 pt.
+- **VoiceOver**: `MenuBarAccessibility.compositeLabel` uses `wholePercent(_:)` with the full 0...100 range — saturated load announces `"CPU 100 percent"`, not `"99 percent"`. Justification: visual clipping exists only to fit a 27 pt frame; speech occupies zero pixels; truncating speech misrepresents hardware saturation (WCAG 4.1.2/1.3.1).
+- Popover cards keep `percentTenth` — real values including `"100.0%"`.
+
+## 5. Numbered Visual Acceptance Checklist (VAC) — replaces VAC-101…109
+
+- [ ] **VAC-C101 (Position Freezing Invariant)**: across sweep `0%`, `5%`, `10%`, `50%`, `99%`, `1.0` (formats `99%`), `nil` (`--%`): single-block frame width, composition x-origin, and trailing ink edge of CPU/MEM/GPU freeze with spread **0.0 px** at 2×.
+- [ ] **VAC-C102 (Two-Digit Gap Uniformity & Minimality)**: when downstream blocks show 2-digit values, closest-approach ink gaps measure **8–12 px** at 2×, both appearances.
+- [ ] **VAC-C103 (Cross-Boundary Uniformity, Same Digit Class)**: with all values 2-digit (e.g. `45/50/32`, all `99%`): |Δgap| ≤ **1 px** at 2×.
+- [ ] **VAC-C104 (Single-Digit GPU Gap Floor)**: GPU single-digit (`0%`..`9%`): MEM→GPU gap measures **23–27 px** at 2×, both appearances.
+- [ ] **VAC-C105 (Extreme Value Collision Safety)**: `99%` everywhere and `--%` everywhere: gap ≥ **7 px** at 2×, no ink merging.
+- [ ] **VAC-C106 (Trailing Edge Alignment Flushness)**: line 1/line 2 right ink edges flush within **1 px** at 2×.
+- [ ] **VAC-C107 (Slot-Fill Edge-to-Edge Geometry)**: production composition at slot width 93 pt: leftVoid ≤ 1 px and rightVoid ≤ 1 px at 2× (15 px side voids eliminated).
+- [ ] **VAC-C108 (Status Item Length Contract)**: `MenuBarLayout.length` returns **93.0 / 62.0 / 31.0 / 147.0 / 187.0 pt** for the configurations in §3.
+- [ ] **VAC-C109 (Discrete Transition Invariant)**: zero `.animation`/`.contentTransition` on the menu bar hierarchy.
+- [ ] **VAC-C110 (Downstream Block Parity)**: GPU→TEMP and TEMP→NET gaps stay **21 ± 1 px** at 2× (ISC-3).
+
+## 6. Affected Tests and Required Updates
+
+1. `MetricFormatterTests`: missing/non-finite → `"--%"` (rename `…AsTripleMinus` → `…AsHyphens`); `percent(0)`→`"0%"`, `percent(1)`→`"99%"`, `0.144`→`"14%"`, `0.618`→`"62%"`; clamps: `−0.5`→`"0%"`, `1.5`→`"99%"`.
+2. `MenuBarBlockBuilderTests`: line 18 `blockWidth` 39→27; line 102 `"020%"`→`"20%"`; 106/124/142 `"−−−%"`→`"--%"`; 110/117/137 `"100%"`→`"99%"`; 132 `"025%"`→`"25%"`; 326 `"062%"`→`"62%"`; 328 `width: 39`→`width: 27`.
+3. `MenuBarLayoutTests`: rename/assert 129→93, 86→62 (×3), 43→31 (×3), 183→147, 97→85, 129→93 (network-off), 223→187.
+4. `MenuBarValueTypographyTests`: line 424 widest value `"100%"`→`"99%"` (26.22 in 27 pt, 0.78 total clearance); line 470 `blockWidth` 39.0→27.0 (MEM clearance ≥ 1.5 pt); line 598 pin → `.frame(width: block.width, alignment: .trailing)`.
+5. `MenuBarRenderSnapshotTests`: line 220 ISC-6 ceiling → `<= blockWidth * scale` (54 px); line 600 sweep fixtures → natural + clip; line 835 extremes → `("99%", 1.0…)` / `("--%", nil…)`; line 930 composition → slot 93 pt, leftVoid/rightVoid ≤ 1 px.
+
+## 7. Exact Code Locations
+
+1. `StatsLite/MetricFormatters.swift:15-19` — clamp 0...0.99, unpadded format, `"--%"`; doc comment lines 10–14.
+2. `StatsLite/MenuBarBlockModel.swift:61-64` — `blockWidth = 27`; delete `standardBlockWidth`; doc comments.
+3. `StatsLite/MenuBarStackedItemView.swift:142` — `.frame(width: MenuBarLayout.standardBlockWidth, alignment: .trailing)` → `.frame(width: block.width, alignment: .trailing)`.
+4. `StatsLite/MenuBarStackedItemView.swift:1-25 & 110-116` — header + `MenuBarBlockView` doc: 27 pt frame, 99% clip contract; remove 39 pt/3-digit wording.
+5. Plan Non-goals (this file): superseded per T3 header note.
+6. `StatsLite/StatusItemController.swift:69 & 291` — verified read-only, zero changes.
+
+## 8. Items Requiring Explicit User Approval Beyond Directive
+
+1. ~25–26 px gap when GPU shows a single digit (idle state) — **APPROVED 2026-10-25**.
+2. Menu bar slot width 129 → 93 pt — **APPROVED 2026-10-25**.
+3. VoiceOver announces authentic metrics up to `"100 percent"` — **APPROVED 2026-10-25**.
