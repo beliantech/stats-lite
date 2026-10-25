@@ -85,7 +85,7 @@ Uniform ink gaps are impossible with fixed-width frames: gap = `4 pt + next bloc
 ## Task ledger
 
 - [x] **T1** — intrinsic-width gap fix (VAC-A/B/C + ISC-3/ISC-6 corrections). green `674a1f7` · review GO · merged `674a1f7` (ff, 2026-10-25). Suite green ×4 (coder ×3, planner ×1): 435 tests, 0 failures.
-- [ ] **T2** — frozen positions via fixed-width value text (S1, Appendix B). red ⏳ · green ⏳ · review ⏳ · merged ⏳
+- [x] **T2** — frozen positions via fixed-width value text (S1, Appendix B). red `b832ec5` · green `d07c26a` · review GO (own run 436/0) · merged `f619778` (squash, 2026-10-25). VAC-101 spread 0.0 px; gaps 11 px, delta 0.
 
 ## T2 — Frozen Positions via Fixed-Width Value Text (S1)
 
