@@ -99,11 +99,11 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testValuesFormatAsWholePercent() {
         XCTAssertEqual(
             blocks(cpuPercent: 0.20, gpuPercent: 0.20)[0].valueText,
-            "20%"
+            "020%"
         )
         XCTAssertEqual(
             blocks(cpuPercent: nil, gpuPercent: nil)[0].valueText,
-            "--%"
+            "−−−%"
         )
         XCTAssertEqual(
             blocks(cpuPercent: 1.0, gpuPercent: 1.0)[0].valueText,
@@ -121,7 +121,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testNaNValueShowsPlaceholder() {
         XCTAssertEqual(
             blocks(cpuPercent: .nan, gpuPercent: .nan)[0].valueText,
-            "--%"
+            "−−−%"
         )
     }
 
@@ -129,7 +129,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         let mem = blocks(
             showCPU: false, showGPU: false, pressurePercent: 0.25
         )
-        XCTAssertEqual(mem[0].valueText, "25%")
+        XCTAssertEqual(mem[0].valueText, "025%")
 
         let full = blocks(
             showCPU: false, showGPU: false, pressurePercent: 1.0
@@ -139,7 +139,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         let missing = blocks(
             showCPU: false, showGPU: false, pressurePercent: nil
         )
-        XCTAssertEqual(missing[0].valueText, "--%")
+        XCTAssertEqual(missing[0].valueText, "−−−%")
     }
 
     // MARK: - Value tints
@@ -323,7 +323,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
                 kind: .ram,
                 label: "MEM",
                 dotState: .normal,
-                valueText: "62%",
+                valueText: "062%",
                 valueTint: .primary,
                 width: 39
             )

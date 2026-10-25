@@ -2,8 +2,9 @@
 //  MetricFormatterTests.swift
 //  StatsLiteTests
 //
-//  Display strings: integer percent with "--%" for missing values,
-//  and GB with one decimal.
+//  Display strings: fixed 3-digit integer percent (S1 contract,
+//  plan 2026-10-25 T2) with "−−−%" (U+2212 times 3 plus %) for
+//  missing values, and GB with one decimal.
 //
 
 import XCTest
@@ -11,24 +12,24 @@ import XCTest
 
 final class MetricFormatterTests: XCTestCase {
 
-    func testPercentFormatsMissingValueAsDoubleDash() {
-        XCTAssertEqual(MetricFormatters.percent(nil), "--%")
+    func testPercentFormatsMissingValueAsTripleMinus() {
+        XCTAssertEqual(MetricFormatters.percent(nil), "−−−%")
     }
 
     func testPercentFormatsIntegerValues() {
-        XCTAssertEqual(MetricFormatters.percent(0), "0%")
+        XCTAssertEqual(MetricFormatters.percent(0), "000%")
         XCTAssertEqual(MetricFormatters.percent(1), "100%")
-        XCTAssertEqual(MetricFormatters.percent(0.144), "14%")
-        XCTAssertEqual(MetricFormatters.percent(0.618), "62%")
+        XCTAssertEqual(MetricFormatters.percent(0.144), "014%")
+        XCTAssertEqual(MetricFormatters.percent(0.618), "062%")
     }
 
     func testPercentClampsOutOfRangeValues() {
-        XCTAssertEqual(MetricFormatters.percent(-0.5), "0%")
+        XCTAssertEqual(MetricFormatters.percent(-0.5), "000%")
         XCTAssertEqual(MetricFormatters.percent(1.5), "100%")
     }
 
-    func testPercentFormatsNonFiniteValueAsDoubleDash() {
-        XCTAssertEqual(MetricFormatters.percent(.nan), "--%")
+    func testPercentFormatsNonFiniteValueAsTripleMinus() {
+        XCTAssertEqual(MetricFormatters.percent(.nan), "−−−%")
     }
 
     func testGigabytesFormatsOneDecimal() {

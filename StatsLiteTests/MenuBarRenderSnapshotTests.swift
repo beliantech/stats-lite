@@ -68,7 +68,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// recorded bearing evidence, never above (correction 3).
     private let gapUniformityTolerance: Double = 1
 
-    /// VAC-B: collision floor at extreme values (`100%`, `--%`) —
+    /// VAC-B: collision floor at extreme values (`100%`, `−−−%`) —
     /// the closest-approach gap must not merge below 7 px at 2x.
     private let extremeGapFloor: Double = 7
 
@@ -552,7 +552,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     }
 
     /// The three standard blocks from explicit percents: nil builds
-    /// `--%` with a tertiary tint, exactly what a fresh monitor
+    /// `−−−%` with a tertiary tint, exactly what a fresh monitor
     /// renders before its first snapshot (VAC-B extremes, VAC-C).
     private func standardTriple(
         cpuPercent: Double?,
@@ -575,6 +575,167 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             )
         }
         return try (block(.cpu), block(.ram), block(.gpu))
+    }
+
+    // MARK: - VAC-101 (plan 2026-10-25 T2): frozen block positions
+
+    /// VAC-101: one position measure across the value sweep must
+    /// never move — max minus min stays 0.0 px at 2x. The failure
+    /// message carries the extreme sweep points and every sample,
+    /// so a red run reports the measured shift directly.
+    private func assertFrozenAcrossSweep(
+        _ samples: [(point: String, pixels: Double)],
+        block: String,
+        measure: String,
+        appearance: NSAppearance.Name,
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) {
+        guard
+            let minimum = samples.min(by: { $0.pixels < $1.pixels }),
+            let maximum = samples.max(by: { $0.pixels < $1.pixels })
+        else {
+            XCTFail(
+                "VAC-101: no \(measure) samples for \(block) under \(appearance.rawValue)",
+                file: file,
+                line: line
+            )
+            return
+        }
+        let spread = maximum.pixels - minimum.pixels
+        XCTAssertLessThanOrEqual(
+            spread,
+            0.0,
+            """
+            VAC-101: \(block) \(measure) spread = \(spread) px at 2x under \
+            \(appearance.rawValue) (min \(minimum.pixels) px at \
+            "\(minimum.point)", max \(maximum.pixels) px at \
+            "\(maximum.point)", samples: \
+            \(samples.map { "\($0.point):\($0.pixels)" }.joined(separator: ", "))); \
+            the position must freeze within 0.0 px across the sweep.
+            """,
+            file: file,
+            line: line
+        )
+    }
+
+    /// VAC-101 (position freezing invariant, plan 2026-10-25 T2):
+    /// sweep the standard blocks through every digit boundary plus
+    /// the nil placeholder (`0%`, `5%`, `10%`, `50%`, `99%`,
+    /// `100%`, nil) and prove that no block moves. Each block
+    /// contributes three measures, each frozen within 0.0 px at
+    /// 2x: the single-block frame width (the next block's origin
+    /// starts after it), the composition x-origin (cumulative
+    /// production widths plus MenuBarLayout.gap, the VAC-A
+    /// boundary convention), and the composition trailing ink edge
+    /// (under trailing alignment the ink edge follows the frame).
+    /// One pixel of movement fails: a frozen position moves by
+    /// exactly zero.
+    func testStandardBlockPositionsFreezeAcrossValueSweep() throws {
+        let sweep: [(point: String, cpu: Double?, pressure: Double?, gpu: Double?)] = [
+            ("0%", 0.0, 0.0, 0.0),
+            ("5%", 0.05, 0.05, 0.05),
+            ("10%", 0.10, 0.10, 0.10),
+            ("50%", 0.50, 0.50, 0.50),
+            ("99%", 0.99, 0.99, 0.99),
+            ("100%", 1.0, 1.0, 1.0),
+            ("nil", nil, nil, nil),
+        ]
+        let gapPixels = MenuBarLayout.gap * scale
+        for appearance in appearances {
+            var frameWidths: [String: [(point: String, pixels: Double)]] = [:]
+            var xOrigins: [String: [(point: String, pixels: Double)]] = [:]
+            var trailingEdges: [String: [(point: String, pixels: Double)]] = [:]
+            for point in sweep {
+                let blocks = try standardTriple(
+                    cpuPercent: point.cpu,
+                    pressurePercent: point.pressure,
+                    gpuPercent: point.gpu
+                )
+                let ordered: [(String, MenuBarBlock)] = [
+                    ("CPU", blocks.cpu),
+                    ("MEM", blocks.mem),
+                    ("GPU", blocks.gpu),
+                ]
+                // Single-block renders: the production frame widths
+                // that place every following block's origin.
+                var widths: [Double] = []
+                for (name, block) in ordered {
+                    let single = MenuBarRenderHarness.render(
+                        MenuBarBlockView(block: block),
+                        appearance: appearance
+                    )
+                    let width = Double(single.pixelsWide)
+                    widths.append(width)
+                    frameWidths[name, default: []].append(
+                        (point: point.point, pixels: width)
+                    )
+                }
+                // The production adjacency of all three standard
+                // blocks: nested adjacent(…) keeps the same
+                // MenuBarLayout.gap spacing at every boundary.
+                let composition = MenuBarRenderHarness.render(
+                    adjacent(
+                        MenuBarBlockView(block: blocks.cpu),
+                        adjacent(
+                            MenuBarBlockView(block: blocks.mem),
+                            MenuBarBlockView(block: blocks.gpu)
+                        )
+                    ),
+                    appearance: appearance
+                )
+                var origin = 0.0
+                for (index, (name, _)) in ordered.enumerated() {
+                    xOrigins[name, default: []].append(
+                        (point: point.point, pixels: origin)
+                    )
+                    // The trailing ink edge sits at a constant
+                    // offset from the frame origin (same final
+                    // glyph "%" in every sweep string), so it
+                    // tracks the origin at pixel precision.
+                    let regionStart = Int(origin)
+                    let regionEnd = index == ordered.count - 1
+                        ? composition.pixelsWide
+                        : Int(origin + widths[index])
+                    let trailing = try XCTUnwrap(
+                        composition.rightmostInkX(
+                            yRange: 0..<composition.pixelsHigh,
+                            xRange: regionStart..<regionEnd,
+                            threshold: inkThreshold
+                        ),
+                        """
+                        VAC-101 (FM1): no ink for the \(name) block in region \
+                        \(regionStart)..<\(regionEnd) under \
+                        \(appearance.rawValue) at sweep \(point.point)
+                        """
+                    )
+                    trailingEdges[name, default: []].append(
+                        (point: point.point, pixels: Double(trailing))
+                    )
+                    origin += widths[index] + gapPixels
+                }
+            }
+            for name in ["CPU", "MEM", "GPU"] {
+                assertFrozenAcrossSweep(
+                    frameWidths[name] ?? [],
+                    block: name,
+                    measure: "single-block frame width",
+                    appearance: appearance
+                )
+                assertFrozenAcrossSweep(
+                    xOrigins[name] ?? [],
+                    block: name,
+                    measure: "x-origin",
+                    appearance: appearance
+                )
+                assertFrozenAcrossSweep(
+                    trailingEdges[name] ?? [],
+                    block: name,
+                    measure: "trailing ink edge",
+                    appearance: appearance
+                )
+            }
+        }
     }
 
     /// VAC-A (plan 2026-10-25): both standard-block boundaries hold
@@ -640,8 +801,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             )
         }
 
-        // VAC-D: both rows of each standard block stay flush to the
-        // trailing edge — line-1 and line-2 right ink within 1 px.
+        // VAC-D = VAC-105 (trailing edge flushness): both rows of
+        // each standard block stay flush to the trailing edge —
+        // line-1 and line-2 right ink within 1 px.
         let standard: [(String, MenuBarBlock)] = [
             ("CPU", blocks.cpu),
             ("MEM", blocks.mem),
@@ -685,14 +847,14 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     }
 
     /// VAC-B (plan 2026-10-25): extreme values never collide.
-    /// `100%` everywhere and `--%` everywhere (missing metrics),
+    /// `100%` everywhere and `−−−%` everywhere (missing metrics),
     /// both boundaries, both appearances: the closest-approach gap
     /// stays in [7, 12] px at 2x — no ink merge, no fixed-frame
     /// regression.
     func testExtremeValuesKeepBlockGapsOpen() throws {
         let extremes: [(String, Double?, Double?, Double?)] = [
             ("100%", 1.0, 1.0, 1.0),
-            ("--%", nil, nil, nil),
+            ("−−−%", nil, nil, nil),
         ]
         for (valueLabel, cpuPercent, pressurePercent, gpuPercent) in extremes {
             let blocks = try standardTriple(
@@ -700,6 +862,25 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 pressurePercent: pressurePercent,
                 gpuPercent: gpuPercent
             )
+            // The fixture must carry the string the gap measurement
+            // claims to measure (S1 contract, plan 2026-10-25 T2):
+            // a render of the old "--%" placeholder must not pass
+            // as a `−−−%` measurement.
+            for (name, block) in [
+                ("CPU", blocks.cpu),
+                ("MEM", blocks.mem),
+                ("GPU", blocks.gpu),
+            ] {
+                XCTAssertEqual(
+                    block.valueText,
+                    valueLabel,
+                    """
+                    VAC-B (\(valueLabel)): the \(name) block must carry the \
+                    \(valueLabel) string the gap measurement claims to measure; \
+                    found \(block.valueText)
+                    """
+                )
+            }
             let boundaries: [(String, MenuBarBlock, MenuBarBlock)] = [
                 ("CPU→MEM", blocks.cpu, blocks.mem),
                 ("MEM→GPU", blocks.mem, blocks.gpu),
@@ -747,7 +928,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// VAC-C (plan 2026-10-25): the production composition at the
     /// 129 pt slot. The stacked view renders inside the fixed item
     /// length with a fresh monitor (no snapshot yet, so every block
-    /// shows `--%`). Both standard boundaries must hold [8, 12] px,
+    /// shows `−−−%`). Both standard boundaries must hold [8, 12] px,
     /// and the leftover slot void must split symmetrically around
     /// the centered group (≤ 2 px side delta).
     func testStackedItemCompositionKeepsGapsAndCenteredVoid() throws {

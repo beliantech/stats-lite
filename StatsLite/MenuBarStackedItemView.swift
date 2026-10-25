@@ -4,10 +4,12 @@
 //
 //  Menu bar label as one stacked block per metric (blueprint): the
 //  category label sits on line 1, the percent value on line 2, and
-//  every standard block sizes to its intrinsic content, so the ink
-//  gap between blocks stays MenuBarLayout.gap (plan
-//  2026-10-25-menubar-item-gap-uniform-minimum). MenuBarLayout
-//  blockWidth is only the length budget summed by
+//  every standard block pins to MenuBarLayout.standardBlockWidth,
+//  so block positions freeze across digit boundaries (plan
+//  2026-10-25-menubar-item-gap-uniform-minimum, T2 S1). Values are
+//  fixed 3-digit strings ("045%", "100%", "−−−%"), so the ink
+//  gap between blocks stays uniform at MenuBarLayout.gap.
+//  MenuBarLayout blockWidth remains the length budget summed by
 //  MenuBarLayout.length, so the status item length never changes.
 //  The root HStack centers the block group in the slot, so the
 //  leftover width splits symmetrically around the group. The
@@ -105,11 +107,14 @@ struct MenuBarStackedItemView: View {
 }
 
 /// One metric block: category label on line 1, value on line 2.
-/// Width is intrinsic (fixedSize), so the ink gap to the next block
-/// stays MenuBarLayout.gap; block.width is only the length budget
-/// in MenuBarLayout.length, and the item length never changes.
-/// Trailing alignment pins both lines flush to the block right
-/// edge. Internal so redraw-churn tests can walk its body tree.
+/// Width pins to MenuBarLayout.standardBlockWidth so block
+/// positions freeze across value changes; value text is fixed
+/// 3-digit, so the ink gap to the next block stays uniform (plan
+/// 2026-10-25-menubar-item-gap-uniform-minimum, T2 S1). block.width
+/// is only the length budget in MenuBarLayout.length, and the item
+/// length never changes. Trailing alignment pins both lines flush
+/// to the block right edge. Internal so redraw-churn tests can
+/// walk its body tree.
 struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
@@ -134,7 +139,7 @@ struct MenuBarBlockView: View {
                 .frame(height: MenuBarLayout.rowHeight)
                 .offset(y: MenuBarLayout.valueYOffset)
         }
-        .fixedSize(horizontal: true, vertical: false)
+        .frame(width: MenuBarLayout.standardBlockWidth, alignment: .trailing)
     }
 
     private var valueColor: Color {

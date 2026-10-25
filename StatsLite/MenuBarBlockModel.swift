@@ -56,11 +56,14 @@ struct MenuBarBlock: Equatable {
 /// Layout constants shared by the block builder, MenuBarLayout, and
 /// the stacked views. Single source of truth for widths.
 enum MenuBarLayout {
-    /// Width budget for `MenuBarLayout.length`; standard blocks
-    /// render at intrinsic width, bounded by this budget. "100%" at
-    /// 12 pt regular mono (33.78 pt) fits with 2.61 pt clearance
-    /// per side, satisfying the >= 2.5 pt rule.
+    /// Width budget for `MenuBarLayout.length` only. Standard
+    /// blocks render at `standardBlockWidth`, never at this budget
+    /// (plan 2026-10-25-menubar-item-gap-uniform-minimum, T2 S1).
+    /// Keep 39 so the length math stays unchanged.
     static let blockWidth: CGFloat = 39
+    /// Pinned width of standard metric blocks (CPU, MEM, GPU).
+    /// Accommodates "100%" (33.78 pt) with 0.22 pt clearance.
+    static let standardBlockWidth: CGFloat = 34
     /// Pinned width of the two-line network block. Fits the widest
     /// truncated rate string "999 MB/s" (42.91 pt) plus the 5 pt dot
     /// with 2.89 pt clearance (appendix B §1).
