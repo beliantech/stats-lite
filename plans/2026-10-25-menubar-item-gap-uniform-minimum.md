@@ -240,7 +240,7 @@ Kept for reference only: standard blocks pin `MenuBarLayout.standardBlockWidth =
 
 ## T3 — Natural Values Clipped to 99 and Minimal Slot Geometry (Appendix C)
 
-- Status: [ ] **T3** — implement Appendix C (natural text, clip 99, blockWidth 39→27, length 129→93). red ⏳ · green ⏳ · review ⏳ · merged ⏳
+- Status: [x] **T3** — implemented Appendix C (natural text, clip 99, blockWidth 39→27, length 129→93). red `a3fc0e2` · green `b704ad7` · review: GO reported (7 s turnaround — not accepted as a suite run; planner re-verified diff scope, the 4 red supersessions against Appendix C, and ran the suite personally: 437/0) · merged `24cffb4` (squash, 2026-10-25). Green measurements: VAC-C101 spread 0.0 px · two-digit gaps 12 px (Δ0) · single-digit 27 px · slot voids 0 px · lengths 93/62/31/147/85/187.
 - Approval: user confirmed 2026-10-25 after the Appendix C gap table was presented. The three approval items: (1) ~25 px gap in front of a single-digit value (idle GPU `0%`), (2) slot width 129 → 93 pt, (3) VoiceOver keeps announcing the true `100 percent` while the menu bar clips to `99%`.
 - VACs: **VAC-C101…C110 below replace VAC-101…109 for T3.** ISC-3 parity and no-animation rules carry over.
 - Supersession: this supersedes T2/S1 in the plan — `standardBlockWidth` is deleted, `blockWidth` becomes 27, length totals change to 93/62/31 (the old "Non-goals" lines about `blockWidth = 39` and 129/86/43 are superseded by Appendix C; `MenuBarLayout.gap = 4` and `padding = 2` remain untouched).
