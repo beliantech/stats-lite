@@ -143,10 +143,11 @@ final class RemoveCoresBreakdownTests: XCTestCase {
 
     // MARK: - Removal site 1: the Settings toggle
 
-    /// The Display Options section keeps the History Duration picker
-    /// and loses the Show Per-Core CPU Breakdown toggle. The sanity
-    /// anchors are strings that survive the removal, so the absence
-    /// check cannot pass because introspection found nothing.
+    /// The Settings window keeps the History Duration picker (the
+    /// 2nd General row) and loses the Show Per-Core CPU Breakdown
+    /// toggle. The sanity anchors are strings that survive the
+    /// removal, so the absence check cannot pass because
+    /// introspection found nothing.
     func testSettingsWindowNoLongerContainsCoreBreakdownToggle() {
         let view = SettingsView(
             preferences: PreferencesStore(),
@@ -161,7 +162,7 @@ final class RemoveCoresBreakdownTests: XCTestCase {
         )
         XCTAssertTrue(
             strings.contains { $0.contains("History Duration") },
-            "View introspection failed: the surviving Display Options picker was not found."
+            "View introspection failed: the surviving History Duration picker was not found."
         )
         XCTAssertFalse(
             strings.contains { $0.contains("Show Per-Core CPU Breakdown") },

@@ -124,6 +124,85 @@ final class SettingsWindowTests: XCTestCase {
         )
     }
 
+    // MARK: - General row order (plan 2026-10-26-settings-history-duration-general)
+
+    /// General carries the three control rows in declaration order:
+    /// Refresh Interval, then History Duration, then Launch at Login,
+    /// all before Visible Metrics. The emptied Display Options
+    /// section is gone, and the form keeps exactly one History
+    /// Duration label. Order assertions use the same Mirror string
+    /// walk + firstIndex idiom as
+    /// MenuBarTempBlockTests.testSettingsViewHasTemperatureToggleBetweenGPUAndNetwork.
+    func testGeneralSectionRowOrderAndNoDisplayOptionsSection() throws {
+        let view = SettingsView(
+            preferences: PreferencesStore(),
+            monitor: SystemMonitor(),
+            launchAtLogin: LaunchAtLoginService()
+        )
+        let strings = collectViewStrings(view.body)
+
+        // Sanity checks: the reflection must find the neighboring
+        // rows and section header, or the checks below pass
+        // vacuously.
+        XCTAssertTrue(
+            strings.contains("Visible Metrics"),
+            "View introspection failed: no known section header found."
+        )
+        XCTAssertTrue(
+            strings.contains(where: { $0.contains("Refresh Interval") }),
+            "View introspection failed: no Refresh Interval row found."
+        )
+        XCTAssertTrue(
+            strings.contains(where: { $0.contains("Launch at Login") }),
+            "View introspection failed: no Launch at Login row found."
+        )
+
+        let refreshIndex = try XCTUnwrap(
+            strings.firstIndex(where: { $0.contains("Refresh Interval") }),
+            "sanity"
+        )
+        let historyIndex = try XCTUnwrap(
+            strings.firstIndex(where: { $0.contains("History Duration") }),
+            "History Duration must be a row of the Settings form."
+        )
+        let loginIndex = try XCTUnwrap(
+            strings.firstIndex(where: { $0.contains("Launch at Login") }),
+            "sanity"
+        )
+        let visibleMetricsIndex = try XCTUnwrap(
+            strings.firstIndex(of: "Visible Metrics"),
+            "sanity"
+        )
+
+        XCTAssertLessThan(
+            refreshIndex,
+            historyIndex,
+            "History Duration must sit below Refresh Interval in General."
+        )
+        XCTAssertLessThan(
+            historyIndex,
+            loginIndex,
+            "History Duration must sit above Launch at Login in General."
+        )
+        XCTAssertLessThan(
+            loginIndex,
+            visibleMetricsIndex,
+            "General (all three rows) must precede Visible Metrics."
+        )
+
+        XCTAssertFalse(
+            strings.contains(where: { $0.contains("Display Options") }),
+            "The Display Options section was removed with its last control."
+        )
+
+        let historyLabels = strings.filter { $0.contains("History Duration") }
+        XCTAssertEqual(
+            historyLabels.count,
+            1,
+            "The form must carry exactly one History Duration label; found: \(historyLabels)"
+        )
+    }
+
     // MARK: - Version footer
 
     func testVersionLabelReadsBundleInfo() {
