@@ -51,8 +51,23 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     private let topEdgeTolerance: Double = 0.4
 
     /// ISC-5: value-text luminance difference floor between the two
-    /// forced appearances.
+    /// forced appearances. Shared with the Layer-3 label probe
+    /// (plan 2026-10-25-menubar-label-contrast, VAC-10): one 40
+    /// floor, one harness, one appearance pair.
     private let appearanceLuminanceDelta: Double = 40
+
+    /// ISC-7 (plan 2026-10-25-menubar-label-contrast, H0
+    /// falsification): floor for the forced-.darkAqua CPU label
+    /// peak pixel luminance (0-255 sRGB over the fixed 50 % gray
+    /// harness background, line-1 label region). Calibration (T1.2,
+    /// red run in this harness): V_red = 198.0 on the
+    /// .foregroundStyle(.secondary) code (printed by the probe on
+    /// failure). T = floor((V_red + (213 - 8)) / 2) = floor(201.5)
+    /// = 201: strictly above V_red by 3, and 12 below the expected
+    /// green render (prior ≈ 213), so the required ≥ 8 margin
+    /// holds. The live-teal 124 baseline (D1) is never a threshold
+    /// — only harness numbers count.
+    private let darkAquaLabelPeakLuminanceFloor: Double = 201
 
     /// VAC-A (plan 2026-10-25-menubar-item-gap-uniform-minimum,
     /// correction 3): standard-block ink-gap bounds in bitmap pixels
@@ -1398,6 +1413,97 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             ISC-5 (FM3): forced .darkAqua value text (\(dark)) must be lighter \
             than forced .aqua value text (\(light)); a reversed probe means the \
             appearance mapping is wrong.
+            """
+        )
+    }
+
+    // MARK: - Layer-3 (plan 2026-10-25, VAC-10): label luminance
+    // delta under both forced appearances
+
+    /// Layer-3 label probe (plan 2026-10-25-menubar-label-contrast,
+    /// VAC-10): CPU label ink mean luminance must differ by at least
+    /// the shared 40 floor between forced .darkAqua and .aqua, dark
+    /// above light. On red code .secondary already adapts to the
+    /// appearance, so the probe can pass — it then stands as the
+    /// already-green regression net (D2 records its measured red
+    /// delta), and ISC-7 below carries the guaranteed red.
+    func testMenuBarLabelLuminanceDeltaUnderBothForcedAppearances() throws {
+        let blocks = try builtBlocks()
+        var labelLuminance: [NSAppearance.Name: Double] = [:]
+        for appearance in appearances {
+            let bitmap = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.cpu),
+                appearance: appearance
+            )
+            // Measure CPU label ink luminance across line 1
+            let mean = try XCTUnwrap(
+                bitmap.meanInkLuminance(
+                    columns: 1..<bitmap.pixelsWide,
+                    yRange: line1,
+                    threshold: inkThreshold
+                ),
+                "no CPU label ink under \(appearance.rawValue)"
+            )
+            labelLuminance[appearance] = mean
+        }
+        let dark = try XCTUnwrap(labelLuminance[.darkAqua])
+        let light = try XCTUnwrap(labelLuminance[.aqua])
+        let delta = abs(dark - light)
+        XCTAssertGreaterThanOrEqual(
+            delta,
+            appearanceLuminanceDelta,
+            """
+            VAC-10 (Layer-3): label luminance delta \(delta) must meet or \
+            exceed \(appearanceLuminanceDelta) between forced .darkAqua \
+            (\(dark)) and .aqua (\(light)) label ink.
+            """
+        )
+        XCTAssertGreaterThan(
+            dark,
+            light,
+            """
+            VAC-10 (Layer-3): dark appearance label ink (\(dark)) must be \
+            lighter than light appearance ink (\(light)).
+            """
+        )
+    }
+
+    // MARK: - ISC-7 (plan 2026-10-25): dark-appearance label peak
+    // pixel luminance floor — the guaranteed red of the plan's H0
+    // falsification signature
+
+    /// ISC-7 (plan 2026-10-25-menubar-label-contrast): the
+    /// forced-.darkAqua render of MenuBarBlockView(block: cpu)
+    /// through MenuBarRenderHarness must show CPU label peak pixel
+    /// luminance (0-255 sRGB, line-1 label region over the fixed
+    /// gray background) at or above the calibrated floor. The CPU
+    /// block carries no dot, so line 1 holds only the label.
+    /// Column 0 is the harness black edge column (ISC-4), so the
+    /// scan starts at column 1. Red measures V_red (printed below,
+    /// recorded in D2); T2 must clear the floor with
+    /// Color.menuBarLabel or H0 is dead.
+    func testMenuBarLabelPeakLuminanceUnderDarkAquaMeetsFloor() throws {
+        let blocks = try builtBlocks()
+        let bitmap = MenuBarRenderHarness.render(
+            MenuBarBlockView(block: blocks.cpu),
+            appearance: .darkAqua
+        )
+        var peak = 0.0
+        for y in line1 {
+            for x in 1..<bitmap.pixelsWide {
+                let value = bitmap.luminance[y * bitmap.pixelsWide + x]
+                if value > peak { peak = value }
+            }
+        }
+        XCTAssertGreaterThanOrEqual(
+            peak,
+            darkAquaLabelPeakLuminanceFloor,
+            """
+            ISC-7 (plan 2026-10-25-menubar-label-contrast): CPU label peak \
+            pixel luminance = \(peak) (0-255 sRGB) under forced .darkAqua \
+            must reach the calibrated floor \
+            \(darkAquaLabelPeakLuminanceFloor) (red V_red = \(peak), \
+            green render prior ≈ 213, T = floor((V_red + 205) / 2)).
             """
         )
     }

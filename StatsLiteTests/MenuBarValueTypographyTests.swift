@@ -22,6 +22,16 @@
 //  spacing, network-clearance, fitting-height, and row-frame
 //  guards pass unchanged.
 //
+//  Plan 2026-10-25-menubar-label-contrast (T1 red): the label
+//  tests now expect the shared .menuBarMetricLabel() modifier at
+//  all label sites and zero .foregroundStyle(.secondary) in
+//  MenuBarStackedItemView.swift. The 8 pt regular label-font
+//  coverage moved out of the block bodies into a DesignTokens
+//  token guard on MenuBarMetricLabelStyle, because after T2 the
+//  block bodies carry only the modifier. Production still pins
+//  .secondary and has no MenuBarMetricLabelStyle, so the two
+//  renamed label tests and the token guard fail until T2.
+//
 
 import AppKit
 import SwiftUI
@@ -34,10 +44,14 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
     /// `.font(.system(size: 12, weight: .regular).monospacedDigit())`
     private let expectedValueFont = ".font(.system(size:12,weight:.regular).monospacedDigit())"
-    /// `.font(.system(size: 8, weight: .regular))`
+    /// `.font(.system(size: 8, weight: .regular))` — the label font
+    /// token, asserted inside DesignTokens.swift's
+    /// MenuBarMetricLabelStyle (plan 2026-10-25): the block bodies
+    /// carry only the shared modifier, so the font guard lives with
+    /// the modifier declaration.
     private let expectedLabelFont = ".font(.system(size:8,weight:.regular))"
-    /// `.foregroundStyle(.secondary)`
-    private let expectedLabelStyle = ".foregroundStyle(.secondary)"
+    /// `.menuBarMetricLabel()`
+    private let expectedLabelModifier = ".menuBarMetricLabel()"
     /// `.font(.system(size: 9, weight: .regular).monospacedDigit())`
     private let expectedNetworkFont = ".font(.system(size:9,weight:.regular).monospacedDigit())"
 
@@ -91,6 +105,30 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
+    /// URL of DesignTokens.swift relative to this test file, same
+    /// #filePath pattern as stackedItemViewURL. A read error
+    /// throws and fails the test, never a vacuous pass.
+    private var designTokensURL: URL {
+        URL(fileURLWithPath: #filePath)
+            .deletingLastPathComponent()
+            .deletingLastPathComponent()
+            .appendingPathComponent("StatsLite/DesignTokens.swift")
+            .standardizedFileURL
+    }
+
+    private func loadDesignTokensSource(
+        file: StaticString = #filePath,
+        line: UInt = #line
+    ) throws -> String {
+        let data = try Data(contentsOf: designTokensURL)
+        return try XCTUnwrap(
+            String(data: data, encoding: .utf8),
+            "DesignTokens.swift is not valid UTF-8",
+            file: file,
+            line: line
+        )
+    }
+
     /// Source range of one top-level struct: from its declaration
     /// to the next top-level struct or the end of the file. Fails
     /// the test when the declaration is missing, so an extraction
@@ -138,6 +176,31 @@ final class MenuBarValueTypographyTests: XCTestCase {
         return text
             .split(whereSeparator: { $0.isWhitespace })
             .joined()
+    }
+
+    /// Normalizes a multi-line declaration scope for token
+    /// comparison: strips each line's comment first, then removes
+    /// every whitespace run. `squashed(_:)` cuts at the first `//`
+    /// it sees, which would drop the whole body of a documented
+    /// declaration.
+    private func squashedScope(_ scope: some StringProtocol) -> String {
+        scope
+            .split(separator: "\n")
+            .map { squashed($0) }
+            .joined()
+    }
+
+    /// Occurrences of `.foregroundStyle(.secondary)` in the source,
+    /// line comments stripped first, so a doc comment can neither
+    /// trip nor mask the VAC-9 zero-instance rule.
+    private func secondaryForegroundCount(in source: String) -> Int {
+        let code = source
+            .split(separator: "\n")
+            .map { squashed($0) }
+            .joined(separator: "\n")
+        return code
+            .components(separatedBy: ".foregroundStyle(.secondary)")
+            .count - 1
     }
 
     /// The `.font(...)` token on the first `.font(` line after
@@ -214,9 +277,11 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-4: label flips to 8 pt regular secondary
+    // MARK: - IC-4 → plan 2026-10-25: label uses the shared
+    // menuBarMetricLabel modifier (VAC-5) and the file carries
+    // zero .foregroundStyle(.secondary) (VAC-9)
 
-    func testLabelFontIsEightPointRegularSecondary() throws {
+    func testLabelAppliesSharedMenuBarMetricLabelModifier() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let labelStart = try XCTUnwrap(
@@ -233,44 +298,37 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         let region = squashed(scope[labelStart.upperBound..<valueStart.lowerBound])
         XCTAssertTrue(
-            region.contains(expectedLabelFont),
+            region.contains(expectedLabelModifier),
             """
-            IC-4: the category labels (CPU, MEM, GPU) must be 8 pt \
-            .regular with .foregroundStyle(.secondary) and no .bold \
-            weight; found label region \(region).
+            VAC-5 (plan 2026-10-25-menubar-label-contrast): the category \
+            labels (CPU, MEM, GPU) must apply the shared \
+            .menuBarMetricLabel() modifier between Text(block.label) and \
+            Text(block.valueText); found label region \(region).
             """
         )
-        XCTAssertTrue(
-            region.contains(expectedLabelStyle),
+        let secondaryCount = secondaryForegroundCount(in: source)
+        XCTAssertEqual(
+            secondaryCount,
+            0,
             """
-            IC-4: the category label must be \
-            .foregroundStyle(.secondary); found label region \(region).
+            VAC-9: MenuBarStackedItemView.swift must contain zero instances \
+            of .foregroundStyle(.secondary) once the labels render through \
+            Color.menuBarLabel; found \(secondaryCount).
             """
         )
     }
 
-    // MARK: - TEMP parity: subsystem labels are 8 pt regular secondary
+    // MARK: - TEMP parity → plan 2026-10-25: subsystem labels use
+    // the same shared menuBarMetricLabel modifier (VAC-5)
 
-    /// Plan 2026-10-23-temp-menu-bar-label-parity (VAC-1/VAC-2):
+    /// Plan 2026-10-25-menubar-label-contrast (VAC-2/VAC-5):
     /// the TEMP block renders its CPU and GPU subsystem labels as
-    /// discrete text with the same tokens as the standard metric
-    /// labels: 8 pt regular with .foregroundStyle(.secondary) on
-    /// both rows, in every state.
-    func testTempBlockLabelsAreEightPointRegularSecondary() throws {
+    /// discrete text through the shared modifier on both rows, in
+    /// every state. The 8 pt regular font assertion lives in the
+    /// DesignTokens token guard (MenuBarMetricLabelStyle owns it).
+    func testTempBlockLabelsApplySharedMenuBarMetricLabelModifier() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarTempBlockView", in: source)
-
-        let cpuToken = try fontToken(after: "Text(block.label)", in: scope)
-        let gpuToken = try fontToken(after: "Text(block.secondaryLabel", in: scope)
-        XCTAssertEqual(
-            [cpuToken, gpuToken],
-            [expectedLabelFont, expectedLabelFont],
-            """
-            TEMP parity: both MenuBarTempBlockView subsystem labels must \
-            use .font(.system(size: 8, weight: .regular)); found \
-            CPU \(cpuToken), GPU \(gpuToken).
-            """
-        )
 
         let cpuStart = try XCTUnwrap(
             scope.range(of: "Text(block.label)"),
@@ -286,11 +344,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         let cpuRegion = squashed(scope[cpuStart.upperBound..<cpuValueStart.lowerBound])
         XCTAssertTrue(
-            cpuRegion.contains(expectedLabelStyle),
+            cpuRegion.contains(expectedLabelModifier),
             """
-            TEMP parity: the CPU subsystem label must use \
-            .foregroundStyle(.secondary) in every state; found \
-            \(cpuRegion).
+            VAC-5 (plan 2026-10-25): the CPU subsystem label must apply the \
+            shared .menuBarMetricLabel() modifier; found \(cpuRegion).
             """
         )
 
@@ -308,11 +365,54 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
         let gpuRegion = squashed(scope[gpuStart.upperBound..<gpuValueStart.lowerBound])
         XCTAssertTrue(
-            gpuRegion.contains(expectedLabelStyle),
+            gpuRegion.contains(expectedLabelModifier),
             """
-            TEMP parity: the GPU subsystem label must use \
-            .foregroundStyle(.secondary) in every state; found \
-            \(gpuRegion).
+            VAC-5 (plan 2026-10-25): the GPU subsystem label must apply the \
+            shared .menuBarMetricLabel() modifier; found \(gpuRegion).
+            """
+        )
+    }
+
+    // MARK: - Plan 2026-10-25 token guard: DesignTokens declares
+    // MenuBarMetricLabelStyle with the 8 pt regular font and the
+    // adaptive Color.menuBarLabel foreground (VAC-5, AC-1, AC-2)
+
+    /// Layer-1 token guard (plan 2026-10-25-menubar-label-contrast,
+    /// T1.1): the in-body label-font assertions moved here, because
+    /// after T2 the block bodies carry only .menuBarMetricLabel()
+    /// and the font lives inside MenuBarMetricLabelStyle. The check
+    /// scopes to the MenuBarMetricLabelStyle declaration in
+    /// DesignTokens.swift, so the same tokens elsewhere in the
+    /// file cannot satisfy it.
+    func testDesignTokensStyleDeclaresLabelFontAndAdaptiveColor() throws {
+        let source = try loadDesignTokensSource()
+        let start = try XCTUnwrap(
+            source.range(of: "struct MenuBarMetricLabelStyle"),
+            "MenuBarMetricLabelStyle declaration not found in DesignTokens.swift"
+        )
+        let rest = source[start.upperBound...]
+        let nextTopLevel = rest.range(of: "\nstruct ")
+            ?? rest.range(of: "\nextension ")
+        let scope = source[
+            start.lowerBound..<(nextTopLevel?.lowerBound ?? source.endIndex)
+        ]
+        let normalized = squashedScope(scope)
+        XCTAssertTrue(
+            normalized.contains(expectedLabelFont),
+            """
+            token guard (plan 2026-10-25-menubar-label-contrast): \
+            MenuBarMetricLabelStyle must declare \
+            .font(.system(size: 8, weight: .regular)); found scope \
+            \(normalized).
+            """
+        )
+        XCTAssertTrue(
+            normalized.contains(".foregroundStyle(Color.menuBarLabel)"),
+            """
+            token guard (plan 2026-10-25-menubar-label-contrast): \
+            MenuBarMetricLabelStyle must declare \
+            .foregroundStyle(Color.menuBarLabel); found scope \
+            \(normalized).
             """
         )
     }
