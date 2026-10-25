@@ -15,8 +15,10 @@ import XCTest
 
 final class MenuBarBlockBuilderTests: XCTestCase {
 
-    /// Pinned per-block width from the plan constants table.
-    private let blockWidth: CGFloat = 39
+    /// Pinned per-block width from the plan constants table
+    /// (plan 2026-10-25-menubar-item-gap-uniform-minimum T3,
+    /// Appendix C: 27 pt).
+    private let blockWidth: CGFloat = 27
 
     private func blocks(
         showCPU: Bool = true,
@@ -99,29 +101,29 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testValuesFormatAsWholePercent() {
         XCTAssertEqual(
             blocks(cpuPercent: 0.20, gpuPercent: 0.20)[0].valueText,
-            "020%"
+            "20%"
         )
         XCTAssertEqual(
             blocks(cpuPercent: nil, gpuPercent: nil)[0].valueText,
-            "−−−%"
+            "--%"
         )
         XCTAssertEqual(
             blocks(cpuPercent: 1.0, gpuPercent: 1.0)[0].valueText,
-            "100%"
+            "99%"
         )
     }
 
     func testOutOfRangeValuesClampToFull() {
         XCTAssertEqual(
             blocks(cpuPercent: 1.5, gpuPercent: 1.5)[0].valueText,
-            "100%"
+            "99%"
         )
     }
 
     func testNaNValueShowsPlaceholder() {
         XCTAssertEqual(
             blocks(cpuPercent: .nan, gpuPercent: .nan)[0].valueText,
-            "−−−%"
+            "--%"
         )
     }
 
@@ -129,17 +131,17 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         let mem = blocks(
             showCPU: false, showGPU: false, pressurePercent: 0.25
         )
-        XCTAssertEqual(mem[0].valueText, "025%")
+        XCTAssertEqual(mem[0].valueText, "25%")
 
         let full = blocks(
             showCPU: false, showGPU: false, pressurePercent: 1.0
         )
-        XCTAssertEqual(full[0].valueText, "100%")
+        XCTAssertEqual(full[0].valueText, "99%")
 
         let missing = blocks(
             showCPU: false, showGPU: false, pressurePercent: nil
         )
-        XCTAssertEqual(missing[0].valueText, "−−−%")
+        XCTAssertEqual(missing[0].valueText, "--%")
     }
 
     // MARK: - Value tints
@@ -323,9 +325,9 @@ final class MenuBarBlockBuilderTests: XCTestCase {
                 kind: .ram,
                 label: "MEM",
                 dotState: .normal,
-                valueText: "062%",
+                valueText: "62%",
                 valueTint: .primary,
-                width: 39
+                width: 27
             )
         )
         XCTAssertFalse(ram[0].valueText.contains("●"))

@@ -419,55 +419,59 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-3: clearance for "100%" at 12 pt regular
+    // MARK: - IC-3: clearance for "99%" at 12 pt regular
 
-    func testClearanceForWidestValueAtTwelvePointRegularMeetsTwoAndAHalfPointPerSideRule() {
+    /// Widest menu bar value after the T3 clip (plan 2026-10-25,
+    /// Appendix C §6.4): the formatter clamps to "99%" (26.22 pt),
+    /// which the 27 pt frame holds with 0.78 pt total clearance.
+    /// The pre-T3 ≥ 2.5 pt per-side spacer rule (IC-3) is
+    /// superseded: the clip-99 design trades clearance for the
+    /// minimal slot.
+    func testClearanceForWidestValueAtTwelvePointRegularFitsClip99Block() {
         let font = NSFont.monospacedDigitSystemFont(ofSize: 12.0, weight: .regular)
-        let width = ("100%" as NSString)
+        let width = ("99%" as NSString)
             .size(withAttributes: [.font: font])
             .width
         let clearance = MenuBarLayout.blockWidth - width
 
         XCTAssertEqual(
             MenuBarLayout.blockWidth,
-            39.0,
+            27.0,
             accuracy: 0.0001,
-            "IC-3: the block width must be 39.0 pt"
+            "IC-3 (T3): the block width must be 27.0 pt"
         )
         XCTAssertGreaterThanOrEqual(
             clearance,
-            5.0,
+            0.0,
             """
-            IC-3: total clearance for "100%" at 12 pt regular \
-            monospacedDigit must be at least 5.0 pt; got \(clearance) pt.
-            """
-        )
-        XCTAssertGreaterThanOrEqual(
-            clearance / 2.0,
-            2.5,
-            """
-            IC-3: per-side clearance for "100%" at 12 pt regular \
-            monospacedDigit must be at least 2.5 pt; \
-            got \(clearance / 2.0) pt.
+            IC-3 (T3): the 27 pt frame must never clip the widest value \
+            "99%" at 12 pt regular monospacedDigit; got \(clearance) pt of \
+            clearance.
             """
         )
         XCTAssertEqual(
             width,
-            33.78,
+            26.22,
             accuracy: 0.05,
-            "expected 33.78 pt text width at the target font"
+            "expected 26.22 pt text width at the target font"
         )
         XCTAssertEqual(
             clearance,
-            5.22,
+            0.78,
             accuracy: 0.05,
-            "expected 5.22 pt total clearance at the target font"
+            "expected 0.78 pt total clearance at the target font"
         )
     }
 
     // MARK: - IC-11: label-row clearance at 8 pt regular
 
-    func testLabelRowClearanceForMemRowAtEightPointRegularMeetsThreeAndAHalfPoints() {
+    /// Label-row clearance in the 27 pt clip-99 frame (plan
+    /// 2026-10-25 T3, Appendix C §3/§6.4): the MEM label row
+    /// (4 pt dot + 2 pt gap + "MEM" = 25.36 pt) is the widest
+    /// label row and clears the frame by 1.64 pt; every label row
+    /// keeps at least 1.5 pt. The pre-T3 ≥ 3.5 pt rule is
+    /// superseded with the smaller frame.
+    func testLabelRowClearanceForMemRowAtEightPointRegularMeetsOneAndAHalfPoints() {
         let font = NSFont.systemFont(ofSize: 8.0, weight: .regular)
         func width(of text: String) -> CGFloat {
             (text as NSString).size(withAttributes: [.font: font]).width
@@ -475,58 +479,58 @@ final class MenuBarValueTypographyTests: XCTestCase {
 
         XCTAssertEqual(
             MenuBarLayout.blockWidth,
-            39.0,
+            27.0,
             accuracy: 0.0001,
-            "IC-11: the block width must be 39.0 pt"
+            "IC-11 (T3): the block width must be 27.0 pt"
         )
 
         let memClearance = MenuBarLayout.blockWidth - (4.0 + 2.0 + width(of: "MEM"))
         XCTAssertGreaterThanOrEqual(
             memClearance,
-            3.5,
+            1.5,
             """
-            IC-11: total clearance for the MEM label row (4.0 pt dot + \
-            2.0 pt gap + "MEM" at 8 pt regular) must be at least 3.5 pt; \
+            IC-11 (T3): total clearance for the MEM label row (4.0 pt dot + \
+            2.0 pt gap + "MEM" at 8 pt regular) must be at least 1.5 pt; \
             got \(memClearance) pt.
             """
         )
         XCTAssertEqual(
             memClearance,
-            13.6406,
+            1.6406,
             accuracy: 0.05,
-            "expected 13.6406 pt total clearance for the MEM label row"
+            "expected 1.6406 pt total clearance for the MEM label row"
         )
 
         let cpuClearance = MenuBarLayout.blockWidth - width(of: "CPU")
         XCTAssertGreaterThanOrEqual(
             cpuClearance,
-            16.0,
+            1.5,
             """
-            IC-11: total clearance for the CPU label must be at least \
-            16.0 pt; got \(cpuClearance) pt.
+            IC-11 (T3): total clearance for the CPU label must be at least \
+            1.5 pt; got \(cpuClearance) pt.
             """
         )
         XCTAssertEqual(
             cpuClearance,
-            21.6836,
+            9.6836,
             accuracy: 0.05,
-            "expected 21.6836 pt total clearance for the CPU label"
+            "expected 9.6836 pt total clearance for the CPU label"
         )
 
         let gpuClearance = MenuBarLayout.blockWidth - width(of: "GPU")
         XCTAssertGreaterThanOrEqual(
             gpuClearance,
-            16.0,
+            1.5,
             """
-            IC-11: total clearance for the GPU label must be at least \
-            16.0 pt; got \(gpuClearance) pt.
+            IC-11 (T3): total clearance for the GPU label must be at least \
+            1.5 pt; got \(gpuClearance) pt.
             """
         )
         XCTAssertEqual(
             gpuClearance,
-            21.4375,
+            9.4375,
             accuracy: 0.05,
-            "expected 21.4375 pt total clearance for the GPU label"
+            "expected 9.4375 pt total clearance for the GPU label"
         )
     }
 
@@ -590,30 +594,31 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - plan 2026-10-24 VAC-2 / plan 2026-10-25 T2 S1: the
-    // metric block pins to MenuBarLayout.standardBlockWidth with
-    // trailing alignment (frozen positions), and the trailing
-    // alignment stays on the stack (checked by the test above)
+    // MARK: - plan 2026-10-24 VAC-2 / plan 2026-10-25 T3
+    // (Appendix C §6.4): the metric block pins to the builder
+    // width (block.width, 27 pt through MenuBarLayout.blockWidth)
+    // with trailing alignment, and the trailing alignment stays on
+    // the stack (checked by the test above)
 
-    func testMetricBlockFramePinsToStandardBlockWidth() throws {
+    func testMetricBlockFramePinsToBlockWidth() throws {
         let source = try loadSource()
         let scope = try declarationScope(of: "MenuBarBlockView", in: source)
         let line = try XCTUnwrap(
             sourceLine(
-                containing: "width: MenuBarLayout.standardBlockWidth",
+                containing: "width: block.width",
                 in: scope
             ),
-            "no standardBlockWidth sizing line found in MenuBarBlockView"
+            "no block.width sizing line found in MenuBarBlockView"
         )
         XCTAssertEqual(
             squashed(line),
-            ".frame(width:MenuBarLayout.standardBlockWidth,alignment:.trailing)",
+            ".frame(width:block.width,alignment:.trailing)",
             """
-            plan 2026-10-25-menubar-item-gap-uniform-minimum T2 S1: the \
-            MenuBarBlockView sizing line in MenuBarStackedItemView.swift \
-            must be .frame(width: MenuBarLayout.standardBlockWidth, \
-            alignment: .trailing) so standard block positions freeze \
-            across value changes; found \(line).
+            plan 2026-10-25-menubar-item-gap-uniform-minimum T3 \
+            (Appendix C): the MenuBarBlockView sizing line in \
+            MenuBarStackedItemView.swift must be \
+            .frame(width: block.width, alignment: .trailing) so the block \
+            frame follows the builder width (27 pt); found \(line).
             """
         )
     }

@@ -5,9 +5,12 @@
 //  Pure block model for the stacked menu bar label (plan
 //  2026-10-15-menubar-stacked-fixed-width, Task 1). Each visible
 //  metric renders as one block: category label on line 1, percent
-//  value on line 2. Block widths are pinned to the widest content
-//  ("100%"), so the menu bar item never resizes. MenuBarLayout
-//  computes the total item length from the same constants.
+//  value on line 2. Block widths are pinned so the menu bar item
+//  never resizes: standard blocks pin to 27 pt, sized for the
+//  widest natural value "99%" (26.22 pt), since values clip at 99
+//  (plan 2026-10-25-menubar-item-gap-uniform-minimum, T3
+//  Appendix C). MenuBarLayout computes the total item length from
+//  the same constants.
 //
 
 import Foundation
@@ -56,14 +59,14 @@ struct MenuBarBlock: Equatable {
 /// Layout constants shared by the block builder, MenuBarLayout, and
 /// the stacked views. Single source of truth for widths.
 enum MenuBarLayout {
-    /// Width budget for `MenuBarLayout.length` only. Standard
-    /// blocks render at `standardBlockWidth`, never at this budget
-    /// (plan 2026-10-25-menubar-item-gap-uniform-minimum, T2 S1).
-    /// Keep 39 so the length math stays unchanged.
-    static let blockWidth: CGFloat = 39
     /// Pinned width of standard metric blocks (CPU, MEM, GPU).
-    /// Accommodates "100%" (33.78 pt) with 0.22 pt clearance.
-    static let standardBlockWidth: CGFloat = 34
+    /// Accommodates "99%" (26.22 pt) with 0.78 pt clearance,
+    /// MEM's label row (25.36 pt) with 1.64 pt clearance,
+    /// and "--%" (22.42 pt) with 4.58 pt clearance. This single
+    /// constant is both the block frame width and the length
+    /// budget summed by `MenuBarLayout.length` (T3 Appendix C
+    /// §2.A).
+    static let blockWidth: CGFloat = 27
     /// Pinned width of the two-line network block. Fits the widest
     /// truncated rate string "999 MB/s" (42.91 pt) plus the 5 pt dot
     /// with 2.89 pt clearance (appendix B §1).
@@ -234,6 +237,8 @@ enum MenuBarBlockBuilder {
 
     /// Warning tint on usage values: >= 95 % critical, >= 80 %
     /// warning, else primary. Unavailable values render tertiary.
+    /// The display clips at 99 %, so a true 100 % load renders
+    /// "99%" in red: the threshold stays 0.95 (T3 Appendix C).
     private static func usageTint(_ value: Double?) -> MenuBarValueTint {
         guard let value else { return .tertiary }
         if value >= 0.95 { return .critical }

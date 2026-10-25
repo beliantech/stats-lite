@@ -9,16 +9,15 @@ import Foundation
 
 enum MetricFormatters {
 
-    /// Formats a fraction in 0...1 as a fixed 3-digit integer percent:
-    /// "000%", "045%", "100%". Returns "−−−%" (three U+2212 minus signs
-    /// plus %) for a missing or non-finite value, so every standard-block
-    /// value string keeps the same ink width and block positions freeze
-    /// (plan 2026-10-25-menubar-item-gap-uniform-minimum, T2 S1). Clamps
-    /// out-of-range values to 0...1 first.
+    /// Formats a fraction in 0...1 as an integer percent string.
+    /// Clamps values to 0...0.99 so the display clips to "99%".
+    /// Returns natural unpadded text ("0%", "5%", "45%", "99%").
+    /// Missing or non-finite values return "--%" (plan
+    /// 2026-10-25-menubar-item-gap-uniform-minimum, T3 Appendix C).
     static func percent(_ value: Double?) -> String {
-        guard let value, value.isFinite else { return "−−−%" }
-        let clamped = min(max(value, 0), 1)
-        return String(format: "%03d%%", Int((clamped * 100).rounded()))
+        guard let value, value.isFinite else { return "--%" }
+        let clamped = min(max(value, 0), 0.99)
+        return "\(Int((clamped * 100).rounded()))%"
     }
 
     /// Formats a fraction in 0...1 as one-decimal percent: "24.0%".

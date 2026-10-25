@@ -4,17 +4,19 @@
 //
 //  Menu bar label as one stacked block per metric (blueprint): the
 //  category label sits on line 1, the percent value on line 2, and
-//  every standard block pins to MenuBarLayout.standardBlockWidth,
-//  so block positions freeze across digit boundaries (plan
-//  2026-10-25-menubar-item-gap-uniform-minimum, T2 S1). Values are
-//  fixed 3-digit strings ("045%", "100%", "−−−%"), so the ink
-//  gap between blocks stays uniform at MenuBarLayout.gap.
-//  MenuBarLayout blockWidth remains the length budget summed by
-//  MenuBarLayout.length, so the status item length never changes.
-//  The root HStack centers the block group in the slot, so the
-//  leftover width splits symmetrically around the group. The
-//  network block is a dedicated two-line view: networkUpload dot
-//  plus upload rate above networkDownload dot plus download rate,
+//  every standard block pins to a 27 pt frame (block.width through
+//  MenuBarLayout.blockWidth), so block positions freeze across
+//  digit boundaries (plan
+//  2026-10-25-menubar-item-gap-uniform-minimum, T3 Appendix C).
+//  Values are natural strings clipped at 99 ("0%", "45%", "99%",
+//  "--%"), so the frame width is fixed while the ink gap varies
+//  with digit count. blockWidth is both the frame width and the
+//  length budget summed by MenuBarLayout.length, so the status
+//  item length never changes. The root HStack centers the block
+//  group in the slot, so the leftover width splits symmetrically
+//  around the group. The network block is a dedicated two-line
+//  view: networkUpload dot plus upload rate above networkDownload
+//  dot plus download rate,
 //  pinned to MenuBarLayout.networkBlockWidth. Blocks
 //  come from MenuBarBlockBuilder — the single source of truth for
 //  text, tint, and width. The MEM block carries a 4 pt pressure dot
@@ -107,14 +109,18 @@ struct MenuBarStackedItemView: View {
 }
 
 /// One metric block: category label on line 1, value on line 2.
-/// Width pins to MenuBarLayout.standardBlockWidth so block
-/// positions freeze across value changes; value text is fixed
-/// 3-digit, so the ink gap to the next block stays uniform (plan
-/// 2026-10-25-menubar-item-gap-uniform-minimum, T2 S1). block.width
-/// is only the length budget in MenuBarLayout.length, and the item
-/// length never changes. Trailing alignment pins both lines flush
-/// to the block right edge. Internal so redraw-churn tests can
-/// walk its body tree.
+/// Width pins to block.width (27 pt through
+/// MenuBarLayout.blockWidth) so block positions freeze across
+/// value changes; values are natural strings clipped at 99 (plan
+/// 2026-10-25-menubar-item-gap-uniform-minimum, T3 Appendix C),
+/// and block.width is both the frame width and the length budget
+/// in MenuBarLayout.length, so the item length never changes.
+/// Trailing alignment pins both rows to the block right edge.
+/// Line 2 carries a 0.5 pt trailing inset (1 px at 2x), so its
+/// right ink stops at or behind the label's right ink and the
+/// block's trailing edge follows the label across every value
+/// (VAC-C101); the two rows stay flush within 1 px (VAC-C106).
+/// Internal so redraw-churn tests can walk its body tree.
 struct MenuBarBlockView: View {
     let block: MenuBarBlock
 
@@ -132,14 +138,28 @@ struct MenuBarBlockView: View {
                     .foregroundStyle(.secondary)
             }
             .frame(height: MenuBarLayout.rowHeight)
+            // Trailing inset of 0.5 pt = 1 px at 2x (measured in
+            // the T3 green run, plan 2026-10-25-menubar-item-
+            // gap-uniform-minimum). SwiftUI rounds every text
+            // width to the pixel grid, so the final "%" lands at
+            // a string-dependent subpixel phase and the
+            // placeholder "--%" pokes one pixel past the digit
+            // strings. After the pull, every value's right ink
+            // stops at or behind the label's constant right ink,
+            // so the trailing edge follows the label and freezes
+            // across the value sweep (VAC-C101). Both rows stay
+            // flush within 1 px (VAC-C106), and line-to-line ink
+            // gaps keep their width because both sides of a gap
+            // pull together.
             Text(block.valueText)
                 .font(.system(size: 12, weight: .regular).monospacedDigit())
                 .foregroundStyle(valueColor)
                 .lineLimit(1)
+                .padding(.trailing, 0.5)
                 .frame(height: MenuBarLayout.rowHeight)
                 .offset(y: MenuBarLayout.valueYOffset)
         }
-        .frame(width: MenuBarLayout.standardBlockWidth, alignment: .trailing)
+        .frame(width: block.width, alignment: .trailing)
     }
 
     private var valueColor: Color {
