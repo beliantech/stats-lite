@@ -154,7 +154,7 @@ struct PopoverContentView: View {
         }
     }
 
-    // MARK: - Header (28 pt, Activity Monitor, gear, and quit 24x24 targets)
+    // MARK: - Header (28 pt, Storage, Activity Monitor, gear, and quit 24x24 targets)
 
     private var header: some View {
         HStack(spacing: 8) {
@@ -163,6 +163,19 @@ struct PopoverContentView: View {
                 .foregroundStyle(.primary)
 
             Spacer()
+
+            Button {
+                openStorageSettings()
+            } label: {
+                Image(systemName: "internaldrive")
+                    .font(.system(size: 12, weight: .medium))
+                    .foregroundStyle(.secondary)
+                    .frame(width: 24, height: 24)
+                    .contentShape(Rectangle())
+            }
+            .buttonStyle(.plain)
+            .help(Self.storageButtonLabel)
+            .accessibilityLabel(Self.storageButtonLabel)
 
             Button {
                 openActivityMonitor()
@@ -218,6 +231,22 @@ struct PopoverContentView: View {
     /// Tooltip and VoiceOver label for the header shortcut button (VAC-8/VAC-9).
     static let activityMonitorButtonLabel = "Open Activity Monitor"
 
+    // MARK: - Storage seams
+
+    /// URL string for the macOS System Settings Storage pane.
+    static let storageSettingsURLString =
+        "x-apple.systempreferences:com.apple.settings.Storage"
+
+    /// Bundle identifier for macOS System Settings.
+    static let systemSettingsBundleIdentifier = "com.apple.systempreferences"
+
+    /// Fallback app bundle path when URL scheme handling fails.
+    static let systemSettingsFallbackPath =
+        "/System/Applications/System Settings.app"
+
+    /// Tooltip and VoiceOver label for the Storage shortcut button.
+    static let storageButtonLabel = "Open Storage Settings"
+
     // MARK: - Actions
 
     /// Opens macOS Activity Monitor via bundle identifier or fallback app bundle path.
@@ -234,6 +263,23 @@ struct PopoverContentView: View {
                 URL(fileURLWithPath: Self.activityMonitorFallbackPath)
             )
         }
+    }
+
+    /// Opens the macOS System Settings Storage pane. Falls back to launching
+    /// System Settings by bundle identifier (or its path) when the URL has no
+    /// handler: `NSWorkspace.shared.open` returns false in that case.
+    private func openStorageSettings() {
+        if let url = URL(string: Self.storageSettingsURLString),
+           NSWorkspace.shared.open(url) {
+            return
+        }
+        let appURL = NSWorkspace.shared.urlForApplication(
+            withBundleIdentifier: Self.systemSettingsBundleIdentifier
+        ) ?? URL(fileURLWithPath: Self.systemSettingsFallbackPath)
+        NSWorkspace.shared.openApplication(
+            at: appURL,
+            configuration: NSWorkspace.OpenConfiguration()
+        )
     }
 
     // MARK: - Footer (22 pt)
