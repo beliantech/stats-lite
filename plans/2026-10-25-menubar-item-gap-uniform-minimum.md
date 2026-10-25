@@ -79,3 +79,159 @@ Uniform ink gaps are impossible with fixed-width frames: gap = `4 pt + next bloc
 - No change to the temp and network blocks (fixed widths; their 21 px gaps are a separate issued contract, ISC-3).
 - No typography, color, tint, accessibility-string, or animation changes.
 - No `DESIGN.md` change (it carries only the 8 pt label rule; verified 2026-10-25).
+
+---
+
+## Task ledger
+
+- [x] **T1** — intrinsic-width gap fix (VAC-A/B/C + ISC-3/ISC-6 corrections). green `674a1f7` · review GO · merged `674a1f7` (ff, 2026-10-25). Suite green ×4 (coder ×3, planner ×1): 435 tests, 0 failures.
+- [ ] **T2** — frozen positions via fixed-width value text (S1, Appendix B). red ⏳ · green ⏳ · review ⏳ · merged ⏳
+
+## T2 — Frozen Positions via Fixed-Width Value Text (S1)
+
+- Defect: after T1 deploy, values crossing digit boundaries (9%→10%, 99%→100%) widen the intrinsic block and shift MEM/GPU right. User directive: "we need to keep the position accommodating these."
+- Approval: user picked **S1** on this plan ("ok S1 go", 2026-10-25), accepting fixed-width values (`045%` style) as the cost of holding all four constraints.
+- VACs: **VAC-101…109 below replace VAC-A/B/C for T2.** VAC-D…H and all T1 regressions stay.
+- Scope (planner-verified 2026-10-25): `MetricFormatters.percent` has exactly three call sites, all in `StatsLite/MenuBarBlockModel.swift` (lines 141, 157, 173). Popover cards use `percentTenth` (natural text, untouched). VoiceOver uses `wholePercent` (untouched).
+- TDD: red spawn authors failing tests first (touching no production code), green spawn implements Appendix B.
+- Risk class: R2 (UI text + layout change).
+
+### T2 red-phase test scope (runnable red required)
+
+- Author VAC-101 position-freeze test — fails on current intrinsic code (positions shift).
+- Update `MetricFormatterTests` / `MenuBarBlockBuilderTests` expectations to the S1 contract (`"000%"`, `"045%"`, `"100%"`, `"−−−%"`) — fails on current formatter.
+- Update VAC-B fixtures to `"−−−%"` (U+2212 × 3 + `%`).
+- Tests that need the new `MenuBarLayout.standardBlockWidth` constant belong to the green spawn so the red run compiles and produces runtime failures.
+
+### Appendix B — Design Fix Blueprint (designer, 2026-10-25; copied verbatim)
+
+# Appendix B: Design Fix Blueprint — Frozen Block Positions and Gap Resolution
+
+## 1. Executive Summary & Root Cause Analysis
+
+### Defect Report
+Following deployment of commit `674a1f7` (plan `plans/2026-10-25-menubar-item-gap-uniform-minimum.md`), the user reported:
+> *"once the number increases to 99% or 100% it expands, we need to keep the position accommodating these."*
+
+### Root Cause
+Commit `674a1f7` replaced `.frame(width: block.width, alignment: .trailing)` with `.fixedSize(horizontal: true, vertical: false)` on `MenuBarBlockView`.
+This change made standard metric blocks size to their intrinsic content.
+At 12 pt monospaced regular font, text width varies by digit count:
+- 1-digit values (`"0%"` to `"9%"`): **18.66 pt** (37.3 px at 2×).
+- 2-digit values (`"10%"` to `"99%"`): **26.22 pt** (52.4 px at 2×).
+- 3-digit values (`"100%"`): **33.78 pt** (67.6 px at 2×).
+- Unavailable placeholder (`"--%"`): **22.42 pt** (44.8 px at 2×).
+
+Because blocks size intrinsically, a value crossing digit boundaries causes the block width to expand:
+- `9%` to `10%` expands the block by **7.56 pt** (+15.1 px at 2×).
+- `99%` to `100%` expands the block by **7.56 pt** (+15.1 px at 2×).
+- Total expansion from `0%` to `100%` is **15.12 pt** (+30.2 px at 2×).
+
+Because blocks sit in an `HStack` centered inside the 129 pt slot:
+1. Every expansion of CPU shifts MEM and GPU rightward.
+2. Centering divides expansion symmetrically. The left block shifts leftward by half the delta.
+3. Every metric transition across digit thresholds produces visible horizontal jitter.
+
+## 2. Verification of Planner Impossibility Proof
+
+### Mathematical Proof
+Let Block A be followed by Block B in an `HStack` with fixed inter-frame spacing g = 4.0 pt.
+1. By Constraint 1 (Position Freezing), Block A and Block B have fixed frame origins X_A, X_B and fixed frame widths W_A, W_B.
+2. By Constraint 3 (Right-Alignment Directive), all rows align to trailing edges. Block A rightmost ink sits at X_A + W_A − r_A, where r_A is the right glyph side bearing.
+3. In Block B, text has ink width w_B. Because Block B is trailing-aligned to X_B + W_B, Block B leftmost ink sits at (X_B + W_B − r_B) − w_B.
+4. The horizontal ink gap: gap = g + (W_B − w_B) + (r_A − r_B).
+
+In this equation: g constant (4.0 pt); W_B constant (Constraint 1); (r_A − r_B) constant within glyph bearing variance (≤ 1.0 pt). The only independent variable is w_B.
+
+Therefore: ∂gap/∂w_B = −1, and Δgap = −Δw_B.
+
+**Conclusion**: the proof is mathematically irrefutable. If positions are frozen and rows are right-aligned, the visible ink gap must vary inversely with the text ink width. A uniform ink gap is mathematically impossible unless w_B is invariant.
+
+## 3. Evaluation of Candidate Solutions (S1–S5)
+
+| Candidate | C1: Frozen Positions | C2: Uniform & Minimal Gap | C3: Right Alignment | C4: 129 pt Length Contract | UX & Copy Verdict |
+|---|---|---|---|---|---|
+| **S1: Constant Ink Width** (normalized 3-digit text) | **PASS** (100% frozen) | **PASS** (8.4 px at 2×; Δ = 0 px) | **PASS** (flush right) | **PASS** (129 pt preserved) | **REQUIRES USER APPROVAL** (zero-padding: `"005%"`, `"045%"`, `"100%"`) — **GRANTED 2026-10-25** |
+| **S2: Fixed Worst-Case Frame** (F = 34 pt, natural copy) | **PASS** (100% frozen) | **FAIL** (gaps swing 8.4 to 38.7 px; delta up to 30.2 px) | **PASS** (flush right) | **PASS** (129 pt preserved) | **PASS** (natural copy) |
+| **S3: Intrinsic Width** (T1, commit 674a1f7) | **FAIL** (shifts 15.1 px per digit crossing) | **PASS** (8–12 px at 2×) | **PASS** (flush right) | **PASS** (129 pt preserved) | **FAIL** (user rejected; horizontal jitter) |
+| **S4: Leading Ink Marker** (dot on value row) | **PASS** (100% frozen) | **PARTIAL** (value row uniform; label row sparse) | **FAIL** (value row split left/right) | **FAIL** (F ≥ 40 pt exceeds 129 pt) | **FAIL** (visual clutter; unexplained dots) |
+| **S5: Figure-Space Padding** (U+2007) | **PASS** (frame frozen) | **FAIL** (spaces have zero ink; identical to S2) | **PASS** (flush right) | **PASS** (129 pt preserved) | **PASS** (reads as unpadded) |
+
+## 4. Analysis and Rejection of Candidates
+
+- **S2 (F = 34 pt, trailing-aligned)**: value `"100%"` → gap 4.22 pt (8.4 px); `"45%"` → 11.78 pt (23.6 px); `"0%"`/`"5%"` → 19.34 pt (38.7 px); `"--%"` → 15.58 pt (31.2 px). Max cross-boundary delta 30.24 px at 2× — four times the 7.0 px delta that triggered the initial complaint. **REJECT against C2.**
+- **S3 (status quo)**: **REJECT against C1** — user confirmed post-deploy defect.
+- **S4 (leading marker)**: **REJECT against C3 and C4** — frame ≥ 40 pt breaks the 129 pt contract; adds visual noise.
+- **S5 (U+2007 figure space)**: digit-width space, but whitespace produces zero ink; leftmost ink stays the first digit. Ink gap identical to S2. **REJECT against C2.**
+
+## 5. Architectural Recommendation
+
+Solution S1 is the only mathematically possible solution satisfying all four constraints. Every percentage string formats to 3 digits plus `%`:
+- Format: `"%03d%%"` (for example `"005%"`, `"045%"`, `"100%"`).
+- Missing/unavailable: `"−−−%"` (three U+2212 minus signs plus `%`). Typographic evidence: in San Francisco monospaced digits U+2212 has width 7.5586 pt, identical to numeric digits; `"−−−%"` width = 33.7793 pt, matching `"100%"` to four decimals.
+- User approval: **GRANTED** (2026-10-25, "ok S1 go").
+
+## 6. Solution S2 Fallback Specification (inactive — S1 approved)
+
+Kept for reference only: standard blocks pin `MenuBarLayout.standardBlockWidth = 34` with trailing alignment, natural text, relaxed gap contract (8–40 px at 2×, cross-boundary delta ≤ 31 px). Do not implement unless the user withdraws S1.
+
+## 7. Resulting Gap Mathematics at 2×
+
+### Frame and Slot Dimensions
+- Status item length: 129.0 pt (258 px at 2×). Outer padding 2.0 pt/side (4 px).
+- Standard block frame width (F): **34.0 pt** (68 px). Inter-block frame spacing (g): 4.0 pt (8 px).
+- Block group total: 3 × 34.0 + 2 × 4.0 = **110.0 pt** (220 px). Left/right void: (125 − 110)/2 = **7.5 pt** (15 px) each.
+
+### S1 Ink Gap Math (normalized values)
+- Text width for all values (`"000%"`…`"100%"`, `"−−−%"`): **33.78 pt** (67.56 px).
+- Leading clearance inside frame: 34.0 − 33.78 = **0.22 pt** (0.44 px). Trailing clearance: 0 (flush right).
+- Mathematical ink gap: 4.0 + 0.22 = **4.22 pt** (**8.44 px** at 2×).
+- Measured bitmap ink gap with glyph bearings: **10 to 11 px at 2×**.
+- Boundary delta: **0 px** (uniform).
+
+## 8. Exact Code Locations for Implementation
+
+1. `StatsLite/MenuBarBlockModel.swift` line 62 — add:
+   ```swift
+   /// Pinned width of standard metric blocks (CPU, MEM, GPU).
+   /// Accommodates "100%" (33.78 pt) with 0.22 pt clearance.
+   static let standardBlockWidth: CGFloat = 34
+   ```
+   Line 61: keep `static let blockWidth: CGFloat = 39` to preserve `MenuBarLayout.length` calculations.
+2. `StatsLite/MenuBarStackedItemView.swift` line ~137 — replace `.fixedSize(horizontal: true, vertical: false)` with:
+   ```swift
+   .frame(width: MenuBarLayout.standardBlockWidth, alignment: .trailing)
+   ```
+   Line ~49: keep `.frame(maxWidth: .infinity, alignment: .center)` on the root `HStack`.
+3. `StatsLite/MetricFormatters.swift` lines 15–18 — replace `percent`:
+   ```swift
+   static func percent(_ value: Double?) -> String {
+       guard let value, value.isFinite else { return "−−−%" }
+       let clamped = min(max(value, 0), 1)
+       return String(format: "%03d%%", Int((clamped * 100).rounded()))
+   }
+   ```
+   Update the doc comment (line 12) to the new contract.
+
+## 9. Affected Tests List
+
+1. `StatsLiteTests/MenuBarValueTypographyTests.swift` — `testMetricBlockFrameUsesIntrinsicFixedSizeWidth()` (line 594): update the pin to assert `.frame(width: MenuBarLayout.standardBlockWidth, alignment: .trailing)`.
+2. `StatsLiteTests/MenuBarRenderSnapshotTests.swift`:
+   - VAC-A (`testStandardBlockGapsAreUniformAndMinimal`, lines 580–640): passes under S1 with gap in [8, 12] px and delta ≤ 1 px — keep as-is.
+   - VAC-B (`testExtremeValuesKeepBlockGapsOpen`, lines 687–745): fixture `"--%"` → `"−−−%"`; ceiling 13 px holds.
+   - ISC-6 (`testRenderDimensionsMatchProductionGeometry`, lines 220–250): `pixelsWide <= blockWidth * scale` holds (68 ≤ 78 px).
+   - VAC-C (`testStackedItemCompositionKeepsGapsAndCenteredVoid`, lines 747–875): void delta 15 − 15 = 0 px passes.
+3. `StatsLiteTests/MetricFormatterTests.swift` (lines 15–31): expectations `"0%"` → `"000%"`, `"14%"` → `"014%"`, `"--%"` → `"−−−%"`. VoiceOver tests in `MenuBarAccessibilityTests` use `wholePercent` — unaffected.
+4. `StatsLiteTests/MenuBarBlockBuilderTests.swift`: value expectations become `"000%"`, `"050%"`, etc.
+
+## 10. Numbered Visual Acceptance Checklist (VAC) — replaces VAC-A/B/C
+
+- [ ] **VAC-101 (Position Freezing Invariant)**: for every value sweep across `0%`, `5%`, `10%`, `50%`, `99%`, `100%`, and nil (`−−−%`), the x-origin of each standard block (CPU, MEM, GPU) stays constant within 0.0 px.
+- [ ] **VAC-102 (Gap Uniformity and Minimality)**: closest-approach ink gap for CPU→MEM and MEM→GPU measures 8–12 px at 2× under both `.darkAqua` and `.aqua`.
+- [ ] **VAC-103 (Cross-Boundary Uniformity Delta)**: |gap(CPU→MEM) − gap(MEM→GPU)| ≤ 1 px at 2×.
+- [ ] **VAC-104 (Extreme Value Collision Safety)**: at `100%` and `−−−%`, closest-approach gap ≥ 7 px at 2×; no ink merging.
+- [ ] **VAC-105 (Trailing Edge Alignment Flushness)**: line 1 and line 2 right ink edges of each standard block align flush within 1 px at 2×.
+- [ ] **VAC-106 (Centered Void Symmetry)**: |leftVoid − rightVoid| ≤ 2 px at 2× in the 129 pt slot.
+- [ ] **VAC-107 (Status Item Length Contract)**: `MenuBarLayout.length` equals 129.0 / 86.0 / 43.0 pt.
+- [ ] **VAC-108 (Discrete Transition Invariant)**: no `.animation` or `.contentTransition` in `MenuBarBlockView` / `MenuBarStackedItemView`.
+- [ ] **VAC-109 (Downstream Block Gap Parity)**: GPU→TEMP and TEMP→NET ink gaps stay 21 ± 1 px at 2× (ISC-3).
