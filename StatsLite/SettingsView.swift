@@ -2,9 +2,9 @@
 //  SettingsView.swift
 //  StatsLite
 //
-//  Settings scene content: a grouped 380x340 form with General,
-//  Visible Metrics, and Display Options sections plus the version
-//  footer. Controls write to PreferencesStore; onChange calls
+//  Settings scene content: a grouped 380x340 form with General
+//  and Visible Metrics sections plus the version footer.
+//  Controls write to PreferencesStore; onChange calls
 //  SystemMonitor.apply so every change takes effect live.
 //
 
@@ -20,7 +20,6 @@ struct SettingsView: View {
             Form {
                 generalSection
                 visibleMetricsSection
-                displayOptionsSection
             }
             .formStyle(.grouped)
 
@@ -47,7 +46,18 @@ struct SettingsView: View {
     private var generalSection: some View {
         Section("General") {
             refreshIntervalRow
+            historyDurationRow
             launchAtLoginRow
+        }
+    }
+
+    private var historyDurationRow: some View {
+        Picker("History Duration", selection: $preferences.historyDuration) {
+            Text("30 s").tag(30)
+            Text("1 min").tag(60)
+            Text("2 min").tag(120)
+            Text("3 min").tag(180)
+            Text("5 min").tag(300)
         }
     }
 
@@ -102,20 +112,6 @@ struct SettingsView: View {
             Text("Visible Metrics")
         } footer: {
             Text("At least one metric must remain enabled.")
-        }
-    }
-
-    // MARK: - Display Options
-
-    private var displayOptionsSection: some View {
-        Section("Display Options") {
-            Picker("History Duration", selection: $preferences.historyDuration) {
-                Text("30 s").tag(30)
-                Text("1 min").tag(60)
-                Text("2 min").tag(120)
-                Text("3 min").tag(180)
-                Text("5 min").tag(300)
-            }
         }
     }
 
