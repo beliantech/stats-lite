@@ -6,10 +6,11 @@
 //  showGPU:showNetwork:). Constants from plan
 //  2026-10-25-menubar-item-gap-uniform-minimum T3 (Appendix C):
 //  each standard block pins 27 pt, the network block pins 50 pt,
-//  the gap between blocks is 4 pt, and outer padding is 2 pt per
-//  side. Totals: 93 (three standards), 62 (any pair), 31
-//  (single), 147 (all four), 85 (one standard + network), 54
-//  (network only), 4 (off).
+//  and outer padding is 2 pt per side. The inter-block gap is 5 pt
+//  (plan 2026-10-26-menubar-block-gap-5pt). Totals: 95 (three
+//  standards), 63 (any pair), 31 (single), 150 (all four), 86
+//  (one standard + network), 54 (network only), 4 (off), 191
+//  (all five).
 //
 
 import XCTest
@@ -19,34 +20,34 @@ final class MenuBarLayoutTests: XCTestCase {
 
     private let accuracy: CGFloat = 0.0001
 
-    func testAllThreeMetricsTotal93() {
+    func testAllThreeMetricsTotal95() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: true, showGPU: true),
-            93,
+            95,
             accuracy: accuracy
         )
     }
 
-    func testCPURAMPairTotal62() {
+    func testCPURAMPairTotal63() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: true, showGPU: false),
-            62,
+            63,
             accuracy: accuracy
         )
     }
 
-    func testCPUGPUPairTotal62() {
+    func testCPUGPUPairTotal63() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: true, showRAM: false, showGPU: true),
-            62,
+            63,
             accuracy: accuracy
         )
     }
 
-    func testRAMGPUPairTotal62() {
+    func testRAMGPUPairTotal63() {
         XCTAssertEqual(
             MenuBarLayout.length(showCPU: false, showRAM: true, showGPU: true),
-            62,
+            63,
             accuracy: accuracy
         )
     }
@@ -89,7 +90,7 @@ final class MenuBarLayoutTests: XCTestCase {
         XCTAssertEqual(MenuBarLayout.networkBlockWidth, 50, accuracy: accuracy)
     }
 
-    func testAllFourMetricsTotal147() {
+    func testAllFourMetricsTotal150() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -97,7 +98,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: true,
                 showNetwork: true
             ),
-            147,
+            150,
             accuracy: accuracy
         )
     }
@@ -115,7 +116,7 @@ final class MenuBarLayoutTests: XCTestCase {
         )
     }
 
-    func testCPUPlusNetworkTotal85() {
+    func testCPUPlusNetworkTotal86() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -123,12 +124,12 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: false,
                 showNetwork: true
             ),
-            85,
+            86,
             accuracy: accuracy
         )
     }
 
-    func testNetworkOffKeepsThreeMetricTotal93() {
+    func testNetworkOffKeepsThreeMetricTotal95() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -136,7 +137,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: true,
                 showNetwork: false
             ),
-            93,
+            95,
             accuracy: accuracy
         )
     }
@@ -150,9 +151,9 @@ final class MenuBarLayoutTests: XCTestCase {
         XCTAssertEqual(MenuBarLayout.tempBlockWidth, 36, accuracy: accuracy)
     }
 
-    /// All five metrics (CPU, GPU, MEM, TEMP, NET) total 187 pt:
-    /// 2 × 2 pt padding + 3 × 27 pt + 36 pt + 50 pt + 4 × 4 pt gap.
-    func testAllFiveMetricsTotal187() {
+    /// All five metrics (CPU, GPU, MEM, TEMP, NET) total 191 pt:
+    /// 2 × 2 pt padding + 3 × 27 pt + 36 pt + 50 pt + 4 × 5 pt gap.
+    func testAllFiveMetricsTotal191() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -161,7 +162,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showNetwork: true,
                 showTemperature: true
             ),
-            187,
+            191,
             accuracy: accuracy
         )
     }

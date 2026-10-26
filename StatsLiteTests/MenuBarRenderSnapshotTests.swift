@@ -42,21 +42,25 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// ISC-2: label-to-dot centroid tolerance in bitmap pixels.
     private let centroidTolerance: Double = 0.30
 
-    /// ISC-3: inter-block ink gap target and tolerance in bitmap
-    /// pixels at 2x (re-issued VAC-22/23, Addendum B: 21.0 px).
-    /// MEM→TEMP (VAC-23) keeps the shared 21 px.
-    private let interBlockGap: Double = 21
+    /// ISC-3: MEM→TEMP inter-block ink gap target and tolerance in
+    /// bitmap pixels at 2x. Addendum B measured 21.0 px nominal
+    /// under the 4 pt gap token (22 px rendered); the 5 pt token
+    /// (plan 2026-10-26-menubar-block-gap-5pt) ripples the frame
+    /// gap 8 px → 10 px, so MEM→TEMP (VAC-23) re-measures 24 px.
+    private let interBlockGap: Double = 24
     private let interBlockGapTolerance: Double = 1
 
     /// ISC-4 (plan 2026-10-26-network-dots-trailing, correction 4):
     /// TEMP→NET ink gap after the dot move to the trailing edge.
     /// The leftmost NET ink is now the rate-text glyph bearing
     /// instead of the dot edge, so the leg splits off from
-    /// interBlockGap (which MEM→TEMP keeps at 21). Measured 24 px
+    /// interBlockGap (which MEM→TEMP keeps at 24). Measured 24 px
     /// under both appearances in the T4 green run (ledger T4,
-    /// 2026-10-26); the split value sits at the top of the 21..24
-    /// px bound and carries the same ±1 tolerance.
-    private let tempNetInkGap: Double = 24
+    /// 2026-10-26) under the 4 pt gap; the 5 pt token (plan
+    /// 2026-10-26-menubar-block-gap-5pt) ripples it +2 px: 26 px
+    /// measured under both appearances in the 5 pt green run, with
+    /// the same ±1 tolerance.
+    private let tempNetInkGap: Double = 26
 
     /// ISC-4: top ink edge tolerance in bitmap pixels.
     private let topEdgeTolerance: Double = 0.4
@@ -82,12 +86,13 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-A (plan 2026-10-25-menubar-item-gap-uniform-minimum,
     /// correction 3): standard-block ink-gap bounds in bitmap pixels
-    /// at 2x. Floor = MenuBarLayout.gap design token at 2x (8 px,
+    /// at 2x. Floor = MenuBarLayout.gap design token at 2x (10 px
+    /// under the 5 pt token, plan 2026-10-26-menubar-block-gap-5pt;
     /// never lowered). Ceiling = token + glyph side bearings
     /// (2 px per edge), so a regression to the pre-fix 38–45 px
     /// fixed-frame gaps fails.
-    private let minimalGapFloor: Double = 8
-    private let minimalGapCeiling: Double = 12
+    private let minimalGapFloor: Double = 10
+    private let minimalGapCeiling: Double = 14
 
     /// VAC-A: maximum pixel delta between the CPU→GPU and GPU→MEM
     /// gap minima (uniformity at 2x). Raised to 2 only with
@@ -96,26 +101,33 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-B (T2) → VAC-C105 (T3): collision floor at extreme
     /// values (`99%`, `--%`) — the closest-approach gap must not
-    /// merge below 7 px at 2x. VAC-C105 is a floor-only rule
-    /// (Appendix C §5).
-    private let extremeGapFloor: Double = 7
+    /// merge below 9 px at 2x (7 px under the 4 pt token plus the
+    /// +2 px mechanical ripple of the 5 pt token, plan
+    /// 2026-10-26-menubar-block-gap-5pt). VAC-C105 is a floor-only
+    /// rule (Appendix C §5).
+    private let extremeGapFloor: Double = 9
 
     /// VAC-C105: regression ceiling at extreme values, raised from
     /// the T2 value 13 px to the largest designed standard-block
     /// gap in the T3 contract (Appendix C §3: `--%` on CPU→GPU
-    /// measures 18–19 px; the single-digit band tops out at
-    /// 27 px). A regression to the pre-fix 38–45 px fixed-frame
-    /// gaps still fails.
-    private let extremeGapCeiling: Double = 27
+    /// measures 18–19 px under the 4 pt token; the single-digit
+    /// band topped out at 27 px). The 5 pt token (plan
+    /// 2026-10-26-menubar-block-gap-5pt) ripples both +2 px. A
+    /// regression to the pre-fix 38–45 px fixed-frame gaps still
+    /// fails.
+    private let extremeGapCeiling: Double = 29
 
     /// VAC-C104 (Appendix C §5): GPU single-digit (`0%`…`9%`)
     /// CPU→GPU closest-approach gap band at 2x. The Appendix C §3
     /// table measures 25–26 px (frame gap 8 px + 16.68 px leading
-    /// slack of an 18.66 pt value in the 27 pt frame + bearings);
-    /// the band carries ±2 px slack around the table. On the T2
-    /// 34 pt frame the same block renders ~39 px and fails.
-    private let singleDigitGapFloor: Double = 23
-    private let singleDigitGapCeiling: Double = 27
+    /// slack of an 18.66 pt value in the 27 pt frame + bearings)
+    /// under the 4 pt token; the 5 pt token (plan
+    /// 2026-10-26-menubar-block-gap-5pt) ripples the frame gap to
+    /// 10 px and the band to 25–29 px (±2 px slack around the
+    /// table). On the T2 34 pt frame the same block renders ~39 px
+    /// and fails.
+    private let singleDigitGapFloor: Double = 25
+    private let singleDigitGapCeiling: Double = 29
 
     /// VAC-C107 (Appendix C §5): slot-fill. Each frame void at the
     /// slot edge must not exceed 1 px at 2x — the T2 ~15 px side
@@ -124,12 +136,14 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-C107 composition gap bands for the cold (nil → `--%`)
     /// fixture, from the Appendix C §3 bitmap ink-gap table:
-    /// CPU→GPU 18–19 px, GPU→MEM 12–13 px. Each band carries ±1 px
-    /// slack around the table values (the `--%` hyphen bearings).
-    private let coldGpuMemGapFloor: Double = 11
-    private let coldGpuMemGapCeiling: Double = 14
-    private let coldCpuGpuGapFloor: Double = 17
-    private let coldCpuGpuGapCeiling: Double = 20
+    /// CPU→GPU 18–19 px, GPU→MEM 12–13 px under the 4 pt token.
+    /// The 5 pt token (plan 2026-10-26-menubar-block-gap-5pt)
+    /// ripples both +2 px. Each band carries ±1 px slack around the
+    /// table values (the `--%` hyphen bearings).
+    private let coldGpuMemGapFloor: Double = 13
+    private let coldGpuMemGapCeiling: Double = 16
+    private let coldCpuGpuGapFloor: Double = 19
+    private let coldCpuGpuGapCeiling: Double = 22
 
     /// VAC-D: per-block trailing flush — right ink of line 1 and
     /// line 2 within 1 px at 2x (the 2026-10-24 right-alignment
@@ -620,19 +634,25 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     // MARK: - ISC-3 (VAC-22/23): inter-block ink gaps
 
     /// ISC-3 (re-issued VAC-22/23, Addendum B): the ink gaps
-    /// between blocks measure 21 ±1 px at 2x. TEMP value right ink
+    /// between blocks measure 24 ±1 px at 2x under the 5 pt gap
+    /// token (MEM→TEMP measured 24 px under both appearances in
+    /// the green run of plan 2026-10-26-menubar-block-gap-5pt;
+    /// 22 px rendered under the 4 pt token, +2 px mechanical
+    /// ripple). TEMP value right ink
     /// → NET rate-text left ink crosses the TEMP↔NET boundary and
-    /// reads the re-issued tempNetInkGap 24 ±1 px (plan
-    /// 2026-10-26-network-dots-trailing, correction 4); MEM value
+    /// reads tempNetInkGap 26 ±1 px (split leg, plan
+    /// 2026-10-26-network-dots-trailing, correction 4, rippled
+    /// +2 px by the 5 pt token, measured 26 px in the green run);
+    /// MEM value
     /// right ink → C label left ink crosses the MEM↔TEMP boundary
-    /// and keeps interBlockGap 21 ±1 px.
+    /// and keeps interBlockGap 24 ±1 px.
     /// Both pairs render in their production adjacency with the
     /// production gap, so the gap itself comes from production.
     /// Convention: the gap is the empty span between the two inks,
     /// from the first background column after one ink to the first
     /// inked column of the other (the sub-pixel edge-to-edge read
     /// of plan Addendum B).
-    func testInterBlockInkGapsMeasureTwentyOnePixels() throws {
+    func testInterBlockInkGapsMeasureTwentyFourPixels() throws {
         let blocks = try builtBlocks()
         let network = try networkBlock()
         for appearance in appearances {
@@ -670,8 +690,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
                 ISC-3 (VAC-22): TEMP value right ink → rate-text left ink = \
                 \(redDotLeft - valueRightEdge) px under \(appearance.rawValue); \
-                the re-issued TEMP↔NET gap is 24 ±1 px at 2x (ledger T4, \
-                measured 2026-10-26).
+                the TEMP↔NET gap is 26 ±1 px at 2x (plan \
+                2026-10-26-menubar-block-gap-5pt, measured 26 px in the \
+                green run).
                 """
             )
 
@@ -685,7 +706,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             // The MEM block renders at intrinsic content width, so
             // the boundary comes from a single-block render instead
             // of blockWidth (plan 2026-10-25, correction 2). The
-            // expected 21 ±1 px does not change: the MEM ink edge
+            // expected 24 ±1 px does not change: the MEM ink edge
             // and the TEMP frame shift left by the same amount.
             let memWidth = MenuBarRenderHarness.render(
                 MenuBarBlockView(block: blocks.mem),
@@ -716,7 +737,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
                 ISC-3 (VAC-23): MEM value right ink → C label left ink = \
                 \(cLeft - memValueRightEdge) px under \(appearance.rawValue); \
-                the re-issued gap is 21 ±1 px at 2x.
+                the gap is 24 ±1 px at 2x (plan \
+                2026-10-26-menubar-block-gap-5pt, measured 24 px in the \
+                green run).
                 """
             )
         }
@@ -970,7 +993,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// VAC-C102/C103/C106 (plan 2026-10-25 T3, Appendix C §5;
     /// formerly VAC-A/VAC-D): both standard-block boundaries hold
     /// a minimal, uniform ink gap. Per band the gap measures, then
-    /// the band minimum (closest approach) must sit in [8, 12] px at
+    /// the band minimum (closest approach) must sit in [10, 14] px at
     /// 2x, and the two boundaries' minima must differ by at most
     /// 1 px, under both forced appearances. VAC-C106 rides along:
     /// each
@@ -1006,7 +1029,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     VAC-A: \(name) closest-approach gap = \(minimum) px under \
                     \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
                     \(gaps.line2) px); the floor is MenuBarLayout.gap at 2x \
-                    (8 px), never lowered.
+                    (10 px), never lowered.
                     """
                 )
                 XCTAssertLessThanOrEqual(
@@ -1015,7 +1038,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     """
                     VAC-A: \(name) closest-approach gap = \(minimum) px under \
                     \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
-                    \(gaps.line2) px); the ceiling is 12 px (8 px token + \
+                    \(gaps.line2) px); the ceiling is 14 px (10 px token + \
                     glyph bearings), so a fixed 39 pt frame cannot come back.
                     """
                 )
@@ -1081,7 +1104,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// VAC-B): extreme values never collide.
     /// `99%` everywhere (1.0 clamps) and `--%` everywhere (missing
     /// metrics), both boundaries, both appearances: the
-    /// closest-approach floor stays ≥ 7 px at 2x — no ink merge.
+    /// closest-approach floor stays ≥ 9 px at 2x — no ink merge
+    /// (7 px under the 4 pt token plus the +2 px ripple of plan
+    /// 2026-10-26-menubar-block-gap-5pt).
     /// The fixture string guard runs first: a padded T2 render
     /// must not pass as a natural-text extreme measurement.
     func testExtremeValuesKeepBlockGapsOpen() throws {
@@ -1141,7 +1166,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                         VAC-C105 (\(valueLabel)): \(name) closest-approach gap = \
                         \(minimum) px under \(appearance.rawValue) (line1 \
                         \(gaps.line1) px, line2 \(gaps.line2) px); the gaps must \
-                        not merge below 7 px at 2x.
+                        not merge below 9 px at 2x.
                         """
                     )
                     XCTAssertLessThanOrEqual(
@@ -1151,8 +1176,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                         VAC-C105 (\(valueLabel)): \(name) closest-approach gap = \
                         \(minimum) px under \(appearance.rawValue) (line1 \
                         \(gaps.line1) px, line2 \(gaps.line2) px); the ceiling \
-                        is 27 px (Appendix C §3: `--%` on CPU→GPU measures \
-                        18–19 px), so a fixed wide frame cannot come back.
+                        is 29 px (Appendix C §3: `--%` on CPU→GPU measures \
+                        20–21 px after the 5 pt-token ripple), so a fixed \
+                        wide frame cannot come back.
                         """
                     )
                 }
@@ -1166,11 +1192,13 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// text on every implementation (the T2 builder pads to
     /// "000%"). The GPU label row is 17.56 pt, narrower than the
     /// 18.66 pt value row, so the value row defines the block
-    /// content width: frame gap 4 pt + leading slack 27.0 − 18.66
-    /// = 8.34 pt → 12.34 pt = 24.68 px at 2x (Appendix C §3 table:
-    /// 25–26 px). VAC-C104 band: 23–27 px. On the T2 34 pt frame
+    /// content width: frame gap 5 pt + leading slack 27.0 − 18.66
+    /// = 8.34 pt → 13.34 pt = 26.68 px at 2x (the 5 pt token
+    /// ripples the Appendix C §3 table's 25–26 px to 27–28 px,
+    /// plan 2026-10-26-menubar-block-gap-5pt). VAC-C104 band:
+    /// 25–29 px. On the T2 34 pt frame
     /// the same block renders ~39 px and fails the ceiling.
-    func testSingleDigitGpuValueKeepsCpuToGpuGapInTwentyThreeToTwentySevenPixels() throws {
+    func testSingleDigitGpuValueKeepsCpuToGpuGapInTwentyFiveToTwentyNinePixels() throws {
         let cpu = try standardTriple(
             cpuPercent: 0.45,
             pressurePercent: 0.50,
@@ -1204,7 +1232,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
                 VAC-C104: CPU→GPU closest-approach gap = \(minimum) px under \
                 \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
-                \(gaps.line2) px); the single-digit band floor is 23 px at 2x.
+                \(gaps.line2) px); the single-digit band floor is 25 px at 2x.
                 """
             )
             XCTAssertLessThanOrEqual(
@@ -1213,8 +1241,9 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
                 VAC-C104: CPU→GPU closest-approach gap = \(minimum) px under \
                 \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
-                \(gaps.line2) px); the single-digit band ceiling is 27 px at \
-                2x (Appendix C §3: 25–26 px for "0%" in the 27 pt frame).
+                \(gaps.line2) px); the single-digit band ceiling is 29 px at \
+                2x (Appendix C §3: 27–28 px for "0%" in the 27 pt frame after \
+                the 5 pt-token ripple).
                 """
             )
         }
@@ -1222,7 +1251,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-C107 (plan 2026-10-25 T3, Appendix C §5; formerly
     /// VAC-C): the production composition at the `length()` slot
-    /// (93 pt under T3). The stacked view renders inside the fixed
+    /// (95 pt under the 5 pt gap token, plan
+    /// 2026-10-26-menubar-block-gap-5pt). The stacked view renders inside the fixed
     /// item length with a fresh monitor (no snapshot yet, so every
     /// block shows `--%`). The slot-fill geometry holds: the
     /// bitmap measures the full slot width, and each frame void at
@@ -1306,7 +1336,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             // term alone was not enough — red-phase measurement).
             // Splits sit at the gap midpoints: a ±1 px drift in the
             // analytic group left cannot reach either ink edge (the
-            // gap zone is 8 px wide).
+            // gap zone is 10 px wide).
             let gpuWidth = MenuBarRenderHarness.render(
                 MenuBarBlockView(block: blocks.gpu),
                 appearance: appearance
@@ -1344,10 +1374,10 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
             )
             // Cold-fixture composition gaps per the Appendix C §3
-            // bitmap ink-gap table: `--%` opens GPU→MEM to 12–13 px
-            // (MEM label-row floor) and CPU→GPU to 18–19 px (the
-            // 22.42 pt placeholder in the 27 pt frame), not the
-            // 2-digit 10–11 px band.
+            // bitmap ink-gap table rippled +2 px by the 5 pt token:
+            // `--%` opens GPU→MEM to 14–15 px (MEM label-row floor)
+            // and CPU→GPU to 20–21 px (the 22.42 pt placeholder in
+            // the 27 pt frame), not the 2-digit 12–13 px band.
             let boundaries: [(String, Int, Double, Double)] = [
                 (
                     "CPU→GPU",

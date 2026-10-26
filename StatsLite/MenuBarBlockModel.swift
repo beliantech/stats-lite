@@ -88,8 +88,10 @@ enum MenuBarLayout {
     /// and tightens the label-to-value gap (plan
     /// 2026-10-20-menu-bar-value-vertical-shift).
     static let valueYOffset: CGFloat = -1
-    /// Gap between adjacent blocks.
-    static let gap: CGFloat = 4
+    /// Gap between adjacent blocks. One uniform token for every
+    /// adjacent block pair (plan 2026-10-26-menubar-block-gap-5pt:
+    /// 4 pt → 5 pt).
+    static let gap: CGFloat = 5
     /// Outer padding: leading 2 pt plus trailing 2 pt.
     static let padding: CGFloat = 2
 
