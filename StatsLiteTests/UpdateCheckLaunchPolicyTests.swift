@@ -25,6 +25,7 @@ private let releasesURLString =
 private let serviceKeys = [
     "updateCheckDismissedVersion",
     "updateCheckLastCheckEpoch",
+    "updateCheckCachedLatest",
 ]
 
 private func clearServiceKeys() {

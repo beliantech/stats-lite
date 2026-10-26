@@ -4,10 +4,13 @@
 //
 //  Background update check. One task, one clock (SystemMonitor loop
 //  style, no Timer/Combine): the loop checks on launch when the last
-//  check is at least 300 s old, then sleeps 24 h between checks. Every
-//  attempt stamps updateCheckLastCheckEpoch. A nil source result and
-//  an unparsable current version are silent no-ops. A dismissed
-//  version lives in UserDefaults as a normalized description.
+//  check is at least 300 s old, then sleeps 24 h between checks. A
+//  resolved release stamps updateCheckLastCheckEpoch, and a resolved
+//  network release also lands in the updateCheckCachedLatest cache so
+//  a relaunch inside the launch floor restores the banner from it. A
+//  nil source result and an unparsable current version are silent
+//  no-ops. A dismissed version lives in UserDefaults as a normalized
+//  description.
 //
 
 import Foundation
@@ -17,9 +20,12 @@ import Observation
 @Observable
 final class UpdateCheckService {
 
-    /// UserDefaults keys owned by this service.
+    /// UserDefaults keys owned by this service. The cached-latest key
+    /// holds a two-field JSON object (tag_name, html_url) written by
+    /// a successful network fetch.
     static let dismissedVersionKey = "updateCheckDismissedVersion"
     static let lastCheckEpochKey = "updateCheckLastCheckEpoch"
+    static let cachedLatestKey = "updateCheckCachedLatest"
 
     /// Minimum age of the last check before the launch pass runs.
     /// A negative gap (clock moved back) counts as stale.
@@ -64,6 +70,11 @@ final class UpdateCheckService {
             ) != nil
             if gap >= Self.launchCheckMinGap || gap < 0 || fixtureOverride {
                 await self.performCheck()
+            } else {
+                // Inside the launch floor: no network, but a relaunch
+                // must still restore the banner from the cached
+                // release. A missing or corrupt cache is a no-op.
+                self.restoreAvailableUpdateFromCache()
             }
             while !Task.isCancelled {
                 do {
@@ -96,25 +107,38 @@ final class UpdateCheckService {
         availableUpdate = nil
     }
 
-    /// One check: stamp the epoch, resolve the current version, take
-    /// the fixture release when the env key is set (no network), else
-    /// ask the source, then apply the policy. An unparsable current
-    /// version and a nil source result are silent.
+    /// One check: resolve the current version, take the fixture
+    /// release when the env key is set (no network), else ask the
+    /// source, then stamp the epoch, cache a network release, and
+    /// apply the policy. An unparsable current version and a nil
+    /// source result are silent and leave the stored epoch alone.
     private func performCheck() async {
-        UserDefaults.standard.set(
-            Date().timeIntervalSince1970,
-            forKey: Self.lastCheckEpochKey
-        )
         guard let current = Self.currentVersion(bundle: bundle) else { return }
         let latest: ReleaseInfo
+        let fromNetwork: Bool
         if let fixture = UpdateCheckLaunchPolicy.fixtureRelease(
             environment: environment
         ) {
             latest = fixture
+            fromNetwork = false
         } else if let fetched = await source.latestRelease() {
             latest = fetched
+            fromNetwork = true
         } else {
+            // No release resolved: leave the epoch untouched so the
+            // next launch can retry instead of waiting out the floor.
             return
+        }
+        // The epoch stamps only after the release resolves, so a
+        // failed launch check does not block the retry.
+        UserDefaults.standard.set(
+            Date().timeIntervalSince1970,
+            forKey: Self.lastCheckEpochKey
+        )
+        // The cache holds only network releases: a fixture launch
+        // must not pollute the restore path of a later real launch.
+        if fromNetwork {
+            Self.storeCachedLatest(latest)
         }
         let dismissed = UserDefaults.standard.string(
             forKey: Self.dismissedVersionKey
@@ -129,6 +153,61 @@ final class UpdateCheckService {
         case .prompt(let release):
             availableUpdate = release
         }
+    }
+
+    /// Restores availableUpdate from the cached release on the
+    /// launch skip path, mirroring the performCheck() policy: set on
+    /// .prompt, clear on .none, silent when the cache or the current
+    /// version does not parse.
+    private func restoreAvailableUpdateFromCache() {
+        guard let current = Self.currentVersion(bundle: bundle),
+              let latest = Self.cachedLatestRelease()
+        else { return }
+        let dismissed = UserDefaults.standard.string(
+            forKey: Self.dismissedVersionKey
+        )
+        switch UpdateCheckPolicy.promptState(
+            latest: latest,
+            current: current,
+            dismissedVersion: dismissed
+        ) {
+        case .none:
+            availableUpdate = nil
+        case .prompt(let release):
+            availableUpdate = release
+        }
+    }
+
+    /// Writes a resolved network release as a two-field JSON payload
+    /// under the cached-latest key.
+    private static func storeCachedLatest(_ release: ReleaseInfo) {
+        struct Payload: Codable {
+            let tag_name: String
+            let html_url: String
+        }
+        let payload = Payload(
+            tag_name: release.version.description,
+            html_url: release.releasePageURL.absoluteString
+        )
+        if let data = try? JSONEncoder().encode(payload) {
+            UserDefaults.standard.set(data, forKey: cachedLatestKey)
+        }
+    }
+
+    /// Cached release from the two-field JSON payload, or nil when
+    /// the key is missing, the JSON is malformed, or a field fails
+    /// to parse (cache miss, silent).
+    private static func cachedLatestRelease() -> ReleaseInfo? {
+        struct Payload: Decodable {
+            let tag_name: String
+            let html_url: String
+        }
+        guard let data = UserDefaults.standard.data(forKey: cachedLatestKey),
+              let payload = try? JSONDecoder().decode(Payload.self, from: data),
+              let version = SemanticVersion(payload.tag_name),
+              let url = URL(string: payload.html_url)
+        else { return nil }
+        return ReleaseInfo(version: version, releasePageURL: url)
     }
 
     /// Installed version from the bundle display version.

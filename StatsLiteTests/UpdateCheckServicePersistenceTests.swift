@@ -3,9 +3,10 @@
 //  StatsLiteTests
 //
 //  Dismiss round-trip and start() idempotence (plan
-//  2026-10-20-in-app-update-check, T1). The service owns two
-//  UserDefaults.standard keys; these tests clear them around each
-//  run. The release source is always a fake; no network.
+//  2026-10-20-in-app-update-check, T1) plus the release cache from
+//  plan 2026-10-27-update-check-relaunch-and-retry-fix. These tests
+//  clear the three UserDefaults.standard keys around each run.
+//  The release source is always a fake; no network.
 //
 
 import Foundation
@@ -20,6 +21,7 @@ import XCTest
 private let serviceKeys = [
     "updateCheckDismissedVersion",
     "updateCheckLastCheckEpoch",
+    "updateCheckCachedLatest",
 ]
 
 private func clearServiceKeys() {

@@ -26,6 +26,7 @@ private let fixtureKey = "STATSLITE_FAKE_UPDATE_VERSION"
 private let serviceKeys = [
     "updateCheckDismissedVersion",
     "updateCheckLastCheckEpoch",
+    "updateCheckCachedLatest",
 ]
 
 private func clearServiceKeys() {
