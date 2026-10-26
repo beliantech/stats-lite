@@ -150,7 +150,7 @@ final class MenuBarLayoutTests: XCTestCase {
         XCTAssertEqual(MenuBarLayout.tempBlockWidth, 36, accuracy: accuracy)
     }
 
-    /// All five metrics (CPU, MEM, GPU, TEMP, NET) total 187 pt:
+    /// All five metrics (CPU, GPU, MEM, TEMP, NET) total 187 pt:
     /// 2 × 2 pt padding + 3 × 27 pt + 36 pt + 50 pt + 4 × 4 pt gap.
     func testAllFiveMetricsTotal187() {
         XCTAssertEqual(

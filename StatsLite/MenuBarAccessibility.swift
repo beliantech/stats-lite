@@ -34,6 +34,9 @@ enum MenuBarAccessibility {
                 parts.append("CPU unavailable")
             }
         }
+        if showGPU {
+            parts.append(gpuPercent.map { "GPU \(wholePercent($0)) percent" } ?? "GPU unavailable")
+        }
         if showRAM {
             if let pressurePercent {
                 parts.append(
@@ -42,9 +45,6 @@ enum MenuBarAccessibility {
             } else {
                 parts.append("Memory Pressure unavailable")
             }
-        }
-        if showGPU {
-            parts.append(gpuPercent.map { "GPU \(wholePercent($0)) percent" } ?? "GPU unavailable")
         }
         if showTemperature {
             // "Temperature: CPU 84 degrees, GPU 61 degrees" in the

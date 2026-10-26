@@ -88,7 +88,7 @@ struct MenuBarStackedItemView: View {
         }
     }
 
-    /// Blocks for the enabled metrics in CPU, RAM, GPU, TEMP, NET
+    /// Blocks for the enabled metrics in CPU, GPU, RAM, TEMP, NET
     /// order, from the latest snapshot values.
     private var blocks: [MenuBarBlock] {
         MenuBarBlockBuilder.blocks(

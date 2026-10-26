@@ -59,7 +59,7 @@ struct MenuBarBlock: Equatable {
 /// Layout constants shared by the block builder, MenuBarLayout, and
 /// the stacked views. Single source of truth for widths.
 enum MenuBarLayout {
-    /// Pinned width of standard metric blocks (CPU, MEM, GPU).
+    /// Pinned width of standard metric blocks (CPU, GPU, MEM).
     /// Accommodates "99%" (26.22 pt) with 0.78 pt clearance,
     /// MEM's label row (25.36 pt) with 1.64 pt clearance,
     /// and "--%" (22.42 pt) with 4.58 pt clearance. This single
@@ -117,7 +117,7 @@ enum MenuBarLayout {
     }
 }
 
-/// Builds the visible blocks in CPU, MEM, GPU, TEMP, NET order. Nil
+/// Builds the visible blocks in CPU, GPU, MEM, TEMP, NET order. Nil
 /// and non-finite values become "--%", "-- KB/s", or "--°" with a
 /// tertiary tint. Out-of-range values clamp through MetricFormatters.
 enum MenuBarBlockBuilder {
@@ -151,6 +151,19 @@ enum MenuBarBlockBuilder {
             )
         }
 
+        if showGPU {
+            blocks.append(
+                MenuBarBlock(
+                    kind: .gpu,
+                    label: "GPU",
+                    dotState: nil,
+                    valueText: MetricFormatters.percent(gpuPercent),
+                    valueTint: usageTint(gpuPercent),
+                    width: MenuBarLayout.blockWidth
+                )
+            )
+        }
+
         if showRAM {
             let resolvedState = pressurePercent.map {
                 (pressureState ?? .unknown).displayState(pressure: $0)
@@ -165,19 +178,6 @@ enum MenuBarBlockBuilder {
                     // every pressure state. The dot owns the state
                     // colors. Only a missing percent renders tertiary.
                     valueTint: pressurePercent == nil ? .tertiary : .primary,
-                    width: MenuBarLayout.blockWidth
-                )
-            )
-        }
-
-        if showGPU {
-            blocks.append(
-                MenuBarBlock(
-                    kind: .gpu,
-                    label: "GPU",
-                    dotState: nil,
-                    valueText: MetricFormatters.percent(gpuPercent),
-                    valueTint: usageTint(gpuPercent),
                     width: MenuBarLayout.blockWidth
                 )
             )
