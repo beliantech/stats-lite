@@ -78,7 +78,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     private let minimalGapFloor: Double = 8
     private let minimalGapCeiling: Double = 12
 
-    /// VAC-A: maximum pixel delta between the CPU→MEM and MEM→GPU
+    /// VAC-A: maximum pixel delta between the CPU→GPU and GPU→MEM
     /// gap minima (uniformity at 2x). Raised to 2 only with
     /// recorded bearing evidence, never above (correction 3).
     private let gapUniformityTolerance: Double = 1
@@ -91,14 +91,14 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-C105: regression ceiling at extreme values, raised from
     /// the T2 value 13 px to the largest designed standard-block
-    /// gap in the T3 contract (Appendix C §3: `--%` on MEM→GPU
+    /// gap in the T3 contract (Appendix C §3: `--%` on CPU→GPU
     /// measures 18–19 px; the single-digit band tops out at
     /// 27 px). A regression to the pre-fix 38–45 px fixed-frame
     /// gaps still fails.
     private let extremeGapCeiling: Double = 27
 
     /// VAC-C104 (Appendix C §5): GPU single-digit (`0%`…`9%`)
-    /// MEM→GPU closest-approach gap band at 2x. The Appendix C §3
+    /// CPU→GPU closest-approach gap band at 2x. The Appendix C §3
     /// table measures 25–26 px (frame gap 8 px + 16.68 px leading
     /// slack of an 18.66 pt value in the 27 pt frame + bearings);
     /// the band carries ±2 px slack around the table. On the T2
@@ -113,12 +113,12 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// VAC-C107 composition gap bands for the cold (nil → `--%`)
     /// fixture, from the Appendix C §3 bitmap ink-gap table:
-    /// CPU→MEM 12–13 px, MEM→GPU 18–19 px. Each band carries ±1 px
+    /// CPU→GPU 18–19 px, GPU→MEM 12–13 px. Each band carries ±1 px
     /// slack around the table values (the `--%` hyphen bearings).
-    private let coldCpuMemGapFloor: Double = 11
-    private let coldCpuMemGapCeiling: Double = 14
-    private let coldMemGpuGapFloor: Double = 17
-    private let coldMemGpuGapCeiling: Double = 20
+    private let coldGpuMemGapFloor: Double = 11
+    private let coldGpuMemGapCeiling: Double = 14
+    private let coldCpuGpuGapFloor: Double = 17
+    private let coldCpuGpuGapCeiling: Double = 20
 
     /// VAC-D: per-block trailing flush — right ink of line 1 and
     /// line 2 within 1 px at 2x (the 2026-10-24 right-alignment
@@ -463,8 +463,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// ISC-3 (re-issued VAC-22/23, Addendum B): the ink gaps
     /// between blocks measure 21 ±1 px at 2x. TEMP value right ink
-    /// → red dot left ink crosses the TEMP↔NET boundary; GPU value
-    /// right ink → C label left ink crosses the GPU↔TEMP boundary.
+    /// → red dot left ink crosses the TEMP↔NET boundary; MEM value
+    /// right ink → C label left ink crosses the MEM↔TEMP boundary.
     /// Both pairs render in their production adjacency with the
     /// production gap, so the gap itself comes from production.
     /// Convention: the gap is the empty span between the two inks,
@@ -513,47 +513,47 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
             )
 
-            let gpuTemp = MenuBarRenderHarness.render(
+            let memTemp = MenuBarRenderHarness.render(
                 adjacent(
-                    MenuBarBlockView(block: blocks.gpu),
+                    MenuBarBlockView(block: blocks.mem),
                     MenuBarTempBlockView(block: blocks.temp)
                 ),
                 appearance: appearance
             )
-            // The GPU block renders at intrinsic content width, so
+            // The MEM block renders at intrinsic content width, so
             // the boundary comes from a single-block render instead
             // of blockWidth (plan 2026-10-25, correction 2). The
-            // expected 21 ±1 px does not change: the GPU ink edge
+            // expected 21 ±1 px does not change: the MEM ink edge
             // and the TEMP frame shift left by the same amount.
-            let gpuWidth = MenuBarRenderHarness.render(
-                MenuBarBlockView(block: blocks.gpu),
+            let memWidth = MenuBarRenderHarness.render(
+                MenuBarBlockView(block: blocks.mem),
                 appearance: appearance
             ).pixelsWide
-            let gpuEnd = gpuWidth + Int(MenuBarLayout.gap * scale)
-            let gpuValueRight = try XCTUnwrap(
-                gpuTemp.rightmostInkX(
+            let memEnd = memWidth + Int(MenuBarLayout.gap * scale)
+            let memValueRight = try XCTUnwrap(
+                memTemp.rightmostInkX(
                     yRange: line2,
-                    xRange: 0..<gpuWidth,
+                    xRange: 0..<memWidth,
                     threshold: inkThreshold
                 ),
-                "ISC-3 (FM1): no GPU value ink on line 2 of the \(appearance.rawValue) render"
+                "ISC-3 (FM1): no MEM value ink on line 2 of the \(appearance.rawValue) render"
             )
             let cLeft = try XCTUnwrap(
-                gpuTemp.leftmostInkX(
+                memTemp.leftmostInkX(
                     yRange: line1,
-                    xRange: gpuEnd..<gpuTemp.pixelsWide,
+                    xRange: memEnd..<memTemp.pixelsWide,
                     threshold: inkThreshold
                 ),
                 "ISC-3 (FM1): no C-label ink on line 1 of the \(appearance.rawValue) render"
             )
-            let gpuValueRightEdge = gpuValueRight + 1
+            let memValueRightEdge = memValueRight + 1
             XCTAssertEqual(
-                Double(cLeft - gpuValueRightEdge),
+                Double(cLeft - memValueRightEdge),
                 interBlockGap,
                 accuracy: interBlockGapTolerance,
                 """
-                ISC-3 (VAC-23): GPU value right ink → C label left ink = \
-                \(cLeft - gpuValueRightEdge) px under \(appearance.rawValue); \
+                ISC-3 (VAC-23): MEM value right ink → C label left ink = \
+                \(cLeft - memValueRightEdge) px under \(appearance.rawValue); \
                 the re-issued gap is 21 ±1 px at 2x.
                 """
             )
@@ -704,8 +704,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 )
                 let ordered: [(String, MenuBarBlock)] = [
                     ("CPU", blocks.cpu),
-                    ("MEM", blocks.mem),
                     ("GPU", blocks.gpu),
+                    ("MEM", blocks.mem),
                 ]
                 // VAC-C101 string integrity: every block must carry
                 // the natural clip-99 string this sweep point
@@ -745,8 +745,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     adjacent(
                         MenuBarBlockView(block: blocks.cpu),
                         adjacent(
-                            MenuBarBlockView(block: blocks.mem),
-                            MenuBarBlockView(block: blocks.gpu)
+                            MenuBarBlockView(block: blocks.gpu),
+                            MenuBarBlockView(block: blocks.mem)
                         )
                     ),
                     appearance: appearance
@@ -817,8 +817,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     func testStandardBlockGapsAreUniformAndMinimal() throws {
         let blocks = try builtBlocks()
         let boundaries: [(String, MenuBarBlock, MenuBarBlock)] = [
-            ("CPU→MEM", blocks.cpu, blocks.mem),
-            ("MEM→GPU", blocks.mem, blocks.gpu),
+            ("CPU→GPU", blocks.cpu, blocks.gpu),
+            ("GPU→MEM", blocks.gpu, blocks.mem),
         ]
         for appearance in appearances {
             var gapMinima: [Int] = []
@@ -863,7 +863,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 Double(uniformity),
                 gapUniformityTolerance,
                 """
-                VAC-A: |gap(CPU→MEM) − gap(MEM→GPU)| = \(uniformity) px under \
+                VAC-A: |gap(CPU→GPU) − gap(GPU→MEM)| = \(uniformity) px under \
                 \(appearance.rawValue) (minima \(gapMinima)); both gaps must \
                 be equal within 1 px at 2x.
                 """
@@ -954,8 +954,8 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 )
             }
             let boundaries: [(String, MenuBarBlock, MenuBarBlock)] = [
-                ("CPU→MEM", blocks.cpu, blocks.mem),
-                ("MEM→GPU", blocks.mem, blocks.gpu),
+                ("CPU→GPU", blocks.cpu, blocks.gpu),
+                ("GPU→MEM", blocks.gpu, blocks.mem),
             ]
             for appearance in appearances {
                 for (name, leftBlock, rightBlock) in boundaries {
@@ -989,7 +989,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                         VAC-C105 (\(valueLabel)): \(name) closest-approach gap = \
                         \(minimum) px under \(appearance.rawValue) (line1 \
                         \(gaps.line1) px, line2 \(gaps.line2) px); the ceiling \
-                        is 27 px (Appendix C §3: `--%` on MEM→GPU measures \
+                        is 27 px (Appendix C §3: `--%` on CPU→GPU measures \
                         18–19 px), so a fixed wide frame cannot come back.
                         """
                     )
@@ -1008,12 +1008,12 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// = 8.34 pt → 12.34 pt = 24.68 px at 2x (Appendix C §3 table:
     /// 25–26 px). VAC-C104 band: 23–27 px. On the T2 34 pt frame
     /// the same block renders ~39 px and fails the ceiling.
-    func testSingleDigitGpuValueKeepsMemToGpuGapInTwentyThreeToTwentySevenPixels() throws {
-        let mem = try standardTriple(
+    func testSingleDigitGpuValueKeepsCpuToGpuGapInTwentyThreeToTwentySevenPixels() throws {
+        let cpu = try standardTriple(
             cpuPercent: 0.45,
             pressurePercent: 0.50,
             gpuPercent: 0.32
-        ).mem
+        ).cpu
         let singleDigitGPU = MenuBarBlock(
             kind: .gpu,
             label: "GPU",
@@ -1024,12 +1024,12 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
         )
         for appearance in appearances {
             let boundary = MenuBarRenderHarness.render(
-                MenuBarBlockView(block: mem),
+                MenuBarBlockView(block: cpu),
                 appearance: appearance
             ).pixelsWide
             let bitmap = MenuBarRenderHarness.render(
                 adjacent(
-                    MenuBarBlockView(block: mem),
+                    MenuBarBlockView(block: cpu),
                     MenuBarBlockView(block: singleDigitGPU)
                 ),
                 appearance: appearance
@@ -1040,7 +1040,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 Double(minimum),
                 singleDigitGapFloor,
                 """
-                VAC-C104: MEM→GPU closest-approach gap = \(minimum) px under \
+                VAC-C104: CPU→GPU closest-approach gap = \(minimum) px under \
                 \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
                 \(gaps.line2) px); the single-digit band floor is 23 px at 2x.
                 """
@@ -1049,7 +1049,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 Double(minimum),
                 singleDigitGapCeiling,
                 """
-                VAC-C104: MEM→GPU closest-approach gap = \(minimum) px under \
+                VAC-C104: CPU→GPU closest-approach gap = \(minimum) px under \
                 \(appearance.rawValue) (line1 \(gaps.line1) px, line2 \
                 \(gaps.line2) px); the single-digit band ceiling is 27 px at \
                 2x (Appendix C §3: 25–26 px for "0%" in the 27 pt frame).
@@ -1070,7 +1070,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
     /// widths: under trailing alignment the leftmost ink carries
     /// the CPU block's leading slack, which is frame geometry, not
     /// slot void. The cold-fixture gaps follow the Appendix C §3
-    /// bitmap ink-gap table (CPU→MEM 12–13 px, MEM→GPU 18–19 px),
+    /// bitmap ink-gap table (CPU→GPU 18–19 px, GPU→MEM 12–13 px),
     /// and the group stays centered (≤ 2 px side delta).
     func testStackedItemCompositionFillsSlotEdgeToEdge() throws {
         let preferences = PreferencesStore()
@@ -1182,22 +1182,22 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 """
             )
             // Cold-fixture composition gaps per the Appendix C §3
-            // bitmap ink-gap table: `--%` opens CPU→MEM to 12–13 px
-            // (MEM label-row floor) and MEM→GPU to 18–19 px (the
+            // bitmap ink-gap table: `--%` opens GPU→MEM to 12–13 px
+            // (MEM label-row floor) and CPU→GPU to 18–19 px (the
             // 22.42 pt placeholder in the 27 pt frame), not the
             // 2-digit 10–11 px band.
             let boundaries: [(String, Int, Double, Double)] = [
                 (
-                    "CPU→MEM",
+                    "CPU→GPU",
                     groupLeft + cpuWidth + gapPixels / 2,
-                    coldCpuMemGapFloor,
-                    coldCpuMemGapCeiling
+                    coldCpuGpuGapFloor,
+                    coldCpuGpuGapCeiling
                 ),
                 (
-                    "MEM→GPU",
-                    groupLeft + cpuWidth + gapPixels + memWidth + gapPixels / 2,
-                    coldMemGpuGapFloor,
-                    coldMemGpuGapCeiling
+                    "GPU→MEM",
+                    groupLeft + cpuWidth + gapPixels + gpuWidth + gapPixels / 2,
+                    coldGpuMemGapFloor,
+                    coldGpuMemGapCeiling
                 ),
             ]
             for (name, boundary, floor, ceiling) in boundaries {
@@ -1243,7 +1243,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             )
             // The ink span pins the analytic frame model to the
             // rendered bitmap: the leading ink sits inside the CPU
-            // frame and the trailing ink hugs the GPU frame's
+            // frame and the trailing ink hugs the MEM frame's
             // right edge, so the ≤ 1 px frame voids above cannot
             // come from a misplaced group.
             XCTAssertLessThan(
@@ -1259,7 +1259,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 bitmap.pixelsWide - paddingPixels - memWidth,
                 """
                 VAC-C107: rightmost ink at \(rightInk) px must sit inside the \
-                GPU frame under \(appearance.rawValue).
+                MEM frame under \(appearance.rawValue).
                 """
             )
         }

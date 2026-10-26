@@ -28,7 +28,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, GPU 28 percent, Memory Pressure Normal at 25 percent"
         )
     }
 
@@ -44,7 +44,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure Warning at 62 percent, GPU unavailable"
+            "Stats Lite: CPU 14 percent, GPU unavailable, Memory Pressure Warning at 62 percent"
         )
     }
 
@@ -61,7 +61,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure unavailable, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, GPU 28 percent, Memory Pressure unavailable"
         )
     }
 
@@ -77,7 +77,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU unavailable, Memory Pressure Warning at 68 percent, GPU 28 percent"
+            "Stats Lite: CPU unavailable, GPU 28 percent, Memory Pressure Warning at 68 percent"
         )
     }
 
@@ -157,8 +157,9 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
-                + "GPU 28 percent, Network Upload 10 KB/s, Download 720 KB/s"
+            "Stats Lite: CPU 14 percent, "
+                + "GPU 28 percent, Memory Pressure Normal at 25 percent, "
+                + "Network Upload 10 KB/s, Download 720 KB/s"
         )
     }
 
@@ -177,8 +178,9 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, "
-                + "GPU 28 percent, Network unavailable"
+            "Stats Lite: CPU 14 percent, "
+                + "GPU 28 percent, Memory Pressure Normal at 25 percent, "
+                + "Network unavailable"
         )
     }
 
@@ -235,7 +237,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 14 percent, Memory Pressure Normal at 25 percent, GPU 28 percent"
+            "Stats Lite: CPU 14 percent, GPU 28 percent, Memory Pressure Normal at 25 percent"
         )
     }
 

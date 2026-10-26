@@ -178,7 +178,7 @@ final class MenuBarTempVerificationTests: XCTestCase {
     /// temperature, network} apply. For every permutation:
     /// `MenuBarLayout.length` must equal the sum of the enabled
     /// block widths plus gaps plus padding, and `blocks` must build
-    /// the canonical CPU → MEM → GPU → TEMP → NET subsequence. VAC-1.
+    /// the canonical CPU → GPU → MEM → TEMP → NET subsequence. VAC-1.
     func testEveryMetricPermutationKeepsLengthIdentityAndCanonicalOrder() {
         var permutationsChecked = 0
 
@@ -220,8 +220,8 @@ final class MenuBarTempVerificationTests: XCTestCase {
 
             var canonical: [MenuBarBlockKind] = []
             if cpu { canonical.append(.cpu) }
-            if ram { canonical.append(.ram) }
             if gpu { canonical.append(.gpu) }
+            if ram { canonical.append(.ram) }
             if temperature { canonical.append(.temp) }
             if network { canonical.append(.network) }
 
@@ -231,7 +231,7 @@ final class MenuBarTempVerificationTests: XCTestCase {
                 """
                 FM-T5-1 (VAC-1): CPU:\(cpu) RAM:\(ram) GPU:\(gpu) \
                 TEMP:\(temperature) NET:\(network) must build the canonical \
-                CPU → MEM → GPU → TEMP → NET subsequence with no reordering.
+                CPU → GPU → MEM → TEMP → NET subsequence with no reordering.
                 """
             )
         }

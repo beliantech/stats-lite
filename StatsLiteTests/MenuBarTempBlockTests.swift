@@ -176,12 +176,12 @@ final class MenuBarTempBlockTests: XCTestCase {
         return result
     }
 
-    // MARK: - FM-T4-1 (order: TEMP between GPU and Network)
+    // MARK: - FM-T4-1 (order: TEMP between MEM and Network)
 
-    /// With temperature enabled the block order is CPU → MEM → GPU →
+    /// With temperature enabled the block order is CPU → GPU → MEM →
     /// TEMP → NET (template: MenuBarBlockBuilderTests network order
     /// assert). VAC-1.
-    func testTemperatureEnabledOrdersBlocksWithTempBetweenGPUAndNetwork() {
+    func testTemperatureEnabledOrdersBlocksWithTempBetweenMEMAndNetwork() {
         let result = blocks(
             showNetwork: true,
             showTemperature: true,
@@ -193,21 +193,21 @@ final class MenuBarTempBlockTests: XCTestCase {
         XCTAssertEqual(
             result.count,
             5,
-            "FM-T4-1: CPU+MEM+GPU+TEMP+NET build five blocks"
+            "FM-T4-1: CPU+GPU+MEM+TEMP+NET build five blocks"
         )
         XCTAssertEqual(
             result.map(\.kind),
-            [.cpu, .ram, .gpu, .temp, .network],
+            [.cpu, .gpu, .ram, .temp, .network],
             """
             FM-T4-1 (VAC-1): with temperature enabled the order must be \
-            CPU → MEM → GPU → TEMP → NET.
+            CPU → GPU → MEM → TEMP → NET.
             """
         )
     }
 
     // MARK: - FM-T4-2 (order reverts when temperature is disabled)
 
-    func testTemperatureDisabledRevertsToCPUMEMGPUNetworkOrder() {
+    func testTemperatureDisabledRevertsToCPUGPUMEMNetworkOrder() {
         let result = blocks(
             showNetwork: true,
             showTemperature: false,
@@ -218,8 +218,8 @@ final class MenuBarTempBlockTests: XCTestCase {
 
         XCTAssertEqual(
             result.map(\.kind),
-            [.cpu, .ram, .gpu, .network],
-            "FM-T4-2: with temperature off the order reverts to CPU → MEM → GPU → NET"
+            [.cpu, .gpu, .ram, .network],
+            "FM-T4-2: with temperature off the order reverts to CPU → GPU → MEM → NET"
         )
         XCTAssertFalse(
             result.contains { $0.kind == .temp },

@@ -51,8 +51,8 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testAllThreeEnabledProducesThreeBlocksWithLabels() {
         let result = blocks()
         XCTAssertEqual(result.count, 3)
-        XCTAssertEqual(result.map(\.label), ["CPU", "MEM", "GPU"])
-        XCTAssertEqual(result.map(\.kind), [.cpu, .ram, .gpu])
+        XCTAssertEqual(result.map(\.label), ["CPU", "GPU", "MEM"])
+        XCTAssertEqual(result.map(\.kind), [.cpu, .gpu, .ram])
     }
 
     func testSingleEnabledMetricProducesExactlyOneBlock() {
@@ -70,7 +70,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     }
 
     func testEveryEnabledCombinationProducesCorrectCountAndOrder() {
-        // All 8 on/off combinations, CPU → MEM → GPU order.
+        // All 8 on/off combinations, CPU → GPU → MEM order.
         let cases: [(cpu: Bool, ram: Bool, gpu: Bool, expected: [MenuBarBlockKind])] = [
             (false, false, false, []),
             (true, false, false, [.cpu]),
@@ -78,8 +78,8 @@ final class MenuBarBlockBuilderTests: XCTestCase {
             (false, false, true, [.gpu]),
             (true, true, false, [.cpu, .ram]),
             (true, false, true, [.cpu, .gpu]),
-            (false, true, true, [.ram, .gpu]),
-            (true, true, true, [.cpu, .ram, .gpu]),
+            (false, true, true, [.gpu, .ram]),
+            (true, true, true, [.cpu, .gpu, .ram]),
         ]
 
         for testCase in cases {
@@ -247,7 +247,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
     func testCPUGPUBlocksHaveNoDotState() {
         let result = blocks()
         XCTAssertNil(result[0].dotState)
-        XCTAssertNil(result[2].dotState)
+        XCTAssertNil(result[1].dotState)
     }
 
     func testMEMDotStateUsesPressureStateWhenKnown() {
@@ -335,7 +335,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
 
     // MARK: - Network block
 
-    func testNetworkBlockAppendsAfterGPUWithEmptyLabelAndPinnedWidth() {
+    func testNetworkBlockAppendsAfterMEMWithEmptyLabelAndPinnedWidth() {
         let downloadRate = 720 * 1024.0
         let uploadRate = 10 * 1024.0
         let result = blocks(
@@ -346,8 +346,8 @@ final class MenuBarBlockBuilderTests: XCTestCase {
 
         XCTAssertEqual(
             result.map(\.kind),
-            [.cpu, .ram, .gpu, .network],
-            "block order is CPU → MEM → GPU → NET"
+            [.cpu, .gpu, .ram, .network],
+            "block order is CPU → GPU → MEM → NET"
         )
         let network = result[3]
         XCTAssertEqual(network.kind, .network)
@@ -429,7 +429,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
             (true, false, false, true, [.cpu, .network]),
             (false, true, false, true, [.ram, .network]),
             (false, false, true, true, [.gpu, .network]),
-            (false, true, true, true, [.ram, .gpu, .network]),
+            (false, true, true, true, [.gpu, .ram, .network]),
             (true, false, true, false, [.cpu, .gpu]),
         ]
 
