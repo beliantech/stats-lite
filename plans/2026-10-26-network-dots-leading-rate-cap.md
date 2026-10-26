@@ -418,16 +418,16 @@ implementation commit that makes it pass. Worktree:
   pinned-width + totals tests retargeted to 47/184/144/51/82 (names updated);
   `MenuBarBlockBuilderTests.swift:355,382` width expectations 50 → 47.
   Expected red set: exactly these tests, failing on current production.
-- [ ] **T5** — green (view revert): `StatsLite/MenuBarStackedItemView.swift`
+- [x] **T5** — green (view revert): `StatsLite/MenuBarStackedItemView.swift`
   only — both network rows back to `Circle → Spacer(minLength: 1) → Text`;
   file header and view doc comments restored to leading-dot wording with the
   47 pt mention. No other modifier changes. Failing test: T4's leading-dot set
   (the 94 px / totals legs stay red until T6 — allowed residual, recorded).
-- [ ] **T6** — green (width): `StatsLite/MenuBarBlockModel.swift` only —
+- [x] **T6** — green (width): `StatsLite/MenuBarBlockModel.swift` only —
   `networkBlockWidth` 50 → 47 with the updated clearance comment. Failing test:
   T4's width/total/clearance set. Stop if the widest-string clearance test
   measures < 2.5 pt (FM2) — do not widen the tolerance; re-measure and report.
-- [ ] **T7** — verification (planner): two consecutive full-suite runs exit 0;
+- [x] **T7** — verification (planner): two consecutive full-suite runs exit 0;
   ISC-6 scope check + `rg '\.animation\(|\.contentTransition\('` over the diff
   empty; after-capture; conventional commits per task; reviewer code review
   against `git diff main...HEAD`; `--ff-only`/`--squash` merge; record merge
@@ -487,3 +487,12 @@ implementation commit that makes it pass. Worktree:
 - Constants verified in worktree: `networkBlockWidth = 47`, `gap = 5`, network rows `Circle → Spacer → Text`.
 - ISC-7 after-capture: Release build in worktree (`BUILD SUCCEEDED`) → `caffeinate -i bash scripts/capture_menubar.sh` exit 0; dark + light strips + `capture-note.txt` copied to `artifacts/2026-10-26-network-dots-leading-rate-cap/after/`. Pixel check (PIL, top 26 rows): near-white=0, near-black=0 — wallpaper-only, the known TCC signature (identical to `before/`); live spot check TCC-blocked, delegated to the reviewer against the offscreen render tests (AGENTS.md gate).
 - `v` ✓ (visual spot check TCC-blocked, recorded; offscreen render gate green ×2)
+
+### T8 — commit + review + merge (2026-10-26)
+
+- Task commits on `feat/2026-10-26-network-dots-leading-rate-cap`: red `d896812`, green `368eebf`, red `231831d`, green `a29a7aa`, green `deadf03`.
+- Reviewer code review (session 2026-10-26T09-45-04-816Z): **GO**, zero findings — ISC-1..ISC-6 pass with file:line evidence, TDD separation honest (red = tests only, green = production only), assertions strengthened not weakened (clearance ≥ 2.5 pt was ≥ 1.8 pt; mantissa regex `\d{1,3}` → `\d{1,2}`), coverage of the replaced trailing-dot test equal-or-better.
+- Merge: `git merge --squash feat/2026-10-26-network-dots-leading-rate-cap` + conventional commit → **`7c148d1dd5b45ed876ffaade009aa437b2bb6d12`** on `main` (ff impossible: plan doc commits landed on main during execution; code tree verified identical to the reviewed branch via `git diff feat/… HEAD` = plan doc only).
+- Plan checkboxes T2/T3/T4/T5/T6/T7/T8 checked at this commit.
+- Worktree removed, branch deleted (git-worktree skill).
+- **Done = merged to main: `7c148d1`.**
