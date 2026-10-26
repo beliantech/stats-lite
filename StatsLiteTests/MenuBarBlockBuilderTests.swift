@@ -352,7 +352,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         let network = result[3]
         XCTAssertEqual(network.kind, .network)
         XCTAssertEqual(network.label, "", "the reference network block carries no label text")
-        XCTAssertEqual(network.width, 50, "the network block pins to networkBlockWidth")
+        XCTAssertEqual(network.width, 47, "the network block pins to networkBlockWidth")
         XCTAssertNil(network.dotState, "the network block owns its dots, not the pressure dot")
         // Line 1 (valueText) carries the upload rate; line 2
         // (secondaryValueText) carries the download rate (VAC-C1).
@@ -367,7 +367,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
             "secondaryValueText == networkRate(downloadRate)"
         )
         XCTAssertEqual(network.valueText, "10 KB/s")
-        XCTAssertEqual(network.secondaryValueText, "720 KB/s")
+        XCTAssertEqual(network.secondaryValueText, "0.7 MB/s")
     }
 
     func testNetworkOnlyProducesSingleNetworkBlock() {
@@ -379,7 +379,7 @@ final class MenuBarBlockBuilderTests: XCTestCase {
         XCTAssertEqual(result.count, 1)
         XCTAssertEqual(result[0].kind, .network)
         XCTAssertEqual(result[0].label, "")
-        XCTAssertEqual(result[0].width, 50)
+        XCTAssertEqual(result[0].width, 47)
         XCTAssertEqual(result[0].valueText, "22 KB/s")
         XCTAssertEqual(result[0].secondaryValueText, "1.6 MB/s")
     }

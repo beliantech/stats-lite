@@ -662,42 +662,49 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - IC-12: network-block clearance at 9 pt regular mono
+    // MARK: - plan 2026-10-26-network-dots-leading-rate-cap
+    // (ISC-3, VAC-R5/VAC-R6): network-block clearance at 9 pt regular mono
 
+    /// ISC-3 (VAC-R5/R6): the network block pins to 47.0 pt. Under
+    /// the 2-digit formatter the widest rate string is the 8-char
+    /// fractional form ("0.4 MB/s" or "9.9 MB/s", measured 39.1113 pt
+    /// at 9 pt regular monospacedDigit), so
+    /// 47.0 − 5.0 − textWidth ≈ 2.89 pt clears the ≥ 2.5 pt rule.
     func testNetworkBlockClearanceForWidestRateStringMeetsSpacerMinimum() {
         let font = NSFont.monospacedDigitSystemFont(ofSize: 9, weight: .regular)
-        let width = ("999 MB/s" as NSString)
+        let width = ("9.9 MB/s" as NSString)
             .size(withAttributes: [.font: font])
             .width
 
         XCTAssertEqual(
             MenuBarLayout.networkBlockWidth,
-            50.0,
+            47.0,
             accuracy: 0.0001,
-            "IC-12: the network block width must stay 50.0 pt"
+            "ISC-3 (VAC-R5): the network block width must shrink to 47.0 pt"
         )
         XCTAssertEqual(
             width,
-            42.1084,
+            39.1113,
             accuracy: 0.05,
-            "expected 42.1084 pt text width at the target font"
+            "expected 39.1113 pt text width for the widest fractional rate at the target font"
         )
 
         let clearance = MenuBarLayout.networkBlockWidth - 5.0 - width
         XCTAssertGreaterThanOrEqual(
             clearance,
-            1.8,
+            2.5,
             """
-            IC-12: total clearance for "999 MB/s" at 9 pt regular \
-            monospacedDigit plus the 5.0 pt dot must be at least 1.8 pt \
-            for Spacer(minLength: 1); got \(clearance) pt.
+            ISC-3 (VAC-R6): total clearance for the widest rate string \
+            ("9.9 MB/s") at 9 pt regular monospacedDigit plus the 5.0 pt dot \
+            must be at least 2.5 pt for Spacer(minLength: 1); \
+            got \(clearance) pt.
             """
         )
         XCTAssertEqual(
             clearance,
-            2.8916,
+            2.8887,
             accuracy: 0.05,
-            "expected 2.8916 pt total clearance at the target font"
+            "expected 2.8887 pt total clearance at the target font"
         )
     }
 
@@ -774,15 +781,16 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
-    // MARK: - plan 2026-10-26-network-dots-trailing (ISC-1, VAC-1):
-    // network rows sequence the rate Text before the dot Circle
+    // MARK: - plan 2026-10-26-network-dots-leading-rate-cap
+    // (ISC-1, VAC-R1): network rows sequence the dot Circle
+    // before the rate Text
 
-    /// ISC-1 / VAC-1: within each MenuBarNetworkBlockView row's
-    /// HStack scope the rate `Text(` appears before the indicator
-    /// `Circle(`, so the rate text leads and the dot pins to the
-    /// trailing edge. Row regions anchor on the section comments
-    /// that VAC-12's row-frame test relies on.
-    func testNetworkRowsSequenceTextBeforeDot() throws {
+    /// ISC-1 / VAC-R1: within each MenuBarNetworkBlockView row's
+    /// HStack scope the indicator `Circle(` appears before the rate
+    /// `Text(`, so the dot leads and the rate text stays flush
+    /// right. Row regions anchor on the section comments that
+    /// VAC-12's row-frame test relies on.
+    func testNetworkRowsSequenceDotBeforeText() throws {
         let source = try loadSource()
         let scope = try declarationScope(
             of: "MenuBarNetworkBlockView",
@@ -808,22 +816,23 @@ final class MenuBarValueTypographyTests: XCTestCase {
             ("line 2 (download)", scope[downloadSection.lowerBound...]),
         ]
         for (rowName, rowScope) in rows {
-            let textStart = try XCTUnwrap(
-                rowScope.range(of: "Text("),
-                "ISC-1 (VAC-1): no Text( token in \(rowName) of MenuBarNetworkBlockView"
-            )
             let circleStart = try XCTUnwrap(
                 rowScope.range(of: "Circle("),
-                "ISC-1 (VAC-1): no Circle( token in \(rowName) of MenuBarNetworkBlockView"
+                "ISC-1 (VAC-R1): no Circle( token in \(rowName) of MenuBarNetworkBlockView"
+            )
+            let textStart = try XCTUnwrap(
+                rowScope.range(of: "Text("),
+                "ISC-1 (VAC-R1): no Text( token in \(rowName) of MenuBarNetworkBlockView"
             )
             XCTAssertLessThan(
-                textStart.lowerBound,
                 circleStart.lowerBound,
+                textStart.lowerBound,
                 """
-                ISC-1 (VAC-1): \(rowName) of MenuBarNetworkBlockView must \
-                sequence Text( before Circle( inside its HStack, so the \
-                rate text leads and the dot pins to the trailing edge; \
-                the row currently sequences Circle( first.
+                ISC-1 (VAC-R1): \(rowName) of MenuBarNetworkBlockView must \
+                sequence Circle( before Text( inside its HStack, so the dot \
+                leads and the rate text stays flush right; the row currently \
+                sequences Text( first (trailing dots, plan \
+                2026-10-26-network-dots-trailing).
                 """
             )
         }
@@ -852,10 +861,10 @@ final class MenuBarValueTypographyTests: XCTestCase {
                 kind: .network,
                 label: "",
                 dotState: nil,
-                valueText: "999 MB/s",
+                valueText: "9.9 MB/s",
                 valueTint: .primary,
                 width: MenuBarLayout.networkBlockWidth,
-                secondaryValueText: "999 MB/s",
+                secondaryValueText: "9.9 MB/s",
                 secondaryValueTint: .primary
             )
         )

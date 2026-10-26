@@ -159,7 +159,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
             label,
             "Stats Lite: CPU 14 percent, "
                 + "GPU 28 percent, Memory Pressure Normal at 25 percent, "
-                + "Network Upload 10 KB/s, Download 720 KB/s"
+                + "Network Upload 10 KB/s, Download 0.7 MB/s"
         )
     }
 
@@ -218,7 +218,7 @@ final class MenuBarAccessibilityTests: XCTestCase {
         )
         XCTAssertEqual(
             label,
-            "Stats Lite: CPU 50 percent, Network Upload 10 KB/s, Download 720 KB/s"
+            "Stats Lite: CPU 50 percent, Network Upload 10 KB/s, Download 0.7 MB/s"
         )
     }
 

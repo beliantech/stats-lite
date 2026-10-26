@@ -58,34 +58,39 @@ enum MetricFormatters {
         String(format: "%.1f GB", Double(bytes) / 1_073_741_824)
     }
 
-    /// Formats a transfer rate in bytes per second (VAC-N3, F11):
-    /// integer KB/s while the rounded value stays under 1000 KB/s;
+    /// Formats a transfer rate in bytes per second:
+    /// integer KB/s while the rounded value stays under 100 KB/s;
     /// one-decimal MB/s below 9.95 MB/s; integer MB/s while the
-    /// rounded value stays under 1000 MB/s; one-decimal GB/s below
-    /// 9.95 GB/s; integer GB/s at 9.95 GB/s and above. Decimals drop
-    /// once values reach double digits, so no output mantissa exceeds
-    /// three characters. Returns "-- KB/s" for a missing, negative,
-    /// or non-finite value.
+    /// rounded value stays under 100 MB/s; one-decimal GB/s below
+    /// 9.95 GB/s; integer GB/s while the rounded value stays under
+    /// 100 GB/s; clamps at 99 GB/s. Decimals drop once values reach
+    /// double digits, and rates transition to the next unit at 100,
+    /// so no output mantissa exceeds two digits (for example: 400
+    /// KB/s becomes "0.4 MB/s"). Returns "-- KB/s" for a missing,
+    /// negative, or non-finite value.
     static func networkRate(_ bytesPerSecond: Double?) -> String {
         guard let bytesPerSecond, bytesPerSecond.isFinite, bytesPerSecond >= 0 else {
             return "-- KB/s"
         }
         let kb = bytesPerSecond / 1024.0
-        if kb.rounded() < 1000.0 {
+        if kb.rounded() < 100.0 {
             return "\(Int(kb.rounded())) KB/s"
         }
         let mb = kb / 1024.0
         if mb < 9.95 {
             return String(format: "%.1f MB/s", mb)
         }
-        if mb.rounded() < 1000.0 {
+        if mb.rounded() < 100.0 {
             return "\(Int(mb.rounded())) MB/s"
         }
         let gb = mb / 1024.0
         if gb < 9.95 {
             return String(format: "%.1f GB/s", gb)
         }
-        return "\(Int(gb.rounded())) GB/s"
+        if gb.rounded() < 100.0 {
+            return "\(Int(gb.rounded())) GB/s"
+        }
+        return "99 GB/s"
     }
 
     /// Formats history window duration into a compact sparkline axis anchor.

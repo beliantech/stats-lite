@@ -15,10 +15,9 @@
 //  item length never changes. The root HStack centers the block
 //  group in the slot, so the leftover width splits symmetrically
 //  around the group. The network block is a dedicated two-line
-//  view: upload rate above download rate, each rate followed by
-//  its indicator dot (networkUpload red, networkDownload
-//  adaptive) pinned to the trailing edge; the width stays
-//  MenuBarLayout.networkBlockWidth. Blocks
+//  view: networkUpload dot plus upload rate above networkDownload
+//  dot plus download rate,
+//  pinned to MenuBarLayout.networkBlockWidth. Blocks
 //  come from MenuBarBlockBuilder — the single source of truth for
 //  text, tint, and width. The MEM block carries a 4 pt pressure dot
 //  left of the label. No frame height: the controller centers the
@@ -173,14 +172,14 @@ struct MenuBarBlockView: View {
 }
 
 /// Dedicated two-line network speed monitor block:
-/// line 1 carries the upload rate text followed by a 5 pt red
-/// indicator dot (Color.networkUpload) pinned to the trailing edge.
-/// line 2 carries the download rate text followed by a 5 pt adaptive
-/// indicator dot (Color.networkDownload: systemCyan in dark mode,
-/// systemBlue in light) pinned to the trailing edge.
-/// Width pins to block.width (50 pt), so rate string changes never
-/// resize the item (VAC-N1). Transitions stay discrete: no
-/// .animation and no .contentTransition modifiers (VAC-9).
+/// line 1 carries a 5 pt red indicator dot (Color.networkUpload) and
+/// the upload rate.
+/// line 2 carries a 5 pt adaptive indicator dot
+/// (Color.networkDownload: systemCyan in dark mode, systemBlue in
+/// light) and the download rate.
+/// Width pins to block.width (47 pt), so rate string changes never
+/// resize the item. Transitions stay discrete: no
+/// .animation and no .contentTransition modifiers.
 struct MenuBarNetworkBlockView: View {
     let block: MenuBarBlock
 
@@ -188,31 +187,31 @@ struct MenuBarNetworkBlockView: View {
         VStack(alignment: .leading, spacing: 0) {
             // Line 1: Upload rate
             HStack(alignment: .center, spacing: 0) {
+                Circle()
+                    .fill(Color.networkUpload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
+
+                Spacer(minLength: 1)
+
                 Text(block.valueText)
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(valueColor)
                     .lineLimit(1)
-
-                Spacer(minLength: 1)
-
-                Circle()
-                    .fill(Color.networkUpload)
-                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
             }
             .frame(height: MenuBarLayout.rowHeight)
 
             // Line 2: Download rate
             HStack(alignment: .center, spacing: 0) {
+                Circle()
+                    .fill(Color.networkDownload)
+                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
+
+                Spacer(minLength: 1)
+
                 Text(block.secondaryValueText ?? "-- KB/s")
                     .font(.system(size: 9, weight: .regular).monospacedDigit())
                     .foregroundStyle(secondaryValueColor)
                     .lineLimit(1)
-
-                Spacer(minLength: 1)
-
-                Circle()
-                    .fill(Color.networkDownload)
-                    .frame(width: CGFloat.networkDotSize, height: CGFloat.networkDotSize)
             }
             .frame(height: MenuBarLayout.rowHeight)
         }

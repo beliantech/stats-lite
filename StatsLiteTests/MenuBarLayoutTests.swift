@@ -5,11 +5,12 @@
 //  Pinned-length tests for MenuBarLayout.length(showCPU:showRAM:
 //  showGPU:showNetwork:). Constants from plan
 //  2026-10-25-menubar-item-gap-uniform-minimum T3 (Appendix C):
-//  each standard block pins 27 pt, the network block pins 50 pt,
-//  and outer padding is 2 pt per side. The inter-block gap is 5 pt
+//  each standard block pins 27 pt, the network block pins 47 pt
+//  (plan 2026-10-26-network-dots-leading-rate-cap, VAC-R5), and
+//  outer padding is 2 pt per side. The inter-block gap is 5 pt
 //  (plan 2026-10-26-menubar-block-gap-5pt). Totals: 95 (three
-//  standards), 63 (any pair), 31 (single), 150 (all four), 86
-//  (one standard + network), 54 (network only), 4 (off), 191
+//  standards), 63 (any pair), 31 (single), 147 (all four), 83
+//  (one standard + network), 51 (network only), 4 (off), 188
 //  (all five).
 //
 
@@ -84,13 +85,13 @@ final class MenuBarLayoutTests: XCTestCase {
         )
     }
 
-    // MARK: - Network block (VAC-N1, VAC-N4)
+    // MARK: - Network block (VAC-R5, ISC-3)
 
-    func testNetworkBlockWidthIsPinnedTo50() {
-        XCTAssertEqual(MenuBarLayout.networkBlockWidth, 50, accuracy: accuracy)
+    func testNetworkBlockWidthIsPinnedTo47() {
+        XCTAssertEqual(MenuBarLayout.networkBlockWidth, 47, accuracy: accuracy)
     }
 
-    func testAllFourMetricsTotal150() {
+    func testAllFourMetricsTotal147() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -98,12 +99,12 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: true,
                 showNetwork: true
             ),
-            150,
+            147,
             accuracy: accuracy
         )
     }
 
-    func testNetworkOnlyTotal54() {
+    func testNetworkOnlyTotal51() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: false,
@@ -111,12 +112,12 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: false,
                 showNetwork: true
             ),
-            54,
+            51,
             accuracy: accuracy
         )
     }
 
-    func testCPUPlusNetworkTotal86() {
+    func testCPUPlusNetworkTotal83() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -124,7 +125,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showGPU: false,
                 showNetwork: true
             ),
-            86,
+            83,
             accuracy: accuracy
         )
     }
@@ -151,9 +152,9 @@ final class MenuBarLayoutTests: XCTestCase {
         XCTAssertEqual(MenuBarLayout.tempBlockWidth, 36, accuracy: accuracy)
     }
 
-    /// All five metrics (CPU, GPU, MEM, TEMP, NET) total 191 pt:
-    /// 2 × 2 pt padding + 3 × 27 pt + 36 pt + 50 pt + 4 × 5 pt gap.
-    func testAllFiveMetricsTotal191() {
+    /// All five metrics (CPU, GPU, MEM, TEMP, NET) total 188 pt:
+    /// 2 × 2 pt padding + 3 × 27 pt + 36 pt + 47 pt + 4 × 5 pt gap.
+    func testAllFiveMetricsTotal188() {
         XCTAssertEqual(
             MenuBarLayout.length(
                 showCPU: true,
@@ -162,7 +163,7 @@ final class MenuBarLayoutTests: XCTestCase {
                 showNetwork: true,
                 showTemperature: true
             ),
-            191,
+            188,
             accuracy: accuracy
         )
     }

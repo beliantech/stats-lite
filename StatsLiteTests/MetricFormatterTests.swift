@@ -42,24 +42,28 @@ final class MetricFormatterTests: XCTestCase {
         XCTAssertEqual(MetricFormatters.gigabytes(16 * gib), "16.0 GB")
     }
 
-    // MARK: - Network rate (VAC-N3, F11)
+    // MARK: - Network rate (ISC-2, FM1)
 
     func testNetworkRateFormatsKBRangeAsInteger() {
         XCTAssertEqual(MetricFormatters.networkRate(0), "0 KB/s")
         XCTAssertEqual(MetricFormatters.networkRate(10 * 1024), "10 KB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(720 * 1024), "720 KB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(999 * 1024), "999 KB/s")
+        // 720 KB/s leaves the KB branch once the rounded value
+        // reaches 100: it shows as one-decimal MB/s (ISC-2).
+        XCTAssertEqual(MetricFormatters.networkRate(720 * 1024), "0.7 MB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(999 * 1024), "1.0 MB/s")
     }
 
     func testNetworkRateFormatsMBRange() {
-        // Exactly 1000 KB/s leaves the KB branch and shows 1.0 MB/s.
+        // Exactly 1 MiB/s leaves the KB branch and shows 1.0 MB/s.
         XCTAssertEqual(MetricFormatters.networkRate(1_048_576), "1.0 MB/s")
         XCTAssertEqual(MetricFormatters.networkRate(1.6 * 1_048_576), "1.6 MB/s")
-        // 94.9 MB/s now rounds to the integer branch: double digits
+        // 94.9 MB/s rounds to the integer branch: double digits
         // drop the decimal (appendix B §3).
         XCTAssertEqual(MetricFormatters.networkRate(94.9 * 1_048_576), "95 MB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(100 * 1_048_576), "100 MB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(119 * 1_048_576), "119 MB/s")
+        // 100 MB/s leaves the MB branch and shows one-decimal GB/s
+        // (ISC-2).
+        XCTAssertEqual(MetricFormatters.networkRate(100 * 1_048_576), "0.1 GB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(119 * 1_048_576), "0.1 GB/s")
     }
 
     func testNetworkRateDropsDecimalsAtDoubleDigitBoundaries() {
@@ -69,28 +73,32 @@ final class MetricFormatterTests: XCTestCase {
         XCTAssertEqual(MetricFormatters.networkRate(999.5 * 1024), "1.0 MB/s")
         XCTAssertEqual(MetricFormatters.networkRate(9.94 * mib), "9.9 MB/s")
         XCTAssertEqual(MetricFormatters.networkRate(9.95 * mib), "10 MB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(99.9 * mib), "100 MB/s")
-        XCTAssertEqual(MetricFormatters.networkRate(999.4 * mib), "999 MB/s")
+        // 99.9 MB/s rounds to 100 MB/s, which leaves the MB branch
+        // for one-decimal GB/s (ISC-2).
+        XCTAssertEqual(MetricFormatters.networkRate(99.9 * mib), "0.1 GB/s")
+        // 999.4 MB/s leaves the MB branch for one-decimal GB/s
+        // (ISC-2).
+        XCTAssertEqual(MetricFormatters.networkRate(999.4 * mib), "1.0 GB/s")
         XCTAssertEqual(MetricFormatters.networkRate(999.5 * mib), "1.0 GB/s")
         XCTAssertEqual(MetricFormatters.networkRate(9.95 * gib), "10 GB/s")
     }
 
-    func testNetworkRateNeverExceedsThreeCharacterMantissa() {
-        // F11 width guarantee by construction: the mantissa (the part
-        // before the space) never exceeds 3 characters, so no output
-        // can have a 4+ digit integer part or a 4-character decimal
-        // such as "10.0" or "99.9". Sweeps 0…20 GB/s across every
-        // formatter boundary ± epsilon.
-        let pattern = #"^(--|\d{1,3}|\d\.\d) (KB|MB|GB)/s$"#
+    func testNetworkRateNeverExceedsTwoDigitMantissa() {
+        // ISC-2 (FM1) width guarantee by construction: the mantissa
+        // (the part before the space) never exceeds two digits, so no
+        // output can carry a 3+ digit integer part or a decimal on a
+        // double-digit value such as "10.0". Units switch at 100 and
+        // the GB ceiling clamps at 99, so no mantissa grows past two
+        // digits. Sweeps 0…20 GB/s across every switch point ±
+        // epsilon.
+        let pattern = #"^(--|\d{1,2}|\d\.\d) (KB|MB|GB)/s$"#
         let kib = 1024.0
         let mib = 1_048_576.0
         let gib = 1_073_741_824.0
         let boundaries: [Double] = [
-            999 * kib, 999.5 * kib, 1000 * kib, // KB → MB border
-            9.94 * mib, 9.95 * mib, 10 * mib,           // MB decimal cutoff
-            99.4 * mib, 99.5 * mib, 100 * mib,          // old one-decimal clip
-            999.4 * mib, 999.5 * mib, 1000 * mib,       // MB → GB border
-            9.94 * gib, 9.95 * gib, 10 * gib            // GB decimal cutoff
+            99.4 * kib, 99.5 * kib, 100 * kib,  // KB → MB switch at 100
+            99.4 * mib, 99.5 * mib, 100 * mib,  // MB → GB switch at 100
+            99.4 * gib, 99.5 * gib, 100 * gib   // GB ceiling clamp
         ]
         var sweep: [Double] = [0]
         for boundary in boundaries {
@@ -109,13 +117,29 @@ final class MetricFormatterTests: XCTestCase {
             let output = MetricFormatters.networkRate(rate)
             XCTAssertNotNil(
                 output.range(of: pattern, options: .regularExpression),
-                "rate \(rate) B/s produced \"\(output)\", whose mantissa exceeds 3 characters (F11)"
+                "rate \(rate) B/s produced \"\(output)\", whose mantissa exceeds two digits (ISC-2, FM1)"
             )
         }
         XCTAssertNotNil(
             "-- KB/s".range(of: pattern, options: .regularExpression),
-            "the missing-value placeholder must also fit the 3-character mantissa budget"
+            "the missing-value placeholder must also fit the two-digit mantissa budget (ISC-2, FM1)"
         )
+    }
+
+    func testNetworkRateSwitchesUnitsAtHundredAndClampsAt99GBPerSecond() {
+        // ISC-2 (FM1): units switch at 100, so no mantissa exceeds
+        // two digits; the GB ceiling clamps at 99 GB/s.
+        let mib = 1_048_576.0
+        let gib = 1_073_741_824.0
+        XCTAssertEqual(MetricFormatters.networkRate(99.4 * 1024), "99 KB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(99.5 * 1024), "0.1 MB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(400 * 1024), "0.4 MB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(999 * 1024), "1.0 MB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(99.4 * mib), "99 MB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(99.5 * mib), "0.1 GB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(400 * mib), "0.4 GB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(99.5 * gib), "99 GB/s")
+        XCTAssertEqual(MetricFormatters.networkRate(512 * gib), "99 GB/s")
     }
 
     func testNetworkRateFormatsGBRange() {

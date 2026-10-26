@@ -68,9 +68,9 @@ enum MenuBarLayout {
     /// §2.A).
     static let blockWidth: CGFloat = 27
     /// Pinned width of the two-line network block. Fits the widest
-    /// truncated rate string "999 MB/s" (42.91 pt) plus the 5 pt dot
-    /// with 2.89 pt clearance (appendix B §1).
-    static let networkBlockWidth: CGFloat = 50
+    /// rate string "0.4 MB/s" or "9.9 MB/s" (39.11 pt) plus the 5 pt dot
+    /// with 2.89 pt clearance, satisfying the >= 2.5 pt rule.
+    static let networkBlockWidth: CGFloat = 47
     /// Pinned width of the two-line temperature block. Fits the
     /// widest composite row "G 130°" (30.10 pt = 6.18 pt "G"
     /// at 8 pt regular + 2 pt gap + 21.92 pt "130°" at 9 pt regular
