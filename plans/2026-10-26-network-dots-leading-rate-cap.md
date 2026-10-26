@@ -467,3 +467,23 @@ implementation commit that makes it pass. Worktree:
 - Measured widest string: `39.111328125 pt` ("9.9 MB/s" = "0.4 MB/s" = "0.1 MB/s" at 9 pt regular monospacedDigit; method cross-checked against old "999 MB/s" = 42.1084). Clearance = 2.8887 pt ≥ 2.5 pt (VAC-R6 pass by measurement).
 - Centroid dot band choice: leading `networkStart ..< networkStart + 10` (whole-region form would go vacuous under trailing dots).
 - **Deviations (verified, plan corrected):** (1) layout totals use the current 5 pt gap (`7b849c6` predates plan): 147/51/83/188/95 — plan's ISC-3/VAC-R7 original figures were computed with the old 4 pt gap; (2) ink gap is the shared `interBlockGap = 24 ± 1 px`, not 21 (same ripple). Both corrections applied to ISC-3/ISC-5/Approach §6 in this plan.
+
+### T5 green (2026-10-26)
+
+- Commit `a29a7aa` `feat(menubar): restore leading network dots` — `StatsLite/MenuBarStackedItemView.swift` only.
+- Interim run: 450 tests, 9 failing / 13 failure legs — residual red matched the allowed width-dependent list EXACTLY (VAC-R12 width legs, clearance width legs, layout width/totals, builder width). Sequence, centroid, ink-gap tests GREEN (revert discriminated). No scope leak.
+
+### T6 green (2026-10-26)
+
+- Commit `deadf03` `feat(menubar): shrink network block to 47pt` — `StatsLite/MenuBarBlockModel.swift` only (`networkBlockWidth` 50 → 47 + doc comment; `gap`/`blockWidth`/`tempBlockWidth`/`length()` untouched).
+- Clearance test measures 2.8887 pt ≥ 2.5 pt → no FM2. `** TEST SUCCEEDED **`, 450 tests, 0 failures.
+
+### T7 — verification runs (2026-10-26, planner)
+
+- Suite run 1: `DEVELOPER_DIR=… caffeinate -i xcodebuild -project StatsLite.xcodeproj -scheme StatsLite -destination 'platform=macOS' test CODE_SIGN_IDENTITY=-` → **exit 0**, Executed 450 tests, 0 failures (65.7 s).
+- Suite run 2: same command → **exit 0**, 450 tests, 0 failures (65.7 s). (ISC-7 satisfied.)
+- ISC-6 scope: `git diff main...HEAD --name-only` = 9 files — 3 production (`MenuBarBlockModel`, `MenuBarStackedItemView`, `MetricFormatters`) + 6 test files. `NetworkCardView.swift` absent. `git diff main...HEAD -- StatsLite/ | rg '\.animation\(|\.contentTransition\('` → empty (exit 1).
+- ISC-5: `tempNetInkGap` constant gone (only a historical comment mention remains); `interBlockGap = 24` shared constant untouched; both TEMP↔NET and MEM↔TEMP legs green in both runs.
+- Constants verified in worktree: `networkBlockWidth = 47`, `gap = 5`, network rows `Circle → Spacer → Text`.
+- ISC-7 after-capture: Release build in worktree (`BUILD SUCCEEDED`) → `caffeinate -i bash scripts/capture_menubar.sh` exit 0; dark + light strips + `capture-note.txt` copied to `artifacts/2026-10-26-network-dots-leading-rate-cap/after/`. Pixel check (PIL, top 26 rows): near-white=0, near-black=0 — wallpaper-only, the known TCC signature (identical to `before/`); live spot check TCC-blocked, delegated to the reviewer against the offscreen render tests (AGENTS.md gate).
+- `v` ✓ (visual spot check TCC-blocked, recorded; offscreen render gate green ×2)
