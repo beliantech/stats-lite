@@ -49,8 +49,8 @@ One task = the full red set. All are failing tests on current production.
 
 ## T6 — Commit + review
 
-- [ ] **T6** — conventional commit in the worktree: `feat(menubar): move network status dots to trailing edge`. Then reviewer code review against `git diff main...HEAD`.
-- Success checklist: commit exists on `feat/2026-10-26-network-dots-trailing`; reviewer verdict recorded; planner merges with `--ff-only` or `--squash` and records the merge SHA here. `commit` ⬜ · `review` ⬜ · `merge` ⬜
+- [x] **T6** — conventional commit in the worktree: `feat(menubar): move network status dots to trailing edge`. Then reviewer code review against `git diff main...HEAD`.
+- Success checklist: commit exists on `feat/2026-10-26-network-dots-trailing`; reviewer verdict recorded; planner merges with `--ff-only` or `--squash` and records the merge SHA here. `commit` ✓ · `review` ✓ (GO, reviewer session 2026-10-26T03-14-26) · `merge` ✓ `ec087f0` (ff, 2026-10-26)
 
 ---
 
