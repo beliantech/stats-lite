@@ -48,5 +48,5 @@ None required. No band-aids touched; `StatSLITE_FAKE_UPDATE_VERSION` fixture key
 
 ## Tasks
 
-- [ ] **T1** — red phase: failing tests for FM1–FM7 in the `UpdateCheck*` test files, plus the new cache key in every `UserDefaults` cleanup array. red ⏳ · green n/a · review ⏳
-- [ ] **T2** — green phase: implement the epoch-stamp move + network-only cache write + skip-path restore in `StatsLite/UpdateCheckService.swift` until FM1–FM7 pass and the full suite is green. red n/a · green ⏳ · review ⏳
+- [x] **T1** — red phase: failing tests for FM1–FM7 in the `UpdateCheck*` test files, plus the new cache key in every `UserDefaults` cleanup array. red ✅ (7 tests, 8 failures pre-fix, 0 pre-existing) · green n/a · review ✅
+- [x] **T2** — green phase: implement the epoch-stamp move + network-only cache write + skip-path restore in `StatsLite/UpdateCheckService.swift` until FM1–FM7 pass and the full suite is green. red n/a · green ✅ (457/457) · review ✅ (GO, ISC-1..ISC-6 verified, R1 confirmed)
