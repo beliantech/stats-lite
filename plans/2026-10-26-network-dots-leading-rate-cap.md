@@ -330,15 +330,20 @@ block-gap edit); `FM5` menu-bar length totals or VoiceOver strings miss the
   (clamp), missing/negative/non-finite → `"-- KB/s"`.
 - [ ] **ISC-3** (VAC-R5..R7, FM2/FM5): `networkBlockWidth == 47`; widest-string
   clearance `47 − 5 − textWidth ≥ 2.5 pt` at 9 pt regular monospacedDigit;
-  `MenuBarLayout.length` totals: all-five `184`, CPU+MEM+GPU+NET `144`,
-  network-only `51`, CPU+NET `82`, three-metric-no-network `93` (unchanged).
+  `MenuBarLayout.length` totals **measured against the current 5 pt inter-block
+  gap** (`MenuBarLayout.gap = 5` since commit `7b849c6`, which landed before
+  this plan — the blueprint's VAC-R7 table was computed with the old 4 pt gap
+  and is superseded here): all-five `188`, CPU+MEM+GPU+NET `147`, network-only
+  `51`, CPU+NET `83`, three-metric-no-network `95` (unchanged by this plan).
 - [ ] **ISC-4** (VAC-R12..R15, FM2/FM3): offscreen 2x renders under `darkAqua`
   and `aqua`: network block bitmap exactly 94 px wide; both dots' ink starts at
   `x ≤ 1 px`; both dots share one column within 1 px; rightmost rate-text ink
   reaches `x ≥ 91 px` (flush right) on both lines; dot-to-text gutter for the
   widest rate measures at least 5 px.
-- [ ] **ISC-5** (VAC-R16/R17, FM4): TEMP↔NET inter-block ink gap back to
-  `21 ± 1 px` under both appearances (`tempNetInkGap` constant removed); TEMP
+- [ ] **ISC-5** (VAC-R16/R17, FM4): TEMP↔NET inter-block ink gap returns to the
+  shared `interBlockGap` under both appearances — the shared constant reads
+  `24 ± 1 px` today (5 pt gap ripple from `7b849c6`; the blueprint's "21 px"
+  is a stale pre-`7b849c6` figure); `tempNetInkGap` constant removed. TEMP
   label ↔ network dot centroids align within 0.30 px.
 - [ ] **ISC-6** (FM5): updated expectation strings are applied everywhere the old
   format was asserted (`MenuBarBlockBuilderTests`, `MenuBarAccessibilityTests`,
@@ -371,6 +376,13 @@ block-gap edit); `FM5` menu-bar length totals or VoiceOver strings miss the
 5. **Ordering: formatter first (T2/T3), then geometry (T4–T6).** The formatter
    green shortens the widest production string, which the 47 pt width budget is
    designed around.
+6. **Baseline corrections recorded at T4 (red run 231831d).** Commit `7b849c6`
+   (inter-block gap 4 pt → 5 pt) predates this plan but the plan's original
+   totals and ink-gap figures were computed with the old 4 pt gap. Corrected
+   targets: layout totals 188/147/51/83/95 (not 184/144/51/82/93); TEMP↔NET
+   ink gap reads the shared `interBlockGap = 24 ± 1 px` (not 21). Verified
+   against production `MenuBarLayout.gap = 5` and the test constant. ISC-3,
+   ISC-5, and VAC-R7/R16 are superseded by these values.
 
 ## Notation
 
@@ -383,18 +395,18 @@ implementation commit that makes it pass. Worktree:
 
 ## Tasks
 
-- [ ] **T1** — display awake; `scripts/capture_menubar.sh` → `artifacts/2026-10-26-network-dots-leading-rate-cap/before/`; create worktree `git worktree add -B feat/2026-10-26-network-dots-leading-rate-cap worktrees/2026-10-26-network-dots-leading-rate-cap main` (skip-red, mechanical).
-- [ ] **T2** — red (formatter): test-only edits — rewrite `MetricFormatterTests`
+- [x] **T1** — display awake; `scripts/capture_menubar.sh` → `artifacts/2026-10-26-network-dots-leading-rate-cap/before/`; create worktree `git worktree add -B feat/2026-10-26-network-dots-leading-rate-cap worktrees/2026-10-26-network-dots-leading-rate-cap main` (skip-red, mechanical).
+- [x] **T2** — red (formatter): test-only edits — rewrite `MetricFormatterTests`
   network-rate expectations to the 2-digit rule (ISC-2 boundaries + regex
   `\d{1,2}` sweep); update `MenuBarBlockBuilderTests.swift:370`
   (`"720 KB/s"` → `"0.7 MB/s"`) and `MenuBarAccessibilityTests.swift:162,221`
   VoiceOver strings. Expected red set: the touched rate tests fail on current
   production ("720 KB/s", "999 KB/s", "100 MB/s", "119 MB/s" still produced).
   No production file in the diff.
-- [ ] **T3** — green (formatter): `StatsLite/MetricFormatters.swift` only —
+- [x] **T3** — green (formatter): `StatsLite/MetricFormatters.swift` only —
   `networkRate` switches unit at 100 and clamps at `"99 GB/s"` (blueprint §2.C).
   Doc comment updated. Failing test: T2's red set.
-- [ ] **T4** — red (geometry): test-only edits —
+- [x] **T4** — red (geometry): test-only edits —
   `MenuBarValueTypographyTests.testNetworkRowsSequenceTextBeforeDot` inverted to
   Circle-before-Text (rename accordingly); `testNetworkBlockClearanceForWidestRateStringMeetsSpacerMinimum`
   retargeted to 47 pt / widest `"9.9 MB/s"` (39.1113 pt, clearance 2.8887);
@@ -424,3 +436,34 @@ implementation commit that makes it pass. Worktree:
 ## Ledger
 
 (receipts: commands, exit codes, measured values, SHAs)
+
+### T1 — baseline capture + worktree (2026-10-26)
+
+- Display awake: `CGDisplayIsAsleep == 0`.
+- A Debug StatsLite (Xcode, pid 9370) blocked `capture_menubar.sh`'s pgrep guard → quit via AppleScript; app left stopped (relaunch from Xcode).
+- `caffeinate -i bash scripts/capture_menubar.sh` → exit 0; `before/` has dark + light strips + `capture-note.txt`.
+- Pixel check (PIL, top 26 rows): near-white=0 near-black=0 → wallpaper-only, known TCC signature; offscreen render tests remain the gate.
+- Worktree `worktrees/2026-10-26-network-dots-leading-rate-cap` on `feat/2026-10-26-network-dots-leading-rate-cap` from `main` at `e586529`; `git status` clean.
+- Plan committed `e586529` after reviewer GO (session 2026-10-26T08-38-41-466Z).
+
+### T2 red (2026-10-26)
+
+- Commit `d896812` `test(network): expect 2-digit rate cap (red)` — test files only.
+- Red run: exit 65, 450 tests, 932 assertion failures across exactly 8 touched tests (8 = the T2 set; nothing outside). Failures quote the old 3-digit format ("720 KB/s", "100 MB/s", "999 KB/s") vs new expectations.
+- Note: snapshot/typography tests stayed green — they use literal "999 MB/s" fixtures, retargeted at T4.
+
+### T3 green (2026-10-26)
+
+- Commit `368eebf` `feat(formatters): cap network rate mantissa at 2 digits` — `StatsLite/MetricFormatters.swift` only (blueprint §2.C verbatim).
+- Green run: exit 0, 450 tests, 0 failures.
+- `git diff main...HEAD --stat` after T3: 4 files (1 production + 3 test).
+- Keychain note: headless sessions need `CODE_SIGN_IDENTITY=-` passed as an xcodebuild **build-setting argument** (env var does not override the pinned identity); errSecInternalComponent otherwise. No repo file changed.
+
+### T4 red (2026-10-26)
+
+- Commit `231831d` `test(menubar): expect leading network dots at 47pt (red)` — 4 test files only, `StatsLite/` untouched.
+- Red run: exit 65, 450 tests, 27 assertion failures across 12 tests, all inside the T4 set. Red for the right reason: sequence test (trailing), clearance test (50 ≠ 47; clearance 5.89 ≠ 2.89), leading render test (VAC-R12 width), centroid test (leading band measures text glyph, 0.35–0.58 px > 0.30), ink-gap test (26 px vs shared 24 ± 1), layout totals (150/54/86/191 vs targets 147/51/83/188), builder width (50 ≠ 47).
+- Required-to-pass green: `testNetworkOffKeepsThreeMetricTotal95` (95, network off unaffected); height test with new "9.9 MB/s" fixture.
+- Measured widest string: `39.111328125 pt` ("9.9 MB/s" = "0.4 MB/s" = "0.1 MB/s" at 9 pt regular monospacedDigit; method cross-checked against old "999 MB/s" = 42.1084). Clearance = 2.8887 pt ≥ 2.5 pt (VAC-R6 pass by measurement).
+- Centroid dot band choice: leading `networkStart ..< networkStart + 10` (whole-region form would go vacuous under trailing dots).
+- **Deviations (verified, plan corrected):** (1) layout totals use the current 5 pt gap (`7b849c6` predates plan): 147/51/83/188/95 — plan's ISC-3/VAC-R7 original figures were computed with the old 4 pt gap; (2) ink gap is the shared `interBlockGap = 24 ± 1 px`, not 21 (same ripple). Both corrections applied to ISC-3/ISC-5/Approach §6 in this plan.
