@@ -774,6 +774,61 @@ final class MenuBarValueTypographyTests: XCTestCase {
         )
     }
 
+    // MARK: - plan 2026-10-26-network-dots-trailing (ISC-1, VAC-1):
+    // network rows sequence the rate Text before the dot Circle
+
+    /// ISC-1 / VAC-1: within each MenuBarNetworkBlockView row's
+    /// HStack scope the rate `Text(` appears before the indicator
+    /// `Circle(`, so the rate text leads and the dot pins to the
+    /// trailing edge. Row regions anchor on the section comments
+    /// that VAC-12's row-frame test relies on.
+    func testNetworkRowsSequenceTextBeforeDot() throws {
+        let source = try loadSource()
+        let scope = try declarationScope(
+            of: "MenuBarNetworkBlockView",
+            in: source
+        )
+        let uploadSection = try XCTUnwrap(
+            scope.range(of: "Upload rate"),
+            "Upload rate section not found in MenuBarNetworkBlockView"
+        )
+        let downloadSection = try XCTUnwrap(
+            scope.range(of: "Download rate"),
+            "Download rate section not found in MenuBarNetworkBlockView"
+        )
+        XCTAssertTrue(
+            uploadSection.lowerBound < downloadSection.lowerBound,
+            "the Upload rate section must precede the Download rate section"
+        )
+        let rows: [(String, Substring)] = [
+            (
+                "line 1 (upload)",
+                scope[uploadSection.lowerBound..<downloadSection.lowerBound]
+            ),
+            ("line 2 (download)", scope[downloadSection.lowerBound...]),
+        ]
+        for (rowName, rowScope) in rows {
+            let textStart = try XCTUnwrap(
+                rowScope.range(of: "Text("),
+                "ISC-1 (VAC-1): no Text( token in \(rowName) of MenuBarNetworkBlockView"
+            )
+            let circleStart = try XCTUnwrap(
+                rowScope.range(of: "Circle("),
+                "ISC-1 (VAC-1): no Circle( token in \(rowName) of MenuBarNetworkBlockView"
+            )
+            XCTAssertLessThan(
+                textStart.lowerBound,
+                circleStart.lowerBound,
+                """
+                ISC-1 (VAC-1): \(rowName) of MenuBarNetworkBlockView must \
+                sequence Text( before Circle( inside its HStack, so the \
+                rate text leads and the dot pins to the trailing edge; \
+                the row currently sequences Circle( first.
+                """
+            )
+        }
+    }
+
     // MARK: - VAC-11/VAC-12: row height constant and block alignment invariants
 
     // @MainActor: NSHostingView(rootView:) is MainActor-isolated and

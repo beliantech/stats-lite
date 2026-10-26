@@ -44,8 +44,19 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
 
     /// ISC-3: inter-block ink gap target and tolerance in bitmap
     /// pixels at 2x (re-issued VAC-22/23, Addendum B: 21.0 px).
+    /// MEM→TEMP (VAC-23) keeps the shared 21 px.
     private let interBlockGap: Double = 21
     private let interBlockGapTolerance: Double = 1
+
+    /// ISC-4 (plan 2026-10-26-network-dots-trailing, correction 4):
+    /// TEMP→NET ink gap after the dot move to the trailing edge.
+    /// The leftmost NET ink is now the rate-text glyph bearing
+    /// instead of the dot edge, so the leg splits off from
+    /// interBlockGap (which MEM→TEMP keeps at 21). Measured 24 px
+    /// under both appearances in the T4 green run (ledger T4,
+    /// 2026-10-26); the split value sits at the top of the 21..24
+    /// px bound and carries the same ±1 tolerance.
+    private let tempNetInkGap: Double = 24
 
     /// ISC-4: top ink edge tolerance in bitmap pixels.
     private let topEdgeTolerance: Double = 0.4
@@ -403,7 +414,12 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                 appearance: appearance
             )
             let tempColumns = 0..<networkStart
-            let networkColumns = networkStart..<bitmap.pixelsWide
+            // plan 2026-10-26-network-dots-trailing, correction 5:
+            // the dots pin to the trailing edge of the NET frame
+            // (45..50 pt = pixelsWide − 10 ..< pixelsWide at 2x),
+            // so the dot queries read the trailing dot band. The
+            // whole NET region now leads with rate-text ink.
+            let dotBand = (bitmap.pixelsWide - 10)..<bitmap.pixelsWide
 
             let cyC = try XCTUnwrap(
                 bitmap.leftmostClusterCentroidY(
@@ -416,7 +432,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             let cyRedDot = try XCTUnwrap(
                 bitmap.leftmostClusterCentroidY(
                     yRange: line1,
-                    xRange: networkColumns,
+                    xRange: dotBand,
                     threshold: inkThreshold
                 ),
                 "ISC-2 (FM1): no red-upload-dot ink in the NET region of the \(appearance.rawValue) render"
@@ -442,7 +458,7 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
             let cyCyanDot = try XCTUnwrap(
                 bitmap.leftmostClusterCentroidY(
                     yRange: line2,
-                    xRange: networkColumns,
+                    xRange: dotBand,
                     threshold: inkThreshold
                 ),
                 "ISC-2 (FM1): no cyan-download-dot ink in the NET region of the \(appearance.rawValue) render"
@@ -459,12 +475,157 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
         }
     }
 
+    // MARK: - plan 2026-10-26-network-dots-trailing, ISC-2
+    // (VAC-2..VAC-5): dots pin trailing, rate text leads
+
+    /// ISC-2 (plan 2026-10-26-network-dots-trailing): each network
+    /// row anchors its rate text at the leading edge and pins its
+    /// indicator dot to the trailing edge of the 50 pt frame, both
+    /// dots sharing one x column. Per row × both fixtures × both
+    /// appearances: (a) leading rate-text ink within 2 px (VAC-5);
+    /// (b) at least a 3 px gutter between text right ink and dot
+    /// left ink (VAC-3); (c) dot right ink within 1 px of the
+    /// 100 px trailing edge (VAC-4); (d) both dots' left ink
+    /// within 1 px (VAC-2). Columns 0..<90 hold the text band,
+    /// 90..<100 the dot band (45..50 pt at 2x).
+    func testNetworkDotsPinTrailingAndTextLeads() throws {
+        let production = try networkBlock()
+        let widest = MenuBarBlock(
+            kind: .network,
+            label: "",
+            dotState: nil,
+            valueText: "999 MB/s",
+            valueTint: .primary,
+            width: MenuBarLayout.networkBlockWidth,
+            secondaryValueText: "999 MB/s",
+            secondaryValueTint: .primary
+        )
+        let fixtures: [(String, MenuBarBlock)] = [
+            ("production rates", production),
+            ("widest rates", widest),
+        ]
+        let textBand = 0..<90
+        let dotBand = 90..<100
+        for appearance in appearances {
+            for (fixtureName, block) in fixtures {
+                let bitmap = MenuBarRenderHarness.render(
+                    MenuBarNetworkBlockView(block: block),
+                    appearance: appearance
+                )
+                XCTAssertEqual(
+                    bitmap.pixelsWide,
+                    100,
+                    """
+                    ISC-2 (FM2): the network block must render 100 px wide \
+                    at 2x (50 pt pinned frame); \(fixtureName) under \
+                    \(appearance.rawValue) rendered \(bitmap.pixelsWide) px.
+                    """
+                )
+                var dotLeftByRow: [Int] = []
+                for (rowName, row) in [("line 1", line1), ("line 2", line2)] {
+                    let textLeft = try XCTUnwrap(
+                        bitmap.leftmostInkX(
+                            yRange: row,
+                            xRange: textBand,
+                            threshold: inkThreshold
+                        ),
+                        """
+                        ISC-2 (FM1): no rate-text ink on \(rowName) of the \
+                        \(fixtureName) fixture under \(appearance.rawValue).
+                        """
+                    )
+                    XCTAssertLessThanOrEqual(
+                        textLeft,
+                        2,
+                        """
+                        ISC-2 (VAC-5): \(fixtureName) \(rowName) rate-text \
+                        left ink = \(textLeft) px under \(appearance.rawValue); \
+                        the text must lead from the block's leading edge \
+                        (≤ 2 px at 2x).
+                        """
+                    )
+                    let textRight = try XCTUnwrap(
+                        bitmap.rightmostInkX(
+                            yRange: row,
+                            xRange: textBand,
+                            threshold: inkThreshold
+                        ),
+                        """
+                        ISC-2 (FM1): no rate-text ink on \(rowName) of the \
+                        \(fixtureName) fixture under \(appearance.rawValue).
+                        """
+                    )
+                    let dotLeft = try XCTUnwrap(
+                        bitmap.leftmostInkX(
+                            yRange: row,
+                            xRange: dotBand,
+                            threshold: inkThreshold
+                        ),
+                        """
+                        ISC-2 (FM1): no indicator-dot ink in the trailing \
+                        band on \(rowName) of the \(fixtureName) fixture \
+                        under \(appearance.rawValue).
+                        """
+                    )
+                    XCTAssertLessThanOrEqual(
+                        Double(textRight) + 3,
+                        Double(dotLeft),
+                        """
+                        ISC-2 (VAC-3): \(fixtureName) \(rowName): rate-text \
+                        right ink \(textRight) px + 3 px gutter must reach at \
+                        most the dot left ink \(dotLeft) px under \
+                        \(appearance.rawValue); the dot must sit right of the \
+                        text with ≥ 3 px gutter.
+                        """
+                    )
+                    let dotRight = try XCTUnwrap(
+                        bitmap.rightmostInkX(
+                            yRange: row,
+                            xRange: dotBand,
+                            threshold: inkThreshold
+                        ),
+                        """
+                        ISC-2 (FM1): no indicator-dot ink in the trailing \
+                        band on \(rowName) of the \(fixtureName) fixture \
+                        under \(appearance.rawValue).
+                        """
+                    )
+                    XCTAssertGreaterThanOrEqual(
+                        dotRight,
+                        99,
+                        """
+                        ISC-2 (VAC-4): \(fixtureName) \(rowName) dot right \
+                        ink = \(dotRight) px under \(appearance.rawValue); \
+                        the dot must pin the trailing edge (≥ 99 px at 2x).
+                        """
+                    )
+                    dotLeftByRow.append(dotLeft)
+                }
+                XCTAssertEqual(
+                    abs(dotLeftByRow[0] - dotLeftByRow[1]),
+                    0,
+                    accuracy: 1,
+                    """
+                    ISC-2 (VAC-2): \(fixtureName) dot left ink differs by \
+                    \(abs(dotLeftByRow[0] - dotLeftByRow[1])) px between line \
+                    1 (\(dotLeftByRow[0]) px) and line 2 \
+                    (\(dotLeftByRow[1]) px) under \(appearance.rawValue); \
+                    both dots must share one x column within 1 px.
+                    """
+                )
+            }
+        }
+    }
+
     // MARK: - ISC-3 (VAC-22/23): inter-block ink gaps
 
     /// ISC-3 (re-issued VAC-22/23, Addendum B): the ink gaps
     /// between blocks measure 21 ±1 px at 2x. TEMP value right ink
-    /// → red dot left ink crosses the TEMP↔NET boundary; MEM value
-    /// right ink → C label left ink crosses the MEM↔TEMP boundary.
+    /// → NET rate-text left ink crosses the TEMP↔NET boundary and
+    /// reads the re-issued tempNetInkGap 24 ±1 px (plan
+    /// 2026-10-26-network-dots-trailing, correction 4); MEM value
+    /// right ink → C label left ink crosses the MEM↔TEMP boundary
+    /// and keeps interBlockGap 21 ±1 px.
     /// Both pairs render in their production adjacency with the
     /// production gap, so the gap itself comes from production.
     /// Convention: the gap is the empty span between the two inks,
@@ -499,17 +660,18 @@ final class MenuBarRenderSnapshotTests: XCTestCase {
                     xRange: networkStart..<tempNet.pixelsWide,
                     threshold: inkThreshold
                 ),
-                "ISC-3 (FM1): no red-dot ink on line 1 of the \(appearance.rawValue) render"
+                "ISC-3 (FM1): no NET rate-text ink on line 1 of the \(appearance.rawValue) render"
             )
             let valueRightEdge = tempValueRight + 1
             XCTAssertEqual(
                 Double(redDotLeft - valueRightEdge),
-                interBlockGap,
+                tempNetInkGap,
                 accuracy: interBlockGapTolerance,
                 """
-                ISC-3 (VAC-22): TEMP value right ink → red dot left ink = \
+                ISC-3 (VAC-22): TEMP value right ink → rate-text left ink = \
                 \(redDotLeft - valueRightEdge) px under \(appearance.rawValue); \
-                the re-issued gap is 21 ±1 px at 2x.
+                the re-issued TEMP↔NET gap is 24 ±1 px at 2x (ledger T4, \
+                measured 2026-10-26).
                 """
             )
 
