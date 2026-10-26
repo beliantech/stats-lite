@@ -1,0 +1,64 @@
+Baseline capture (before) — live spot check environmentally void
+Date: 2026-10-26 (Asia/Kuala_Lumpur)
+
+Commands run (worktree, display awake):
+
+1. Display check (pre-run and post-run):
+     swift -e 'import CoreGraphics; print(CGDisplayIsAsleep(0))'
+   Output: 0  (display awake, wrapped in caffeinate -i)
+
+2. Release build for the capture script (worktree had no build):
+     caffeinate -i xcodebuild -project StatsLite.xcodeproj -scheme StatsLite \
+         -configuration Release -derivedDataPath .derivedData build
+   Output: BUILD SUCCEEDED
+
+3. Quit the user's running instance (pid 73548,
+   /Applications/StatsLite.app) so the script's pgrep guard passes.
+   Relaunched it (pid 98361) after the capture.
+
+4. caffeinate -i bash scripts/capture_menubar.sh
+   Exit 0. Output:
+     cropped .../visual-vac/menubar-dark.png 520x48 px from 1920x1080
+     captured .../visual-vac/menubar-dark.png (dark=true)
+     cropped .../visual-vac/menubar-light.png 520x48 px from 1920x1080
+     captured .../visual-vac/menubar-light.png (dark=false)
+     appearance restored to dark mode false on exit
+   Outputs copied to this directory: full-dark.png, full-light.png,
+   menubar-dark.png, menubar-light.png.
+
+Result: the capture ran, but the strips contain no menu bar.
+
+Pixel evidence (Python/PIL, near-white >235 and near-black <25 counts):
+     full-dark.png   1920x1080  top 26 rows: near-white=0 near-black=0
+     full-light.png  1920x1080  top 26 rows: near-white=0 near-black=0
+     menubar-dark.png   520x48: near-white=0 near-black=0
+     menubar-light.png  520x48: near-white=0 near-black=0
+Zero glyphs. The images are wallpaper only. Same signature as
+artifacts/2026-10-25-menubar-item-gap-uniform-minimum/after/capture-note.txt.
+
+Root cause (measured, not hypothesised):
+- `log show --last 40m --predicate 'subsystem == "com.apple.TCC"'` shows
+  kTCCServiceScreenCapture requests from this session attributed to
+  responsible={identifier=com.apple.sshd-keygen-wrapper,
+  responsible_path=/usr/libexec/sshd-keygen-wrapper} and answered with
+  "Platform binary prompting is 'Deny' because: is Platform Binary".
+- On macOS 27.0.1 (26A434) `screencapture` uses ScreenCaptureKit. With
+  no Screen Recording grant for that principal it returns the desktop
+  wallpaper and omits windows, menu bar, and dock. It exits 0, so the
+  script cannot see the failure.
+- The Screen Recording + Accessibility grants on sshd-keygen-wrapper
+  recorded in plans/2026-10-21-menu-bar-label-text-size-increase.md:125
+  are no longer in effect after the macOS 27 update. A fresh grant needs
+  System Settings > Privacy & Security > Screen & System Audio Recording.
+  That is user-only UI; an agent session cannot make it.
+- One probe attempt (osascript + Finder do shell script) opened a TCC
+  dialog via UserNotificationCenter; it was dismissed and no probe
+  process was left running.
+
+Treatment: same as plan 2026-10-25-menubar-item-gap-uniform-minimum —
+the live spot check is recorded as environmentally void and the offscreen
+render tests (StatsLiteTests/MenuBarRenderSnapshotTests.swift) are the
+gate per AGENTS.md. Last known-good live baseline showing the production
+order CPU -> MEM -> GPU:
+  main repo artifacts/2026-10-24-temp-labels-cg/visual-vac/menubar-dark-v2.png
+  (82 KB, 2x, captured 2026-10-24 before the display changed to 1920x1080).
