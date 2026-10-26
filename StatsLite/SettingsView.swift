@@ -96,10 +96,10 @@ struct SettingsView: View {
         Section {
             Toggle("CPU Utilization", isOn: $preferences.showCPU)
                 .disabled(preferences.isToggleLocked(preferences.showCPU))
-            Toggle("Memory Pressure (RAM)", isOn: $preferences.showRAM)
-                .disabled(preferences.isToggleLocked(preferences.showRAM))
             Toggle("GPU Utilization", isOn: $preferences.showGPU)
                 .disabled(preferences.isToggleLocked(preferences.showGPU))
+            Toggle("Memory Pressure (RAM)", isOn: $preferences.showRAM)
+                .disabled(preferences.isToggleLocked(preferences.showRAM))
             // No .disabled on this row either: like network,
             // temperature stays out of isToggleLocked (F10/plan
             // Phase 3 carve-out).

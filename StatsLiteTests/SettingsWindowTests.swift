@@ -203,6 +203,58 @@ final class SettingsWindowTests: XCTestCase {
         )
     }
 
+    // MARK: - Visible Metrics row order (plan
+    // 2026-10-25-settings-visible-metrics-order)
+
+    /// The Visible Metrics section lists the five toggles in the
+    /// same order the menu bar displays them: CPU Utilization, GPU
+    /// Utilization, Memory Pressure (RAM), Temperature, Network
+    /// Throughput. Order assertions use the same Mirror string walk
+    /// + firstIndex idiom as
+    /// MenuBarTempBlockTests.testSettingsViewHasTemperatureToggleBetweenGPUAndNetwork.
+    func testVisibleMetricsRowOrderMatchesMenuBarOrder() throws {
+        let view = SettingsView(
+            preferences: PreferencesStore(),
+            monitor: SystemMonitor(),
+            launchAtLogin: LaunchAtLoginService()
+        )
+        let strings = collectViewStrings(view.body)
+
+        // Sanity checks: the reflection must find all five rows or
+        // the order assertions below pass vacuously.
+        let labels = [
+            "CPU Utilization",
+            "GPU Utilization",
+            "Memory Pressure (RAM)",
+            "Temperature",
+            "Network Throughput",
+        ]
+        for label in labels {
+            XCTAssertTrue(
+                strings.contains(label),
+                "View introspection failed: no \(label) row found."
+            )
+        }
+
+        var indices: [Int] = []
+        for label in labels {
+            let index = try XCTUnwrap(
+                strings.firstIndex(of: label),
+                "sanity"
+            )
+            indices.append(index)
+        }
+
+        for (pairIndex, label) in zip(0..<(labels.count - 1), labels) {
+            XCTAssertLessThan(
+                indices[pairIndex],
+                indices[pairIndex + 1],
+                "\(labels[pairIndex + 1]) must sit below \(label) "
+                    + "in Visible Metrics (menu bar order parity)."
+            )
+        }
+    }
+
     // MARK: - Version footer
 
     func testVersionLabelReadsBundleInfo() {
