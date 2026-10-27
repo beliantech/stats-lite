@@ -121,6 +121,12 @@ Both capture scripts set `DEVELOPER_DIR` when needed.
 
 Preferences save in UserDefaults. There are no config files and no environment variables. Change preferences in the Settings window.
 
+## Updates
+
+The app checks GitHub for a new version once a day. When a newer version exists, the app downloads it and installs it in-app. The app asks you to relaunch after the install.
+
+Every GitHub release also publishes `StatsLite.dmg`. Download it from the latest-release page to install or reinstall the app by hand.
+
 ## Privacy
 
 Stats Lite sends no telemetry. No script collects or sends your activity or events, and no metric data leaves your Mac.
