@@ -200,6 +200,73 @@ final class SparkleUpdateCoordinatorTests: XCTestCase {
         )
     }
 
+    // MARK: - FM7: XCTest launch markers keep Sparkle inert
+
+    /// An XCTest host carries `XCTestConfigurationFilePath` in its
+    /// environment. The live updater must not start there even
+    /// without `--open-popover`: the placeholder EdDSA key raises a
+    /// fatal Sparkle alert that deadlocks the test main thread.
+    func testFM7XCTestConfigurationFilePathEnvironmentStopsUpdater() {
+        XCTAssertFalse(
+            UpdateCheckLaunchPolicy.startingUpdater(
+                arguments: [
+                    "/Applications/StatsLite.app/Contents/MacOS/StatsLite",
+                ],
+                environment: [
+                    "XCTestConfigurationFilePath":
+                        "/tmp/StatsLite-8B1F.xctestconfiguration",
+                ]
+            ),
+            "FM7: an XCTest host must not start the live Sparkle updater"
+        )
+    }
+
+    /// `XCTestSessionIdentifier` is the second XCTest marker. One of
+    /// the two markers is set across Xcode versions, so both must
+    /// stop the updater.
+    func testFM7XCTestSessionIdentifierEnvironmentStopsUpdater() {
+        XCTAssertFalse(
+            UpdateCheckLaunchPolicy.startingUpdater(
+                arguments: [
+                    "/Applications/StatsLite.app/Contents/MacOS/StatsLite",
+                ],
+                environment: [
+                    "XCTestSessionIdentifier": "4C9B1D2E-0000-0000-0000-000000000001",
+                ]
+            ),
+            "FM7: an XCTest host must not start the live Sparkle updater"
+        )
+    }
+
+    /// Production behavior stays unchanged: a normal launch with no
+    /// test markers and no `--open-popover` starts the updater.
+    func testFM7NormalLaunchStillStartsUpdater() {
+        XCTAssertTrue(
+            UpdateCheckLaunchPolicy.startingUpdater(
+                arguments: [
+                    "/Applications/StatsLite.app/Contents/MacOS/StatsLite",
+                ],
+                environment: ["PATH": "/usr/bin"]
+            ),
+            "a production launch must still start the updater"
+        )
+    }
+
+    /// ISC-5 behavior is preserved under FM7: `--open-popover`
+    /// without the fixture key still maps to startingUpdater false.
+    func testFM7PopoverFlagWithoutFixtureStillStopsUpdater() {
+        XCTAssertFalse(
+            UpdateCheckLaunchPolicy.startingUpdater(
+                arguments: [
+                    "/Applications/StatsLite.app/Contents/MacOS/StatsLite",
+                    "--open-popover",
+                ],
+                environment: [:]
+            ),
+            "ISC-5: --open-popover without the fixture key must not start the updater"
+        )
+    }
+
     func testISC5AdapterConstructedWithoutStartReportsUpdaterNotRunning() {
         let adapter = StandardSparkleUpdater(
             startingUpdater: false,
