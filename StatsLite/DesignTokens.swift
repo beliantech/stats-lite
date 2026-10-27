@@ -72,9 +72,11 @@ extension CGFloat {
 }
 
 extension Color {
-    /// Subtle track color for metric gauges and progress bars in popover cards.
-    /// Blends into the card background across both dark and light appearances.
-    static let metricBarTrack = Color(nsColor: .separatorColor).opacity(0.08)
+    /// Unfilled track color for metric gauges and progress bars in popover cards.
+    /// Matches the gray of the Free segment of the Used memory composition bar
+    /// (`Color(nsColor: .quaternaryLabelColor)`), so the empty gauge track and the
+    /// composition bar remainder read as one color.
+    static let metricBarTrack = Color(nsColor: .quaternaryLabelColor)
 }
 
 /// Network indicator dot colors, shared by the status item block and

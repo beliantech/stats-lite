@@ -6,8 +6,9 @@
 //  source-token guards for the shared metric bar tokens. ISC-1 checks
 //  the DesignTokens.swift definitions. ISC-2 checks that the gauge bar
 //  and the composition bar both read the shared height token and that
-//  no legacy height literal survives. ISC-3 checks the subtle track
-//  token. FM2/ISC-5 checks the gauge fill clipping. ISC-6/FM3 checks
+//  no legacy height literal survives. ISC-3 checks the track token:
+//  the gauge track and the composition bar Free segment share the
+//  quaternaryLabelColor gray. FM2/ISC-5 checks the gauge fill clipping. ISC-6/FM3 checks
 //  the accessibility-hidden retention on both bars.
 //
 //  The guards read production source the same way
@@ -137,8 +138,12 @@ final class MetricBarTokenGuardTests: XCTestCase {
             "ISC-1: DesignTokens.swift must define static let metricBarCornerRadius: CGFloat = 3"
         )
         XCTAssertTrue(
-            flat.contains("staticletmetricBarTrack=Color(nsColor:.separatorColor).opacity(0.08)"),
-            "ISC-1: DesignTokens.swift must define Color.metricBarTrack from separatorColor at 0.08 opacity"
+            flat.contains("staticletmetricBarTrack=Color(nsColor:.quaternaryLabelColor)"),
+            "ISC-1: DesignTokens.swift must define Color.metricBarTrack from quaternaryLabelColor, the composition bar Free segment gray"
+        )
+        XCTAssertFalse(
+            flat.contains(".opacity(0.08)"),
+            "ISC-1: the old separatorColor at 0.08 opacity track definition must be gone"
         )
     }
 
@@ -202,6 +207,14 @@ final class MetricBarTokenGuardTests: XCTestCase {
         XCTAssertFalse(
             flat.contains(".opacity(0.2)"),
             "ISC-3: the prominent .opacity(0.2) separator wash must be gone from the memory card"
+        )
+        XCTAssertTrue(
+            scopes.composition.contains(".fill(Color(nsColor:.quaternaryLabelColor))"),
+            "ISC-3: the composition bar Free segment uses quaternaryLabelColor, the same gray as the gauge track token"
+        )
+        XCTAssertFalse(
+            scopes.gauge.contains("separatorColor"),
+            "ISC-3: the gauge track must not fall back to separatorColor"
         )
     }
 
