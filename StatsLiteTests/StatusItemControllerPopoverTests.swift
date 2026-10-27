@@ -19,6 +19,21 @@ import XCTest
 @testable import StatsLite
 
 @MainActor
+private final class InstallHandoffSparkleFake: SparkleUpdaterControlling {
+    private(set) var isUpdaterRunning = false
+    private(set) var checkForUpdatesCount = 0
+    private(set) var checkForUpdatesInteractivelyCount = 0
+
+    func checkForUpdates() {
+        checkForUpdatesCount += 1
+    }
+
+    func checkForUpdatesInteractively() {
+        checkForUpdatesInteractivelyCount += 1
+    }
+}
+
+@MainActor
 final class StatusItemControllerPopoverTests: XCTestCase {
 
     /// Drives the status button's private @objc action the same way
@@ -151,6 +166,57 @@ final class StatusItemControllerPopoverTests: XCTestCase {
 
         toggle(controller)
         waitUntilContentReleased(popover)
+    }
+
+    /// T3b: an install handoff from the banner closes the popover
+    /// through the normal close path (StatusItemController wires
+    /// closePopover to performClose), so popoverDidClose runs its
+    /// lifecycle: content released, highlight cleared. animates =
+    /// false keeps the close deterministic while the display sleeps
+    /// (same rule as testTogglePopoverCyclesMountAndRelease).
+    func testInstallHandoffClosesPopoverThroughPopoverDidClose() {
+        let updater = InstallHandoffSparkleFake()
+        // activateApp stays a no-op: the test host must never steal
+        // focus. closePopover starts as the default no-op so the
+        // assertions prove the controller's own wiring.
+        let service = UpdateCheckService(
+            environment: [:],
+            updater: updater,
+            activateApp: {}
+        )
+        let controller = StatusItemController(
+            monitor: SystemMonitor(),
+            preferences: PreferencesStore(),
+            updateChecker: service
+        )
+        let popover = controller.popover
+        popover.animates = false
+
+        warmUpStatusBar()
+        open(controller)
+        XCTAssertTrue(popover.isShown)
+
+        service.installUpdate()
+
+        waitUntilContentReleased(popover)
+        XCTAssertFalse(
+            popover.isShown,
+            "T3b: the install handoff must close the popover"
+        )
+        XCTAssertEqual(
+            controller.button?.isHighlighted,
+            false,
+            "the completed close must clear the button highlight"
+        )
+        XCTAssertEqual(
+            updater.checkForUpdatesCount,
+            1,
+            "the handoff must still reach the Sparkle seam after closing"
+        )
+        XCTAssertTrue(
+            service.isHandingOff,
+            "the coordinator, not the view, owns the in-flight state"
+        )
     }
 
     // MARK: - Outside-click dismissal monitors (plan Phase 2)
