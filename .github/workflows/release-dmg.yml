@@ -143,6 +143,35 @@ jobs:
             fi
           fi
 
+      - name: Check Sparkle EdDSA public key
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          set -euo pipefail
+          APP="$PWD/build/Build/Products/Release/StatsLite.app"
+          PLIST="$APP/Contents/Info.plist"
+          test -f "$PLIST"
+          ROLLOUT="Rollout prerequisite: replace the"
+          ROLLOUT="$ROLLOUT REPLACE_WITH_SPARKLE_PUBLIC_KEY placeholder"
+          ROLLOUT="$ROLLOUT in Config/Sparkle-Info.plist with the real"
+          ROLLOUT="$ROLLOUT public key from generate_keys, and store the"
+          ROLLOUT="$ROLLOUT matching private key in the SPARKLE_ED_PRIVATE_KEY"
+          ROLLOUT="$ROLLOUT repo secret."
+          if ! ED_KEY="$(plutil -extract SUPublicEDKey raw \
+            -o - "$PLIST" 2>/dev/null)"; then
+            MSG="::error::SUPublicEDKey is missing from the built Info.plist."
+            MSG="$MSG $ROLLOUT"
+            echo "$MSG"
+            exit 1
+          fi
+          if [ -z "$ED_KEY" ] || [ "$ED_KEY" = \
+            "REPLACE_WITH_SPARKLE_PUBLIC_KEY" ]; then
+            MSG="::error::SUPublicEDKey is empty or the placeholder."
+            MSG="$MSG $ROLLOUT"
+            echo "$MSG"
+            exit 1
+          fi
+          echo "::notice::SUPublicEDKey present and not a placeholder"
+
       - name: Create DMG
         run: |
           set -euo pipefail
