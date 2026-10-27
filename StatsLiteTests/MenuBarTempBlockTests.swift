@@ -550,7 +550,8 @@ final class MenuBarTempBlockTests: XCTestCase {
         let view = SettingsView(
             preferences: PreferencesStore(),
             monitor: SystemMonitor(),
-            launchAtLogin: LaunchAtLoginService()
+            launchAtLogin: LaunchAtLoginService(),
+            updateChecker: UpdateCheckService()
         )
         let strings = viewStrings(view.body)
 

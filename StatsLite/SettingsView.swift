@@ -14,6 +14,7 @@ struct SettingsView: View {
     @Bindable var preferences: PreferencesStore
     var monitor: SystemMonitor
     var launchAtLogin: LaunchAtLoginService
+    var updateChecker: UpdateCheckService
 
     var body: some View {
         VStack(spacing: 0) {
@@ -41,13 +42,37 @@ struct SettingsView: View {
         .onChange(of: preferences.showNetwork) { monitor.apply(preferences) }
     }
 
-    // MARK: - General
+    // MARK: - General (VAC-11)
 
     private var generalSection: some View {
         Section("General") {
             refreshIntervalRow
             historyDurationRow
             launchAtLoginRow
+            checkForUpdatesRow
+        }
+    }
+
+    // MARK: - Software Update (blueprint Parts 3/4, VAC-12/13)
+
+    /// Row 4 of General: label, spinner while the coordinator
+    /// checks, and the manual-check button that disables while
+    /// isChecking is true.
+    private var checkForUpdatesRow: some View {
+        HStack {
+            Text("Software Update")
+            Spacer()
+            if updateChecker.isChecking {
+                ProgressView()
+                    .controlSize(.small)
+                    .accessibilityLabel("Checking for updates")
+            }
+            Button("Check for Updates…") {
+                updateChecker.checkForUpdatesInteractively()
+            }
+            .disabled(updateChecker.isChecking)
+            .help("Check for new versions of Stats Lite")
+            .accessibilityLabel("Check for software updates")
         }
     }
 

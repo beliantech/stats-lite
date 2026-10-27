@@ -152,7 +152,8 @@ final class RemoveCoresBreakdownTests: XCTestCase {
         let view = SettingsView(
             preferences: PreferencesStore(),
             monitor: SystemMonitor(),
-            launchAtLogin: LaunchAtLoginService()
+            launchAtLogin: LaunchAtLoginService(),
+            updateChecker: UpdateCheckService()
         )
         let strings = collectViewStrings(view.body)
 

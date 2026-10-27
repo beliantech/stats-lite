@@ -22,7 +22,8 @@ struct StatsLiteApp: App {
             SettingsView(
                 preferences: appDelegate.preferences,
                 monitor: appDelegate.monitor,
-                launchAtLogin: appDelegate.launchAtLogin
+                launchAtLogin: appDelegate.launchAtLogin,
+                updateChecker: appDelegate.updateChecker
             )
         }
     }
