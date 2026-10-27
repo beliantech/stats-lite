@@ -41,6 +41,30 @@ private final class RecordingSparkleUpdater: SparkleUpdaterControlling {
 @MainActor
 final class SparkleUpdateCoordinatorTests: XCTestCase {
 
+    /// UserDefaults keys this class writes through dismiss(). XCTest
+    /// shares one UserDefaults store across the class, so a dismissal
+    /// from one test would suppress the fixture banner of a later
+    /// test. setUp and tearDown reset the keys around every test.
+    private static let sharedServiceKeys = [
+        "updateCheckDismissedVersion",
+        "updateCheckLastCheckEpoch",
+        "updateCheckCachedLatest",
+    ]
+
+    override func setUp() {
+        super.setUp()
+        for key in Self.sharedServiceKeys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+    }
+
+    override func tearDown() {
+        for key in Self.sharedServiceKeys {
+            UserDefaults.standard.removeObject(forKey: key)
+        }
+        super.tearDown()
+    }
+
     private let notesURL = URL(
         string: "https://example.com/releases/2.0.0"
     )!
