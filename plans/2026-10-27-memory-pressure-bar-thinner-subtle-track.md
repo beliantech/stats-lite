@@ -194,7 +194,7 @@ None beyond the Blueprint: both bars adopt the shared `metricBarHeight` token so
 
 ## Tasks
 
-- [ ] **T1** — Red: failing tests for ISC-1/2/3 (token presence, shared usage, no legacy literals) and VAC-9 accessibility retention. red ⏳ · green — · review —
-- [ ] **T2** — Green: implement tokens + gauge/composition bar updates per Blueprint; refactor to shared tokens. red — · green ⏳ · review ⏳
-- [ ] **T3** — Verify: run full test suite, capture dark/light baselines, confirm VAC-1..VAC-10. red — · green — · review ⏳
-- [ ] **T4** — Reviewer `[code-review]`, merge to main, update docs if needed. red — · green — · review ⏳
+- [x] **T1** — Red: failing tests for ISC-1/2/3 (token presence, shared usage, no legacy literals) and VAC-9 accessibility retention. red `bc6c291` · green — · review PASS (code review)
+- [x] **T2** — Green: implement tokens + gauge/composition bar updates per Blueprint; refactor to shared tokens. red `bc6c291` · green `7350803` · review GO
+- [x] **T3** — Verify: run full test suite (508 passed / 0 failed), capture dark/light baselines (artifacts/2026-10-27-memory-pressure-bar-thinner-subtle-track, commit `4e5c3df`), confirm VAC-1..VAC-10 all PASS. red — · green — · review PASS (tester verdict: PASS)
+- [x] **T4** — Reviewer `[code-review]`, merge to main, update DESIGN.md with the shared metric-bar token rule. red — · green — · review GO · merged `4e5c3df` (ff-only)
