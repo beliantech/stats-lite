@@ -2,7 +2,7 @@
 
 [![Download StatsLite.dmg](https://img.shields.io/badge/Download-StatsLite.dmg-2ea44f)](https://github.com/beliantech/stats-lite/releases/latest/download/StatsLite.dmg)
 
-Stats Lite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
+Stats Lite is a menu-bar system monitor for macOS. It shows live CPU, memory pressure, GPU, temperature, and network metrics in the status bar. Click the status item to open a popover with detail cards and sparklines.
 
 The app runs as a menu-bar agent. It has no Dock icon and no main window.
 
@@ -16,14 +16,19 @@ The app runs as a menu-bar agent. It has no Dock icon and no main window.
   - CPU: total usage.
   - Memory: pressure percentage with a 4 pt pressure dot.
   - GPU: utilization percentage.
-  - Network: upload rate in red, download rate in blue.
-- **Popover**: per-metric cards, sparklines, and buttons for Settings and Quit.
+  - Temperature: package temperature in °C. Shown by default; turn it off in Settings.
+  - Network: two lines. Upload rate with a red dot, download rate with a blue dot.
+- **Popover**:
+  - Per-metric cards with sparklines and a shared time axis.
+  - Expandable Top Processes lists on the CPU and Memory cards.
+  - Header buttons: open Storage settings, open Activity Monitor, open Settings, quit.
+  - An update banner when a newer release exists on GitHub.
 - **Settings window**:
-  - Refresh interval: 1, 2, 3, or 5 seconds.
-  - Visible metrics: toggle each metric on or off.
+  - Refresh interval: 1, 2, 3, or 5 seconds. Network throughput always refreshes at 1-second intervals.
+  - Visible metrics: toggle each metric on or off. At least one metric must stay on.
   - History duration: 30 seconds to 5 minutes.
   - Launch at login.
-- **Real system data**: the app reads metrics from Mach APIs, IOKit, `sysctl`, and `getifaddrs`.
+- **Real system data**: the app reads metrics from Mach APIs, IOKit, `sysctl`, SMC, and `getifaddrs`.
 
 ## Goals
 
@@ -72,17 +77,20 @@ xcodebuild test \
   CODE_SIGN_IDENTITY="-"
 ```
 
-The suite lives in `StatsLiteTests/` and contains unit, layout, churn, and contract tests.
+The suite lives in `StatsLiteTests/`. It contains unit, layout, churn, contract, accessibility, and offscreen render-snapshot tests. `MenuBarRenderSnapshotTests.swift` verifies the menu bar pixels in dark and light appearance.
 
 ## Project structure
 
-```
+```text
 StatsLite.xcodeproj/   Xcode project and shared scheme
 StatsLite/             App target (Swift sources)
 StatsLiteTests/        XCTest suite
 scripts/               Measurement and screenshot scripts
-docs/plans/            Completed development plans
+plans/                 Completed development plans
+docs/                  Screenshot and research notes
+tools/                 Developer probe tools
 AGENTS.md              Contributor rules
+DESIGN.md              UI design rules
 ```
 
 Key sources:
@@ -92,18 +100,22 @@ Key sources:
 | `StatsLite/StatsLiteApp.swift` | Entry point and app delegate |
 | `StatsLite/StatusItemController.swift` | Status item and popover lifecycle |
 | `StatsLite/SystemMonitor.swift` | Main-actor sampling state |
-| `StatsLite/LiveSystemMetricsProvider.swift` | Real metric reads (Mach, IOKit, sysctl, `getifaddrs`) |
+| `StatsLite/LiveSystemMetricsProvider.swift` | Real metric reads (Mach, IOKit, sysctl, SMC, `getifaddrs`) |
 | `StatsLite/MenuBarStackedItemView.swift` | Menu bar rendering |
 | `StatsLite/PopoverContentView.swift` | Popover UI |
+| `StatsLite/TopProcessesView.swift` | Expandable Top Processes lists |
 | `StatsLite/SettingsView.swift` | Settings window |
 | `StatsLite/PreferencesStore.swift` | UserDefaults-backed preferences |
+| `StatsLite/UpdateCheckService.swift` | GitHub release check and update banner state |
 
 ## Scripts
 
 - `scripts/measure_popover_footprint.sh --output <file>` — launch the release build, open the popover, and sample memory with `footprint`.
 - `scripts/capture_baseline.sh` — capture dark-mode and light-mode popover screenshots.
+- `scripts/capture_menubar.sh` — capture the menu bar status-item strip in dark and light appearance.
+- `scripts/windowid.swift` — print the CGWindowID of the open popover window (`swift scripts/windowid.swift`).
 
-Both scripts set `DEVELOPER_DIR` when needed.
+Both capture scripts set `DEVELOPER_DIR` when needed.
 
 ## Configuration
 
