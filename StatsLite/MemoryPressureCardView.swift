@@ -3,8 +3,8 @@
 //  StatsLite
 //
 //  Memory Pressure card per extension blueprint §2: header row with
-//  capsule badge, 8 pt pressure gauge (VAC-21), 38 pt sparkline tinted
-//  by level, Used line, 6 pt composition bar in a 4 pt rounded
+//  capsule badge, 6 pt pressure gauge (VAC-1), 38 pt sparkline tinted
+//  by level, Used line, 6 pt composition bar in a 3 pt rounded
 //  container, and the breakdown line. Occupancy is always labeled
 //  "Used"; the gauge and badge show kernel pressure.
 //
@@ -99,23 +99,24 @@ struct MemoryPressureCardView: View {
             .overlay(Capsule().stroke(state.levelColor.opacity(0.3), lineWidth: 0.5))
     }
 
-    // MARK: - Pressure gauge (VAC-21): 8 pt bar, continuous 3 pt radius
+    // MARK: - Pressure gauge (VAC-1): 6 pt bar, continuous 3 pt radius
 
     private var gaugeBar: some View {
         GeometryReader { proxy in
             ZStack(alignment: .leading) {
-                RoundedRectangle(cornerRadius: 3, style: .continuous)
-                    .fill(Color(nsColor: .separatorColor).opacity(0.2))
-                RoundedRectangle(cornerRadius: 3, style: .continuous)
+                RoundedRectangle(cornerRadius: .metricBarCornerRadius, style: .continuous)
+                    .fill(Color.metricBarTrack)
+                RoundedRectangle(cornerRadius: .metricBarCornerRadius, style: .continuous)
                     .fill(state.levelColor)
                     .frame(width: max(proxy.size.width * fraction, 0))
             }
+            .clipShape(RoundedRectangle(cornerRadius: .metricBarCornerRadius, style: .continuous))
         }
-        .frame(height: 8)
+        .frame(height: .metricBarHeight)
     }
 
-    // MARK: - Composition bar (VAC-8): App blue, Wired purple,
-    // Compressed orange, Free quaternary, 6 pt in a 4 pt container.
+    // MARK: - Composition bar (VAC-2): App blue, Wired purple,
+    // Compressed orange, Free quaternary, 6 pt in a 3 pt container.
 
     private var compositionBar: some View {
         GeometryReader { proxy in
@@ -128,9 +129,9 @@ struct MemoryPressureCardView: View {
                 Rectangle()
                     .fill(Color(nsColor: .quaternaryLabelColor))
             }
-            .clipShape(RoundedRectangle(cornerRadius: 4, style: .continuous))
+            .clipShape(RoundedRectangle(cornerRadius: .metricBarCornerRadius, style: .continuous))
         }
-        .frame(height: 6)
+        .frame(height: .metricBarHeight)
     }
 
     private func segment(_ color: Color, width: Double) -> some View {

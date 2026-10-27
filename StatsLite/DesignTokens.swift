@@ -61,6 +61,22 @@ extension View {
     }
 }
 
+// MARK: - Metric Popover Bar Tokens
+
+extension CGFloat {
+    /// Standard height for metric popover bars (memory pressure gauge and used memory composition bar).
+    static let metricBarHeight: CGFloat = 6
+
+    /// Corner radius for standard 6 pt metric popover bars.
+    static let metricBarCornerRadius: CGFloat = 3
+}
+
+extension Color {
+    /// Subtle track color for metric gauges and progress bars in popover cards.
+    /// Blends into the card background across both dark and light appearances.
+    static let metricBarTrack = Color(nsColor: .separatorColor).opacity(0.08)
+}
+
 /// Network indicator dot colors, shared by the status item block and
 /// the popover legend. Upload stays systemRed. Download is adaptive:
 /// systemCyan on dark aqua keeps contrast on blue-hued wallpapers,
