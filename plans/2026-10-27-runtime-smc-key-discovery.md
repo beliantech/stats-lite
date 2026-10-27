@@ -147,7 +147,7 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
       the M5 Max key set (296 keys, from h1 logs), a second-generation
       key set built from the M1/M2 community prior (marked "prior fixture,
       not evidence"), and unreadable-`#KEY` (index-scan fallback).
-      red `60b3111` · green ⏳ · review ⏳
+      red `60b3111` · green n/a (T4) · review ⏳ (T7)
       (12 tests, `StatsLiteTests/RuntimeSMCKeyDiscoveryTests.swift`; red =
       seam-API compile failure, same practice as 2026-10-23 T2 red
       `667b04a`; FM6 cited to existing contract tests; red output:
@@ -159,12 +159,20 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
       wiring, −235 lines of hardcoded lists; entitlements byte-identical to
       main baseline — baseline carries ad-hoc `get-task-allow`, no added
       entitlements; FM5 scan clean)
-- [ ] **T5** — measure enumeration cost and per-sample cost on this
+- [x] **T5** — measure enumeration cost and per-sample cost on this
       machine (Air numbers deferred with T8); record in the artifact dir.
-      Add a budget assertion only if a threshold is proven by measurement. red ⏳ · green ⏳ · review ⏳
-- [ ] **T6** — VAC pass: snapshot tests + nil-row logic tests green
+      Add a budget assertion only if a threshold is proven by measurement.
+      red n/a · green `f4eb664` · review ⏳ (T7)
+      (enumeration p99 7.4–10.4 ms, one launch pass, 0 enum calls/tick —
+      FM4 proven live; per-sample p99 20.5–23.9 ms = 2.4% of the 1 s tick;
+      budget assertion p99 < 100 ms added, 4.2× margin, negative-checked;
+      artifact: `t5-latency.md`)
+- [x] **T6** — VAC pass: snapshot tests + nil-row logic tests green
       (`MenuBarRenderSnapshotTests.swift`, `MenuBarTempBlockTests.swift`).
-      red ⏳ · green ⏳ · review ⏳
+      red n/a · green (verified by planner on the T5 tree, log
+      `/tmp/t6-vac-run.log`) · review ⏳ (T7)
+      (33/33 green: snapshots 15/15, temp-block 9/9, temperature-metrics
+      9/9 — ** TEST SUCCEEDED **)
 - [ ] **T7** — plan compliance review → reviewer GO → squash-merge to
       `main`; record merge SHA here. review ⏳
 - [ ] **T8** — field verification, deferred until the Air is reachable:
@@ -226,3 +234,10 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
   tests, hardcoded lists deleted, FM5 scan clean. Entitlement wording in
   Decision 7 corrected (baseline carries ad-hoc get-task-allow;
   byte-identical to baseline = no added entitlements). T5 next.
+- Status 2026-10-27: **T5 complete** — commit `f4eb664`, 472/472 tests;
+  FM4 proven on hardware (0 enumeration calls per tick), per-sample p99
+  2.4% of fastest tick, budget assertion p99 < 100 ms (4.2× margin,
+  negative-checked). T6 next.
+- Status 2026-10-27: **T6 complete** — VAC pass run by planner on the T5
+  tree: 33/33 green (VAC-1 byte-identical snapshots, VAC-2 nil-row
+  logic). T7 (compliance review → merge) next.
