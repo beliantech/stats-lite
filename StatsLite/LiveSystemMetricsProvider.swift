@@ -3,10 +3,12 @@
 //  StatsLite
 //
 //  Real sampler: Mach host stats for CPU and RAM, IOKit for GPU,
-//  sysctl for memory pressure. Every acquired resource has a matching
-//  `defer` cleanup registered in the same scope where the resource is
-//  acquired. No force-unwraps: every failed read returns `nil` or falls
-//  back to the unknown pressure state.
+//  AppleSMC for temperature, sysctl for memory pressure. Every
+//  acquired resource has a matching `defer` cleanup registered in the
+//  same scope where the resource is acquired (the cached SMC
+//  connection closes in its enumerator's deinit). No force-unwraps:
+//  every failed read returns `nil` or falls back to the unknown
+//  pressure state.
 //
 
 import Foundation
@@ -154,181 +156,28 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
 
     // MARK: - Temperature (AppleSMC)
 
-    /// CPU and GPU die temperatures from the AppleSMC user client
-    /// (plan 2026-10-23-temp-menu-bar-metric, Phase 2). The route is
-    /// the Phase 0 measured mechanism: IOServiceGetMatchingServices
-    /// ("AppleSMC") -> IOServiceOpen(mach_task_self_) ->
-    /// IOConnectCallStructMethod selector 2 (kSMCHandleYPCEvent) with
-    /// an 80-byte SMCParamStruct. Command 9 reads the key info,
-    /// command 5 reads the key bytes, and type "flt " decodes as a
-    /// little-endian IEEE-754 float. No root is needed (Phase 0 H1,
-    /// measured on this machine).
-    ///
-    /// Open, read, and close happen per sample: Phase 0 H2 measured
-    /// p99 = 0.964 ms over 1000 such cycles, well inside the 1 Hz
-    /// sampler pass (H2 verdict: ride the standard loop).
-    ///
-    /// Each row is the max across its Phase 0 candidate keys whose
-    /// decode is finite and inside -20...130 °C. A missing key, a
-    /// failed call, a wrong type or size, or an implausible decode
-    /// drops that key only. Returns nil when the whole read fails:
-    /// no service, open failure, or no plausible key at all. A
-    /// subsystem with no plausible candidate stays nil inside the
-    /// returned value (nil-contract header, no force-unwraps).
+    /// CPU and GPU die temperatures from runtime key discovery (plan
+    /// 2026-10-27-runtime-smc-key-discovery). The key table is
+    /// enumerated from this machine's own SMC exactly once per
+    /// process, on the first sample; later samples read only the
+    /// cached table keys (FM4). The filters live in
+    /// `TemperatureKeyDiscovery`: exact prefix domains, `flt `/4 type
+    /// checks at enumeration, per-reading plausibility, and the
+    /// trailing-60-tick movement filter. Returns nil when no domain
+    /// has a plausible reading this tick. A present value can still
+    /// carry nil subsystems: nil `cpuCelsius` or `gpuCelsius` keeps
+    /// that row on the `--°` placeholder (nil contract, no
+    /// force-unwraps).
     func sampleTemperature() -> TemperatureMetrics? {
-        var iterator: io_iterator_t = 0
-        let lookup = IOServiceGetMatchingServices(
-            kIOMainPortDefault,
-            IOServiceMatching("AppleSMC"),
-            &iterator
-        )
-        guard lookup == KERN_SUCCESS else { return nil }
-        // Release the iterator after the read, whatever path leaves it.
-        defer { IOObjectRelease(iterator) }
-
-        let service = IOIteratorNext(iterator)
-        guard service != 0 else { return nil }
-        // Release this service reference when the function leaves.
-        defer { IOObjectRelease(service) }
-
-        var connection: io_connect_t = 0
-        // The owning task must be mach_task_self_, never 0: a null
-        // task comes back as kIOReturnNotPrivileged (0xe00002c2),
-        // measured in Phase 0.
-        let open = IOServiceOpen(service, mach_task_self_, 0, &connection)
-        guard open == KERN_SUCCESS else { return nil }
-        // Close the user-client connection when the function leaves.
-        defer { IOServiceClose(connection) }
-
-        let cpu = Self.maxPlausibleTemperature(
-            connection: connection,
-            keys: Self.cpuTemperatureKeys
-        )
-        // GPU row: unverified prior. Phase 0 measured the Tg* family
-        // rising +10.2 to +10.5 °C under GPU load, about 3x its
-        // cross-load response, which points at GPU die ownership,
-        // but no key reached the 15 °C classification band, so 0
-        // keys classify GPU-side. These candidates are the strongest
-        // measured Tg responders (h1-attribution.md). An unreadable
-        // GPU row keeps the "--°" fallback load-bearing.
-        let gpu = Self.maxPlausibleTemperature(
-            connection: connection,
-            keys: Self.gpuTemperatureKeys
-        )
-
-        guard cpu != nil || gpu != nil else { return nil }
-        return TemperatureMetrics(cpuCelsius: cpu, gpuCelsius: gpu)
+        Self.temperatureDiscovery.sample()
     }
 
-    /// The 24 CPU-side keys Phase 0 H1 measured rising 15.7 to 22.8 °C
-    /// under CPU load and recovering in the cool-down
-    /// (artifacts/2026-10-23-temp-menu-bar-metric/h1-attribution.md).
-    private static let cpuTemperatureKeys: [String] = [
-        "Tp00", "Tp0C", "TVDC", "TVDP", "Tp0X", "Tp0p", "Tp0O", "Tp0G",
-        "TVD0", "Tp0g", "Tp0K", "Tp04", "TCMb", "Tp08", "Tp0y", "Tp0u",
-        "Tp0d", "Tm0y", "Tm2T", "Tp0a", "Tp0U", "Tp0R", "Tp0m", "Tp0j",
-    ]
-
-    /// GPU-row candidates: the eight strongest measured Tg* responders
-    /// from the Phase 0 GPU round (see sampleTemperature's
-    /// unverified-prior note).
-    private static let gpuTemperatureKeys: [String] = [
-        "Tg6I", "Tg76", "Tg5R", "Tg4e", "Tg4h", "Tg12", "Tg08", "Tg6L",
-    ]
-
-    /// Highest plausible reading across the candidate keys. nil when
-    /// no candidate decodes to a plausible temperature.
-    private static func maxPlausibleTemperature(
-        connection: io_connect_t,
-        keys: [String]
-    ) -> Double? {
-        var hottest: Double?
-        for name in keys {
-            guard let value = readSMCTemperature(connection: connection, key: name)
-            else { continue }
-            hottest = hottest.map { max($0, value) } ?? value
-        }
-        return hottest
-    }
-
-    /// One SMC key read: GetKeyInfo (command 9) then ReadKey
-    /// (command 5), type "flt " decoded little-endian. nil when the
-    /// call fails, the key is missing (SMC result 132), the type or
-    /// size is unexpected, or the decode is not a plausible
-    /// temperature. Missing keys are the normal case across the
-    /// candidate lists, so a miss is a quiet nil, never a trap.
-    private static func readSMCTemperature(
-        connection: io_connect_t,
-        key: String
-    ) -> Double? {
-        let fourCCKey = Self.fourCC(key)
-        guard
-            let info = smcCall(
-                connection: connection,
-                command: .getKeyInfo,
-                key: fourCCKey,
-                dataSize: 0
-            ),
-            info.keyInfo.dataSize == 4,
-            info.keyInfo.dataType == Self.fourCC("flt "),
-            let output = smcCall(
-                connection: connection,
-                command: .readKey,
-                key: fourCCKey,
-                dataSize: 4
-            )
-        else { return nil }
-
-        var raw: UInt32 = 0
-        withUnsafeBytes(of: output.bytes) { bytes in
-            guard bytes.count >= 4 else { return }
-            raw = UInt32(bytes[0])
-                | (UInt32(bytes[1]) << 8)
-                | (UInt32(bytes[2]) << 16)
-                | (UInt32(bytes[3]) << 24)
-        }
-        let value = Double(Float(bitPattern: raw))
-        guard value.isFinite, (-20...130).contains(value) else { return nil }
-        return value
-    }
-
-    /// One SMC user-client call: an 80-byte in/out SMCParamStruct on
-    /// selector 2. nil when the kern_return fails or the SMC result
-    /// byte is not success (132 = key not found is the common miss).
-    private static func smcCall(
-        connection: io_connect_t,
-        command: SMCCommand,
-        key: UInt32,
-        dataSize: UInt32
-    ) -> SMCParamStruct? {
-        var input = SMCParamStruct()
-        input.key = key
-        input.keyInfo.dataSize = dataSize
-        input.data8 = command.rawValue
-
-        var output = SMCParamStruct()
-        var outputSize = MemoryLayout<SMCParamStruct>.stride
-        let result = IOConnectCallStructMethod(
-            connection,
-            2,
-            &input,
-            MemoryLayout<SMCParamStruct>.stride,
-            &output,
-            &outputSize
-        )
-        guard result == KERN_SUCCESS, output.result == 0 else { return nil }
-        return output
-    }
-
-    /// Four-character SMC key as a big-endian UInt32 ("Tp00" ->
-    /// 0x54703030).
-    private static func fourCC(_ name: String) -> UInt32 {
-        var value: UInt32 = 0
-        for byte in Array(name.utf8.prefix(4)) {
-            value = (value << 8) | UInt32(byte)
-        }
-        return value
-    }
+    /// The per-launch discovery state. A `static let` runs the
+    /// enumeration once per process on first use, never per sample
+    /// (FM4). Every copy of this provider struct shares it.
+    private static let temperatureDiscovery = TemperatureKeyDiscovery(
+        enumerator: AppleSMCKeyEnumerator()
+    )
 
     // MARK: - Memory pressure (sysctl)
 
@@ -600,63 +449,4 @@ struct LiveSystemMetricsProvider: SystemMetricsProvider {
         guard index < bytes.count, index > start else { return nil }
         return String(decoding: bytes[start..<index], as: UTF8.self)
     }
-}
-
-// MARK: - SMC user-client plumbing (plan 2026-10-23-temp-menu-bar-metric)
-
-/// SMC user-client commands used by the temperature read: GetKeyInfo
-/// and ReadKey (Phase 0 probe, `tools/smc-probe/main.swift`).
-private enum SMCCommand: UInt8 {
-    case readKey = 5
-    case getKeyInfo = 9
-}
-
-private struct SMCVersion {
-    var major: UInt8 = 0
-    var minor: UInt8 = 0
-    var build: UInt8 = 0
-    var reserved: UInt8 = 0
-    var release: UInt16 = 0
-}
-
-private struct SMCPLimitData {
-    var version: UInt16 = 0
-    var length: UInt16 = 0
-    var cpuPLimit: UInt32 = 0
-    var gpuPLimit: UInt32 = 0
-    var memPLimit: UInt32 = 0
-}
-
-private struct SMCKeyInfoData {
-    var dataSize: UInt32 = 0
-    var dataType: UInt32 = 0
-    var dataAttributes: UInt8 = 0
-}
-
-/// The 80-byte SMC parameter block, byte-for-byte the layout the
-/// Phase 0 probe verified on this machine: size 80, key at 0,
-/// keyInfo at 28, result at 40, status at 41, data8 at 42, data32 at
-/// 44, bytes at 48. The explicit `padding: UInt16` field holds those
-/// offsets against the classic C struct.
-private struct SMCParamStruct {
-    var key: UInt32 = 0
-    var vers = SMCVersion()
-    var pLimitData = SMCPLimitData()
-    var keyInfo = SMCKeyInfoData()
-    var padding: UInt16 = 0
-    var result: UInt8 = 0
-    var status: UInt8 = 0
-    var data8: UInt8 = 0
-    var data32: UInt32 = 0
-    var bytes: (
-        UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8,
-        UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8,
-        UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8,
-        UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8, UInt8
-    ) = (
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0
-    )
 }
