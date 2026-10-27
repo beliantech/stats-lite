@@ -173,8 +173,14 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
       `/tmp/t6-vac-run.log`) · review ⏳ (T7)
       (33/33 green: snapshots 15/15, temp-block 9/9, temperature-metrics
       9/9 — ** TEST SUCCEEDED **)
-- [ ] **T7** — plan compliance review → reviewer GO → squash-merge to
-      `main`; record merge SHA here. review ⏳
+- Status 2026-10-27: **T7 complete** — compliance review GO, squash-merge
+  to `main` as `88bf3c4` (branch feat/2026-10-27-runtime-smc-key-discovery,
+  8 files, +3455/−235). T8 open and parked: no Air access.
+- [x] **T7** — plan compliance review → reviewer GO → squash-merge to
+      `main`; record merge SHA here. review GO
+      (verdict session `2026-10-27T09-08-26` — FM1-FM6/VAC coverage mapped
+      to tests, receipts verified in git, zero skipped tests, zero
+      hardcoded key literals) · merge `88bf3c4`
 - [ ] **T8** — field verification, deferred until the Air is reachable:
       run the five-round bundle (commands in Evidence), apply H1/H2/H3 with
       the stop rules above, write
