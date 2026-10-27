@@ -141,10 +141,15 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
       (evidence: `artifacts/2026-10-27-runtime-smc-key-discovery/phase0-m5max-recheck.md`)
 - *(T2 removed 2026-10-27 — Air rounds live in T8; no other task
   renumbered.)*
-- [ ] **T3** — red: one failing test per `FM1`–`FM5` + `FM6`; fixtures for
+- [x] **T3** — red: one failing test per `FM1`–`FM5` + `FM6`; fixtures for
       the M5 Max key set (296 keys, from h1 logs), a second-generation
       key set built from the M1/M2 community prior (marked "prior fixture,
-      not evidence"), and unreadable-`#KEY` (index-scan fallback). red ⏳ · green ⏳ · review ⏳
+      not evidence"), and unreadable-`#KEY` (index-scan fallback).
+      red `60b3111` · green ⏳ · review ⏳
+      (12 tests, `StatsLiteTests/RuntimeSMCKeyDiscoveryTests.swift`; red =
+      seam-API compile failure, same practice as 2026-10-23 T2 red
+      `667b04a`; FM6 cited to existing contract tests; red output:
+      `artifacts/2026-10-27-runtime-smc-key-discovery/red-t3.txt`)
 - [ ] **T4** — green: enumerator + `domain(forPrefix:)` + cached table;
       delete hardcoded lists; verify `codesign` entitlements unchanged.
       red ⏳ · green ⏳ · review ⏳
@@ -206,5 +211,8 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
   (no post-merge `--°` self-revert claim, no in-place edits); T2 removed
   from the task list with the removal noted. Re-review requested.
 - Status 2026-10-27: gate-amendment review round 2 **GO** (all 4 findings
-  verified resolved, negative checks passed). Amendment committed; next:
-  T3 red in a worktree.
+  verified resolved, negative checks passed). Amendment committed as
+  `612b276`.
+- Status 2026-10-27: **T3 red complete** — commit `60b3111`, 12 failing
+  tests over the seam API, no application code touched. VAC baseline in
+  worktree re-run green (15/15 snapshots, 9/9 temp-block). T4 next.
