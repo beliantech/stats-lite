@@ -3,12 +3,12 @@
 //  StatsLiteTests
 //
 //  Launch policy fixture (plan 2026-10-20-in-app-update-check, T2b).
-//  Red phase: `UpdateCheckLaunchPolicy` and the service `environment:`
-//  init parameter do not exist yet, so this file fails to compile
-//  until green. Key strings mirror UpdateCheckService's constants;
-//  literals avoid a main-actor-isolated global initializer. No
-//  network: the fixture and a nil-returning counting fake own every
-//  path.
+//  The service-fixture section was rewritten for T3b against the
+//  coordinator seam: start() seeds the fixture synchronously after
+//  the GitHub poller retirement, so no fake source or test bundle
+//  exists in this file. Key strings mirror UpdateCheckService's
+//  constants; literals avoid a main-actor-isolated global
+//  initializer. No network.
 //
 
 import Foundation
@@ -24,51 +24,12 @@ private let releasesURLString =
 /// actor-isolation warning.
 private let serviceKeys = [
     "updateCheckDismissedVersion",
-    "updateCheckLastCheckEpoch",
-    "updateCheckCachedLatest",
 ]
 
 private func clearServiceKeys() {
     for key in serviceKeys {
         UserDefaults.standard.removeObject(forKey: key)
     }
-}
-
-/// Fake source that counts invocations and always returns nil. A
-/// non-zero count proves a path reached the network.
-private final class NilCountingReleaseSource: UpdateReleaseSource,
-    @unchecked Sendable
-{
-    private let lock = NSLock()
-    private var invocations = 0
-
-    func latestRelease() async -> ReleaseInfo? {
-        lock.withLock { invocations += 1 }
-        return nil
-    }
-
-    var invocationCount: Int {
-        lock.withLock { invocations }
-    }
-}
-
-/// Writes a throwaway bundle directory whose Info.plist pins the
-/// display version (same approach as UpdateCheckServicePersistenceTests).
-private func makeTestBundle(shortVersion: String) throws -> Bundle {
-    let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("UpdateCheckLaunchPolicyTests-\(UUID().uuidString)")
-    try FileManager.default.createDirectory(
-        at: directory,
-        withIntermediateDirectories: true
-    )
-    let plist: [String: Any] = ["CFBundleShortVersionString": shortVersion]
-    let plistData = try PropertyListSerialization.data(
-        fromPropertyList: plist,
-        format: .xml,
-        options: 0
-    )
-    try plistData.write(to: directory.appendingPathComponent("Info.plist"))
-    return try XCTUnwrap(Bundle(path: directory.path))
 }
 
 @MainActor
@@ -82,18 +43,6 @@ final class UpdateCheckLaunchPolicyTests: XCTestCase {
     override func tearDown() {
         clearServiceKeys()
         super.tearDown()
-    }
-
-    /// Polls until the condition holds or the timeout elapses.
-    private func waitUntil(
-        timeout: TimeInterval = 2,
-        _ condition: @MainActor () -> Bool
-    ) async {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if condition() { return }
-            try? await Task.sleep(for: .milliseconds(20))
-        }
     }
 
     // MARK: - skipCheck
@@ -223,73 +172,79 @@ final class UpdateCheckLaunchPolicyTests: XCTestCase {
 
     // MARK: - Service fixture behavior
 
-    /// With the fixture in the injected environment, the launch check
-    /// prompts for 9.9.9 and never touches the release source.
+    /// With the fixture in the injected environment, start() seeds
+    /// the banner synchronously and never touches the Sparkle seam.
     @MainActor
-    func testServiceFixturePromptsWithoutTouchingSource() async throws {
-        let source = NilCountingReleaseSource()
-        let bundle = try makeTestBundle(shortVersion: "1.0.0")
+    func testServiceFixtureSeedsBannerWithoutTouchingUpdaterSeam() {
+        let updater = SeededUpdaterSpy()
         let service = UpdateCheckService(
-            source: source,
-            bundle: bundle,
-            environment: [fixtureKey: "9.9.9"]
+            environment: [fixtureKey: "9.9.9"],
+            updater: updater
         )
 
         service.start()
-        await waitUntil { service.availableUpdate != nil }
-        // Give a hypothetical late source call a beat to misbehave
-        // before the count assertion.
-        try? await Task.sleep(for: .milliseconds(100))
 
         XCTAssertEqual(
             service.availableUpdate?.version,
-            try XCTUnwrap(SemanticVersion("9.9.9"))
+            SemanticVersion("9.9.9"),
+            "the fixture must seed the banner at start()"
         )
         XCTAssertEqual(
             service.availableUpdate?.releasePageURL,
-            try XCTUnwrap(URL(string: releasesURLString))
+            URL(string: releasesURLString)
         )
         XCTAssertEqual(
-            source.invocationCount,
+            updater.totalCheckCount,
             0,
-            "the fixture must bypass the source entirely"
+            "the fixture must not touch the Sparkle seam"
         )
     }
 
     /// A stored dismissal of the fixture version keeps the banner
     /// hidden: dismissal wins over the fixture.
     @MainActor
-    func testDismissedFixtureVersionStaysHidden() async throws {
+    func testDismissedFixtureVersionStaysHidden() {
         UserDefaults.standard.set(
             "9.9.9",
             forKey: UpdateCheckService.dismissedVersionKey
         )
-        let source = NilCountingReleaseSource()
-        let bundle = try makeTestBundle(shortVersion: "1.0.0")
+        let updater = SeededUpdaterSpy()
         let service = UpdateCheckService(
-            source: source,
-            bundle: bundle,
-            environment: [fixtureKey: "9.9.9"]
+            environment: [fixtureKey: "9.9.9"],
+            updater: updater
         )
 
         service.start()
-        // The launch check stamps the epoch when it runs. Wait for the
-        // stamp, then leave a beat for a hypothetical late prompt.
-        await waitUntil {
-            UserDefaults.standard.double(
-                forKey: UpdateCheckService.lastCheckEpochKey
-            ) > 0
-        }
-        try? await Task.sleep(for: .milliseconds(100))
 
         XCTAssertNil(
             service.availableUpdate,
             "a stored dismissal beats the fixture"
         )
         XCTAssertEqual(
-            source.invocationCount,
+            updater.totalCheckCount,
             0,
-            "the fixture must bypass the source entirely"
+            "the fixture must not touch the Sparkle seam"
         )
+    }
+}
+
+/// Seam spy: counts every entry point so a test can prove the
+/// fixture path never reaches Sparkle.
+@MainActor
+private final class SeededUpdaterSpy: SparkleUpdaterControlling {
+    private(set) var isUpdaterRunning = false
+    private(set) var checkForUpdatesCount = 0
+    private(set) var checkForUpdatesInteractivelyCount = 0
+
+    func checkForUpdates() {
+        checkForUpdatesCount += 1
+    }
+
+    func checkForUpdatesInteractively() {
+        checkForUpdatesInteractivelyCount += 1
+    }
+
+    var totalCheckCount: Int {
+        checkForUpdatesCount + checkForUpdatesInteractivelyCount
     }
 }

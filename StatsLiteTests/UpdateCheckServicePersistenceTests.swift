@@ -2,11 +2,14 @@
 //  UpdateCheckServicePersistenceTests.swift
 //  StatsLiteTests
 //
-//  Dismiss round-trip and start() idempotence (plan
-//  2026-10-20-in-app-update-check, T1) plus the release cache from
-//  plan 2026-10-27-update-check-relaunch-and-retry-fix. These tests
-//  clear the three UserDefaults.standard keys around each run.
-//  The release source is always a fake; no network.
+//  Dismiss round-trip on the coordinator seam (plan 2026-10-20
+//  in-app-update-check, T1; rewritten for T3b after the GitHub
+//  poller retirement). The banner is published through
+//  publishAvailableUpdate instead of a release source, so no test
+//  in this file reaches the network or a fake source. The key
+//  strings mirror UpdateCheckService's constants; literals avoid a
+//  main-actor-isolated global initializer. setUp and tearDown reset
+//  the shared keys around every test.
 //
 
 import Foundation
@@ -15,59 +18,15 @@ import XCTest
 
 /// UserDefaults keys owned by these tests, plus the reset helper. The
 /// helper is a free function so the nonisolated setUp/tearDown
-/// overrides can call it without an actor-isolation warning. The key
-/// strings mirror UpdateCheckService's constants; literals avoid a
-/// main-actor-isolated global initializer.
+/// overrides can call it without an actor-isolation warning.
 private let serviceKeys = [
     "updateCheckDismissedVersion",
-    "updateCheckLastCheckEpoch",
-    "updateCheckCachedLatest",
 ]
 
 private func clearServiceKeys() {
     for key in serviceKeys {
         UserDefaults.standard.removeObject(forKey: key)
     }
-}
-
-/// Fake source that counts invocations and returns a canned release.
-private final class CountingReleaseSource: UpdateReleaseSource, @unchecked Sendable {
-    private let lock = NSLock()
-    private var invocations = 0
-    let release: ReleaseInfo?
-
-    init(release: ReleaseInfo?) {
-        self.release = release
-    }
-
-    func latestRelease() async -> ReleaseInfo? {
-        lock.withLock { invocations += 1 }
-        return release
-    }
-
-    var invocationCount: Int {
-        lock.withLock { invocations }
-    }
-}
-
-/// Writes a throwaway bundle directory whose Info.plist pins the
-/// display version, so the service reads a known current version
-/// instead of depending on the test host Info.plist.
-private func makeTestBundle(shortVersion: String) throws -> Bundle {
-    let directory = FileManager.default.temporaryDirectory
-        .appendingPathComponent("UpdateCheckServiceTests-\(UUID().uuidString)")
-    try FileManager.default.createDirectory(
-        at: directory,
-        withIntermediateDirectories: true
-    )
-    let plist: [String: Any] = ["CFBundleShortVersionString": shortVersion]
-    let plistData = try PropertyListSerialization.data(
-        fromPropertyList: plist,
-        format: .xml,
-        options: 0
-    )
-    try plistData.write(to: directory.appendingPathComponent("Info.plist"))
-    return try XCTUnwrap(Bundle(path: directory.path))
 }
 
 @MainActor
@@ -83,41 +42,22 @@ final class UpdateCheckServicePersistenceTests: XCTestCase {
         super.tearDown()
     }
 
-    /// Polls until the condition holds or the timeout elapses.
-    private func waitUntil(
-        timeout: TimeInterval = 2,
-        _ condition: @MainActor () -> Bool
-    ) async {
-        let deadline = Date().addingTimeInterval(timeout)
-        while Date() < deadline {
-            if condition() { return }
-            try? await Task.sleep(for: .milliseconds(20))
-        }
-    }
-
-    private func makeRelease(tag: String) throws -> ReleaseInfo {
-        let version = try XCTUnwrap(SemanticVersion(tag))
-        return ReleaseInfo(
-            version: version,
-            releasePageURL: try XCTUnwrap(
-                URL(string: "https://example.com/releases/\(tag)")
-            )
-        )
-    }
+    private let notesURL = URL(
+        string: "https://example.com/releases/9.9.9"
+    )!
 
     // MARK: - Dismiss round-trip
 
     @MainActor
-    func testDismissRoundTripPersistsNormalizedVersion() async throws {
-        let source = CountingReleaseSource(release: try makeRelease(tag: "v9.9.9"))
-        let bundle = try makeTestBundle(shortVersion: "1.0.0")
-        let service = UpdateCheckService(source: source, bundle: bundle)
-
-        service.start()
-        await waitUntil { service.availableUpdate != nil }
+    func testDismissRoundTripPersistsNormalizedVersion() {
+        let service = UpdateCheckService()
+        service.publishAvailableUpdate(
+            displayVersion: "v9.9.9",
+            releaseNotesURL: notesURL
+        )
         XCTAssertEqual(
             service.availableUpdate?.version,
-            try XCTUnwrap(SemanticVersion("9.9.9"))
+            SemanticVersion("9.9.9")
         )
 
         service.dismiss(version: "v9.9.9")
@@ -135,39 +75,35 @@ final class UpdateCheckServicePersistenceTests: XCTestCase {
     }
 
     @MainActor
-    func testIsDismissedIsFalseWhenNoVersionWasDismissed() throws {
-        let service = UpdateCheckService(
-            source: CountingReleaseSource(release: nil),
-            bundle: try makeTestBundle(shortVersion: "1.0.0")
-        )
+    func testIsDismissedIsFalseWhenNoVersionWasDismissed() {
+        let service = UpdateCheckService()
         XCTAssertFalse(service.isDismissed(version: "1.2.3"))
     }
 
-    // MARK: - start() idempotence
-
+    /// VAC-15: the dismissal outlives the service instance. A fresh
+    /// coordinator over the same UserDefaults keeps the version
+    /// hidden, so a relaunch or a popover reopen stays suppressed.
     @MainActor
-    func testStartCalledTwiceRunsOneCheckLoop() async throws {
-        let source = CountingReleaseSource(release: nil)
-        let service = UpdateCheckService(
-            source: source,
-            bundle: try makeTestBundle(shortVersion: "1.0.0")
+    func testDismissPersistsAcrossServiceInstances() {
+        let first = UpdateCheckService()
+        first.publishAvailableUpdate(
+            displayVersion: "9.9.9",
+            releaseNotesURL: notesURL
         )
+        first.dismiss(version: "9.9.9")
 
-        service.start()
-        service.start()
-
-        await waitUntil { source.invocationCount >= 1 }
-        // One loop runs one launch check. Give a hypothetical second
-        // loop a beat to misbehave before the assertion.
-        try? await Task.sleep(for: .milliseconds(100))
-        XCTAssertEqual(
-            source.invocationCount,
-            1,
-            "a second start() must not spawn a second check loop"
+        let second = UpdateCheckService()
+        XCTAssertTrue(
+            second.isDismissed(version: "9.9.9"),
+            "the stored dismissal must survive a new service instance"
+        )
+        second.publishAvailableUpdate(
+            displayVersion: "9.9.9",
+            releaseNotesURL: notesURL
         )
         XCTAssertNil(
-            service.availableUpdate,
-            "a nil source result leaves availableUpdate untouched"
+            second.availableUpdate,
+            "a dismissed version must not republish through a new instance"
         )
     }
 }

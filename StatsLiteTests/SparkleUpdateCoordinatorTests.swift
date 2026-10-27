@@ -2,15 +2,18 @@
 //  SparkleUpdateCoordinatorTests.swift
 //  StatsLiteTests
 //
-//  Sparkle coordinator seam (plan 2026-10-27 sparkle-updater, T3a).
-//  ISC-3: a scheduled discovery publishes availableUpdate and a
-//  scheduled show is refused outside immediate focus, so no window
-//  steals focus. ISC-5: the launch policy maps `--open-popover`
-//  without the fixture key to startingUpdater false. Every test runs
-//  without network: coordinator methods take a recording fake
-//  through SparkleUpdaterControlling, and the delegate translation
-//  is exercised through internal plain-value methods (no SUAppcastItem
-//  construction, no Sparkle import).
+//  Sparkle coordinator seam (plan 2026-10-27 sparkle-updater, T3a)
+//  plus the T3b UI-facing contract: install handoff in-flight state,
+//  popover-close/activate ordering, the interactive-check state
+//  machine, and start() as the fixture seed path that replaces the
+//  retired GitHub poller. ISC-3: a scheduled discovery publishes
+//  availableUpdate and a scheduled show is refused outside immediate
+//  focus, so no window steals focus. ISC-5: the launch policy maps
+//  `--open-popover` without the fixture key to startingUpdater
+//  false. Every test runs without network: coordinator methods take
+//  a recording fake through SparkleUpdaterControlling, and the
+//  delegate translation is exercised through internal plain-value
+//  methods (no SUAppcastItem construction, no Sparkle import).
 //
 
 import Foundation
@@ -25,12 +28,24 @@ private final class RecordingSparkleUpdater: SparkleUpdaterControlling {
     private(set) var checkForUpdatesCount = 0
     private(set) var checkForUpdatesInteractivelyCount = 0
 
+    /// Seam callback so a test can log the handoff order.
+    var onCheckForUpdates: (() -> Void)?
+
+    /// Coordinator state at the moment a seam call happens. A test
+    /// sets this after the service exists.
+    var stateProbe: (@MainActor () -> Bool)?
+
+    /// isChecking observed inside checkForUpdatesInteractively().
+    private(set) var stateObservedDuringInteractiveCheck: Bool?
+
     func checkForUpdates() {
         checkForUpdatesCount += 1
+        onCheckForUpdates?()
     }
 
     func checkForUpdatesInteractively() {
         checkForUpdatesInteractivelyCount += 1
+        stateObservedDuringInteractiveCheck = stateProbe?()
     }
 
     var totalCheckCount: Int {
@@ -72,12 +87,14 @@ final class SparkleUpdateCoordinatorTests: XCTestCase {
     private func makeService(
         updater: (any SparkleUpdaterControlling)? = nil,
         environment: [String: String] = [:],
-        activateApp: @escaping () -> Void = {}
+        activateApp: @escaping () -> Void = {},
+        closePopover: @escaping () -> Void = {}
     ) -> UpdateCheckService {
         UpdateCheckService(
             environment: environment,
             updater: updater,
-            activateApp: activateApp
+            activateApp: activateApp,
+            closePopover: closePopover
         )
     }
 
@@ -394,5 +411,272 @@ final class SparkleUpdateCoordinatorTests: XCTestCase {
         service.checkForUpdatesInteractively()
 
         XCTAssertNil(service.availableUpdate)
+    }
+
+    // MARK: - T3b: install handoff contract (blueprint Part 4, Flow 1)
+
+    /// The banner CTA marks the coordinator in flight on the first
+    /// click, and a second click while the handoff is in flight is
+    /// refused: no second activate, no second popover close, no
+    /// second Sparkle call.
+    func testInstallHandoffMarksInFlightAndRefusesSecondConcurrentInstall() {
+        let updater = RecordingSparkleUpdater()
+        var activations = 0
+        var closes = 0
+        let service = makeService(
+            updater: updater,
+            activateApp: { activations += 1 },
+            closePopover: { closes += 1 }
+        )
+
+        XCTAssertFalse(service.isHandingOff, "the banner starts armed")
+
+        service.installUpdate()
+
+        XCTAssertTrue(
+            service.isHandingOff,
+            "install handoff must mark the coordinator in flight for the disabled button"
+        )
+        XCTAssertEqual(activations, 1)
+        XCTAssertEqual(closes, 1)
+        XCTAssertEqual(updater.checkForUpdatesCount, 1)
+
+        service.installUpdate()
+
+        XCTAssertEqual(activations, 1, "a second concurrent install must be refused")
+        XCTAssertEqual(closes, 1, "a second concurrent install must not close again")
+        XCTAssertEqual(
+            updater.checkForUpdatesCount,
+            1,
+            "a second concurrent install must not reach Sparkle again"
+        )
+    }
+
+    /// Blueprint Part 4 Flow 1 order: activate the app, close the
+    /// popover, then hand off to Sparkle. One path, inside
+    /// installUpdate().
+    func testInstallHandoffActivatesClosesPopoverThenHandsOffToSparkle() {
+        let updater = RecordingSparkleUpdater()
+        var events: [String] = []
+        updater.onCheckForUpdates = { events.append("sparkle") }
+        let service = makeService(
+            updater: updater,
+            activateApp: { events.append("activate") },
+            closePopover: { events.append("close") }
+        )
+
+        service.installUpdate()
+
+        XCTAssertEqual(
+            events,
+            ["activate", "close", "sparkle"],
+            "blueprint Part 4 Flow 1: activate, close popover, then Sparkle handoff"
+        )
+    }
+
+    /// Without a seam there is no Sparkle window to hand off to, so
+    /// the whole handoff stays a no-op and the button stays armed.
+    func testInstallHandoffIsNoOpWithoutASeam() {
+        var activations = 0
+        var closes = 0
+        let service = makeService(
+            updater: nil,
+            activateApp: { activations += 1 },
+            closePopover: { closes += 1 }
+        )
+
+        service.installUpdate()
+
+        XCTAssertFalse(service.isHandingOff, "no seam, no handoff")
+        XCTAssertEqual(activations, 0)
+        XCTAssertEqual(closes, 0)
+    }
+
+    /// The handoff disables the button; it does not clear the
+    /// banner state, so a popover reopen shows the same update with
+    /// the button still disabled.
+    func testInstallHandoffKeepsAvailableUpdateForReopenedPopover() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater)
+        service.publishAvailableUpdate(
+            displayVersion: "2.0.0",
+            releaseNotesURL: notesURL
+        )
+
+        service.installUpdate()
+
+        XCTAssertTrue(service.isHandingOff)
+        XCTAssertNotNil(
+            service.availableUpdate,
+            "install handoff must not clear the published banner"
+        )
+    }
+
+    /// A fresh discovery re-arms the install button after an
+    /// earlier handoff.
+    func testPublishReArmsInstallHandoff() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater)
+        service.publishAvailableUpdate(
+            displayVersion: "2.0.0",
+            releaseNotesURL: notesURL
+        )
+        service.installUpdate()
+        XCTAssertTrue(service.isHandingOff)
+
+        service.publishAvailableUpdate(
+            displayVersion: "3.0.0",
+            releaseNotesURL: notesURL
+        )
+
+        XCTAssertFalse(
+            service.isHandingOff,
+            "a newly published update must re-arm the install button"
+        )
+    }
+
+    /// Dismissing the update clears the in-flight flag with it: no
+    /// banner, no disabled button left behind.
+    func testDismissClearsInstallHandoff() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater)
+        service.publishAvailableUpdate(
+            displayVersion: "2.0.0",
+            releaseNotesURL: notesURL
+        )
+        service.installUpdate()
+        XCTAssertTrue(service.isHandingOff)
+
+        service.dismiss(version: "2.0.0")
+
+        XCTAssertFalse(
+            service.isHandingOff,
+            "dismiss must clear the in-flight handoff with the banner"
+        )
+    }
+
+    // MARK: - T3b: interactive check state (blueprint Part 4, Flow 2)
+
+    /// Idle before the check. The seam spy observes isChecking true
+    /// while the handoff is in flight (the Settings button would be
+    /// disabled with the spinner up). The session-finish delegate
+    /// callback returns the coordinator to the result state.
+    func testInteractiveCheckTransitionsIdleCheckingAndFinishResets() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater)
+        updater.stateProbe = { service.isChecking }
+
+        XCTAssertFalse(service.isChecking, "idle before the check")
+
+        service.checkForUpdatesInteractively()
+
+        XCTAssertEqual(
+            updater.stateObservedDuringInteractiveCheck,
+            true,
+            "the seam must see isChecking true while the check is in flight"
+        )
+        XCTAssertTrue(
+            service.isChecking,
+            "the checking state persists until the update session finishes"
+        )
+
+        service.standardUserDriverWillFinishUpdateSession()
+
+        XCTAssertFalse(
+            service.isChecking,
+            "the finished session returns the coordinator to the result state"
+        )
+        XCTAssertEqual(updater.checkForUpdatesInteractivelyCount, 1)
+    }
+
+    /// One interactive check at a time: a second call while the
+    /// first is in flight is refused.
+    func testInteractiveCheckRefusesConcurrentSecondCheck() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater)
+
+        service.checkForUpdatesInteractively()
+        service.checkForUpdatesInteractively()
+
+        XCTAssertEqual(
+            updater.checkForUpdatesInteractivelyCount,
+            1,
+            "a concurrent second interactive check must be refused"
+        )
+        XCTAssertTrue(service.isChecking)
+    }
+
+    /// Without a seam no check runs, so the coordinator never enters
+    /// the checking state.
+    func testInteractiveCheckIsNoOpWithoutASeam() {
+        let service = makeService(updater: nil)
+
+        service.checkForUpdatesInteractively()
+
+        XCTAssertFalse(
+            service.isChecking,
+            "no seam, no checking state"
+        )
+    }
+
+    // MARK: - T3b: start() seeds the fixture (GitHub poller retired)
+
+    /// start() is the launch entry the AppDelegate keeps behind the
+    /// `--open-popover` skip. It seeds the fixture banner
+    /// synchronously and never touches the Sparkle seam.
+    func testStartSeedsFixtureWithoutTouchingUpdaterSeam() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(
+            updater: updater,
+            environment: ["STATSLITE_FAKE_UPDATE_VERSION": "9.9.9"]
+        )
+
+        service.start()
+
+        XCTAssertEqual(
+            service.availableUpdate?.version,
+            SemanticVersion("9.9.9"),
+            "start() must seed the fixture banner synchronously"
+        )
+        XCTAssertEqual(
+            service.availableUpdate?.releasePageURL,
+            URL(string: UpdateCheckLaunchPolicy.fixtureReleasePageURL)
+        )
+        XCTAssertEqual(
+            updater.totalCheckCount,
+            0,
+            "start() must not touch the Sparkle seam"
+        )
+    }
+
+    func testStartWithoutFixtureSeedsNothing() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(updater: updater, environment: [:])
+
+        service.start()
+
+        XCTAssertNil(
+            service.availableUpdate,
+            "no fixture key, no banner"
+        )
+        XCTAssertEqual(updater.totalCheckCount, 0)
+    }
+
+    func testStartTwiceKeepsOneSeededBanner() {
+        let updater = RecordingSparkleUpdater()
+        let service = makeService(
+            updater: updater,
+            environment: ["STATSLITE_FAKE_UPDATE_VERSION": "9.9.9"]
+        )
+
+        service.start()
+        service.start()
+
+        XCTAssertEqual(service.availableUpdate?.version, SemanticVersion("9.9.9"))
+        XCTAssertEqual(
+            updater.totalCheckCount,
+            0,
+            "a second start() must not reach the seam either"
+        )
     }
 }
