@@ -117,9 +117,8 @@ final class BrandStringTests: XCTestCase {
     private var banner: UpdateBannerCardView {
         UpdateBannerCardView(
             updateVersion: "v1.4.0",
-            releaseURL: URL(
-                string: "https://github.com/beliantech/stats-lite/releases/tag/v1.4.0"
-            )!,
+            isHandingOff: false,
+            onInstall: {},
             onDismiss: {}
         )
     }
@@ -148,14 +147,13 @@ final class BrandStringTests: XCTestCase {
         )
     }
 
-    func testUpdateBannerReleaseButtonLabelReadsStatsLite() {
+    func testUpdateBannerInstallButtonLabelReadsStatsLite() {
         let strings = brandStrings(in: banner)
         XCTAssertTrue(
-            strings.contains("View release page for Stats Lite %@ in browser"),
+            strings.contains("Install Stats Lite %@"),
             """
-            IC6: the release-button accessibility label format must read \
-            'View release page for Stats Lite %@ in browser'; \
-            found brand strings \(strings).
+            IC6: the install-button accessibility label format must read \
+            'Install Stats Lite %@'; found brand strings \(strings).
             """
         )
     }

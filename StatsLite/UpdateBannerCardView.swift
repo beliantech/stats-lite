@@ -2,16 +2,22 @@
 //  UpdateBannerCardView.swift
 //  StatsLite
 //
-//  Tier 1 in-app update notification card. Displays update title,
-//  new version label, release link button, and dismiss button.
+//  Update notification card (blueprint 2026-10-26 Parts 2 and 3).
+//  Three rows inside the shared .metricCardStyle() container: a
+//  header (icon, "Update Available", dismiss), a single-line body,
+//  and one primary "Install Update" action. The button disables at
+//  0.6 opacity while the coordinator handoff (isHandingOff) is in
+//  flight, so a second click cannot start a second handoff. No
+//  browser path: Sparkle owns release notes. No .animation or
+//  .contentTransition (status-item view rule).
 //
 
-import AppKit
 import SwiftUI
 
 struct UpdateBannerCardView: View {
     let updateVersion: String
-    let releaseURL: URL
+    let isHandingOff: Bool
+    let onInstall: () -> Void
     let onDismiss: () -> Void
 
     var body: some View {
@@ -68,10 +74,9 @@ struct UpdateBannerCardView: View {
     private var actionRow: some View {
         HStack {
             Button {
-                NSWorkspace.shared.open(releaseURL)
-                onDismiss()
+                onInstall()
             } label: {
-                Text("View Release")
+                Text("Install Update")
                     .font(.system(size: 10, weight: .medium))
                     .foregroundStyle(.white)
                     .padding(.horizontal, 8)
@@ -82,8 +87,10 @@ struct UpdateBannerCardView: View {
                     )
             }
             .buttonStyle(.plain)
-            .help("Open release page in default browser")
-            .accessibilityLabel("View release page for Stats Lite \(updateVersion) in browser")
+            .disabled(isHandingOff)
+            .opacity(isHandingOff ? 0.6 : 1)
+            .help("Install Stats Lite \(updateVersion)")
+            .accessibilityLabel("Install Stats Lite \(updateVersion)")
 
             Spacer(minLength: 0)
         }

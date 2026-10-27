@@ -82,7 +82,10 @@ struct PopoverContentView: View {
                    !updateChecker.isDismissed(version: update.version.description) {
                     UpdateBannerCardView(
                         updateVersion: "v\(update.version.description)",
-                        releaseURL: update.releasePageURL,
+                        isHandingOff: updateChecker.isHandingOff,
+                        onInstall: {
+                            updateChecker.installUpdate()
+                        },
                         onDismiss: {
                             updateChecker.dismiss(version: update.version.description)
                         }
