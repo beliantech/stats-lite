@@ -8,6 +8,8 @@ The memory pressure gauge bar in the popover memory card is visually too thick, 
 1. Reduce the gauge bar height from 8 pt to 6 pt so it matches the Used memory composition bar.
 2. Replace the unfilled track color with a subtle token that blends into the card background.
 
+User revision after deploy: the track must use the SAME gray as the Used memory bar's Free/remainder segment (`Color(nsColor: .quaternaryLabelColor)`, `MemoryPressureCardView.swift:131`), not a near-invisible separator wash. `Color.metricBarTrack` is retargeted accordingly (task T5).
+
 Verified current state:
 - `StatsLite/MemoryPressureCardView.swift:108` — track is `Color(nsColor: .separatorColor).opacity(0.2)`.
 - `StatsLite/MemoryPressureCardView.swift:114` — gauge frame height `8`.
@@ -198,3 +200,4 @@ None beyond the Blueprint: both bars adopt the shared `metricBarHeight` token so
 - [x] **T2** — Green: implement tokens + gauge/composition bar updates per Blueprint; refactor to shared tokens. red `bc6c291` · green `7350803` · review GO
 - [x] **T3** — Verify: run full test suite (508 passed / 0 failed), capture dark/light baselines (artifacts/2026-10-27-memory-pressure-bar-thinner-subtle-track, commit `4e5c3df`), confirm VAC-1..VAC-10 all PASS. red — · green — · review PASS (tester verdict: PASS)
 - [x] **T4** — Reviewer `[code-review]`, merge to main, update DESIGN.md with the shared metric-bar token rule. red — · green — · review GO · merged `4e5c3df` (ff-only)
+- [ ] **T5** — Retarget `Color.metricBarTrack` to `Color(nsColor: .quaternaryLabelColor)` (same gray as the Used memory bar Free segment), update the guard test and DESIGN.md, re-verify, redeploy. red ⏳ · green ⏳ · review ⏳
