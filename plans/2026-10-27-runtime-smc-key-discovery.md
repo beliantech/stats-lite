@@ -76,8 +76,10 @@ machine with no GPU sensor key keeps the `--°` row by design (FM1).
    is measured in T5 before any threshold exists.
 7. **Rejected:** IOHID/PMU descriptions (no CPU/GPU labels on Apple
    Silicon, private SPI), `powermetrics` (root-only). The app must stay
-   unsandboxed — `codesign -d --entitlements -` shows none today; verify
-   again in T4.
+   unsandboxed — baseline `codesign -d --entitlements -` shows only the
+   ad-hoc `com.apple.security.get-task-allow`; a build that adds any other
+   entitlement fails T4 (verified byte-identical to main baseline, T4
+   receipt).
 8. **Nil contract unchanged:** `TemperatureMetrics` member nil →
    `MetricFormatters.swift:51` returns `--°`.
 
@@ -150,9 +152,13 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
       seam-API compile failure, same practice as 2026-10-23 T2 red
       `667b04a`; FM6 cited to existing contract tests; red output:
       `artifacts/2026-10-27-runtime-smc-key-discovery/red-t3.txt`)
-- [ ] **T4** — green: enumerator + `domain(forPrefix:)` + cached table;
+- [x] **T4** — green: enumerator + `domain(forPrefix:)` + cached table;
       delete hardcoded lists; verify `codesign` entitlements unchanged.
-      red ⏳ · green ⏳ · review ⏳
+      red `60b3111` · green `851f65e` · review ⏳ (T7)
+      (470 tests, 0 failures; `StatsLite/SMCKeyDiscovery.swift` + provider
+      wiring, −235 lines of hardcoded lists; entitlements byte-identical to
+      main baseline — baseline carries ad-hoc `get-task-allow`, no added
+      entitlements; FM5 scan clean)
 - [ ] **T5** — measure enumeration cost and per-sample cost on this
       machine (Air numbers deferred with T8); record in the artifact dir.
       Add a budget assertion only if a threshold is proven by measurement. red ⏳ · green ⏳ · review ⏳
@@ -216,3 +222,7 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
 - Status 2026-10-27: **T3 red complete** — commit `60b3111`, 12 failing
   tests over the seam API, no application code touched. VAC baseline in
   worktree re-run green (15/15 snapshots, 9/9 temp-block). T4 next.
+- Status 2026-10-27: **T4 green complete** — commit `851f65e`, 470/470
+  tests, hardcoded lists deleted, FM5 scan clean. Entitlement wording in
+  Decision 7 corrected (baseline carries ad-hoc get-task-allow;
+  byte-identical to baseline = no added entitlements). T5 next.
