@@ -34,12 +34,22 @@ enum UpdateCheckLaunchPolicy {
     /// True when the production Sparkle controller must be created
     /// with startingUpdater true. ISC-5: `--open-popover` without
     /// the fixture key maps to false, so the harness runs with zero
-    /// Sparkle network and XPC traffic.
+    /// Sparkle network and XPC traffic. FM7: an XCTest host carries
+    /// `XCTestConfigurationFilePath` or `XCTestSessionIdentifier`
+    /// in its environment; the live updater never starts there,
+    /// because the placeholder EdDSA key raises a fatal Sparkle
+    /// alert that deadlocks the test main thread.
     static func startingUpdater(
         arguments: [String],
         environment: [String: String]
     ) -> Bool {
-        !skipCheck(arguments: arguments, environment: environment)
+        if environment["XCTestConfigurationFilePath"] != nil {
+            return false
+        }
+        if environment["XCTestSessionIdentifier"] != nil {
+            return false
+        }
+        return !skipCheck(arguments: arguments, environment: environment)
     }
 
     /// Fixture release from the environment key. Returns nil when the
