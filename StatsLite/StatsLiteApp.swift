@@ -54,12 +54,12 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         startMeasurementHookIfNeeded()
     }
 
-    // Sparkle wiring (plan 2026-10-27 sparkle-updater, T3a): the
+    // Sparkle wiring (plan 2026-10-27 sparkle-updater, T3a/T3b): the
     // launch policy decides whether the updater starts at all.
     // `--open-popover` without the fixture key keeps Sparkle inert,
     // so the measurement harness sees zero Sparkle network and XPC
-    // traffic. The fixture key seeds the banner without any Sparkle
-    // check.
+    // traffic. The fixture banner seeds later through start(),
+    // without any Sparkle check.
     private func configureSparkleUpdater() {
         let arguments = ProcessInfo.processInfo.arguments
         let environment = ProcessInfo.processInfo.environment
@@ -70,13 +70,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             ),
             userDriverDelegate: updateChecker
         )
-        updateChecker.seedFixtureAvailableUpdateIfNeeded()
     }
 
     // update check: skipped under `--open-popover` so the measurement
-    // harness never triggers a network check. The
+    // harness never triggers a check or a banner. The
     // STATSLITE_FAKE_UPDATE_VERSION fixture key overrides the skip so
-    // banner captures can run under the harness.
+    // banner captures can run under the harness; start() seeds that
+    // banner synchronously and never starts Sparkle's network path.
     private func startUpdateCheckIfNeeded() {
         let arguments = ProcessInfo.processInfo.arguments
         let environment = ProcessInfo.processInfo.environment

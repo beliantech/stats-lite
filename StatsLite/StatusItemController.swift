@@ -83,6 +83,13 @@ final class StatusItemController: NSObject, NSPopoverDelegate {
 
         popover.delegate = self
 
+        // T3b: the install handoff closes the popover through this
+        // normal close path, so popoverDidClose runs its lifecycle
+        // (monitors removed, sampler stopped, content released).
+        updateChecker?.closePopover = { [weak self] in
+            self?.popover.performClose(nil)
+        }
+
         guard let button else { return }
         let rootView = MenuBarStackedItemView(
             monitor: monitor,
