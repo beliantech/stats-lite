@@ -11,7 +11,11 @@ Mac. No per-machine or per-generation key list survives in production code.
 Today `sampleTemperature()` reads two hardcoded lists
 (`StatsLite/LiveSystemMetricsProvider.swift:214-237`); the GPU list was
 measured on one machine (this M5 Max Mac Studio) and a MacBook Air M2
-renders the GPU placeholder forever, because those keys do not exist there.
+renders the GPU placeholder forever. Hypothesis: the Air's SMC exposes no
+key in our list — an `unverified prior` (community reports say M2 exposes
+other `Tg*` keys), never measured on that machine. The fix does not depend
+on the hypothesis: enumeration queries whatever the machine has, and a
+machine with no GPU sensor key keeps the `--°` row by design (FM1).
 
 ## ISC
 
@@ -88,30 +92,41 @@ renders the GPU placeholder forever, because those keys do not exist there.
 
 ## Evidence
 
-Phase 0 gates (falsification signatures). M5 Max: **done** (recheck
-artifact, this session, existing logs). MacBook Air M2: **blocked on
-access**.
+Pre-code gates run on the only machine with access, the M5 Max: **all
+three measured and passing** (recheck artifact, this session, existing
+logs). The MacBook Air M2 round is **deferred to T8** — user directive
+2026-10-27: no access to that machine. What is measured: M5 Max
+attribution (H1–H3 passing, recheck artifact) and the nil → `--°`
+contract (unit-tested, FM1). What stays open: attribution correctness on
+the Air. Until T8 measures it, the Air GPU row may display a value whose
+domain is an `unverified prior` — that residual risk is accepted under
+the user directive 2026-10-27, not claimed away. Air root cause and Air
+attribution remain `unverified prior` until T8.
 
-- **H1 existence** — falsification signature: on the Air, run
-  `./probe --enumerate`; count keys matching prefix `Tg`, type `flt `, size
-  4, finite decode. Stop rule: count = 0 → enumeration design is dead on
-  base Apple Silicon; stop before T3, ship nothing, record the support
-  statement (CPU row keeps working via `Tp*` only if the CPU round also
-  passes). M5 Max: 84 `Tg` keys ✓. Air: ⏳.
+- **H1 existence** — falsification signature: `./probe --enumerate`;
+  count keys matching prefix `Tg`, type `flt `, size 4, finite decode.
+  M5 Max: 84 `Tg` keys ✓. Stop rule (T8, Air): count = 0 → no GPU
+  enumeration on that machine; GPU row keeps `--°` (FM1), record a
+  support statement, no code change required — the mechanism is proven
+  correct by returning nil.
 - **H2 attribution** — two single-variable rounds (`gpuload`, then CPU
   load), settle between, 10 ticks each: ≥ 1 `Tg*` key `≥ +5` and **0**
   `Tg*` `≤ −5`; ≥ 1 `Tp*` key `≤ −5` and **0** `Tp*` `≥ +5`. M5 Max:
-  29/0 and 19/0 ✓. Air: ⏳. **If H2 dies on the Air: stop, fall back to
-  CPU-only temperature, GPU row keeps `--°` (10-23 precedent), and record a
-  support statement. No code edit happens after a dead gate.**
+  29/0 and 19/0 ✓. If H2 dies on the Air at T8: the shipped GPU row on
+  that machine shows an attribution-unverified value (it does **not**
+  self-revert to `--°` — `--°` only covers absence, H1). Remediation is a
+  follow-up plan opened at that time (a new plan file, not this one),
+  never an in-place post-merge
+  edit; the support statement and raw rounds go in the artifact.
 - **H3 exclusion** — falsification signature: from the two Air rounds,
   the flat set = keys moving < 2 °C in *both* rounds; then verify the set
   is non-empty and disjoint from the H2-passing keys (a key that both
   passes H2 and sits flat is contradictory data). Stop rule: set empty, or
-  overlap non-empty → the movement criterion is dead for that machine;
-  drop the movement filter for it, aggregate with prefix + plausibility
-  only, and record the rail-key-in-`max()` risk in the artifact. M5 Max:
-  66 flat keys, disjoint from the 29 H2-passing `Tg` keys ✓. Air: ⏳.
+  overlap non-empty → the movement criterion is unvalidated for that
+  machine; remediation is a follow-up plan (new plan file — same rule as
+  H2, no in-place post-merge edit), and the rail-key-in-`max()` risk goes
+  in the artifact. M5 Max: 66 flat keys, disjoint from the 29 H2-passing `Tg`
+  keys ✓. Air rounds run at T8 with this rule.
 
 Phase 0 commands and log contract: `swiftc tools/smc-probe/main.swift -o probe`,
 then `./probe --watch` runs named `h1-baseline.log`, `h1-cpu-load.log`,
@@ -124,32 +139,35 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
 
 - [x] **T1** — M5 Max delta-gap recheck from existing h1 logs. done
       (evidence: `artifacts/2026-10-27-runtime-smc-key-discovery/phase0-m5max-recheck.md`)
-- [ ] **T2** — Phase 0 on the MacBook Air M2: five rounds, analyzer +
-      delta-gap gate, report to `artifacts/2026-10-27-runtime-smc-key-discovery/phase0-report.md`.
-      Gate stop applies. ⏳ *blocked: no route to the Air yet*
+- *(T2 removed 2026-10-27 — Air rounds live in T8; no other task
+  renumbered.)*
 - [ ] **T3** — red: one failing test per `FM1`–`FM5` + `FM6`; fixtures for
-      the M5 Max key set (296 keys, from h1 logs), the Air key set (from
-      T2), and unreadable-`#KEY` (index-scan fallback). red ⏳ · green ⏳ · review ⏳
+      the M5 Max key set (296 keys, from h1 logs), a second-generation
+      key set built from the M1/M2 community prior (marked "prior fixture,
+      not evidence"), and unreadable-`#KEY` (index-scan fallback). red ⏳ · green ⏳ · review ⏳
 - [ ] **T4** — green: enumerator + `domain(forPrefix:)` + cached table;
       delete hardcoded lists; verify `codesign` entitlements unchanged.
       red ⏳ · green ⏳ · review ⏳
-- [ ] **T5** — measure enumeration cost and per-sample cost on both
-      machines; record numbers in the artifact dir. Add a budget assertion
-      only if a threshold is proven by measurement. red ⏳ · green ⏳ · review ⏳
+- [ ] **T5** — measure enumeration cost and per-sample cost on this
+      machine (Air numbers deferred with T8); record in the artifact dir.
+      Add a budget assertion only if a threshold is proven by measurement. red ⏳ · green ⏳ · review ⏳
 - [ ] **T6** — VAC pass: snapshot tests + nil-row logic tests green
       (`MenuBarRenderSnapshotTests.swift`, `MenuBarTempBlockTests.swift`).
       red ⏳ · green ⏳ · review ⏳
 - [ ] **T7** — plan compliance review → reviewer GO → squash-merge to
       `main`; record merge SHA here. review ⏳
-- [ ] **T8** — field verification: merged build on the Air shows a live GPU
-      row under load; M5 Max regression (FM6) rechecked. ⏳
+- [ ] **T8** — field verification, deferred until the Air is reachable:
+      run the five-round bundle (commands in Evidence), apply H1/H2/H3 with
+      the stop rules above, write
+      `artifacts/2026-10-27-runtime-smc-key-discovery/phase0-report.md`;
+      plus M5 Max regression (FM6) rechecked after merge. ⏳
+      *blocked: no access to the Air (user, 2026-10-27)*
 
 ## Dependencies
 
-- **Route to the MacBook Air M2** (SSH target, or the user runs T2's probe
-  commands and pastes the logs). Blocking for T2 → T7.
-- M5 Max available for T5/T6 (this machine).
-- `gpuload` built on the Air (`swiftc tools/smc-probe/gpuload.swift -o gpuload`).
+- **MacBook Air M2 access: not available** (user, 2026-10-27). Nothing
+  before T8 blocks on it; T8 stays open until access exists.
+- M5 Max available for T4/T5/T6 (this machine).
 
 ## References
 
@@ -163,7 +181,7 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
 ## Status
 
 - [x] T1 — M5 Max recheck (gate fixed with measured data)
-- [ ] T2 — Air Phase 0 (blocked on access)
+- (T2 removed — Air rounds folded into T8 by user directive)
 - [ ] T3 — red · [ ] T4 — green · [ ] T5 — latency · [ ] T6 — VACs
 - [ ] T7 — review + merge · [ ] T8 — field verification
 - Status 2026-10-27: advisor review applied — absolute-gap H2 replaced by
@@ -175,4 +193,18 @@ recheck script; the analyzer's per-key report is evidence, not the gate.
   H3, T1 checkbox reconciled, speculative Intel `sp../fp..` types removed
   from the enumeration filter. Re-review requested.
 - Status 2026-10-27: plan-review **GO** (re-review, all 4 findings verified
-  resolved). Plan committed; T2 is the only open blocker.
+  resolved). Plan committed as `6cb3413`.
+- Status 2026-10-27: **gate amendment** (user directive: no Air access,
+  "no hardcoding keys"): pre-code gates are M5 Max only (measured, passing);
+  the Air falsification round moved to T8 as a post-merge field check with
+  the no-regression argument recorded under Evidence. Risk class unchanged
+  (R1). Re-review requested for the gate change.
+- Status 2026-10-27: gate-amendment review NO GO (3 findings) — fixed:
+  the no-regression paragraph now states measured vs open and marks the
+  Air residual risk accepted-by-directive instead of claiming it away;
+  H2/H3 stop rules now say attribution-unverified display + follow-up plan
+  (no post-merge `--°` self-revert claim, no in-place edits); T2 removed
+  from the task list with the removal noted. Re-review requested.
+- Status 2026-10-27: gate-amendment review round 2 **GO** (all 4 findings
+  verified resolved, negative checks passed). Amendment committed; next:
+  T3 red in a worktree.
