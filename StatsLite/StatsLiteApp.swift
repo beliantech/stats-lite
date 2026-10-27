@@ -48,9 +48,29 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             preferences: preferences,
             updateChecker: updateChecker
         )
+        configureSparkleUpdater()
         startUpdateCheckIfNeeded()
         applyCaptureAppearanceIfNeeded()
         startMeasurementHookIfNeeded()
+    }
+
+    // Sparkle wiring (plan 2026-10-27 sparkle-updater, T3a): the
+    // launch policy decides whether the updater starts at all.
+    // `--open-popover` without the fixture key keeps Sparkle inert,
+    // so the measurement harness sees zero Sparkle network and XPC
+    // traffic. The fixture key seeds the banner without any Sparkle
+    // check.
+    private func configureSparkleUpdater() {
+        let arguments = ProcessInfo.processInfo.arguments
+        let environment = ProcessInfo.processInfo.environment
+        updateChecker.updater = StandardSparkleUpdater(
+            startingUpdater: UpdateCheckLaunchPolicy.startingUpdater(
+                arguments: arguments,
+                environment: environment
+            ),
+            userDriverDelegate: updateChecker
+        )
+        updateChecker.seedFixtureAvailableUpdateIfNeeded()
     }
 
     // update check: skipped under `--open-popover` so the measurement

@@ -12,13 +12,23 @@
 //  no-ops. A dismissed version lives in UserDefaults as a normalized
 //  description.
 //
+//  Sparkle coordinator layer (plan 2026-10-27 sparkle-updater,
+//  T3a): the service also conforms to SPUStandardUserDriverDelegate
+//  and owns the SparkleUpdaterControlling seam. Gentle scheduled
+//  reminders publish a banner through availableUpdate instead of a
+//  focus-stealing Sparkle window. The STATSLITE_FAKE_UPDATE_VERSION
+//  fixture seeds availableUpdate directly, without starting
+//  Sparkle.
+//
 
+import AppKit
 import Foundation
 import Observation
+import Sparkle
 
 @MainActor
 @Observable
-final class UpdateCheckService {
+final class UpdateCheckService: NSObject, SPUStandardUserDriverDelegate {
 
     /// UserDefaults keys owned by this service. The cached-latest key
     /// holds a two-field JSON object (tag_name, html_url) written by
@@ -38,19 +48,133 @@ final class UpdateCheckService {
     /// check leaves the value untouched.
     private(set) var availableUpdate: ReleaseInfo?
 
+    /// Sparkle seam. The AppDelegate injects the production adapter;
+    /// tests inject a recording fake. Nil (the default for existing
+    /// tests) makes every coordinator action a no-op.
+    var updater: (any SparkleUpdaterControlling)?
+
     private let source: any UpdateReleaseSource
     private let bundle: Bundle
     private let environment: [String: String]
+    private let activateApp: () -> Void
     private var checkTask: Task<Void, Never>?
 
     init(
         source: any UpdateReleaseSource = GitHubReleaseSource(),
         bundle: Bundle = .main,
-        environment: [String: String] = ProcessInfo.processInfo.environment
+        environment: [String: String] = ProcessInfo.processInfo.environment,
+        updater: (any SparkleUpdaterControlling)? = nil,
+        activateApp: @escaping () -> Void = {
+            NSApplication.shared.activate(ignoringOtherApps: true)
+        }
     ) {
         self.source = source
         self.bundle = bundle
         self.environment = environment
+        self.updater = updater
+        self.activateApp = activateApp
+        super.init()
+    }
+
+    // MARK: - Coordinator API (T3b UI call sites)
+
+    /// Brings the app forward and hands off to Sparkle's update
+    /// flow. The banner CTA calls this; the popover close at the
+    /// call site is T3b.
+    func installUpdate() {
+        activateApp()
+        updater?.checkForUpdates()
+    }
+
+    /// Hands off to Sparkle's user-initiated check. Dismissal does
+    /// not suppress it: an explicit user check always reaches
+    /// Sparkle.
+    func checkForUpdatesInteractively() {
+        updater?.checkForUpdatesInteractively()
+    }
+
+    /// Seeds availableUpdate from STATSLITE_FAKE_UPDATE_VERSION
+    /// without starting Sparkle or touching the network. A dismissed
+    /// fixture version stays unpublished. Capture scripts call this
+    /// through the AppDelegate at launch.
+    func seedFixtureAvailableUpdateIfNeeded() {
+        guard let fixture = UpdateCheckLaunchPolicy.fixtureRelease(
+            environment: environment
+        ) else { return }
+        guard !isDismissed(version: fixture.version.description) else {
+            return
+        }
+        availableUpdate = fixture
+    }
+
+    // MARK: - Gentle scheduled update reminders (ISC-3)
+
+    /// Declares gentle scheduled reminders: the delegate publishes a
+    /// banner through availableUpdate instead of letting Sparkle
+    /// show a focus-stealing window.
+    nonisolated var supportsGentleScheduledUpdateReminders: Bool { true }
+
+    /// Sparkle calls this on the main thread for scheduled checks
+    /// only. Immediate-focus state and dismissal are main-actor
+    /// state, so the bridge hops through assumeIsolated.
+    nonisolated func standardUserDriverShouldHandleShowingScheduledUpdate(
+        _ update: SUAppcastItem,
+        andInImmediateFocus immediateFocus: Bool
+    ) -> Bool {
+        let displayVersion = update.displayVersionString
+        return MainActor.assumeIsolated {
+            scheduledUpdateShouldShow(
+                displayVersion: displayVersion,
+                immediateFocus: immediateFocus
+            )
+        }
+    }
+
+    /// Sparkle calls this on the main thread right before it would
+    /// show an update. The publication decision is main-actor state,
+    /// so the bridge hops through assumeIsolated. Only Sendable
+    /// values cross the isolation boundary.
+    nonisolated func standardUserDriverWillHandleShowingUpdate(
+        _ handleShowingUpdate: Bool,
+        forUpdate update: SUAppcastItem,
+        state: SPUUserUpdateState
+    ) {
+        let displayVersion = update.displayVersionString
+        let releaseNotesURL = update.releaseNotesURL
+        MainActor.assumeIsolated {
+            publishAvailableUpdate(
+                displayVersion: displayVersion,
+                releaseNotesURL: releaseNotesURL
+            )
+        }
+    }
+
+    /// True when Sparkle may show a scheduled update itself. Returns
+    /// false outside immediate focus so no window steals focus, and
+    /// false for a dismissed version.
+    func scheduledUpdateShouldShow(
+        displayVersion: String,
+        immediateFocus: Bool
+    ) -> Bool {
+        guard !isDismissed(version: displayVersion) else { return false }
+        return immediateFocus
+    }
+
+    /// Publishes a banner from a discovered update. A malformed
+    /// display version or a missing release notes URL is a silent
+    /// no-op, and a dismissed version stays unpublished.
+    func publishAvailableUpdate(
+        displayVersion: String,
+        releaseNotesURL: URL?
+    ) {
+        guard let version = SemanticVersion(displayVersion),
+              let releaseNotesURL
+        else { return }
+        guard !isDismissed(version: version.description) else { return }
+        availableUpdate = ReleaseInfo(
+            version: version,
+            releasePageURL: releaseNotesURL
+        )
     }
 
     /// Starts the check loop once. A second call while the loop runs

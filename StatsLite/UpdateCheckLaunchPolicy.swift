@@ -31,6 +31,17 @@ enum UpdateCheckLaunchPolicy {
         return environment[fixtureVersionKey] == nil
     }
 
+    /// True when the production Sparkle controller must be created
+    /// with startingUpdater true. ISC-5: `--open-popover` without
+    /// the fixture key maps to false, so the harness runs with zero
+    /// Sparkle network and XPC traffic.
+    static func startingUpdater(
+        arguments: [String],
+        environment: [String: String]
+    ) -> Bool {
+        !skipCheck(arguments: arguments, environment: environment)
+    }
+
     /// Fixture release from the environment key. Returns nil when the
     /// key is absent or the value fails the SemanticVersion parse.
     static func fixtureRelease(
