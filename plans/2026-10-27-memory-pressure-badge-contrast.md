@@ -249,6 +249,14 @@ Responsive behavior: panel width fixed at 280 pt (`PopoverContentView.swift:131`
 
 None required. The change replaces raw system colors on the badge with named tokens; no band-aids exist in the touched code. Verify at implementation time that no other call sites render pill text with raw system colors.
 
+## Red-phase findings (T1, applied)
+
+- Contrast is measured in gamma-space compositing (Core Graphics model). All 8 pairs clear 4.5:1 under that model. Do not switch to linear-light compositing in green.
+- The plan's nominal matrix ratios are approximations, not pins (dark warning computes 7.47 vs plan 6.58; dark critical 5.58 vs 4.98). Tests pin the hex/alpha values and the 4.5:1 floor, not the nominal ratios.
+- **Dropped claim**: plan §4 SC 1.4.11 (stroke >= 3:1) is not achievable with the blueprint border tokens (measured 1.15-2.25:1). No numeric VAC existed for it; the claim is removed rather than asserted.
+- Render/snapshot geometry test skipped: no existing popover card render test exists; VAC-8 geometry is pinned by a source-token guard test instead. T2 screenshots remain the visual reality check.
+- Red is a compile failure, so guard-test runtime reds are unobservable until green; green must re-run the full suite and confirm every guard method passes.
+
 ## Notation
 
 ```
@@ -257,5 +265,5 @@ Plan -> Phase -> Task (T*) -> Receipts (red SHA / green SHA / review verdict)
 
 ## Tasks
 
-- [ ] **T1** — Add `badgeTextColor` / `badgeBackgroundColor` / `badgeBorderColor` tokens to `DesignTokens.swift` and apply them in `MemoryPressureCardView.swift` badge, with a contrast unit test covering all 8 state/appearance pairs. red ⏳ · green ⏳ · review ⏳
+- [ ] **T1** — Add `badgeTextColor` / `badgeBackgroundColor` / `badgeBorderColor` tokens to `DesignTokens.swift` and apply them in `MemoryPressureCardView.swift` badge, with a contrast unit test covering all 8 state/appearance pairs. red `bd6702d` · green ⏳ · review ⏳
 - [ ] **T2** — Verify VAC-1..VAC-10: run the test suite, render light/dark screenshots of the Memory Pressure card, present to user. red ⏳ · green ⏳ · review ⏳
