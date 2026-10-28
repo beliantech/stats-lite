@@ -92,11 +92,11 @@ struct MemoryPressureCardView: View {
     private var badge: some View {
         Text(state.displayName)
             .font(.system(size: 10, weight: .semibold))
-            .foregroundStyle(state.levelColor)
+            .foregroundStyle(state.badgeTextColor)
             .padding(.horizontal, 6)
             .padding(.vertical, 2)
-            .background(Capsule().fill(state.levelColor.opacity(0.15)))
-            .overlay(Capsule().stroke(state.levelColor.opacity(0.3), lineWidth: 0.5))
+            .background(Capsule().fill(state.badgeBackgroundColor))
+            .overlay(Capsule().stroke(state.badgeBorderColor, lineWidth: 0.5))
     }
 
     // MARK: - Pressure gauge (VAC-1): 6 pt bar, continuous 3 pt radius

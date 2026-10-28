@@ -10,15 +10,84 @@ import SwiftUI
 
 extension MemoryPressureState {
 
-    /// Level color for the menu bar dot, gauge bar, badge, and
-    /// sparkline: green / yellow / red per extension blueprint §2.
-    /// Unknown maps to gray.
+    /// Level color for the menu bar dot, gauge bar, and sparkline:
+    /// green / yellow / red per extension blueprint §2.
+    /// Unknown maps to gray. The status pill badge reads the
+    /// badge* tokens below instead.
     var levelColor: Color {
         switch self {
         case .normal: Color(nsColor: .systemGreen)
         case .warning: Color(nsColor: .systemYellow)
         case .critical: Color(nsColor: .systemRed)
         case .unknown: Color(nsColor: .systemGray)
+        }
+    }
+
+    /// Foreground text color for the status pill badge.
+    /// Meets WCAG 2.2 AA (>= 4.5:1) against `badgeBackgroundColor`
+    /// across both light and dark appearances.
+    var badgeTextColor: Color {
+        switch self {
+        case .normal:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? .systemGreen
+                    : NSColor(srgbRed: 16/255.0, green: 108/255.0, blue: 42/255.0, alpha: 1.0)
+            })
+        case .warning:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? .systemYellow
+                    : NSColor(srgbRed: 132/255.0, green: 68/255.0, blue: 0/255.0, alpha: 1.0)
+            })
+        case .critical:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? NSColor(srgbRed: 255/255.0, green: 128/255.0, blue: 128/255.0, alpha: 1.0)
+                    : NSColor(srgbRed: 168/255.0, green: 23/255.0, blue: 28/255.0, alpha: 1.0)
+            })
+        case .unknown:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? NSColor(srgbRed: 184/255.0, green: 184/255.0, blue: 189/255.0, alpha: 1.0)
+                    : NSColor(srgbRed: 69/255.0, green: 69/255.0, blue: 74/255.0, alpha: 1.0)
+            })
+        }
+    }
+
+    /// Background fill color for the status pill capsule.
+    var badgeBackgroundColor: Color {
+        switch self {
+        case .warning, .critical:
+            return levelColor.opacity(0.18)
+        case .normal, .unknown:
+            return levelColor.opacity(0.15)
+        }
+    }
+
+    /// Border stroke color for the status pill capsule.
+    var badgeBorderColor: Color {
+        switch self {
+        case .warning:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? NSColor.systemYellow.withAlphaComponent(0.35)
+                    : NSColor(srgbRed: 132/255.0, green: 68/255.0, blue: 0/255.0, alpha: 0.30)
+            })
+        case .normal:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? NSColor.systemGreen.withAlphaComponent(0.35)
+                    : NSColor(srgbRed: 16/255.0, green: 108/255.0, blue: 42/255.0, alpha: 0.25)
+            })
+        case .critical:
+            return Color(nsColor: NSColor(name: nil) { appearance in
+                appearance.bestMatch(from: [.darkAqua, .aqua]) == .darkAqua
+                    ? NSColor(srgbRed: 255/255.0, green: 128/255.0, blue: 128/255.0, alpha: 0.35)
+                    : NSColor(srgbRed: 168/255.0, green: 23/255.0, blue: 28/255.0, alpha: 0.25)
+            })
+        case .unknown:
+            return levelColor.opacity(0.30)
         }
     }
 
