@@ -265,5 +265,5 @@ Plan -> Phase -> Task (T*) -> Receipts (red SHA / green SHA / review verdict)
 
 ## Tasks
 
-- [ ] **T1** — Add `badgeTextColor` / `badgeBackgroundColor` / `badgeBorderColor` tokens to `DesignTokens.swift` and apply them in `MemoryPressureCardView.swift` badge, with a contrast unit test covering all 8 state/appearance pairs. red `bd6702d` · green ⏳ · review ⏳
-- [ ] **T2** — Verify VAC-1..VAC-10: run the test suite, render light/dark screenshots of the Memory Pressure card, present to user. red ⏳ · green ⏳ · review ⏳
+- [x] **T1** — Add `badgeTextColor` / `badgeBackgroundColor` / `badgeBorderColor` tokens to `DesignTokens.swift` and apply them in `MemoryPressureCardView.swift` badge, with a contrast unit test covering all 8 state/appearance pairs. red `bd6702d` · green `ed5e83d` · review GO · squash-merged to main `e40050c`
+- [ ] **T2** — Verify VAC-1..VAC-10: run the test suite (522 passed at green), render light/dark screenshots of the Memory Pressure card, present to user. red n/a · green ⏳ · review ⏳
