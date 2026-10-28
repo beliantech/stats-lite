@@ -308,8 +308,15 @@ jobs:
           set -euo pipefail
           URL="https://github.com/beliantech/stats-lite"
           URL="$URL/releases/latest/download/appcast.xml"
-          if ! curl -fsSLI "$URL" > /dev/null; then
-            echo "::error::published appcast.xml not reachable at $URL"
-            exit 1
-          fi
-          echo "published appcast.xml is reachable"
+          # GitHub's releases/latest redirect needs a moment to propagate
+          # after gh release create; retry before declaring failure.
+          for attempt in 1 2 3 4 5 6 7 8 9 10; do
+            if curl -fsSLI "$URL" > /dev/null; then
+              echo "published appcast.xml is reachable (attempt $attempt)"
+              exit 0
+            fi
+            echo "attempt $attempt failed; waiting 5s"
+            sleep 5
+          done
+          echo "::error::appcast.xml not reachable at $URL after 10 attempts"
+          exit 1
