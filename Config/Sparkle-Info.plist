@@ -8,7 +8,7 @@
 	<key>SUFeedURL</key>
 	<string>https://github.com/beliantech/stats-lite/releases/latest/download/appcast.xml</string>
 	<key>SUPublicEDKey</key>
-	<string>REPLACE_WITH_SPARKLE_PUBLIC_KEY</string>
+	<string>j6k9xmtBymL8MpB/tT/wS7UlA/FnrS/vK7CpR5G/vs4=</string>
 	<key>SUEnableAutomaticChecks</key>
 	<true/>
 	<key>SUScheduledCheckInterval</key>
