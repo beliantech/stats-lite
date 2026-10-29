@@ -76,21 +76,28 @@ verified in git before written here).
 
 ## Tasks
 
-- [ ] **T1** — red: author the negative tests only — source-guard test for VAC-R8,
-  three-state no-caption render test, loading/empty placeholder guards — run suite,
-  report expected failures, touch no app code. red ⏳ · green ⏳ · review ⏳
-- [ ] **T2** — green: remove the caption flag/constant/render block and
-  `CPUCardView.swift:65` wiring; update `ProcessDisclosureTests` so the suite
-  compiles and passes; capture dark + light harness screenshots for VAC-R1..R7
-  (display awake, user's running StatsLite untouched). red ⏳ · green ⏳ · review ⏳
-- [ ] **T3** — code review (`git diff main...HEAD`; reviewer verifies red commit is
-  test-only and green is implementation, plus screenshot evidence) then merge
-  `--ff-only`/`--squash` into main and clean up the worktree. merge ⏳
+- [x] **T1** — red: negative tests only (source guard VAC-R8, three-state no-caption
+  render test). red `ae8bf86` · green n/a (T2) · review PASS (test-only additions,
+  107 insertions 0 deletions; 1 expected red failure confirmed)
+- [x] **T2** — green: caption flag/constant/render block + CPUCardView wiring
+  removed; tests reworked; suite 522 tests 0 failures; VAC-R1..R3, R5..R8 PASS via
+  harness captures (dark + light), VAC-R4 covered by render test only (harness has
+  no loading/empty force flag; reviewer accepted). red `ae8bf86` · green `654ca5e` ·
+  review PASS
+- [x] **T3** — code review GO (no orphaned plumbing, screenshots inspected, no docs
+  update needed) then ff-only merge. merge `654ca5e` (main fast-forwarded from
+  `e73e0e0`); worktree removed, branch deleted; evidence PNGs copied to
+  `tmp/evidence-2026-10-29-remove-daemons-caption/` (gitignored)
 
 ## Verification
 
-- Green coder self-verifies VAC-R1..R7 with harness captures (dark + light) and
-  reports screenshot paths; VAC-R8 verified by the test suite.
-- Reviewer GO required before merge. Two NO GO cycles max, then escalate.
-- After merge: confirm `git log --oneline -1` on main, mark tasks `[x]` with
-  SHAs, then summarize with the merge SHA.
+Delivered: reviewer GO received, merged to main `654ca5e` (ff-only), full suite
+522 tests 0 failures. VAC-R4 visual verification impossible with the harness
+(render-test coverage accepted by reviewer) — label unverified where it stands.
+
+## Close-out
+
+- Plan committed at `e73e0e0` with blueprint.
+- No ARCHITECTURE.md / DESIGN.md / AGENTS.md update needed (caption was undocumented).
+- Housekeeping note: `tmp/` was missing from `.gitignore` despite AGENTS.md — fixed
+  in the close-out commit.
