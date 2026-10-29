@@ -3,3 +3,5 @@ docs/plans/
 .derivedData/
 build/
 *.profraw
+
+plans/evidence/
