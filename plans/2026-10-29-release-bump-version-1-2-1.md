@@ -20,10 +20,10 @@ gate (`APPBUILD > published appcast build 5`) passes.
 
 ## ISC
 
-- [ ] `MARKETING_VERSION = 1.2.1` in all 4 build configurations of `StatsLite.xcodeproj/project.pbxproj` (2 app + 2 test).
-- [ ] `CURRENT_PROJECT_VERSION = 6` in all 4 build configurations.
-- [ ] No other file changes (`git diff --stat` shows only `StatsLite.xcodeproj/project.pbxproj`, 8 lines).
-- [ ] Change is committed on `main` via ff-only merge from a worktree branch.
+- [x] `MARKETING_VERSION = 1.2.1` in all 4 build configurations of `StatsLite.xcodeproj/project.pbxproj` (2 app + 2 test).
+- [x] `CURRENT_PROJECT_VERSION = 6` in all 4 build configurations.
+- [x] No other file changes (only `StatsLite.xcodeproj/project.pbxproj`, 8 lines each way).
+- [x] Change is committed on `main` via ff-only merge from a worktree branch (`88056d2`).
 - [ ] Release run for `v1.2.1` (after the tag is re-pointed and pushed) passes "Check tag matches app version" and completes green.
 
 No failure modes: the task changes no code path. FM1 (gate still fails) is
@@ -44,4 +44,4 @@ None. Version literals in `project.pbxproj` are the source of truth for
 
 ## Tasks
 
-- [ ] **T1** — bump `MARKETING_VERSION` to 1.2.1 and `CURRENT_PROJECT_VERSION` to 6 in all 4 configurations. red n/a (R0 `[no-red]`) · green ⏳ · review ⏳
+- [x] **T1** — bump `MARKETING_VERSION` to 1.2.1 and `CURRENT_PROJECT_VERSION` to 6 in all 4 configurations. red n/a (R0) · green `88056d2` · review GO (commit `88056d2` merged to main, ff-only)
