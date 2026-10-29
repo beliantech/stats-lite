@@ -24,6 +24,13 @@
 //  tests were authored after the seams landed, so they were green on
 //  arrival and never ran red against those stubs.
 //
+//  Red history (plan 2026-10-29-remove-daemons-caption, T1): the
+//  VAC-R8 source guard went red while the helper-gap caption code
+//  still lived in StatsLite/TopProcessesView.swift and
+//  StatsLite/CPUCardView.swift. The VAC-R4 three-state render test
+//  was green on arrival: the caption flag defaults to false, so the
+//  parameter-free init never rendered the caption.
+//
 
 import SwiftUI
 import XCTest
@@ -550,6 +557,106 @@ final class ProcessDisclosureTests: XCTestCase {
         XCTAssertFalse(
             collectViewStrings(button.body).contains("System daemons not included"),
             "U4: the collapsed disclosure button never renders the caption (R3)"
+        )
+    }
+
+    // MARK: - VAC-R8 / VAC-R4 (plan 2026-10-29): the helper-gap caption is removed
+
+    /// VAC-R8 source guard: no `System daemons not included` string,
+    /// no `helperGapCaption` identifier, and no
+    /// `showsHelperGapCaption` identifier in any Swift source under
+    /// `StatsLite/`. Fails while the caption code still exists —
+    /// that failure is the expected red of plan 2026-10-29 T1.
+    func testSourceGuardFindsNoHelperGapCaptionArtifactsInStatsLiteSources() throws {
+        let root = sourceURL("StatsLite")
+        let swiftFiles = try XCTUnwrap(
+            FileManager.default
+                .enumerator(at: root, includingPropertiesForKeys: nil)?
+                .compactMap { $0 as? URL }
+                .filter { $0.pathExtension == "swift" },
+            "VAC-R8: enumerate Swift sources under StatsLite/"
+        )
+        XCTAssertFalse(
+            swiftFiles.isEmpty,
+            "VAC-R8: the StatsLite/ tree contains Swift sources"
+        )
+
+        let forbidden = [
+            "System daemons not included",
+            "helperGapCaption",
+            "showsHelperGapCaption",
+        ]
+        var violations: [String] = []
+        for file in swiftFiles {
+            let source = try String(contentsOf: file, encoding: .utf8)
+            for token in forbidden where source.contains(token) {
+                violations.append("\(file.lastPathComponent): \(token)")
+            }
+        }
+        XCTAssertTrue(
+            violations.isEmpty,
+            "VAC-R8: remove every helper-gap caption artifact from StatsLite/:\n"
+                + violations.sorted().joined(separator: "\n")
+        )
+    }
+
+    /// VAC-R4 render test: the expanded section renders no caption
+    /// in the populated, loading, and empty states, and the
+    /// loading / empty placeholder lines still render. Uses the
+    /// parameter-free initializer — the caption flag disappears in
+    /// the same change that removes the caption, so this test must
+    /// never mention it.
+    func testExpandedSectionRendersNoCaptionInAnyState() {
+        let caption = "System daemons not included"
+
+        let populated = TopProcessesSectionView(
+            processes: [
+                ProcessMetricItem(pid: 1918, name: "fixture-burn", fraction: 1.918, valueLabel: "191.8%")
+            ],
+            tintColor: .blue,
+            isLoading: false,
+            gaugeBasis: .maxNormalized
+        )
+        let populatedStrings = collectViewStrings(populated.body)
+        XCTAssertTrue(
+            populatedStrings.contains("fixture-burn"),
+            "VAC-R4: the populated state still renders the process rows"
+        )
+        XCTAssertFalse(
+            populatedStrings.contains(caption),
+            "VAC-R4: the populated state renders no caption"
+        )
+
+        let loading = TopProcessesSectionView(
+            processes: [],
+            tintColor: .blue,
+            isLoading: true,
+            gaugeBasis: .maxNormalized
+        )
+        let loadingStrings = collectViewStrings(loading.body)
+        XCTAssertTrue(
+            loadingStrings.contains("Sampling top processes…"),
+            "VAC-R4: the loading placeholder line still renders"
+        )
+        XCTAssertFalse(
+            loadingStrings.contains(caption),
+            "VAC-R4: the loading state renders no caption"
+        )
+
+        let empty = TopProcessesSectionView(
+            processes: [],
+            tintColor: .blue,
+            isLoading: false,
+            gaugeBasis: .maxNormalized
+        )
+        let emptyStrings = collectViewStrings(empty.body)
+        XCTAssertTrue(
+            emptyStrings.contains("No process data available"),
+            "VAC-R4: the empty placeholder line still renders"
+        )
+        XCTAssertFalse(
+            emptyStrings.contains(caption),
+            "VAC-R4: the empty state renders no caption"
         )
     }
 
