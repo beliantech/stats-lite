@@ -429,52 +429,14 @@ final class ProcessDisclosureTests: XCTestCase {
         )
     }
 
-    // MARK: - U4 / R3: the helper-gap caption (plan 2026-10-24 §3)
+    // MARK: - R3 gauge basis: CPU max-normalized, Memory RAM-fraction (plan 2026-10-24 §3)
 
-    func testHelperGapCaptionTokensPlaceItInTheExpandedCPUSectionOnly() throws {
-        let section = squashed(try loadSource("StatsLite/TopProcessesView.swift"))
-        XCTAssertTrue(
-            section.contains("\"Systemdaemonsnotincluded\""),
-            "U4: the caption copy is exact (R3)"
-        )
-        XCTAssertTrue(
-            section.contains("Text(Self.helperGapCaption)"),
-            "U4: the caption renders as one Text in the shared section view"
-        )
-        XCTAssertTrue(
-            section.contains("ifshowsHelperGapCaption"),
-            "U4: the caption is gated behind the explicit CPU-only flag"
-        )
-        XCTAssertTrue(section.contains(".font(.system(size:9))"), "U4: 9 pt regular (§3 blueprint)")
-        XCTAssertTrue(section.contains(".foregroundStyle(.tertiary)"), "U4: tertiary color (§3 blueprint)")
-        XCTAssertTrue(section.contains(".lineLimit(1)"), "U4: one line, tail truncation as belt-and-braces")
-        XCTAssertTrue(
-            section.contains(".padding(.top,8)"),
-            "U4: the 8 pt top gap below the last row / loading / empty line"
-        )
-        // VAC-6: the caption is readable VoiceOver text, never
-        // accessibility-hidden. The section's only
-        // `.accessibilityHidden(true)` belongs to the gauge (line
-        // 147); the caption block is the `Text(Self.helperGapCaption)`
-        // chain, which carries none.
-        let captionChain = section
-            .components(separatedBy: "Text(Self.helperGapCaption)")
-            .dropFirst()
-            .first ?? ""
-        XCTAssertFalse(
-            captionChain.hasPrefix(".accessibilityHidden(true)"),
-            "VAC-6: the caption is readable text, not accessibility-hidden"
-        )
-        XCTAssertEqual(
-            section.components(separatedBy: ".accessibilityHidden(true)").count - 1, 1,
-            "VAC-6: the only hidden element in the section is the gauge — the caption stays readable"
-        )
-
+    /// The helper-gap caption is removed (plan 2026-10-29). What
+    /// stays of the U4/R3 token test is the gauge-basis contract
+    /// plus the Memory-card negatives. Caption absence itself is
+    /// the VAC-R8 source guard below.
+    func testGaugeBasisTokensPlaceCPUAndMemorySectionsCorrectly() throws {
         let cpu = squashed(try loadSource("StatsLite/CPUCardView.swift"))
-        XCTAssertTrue(
-            cpu.contains("showsHelperGapCaption:true"),
-            "U4: the CPU card renders the caption"
-        )
         XCTAssertTrue(
             cpu.contains("gaugeBasis:.maxNormalized"),
             "U4: the CPU card passes the max-normalized gauge basis"
@@ -492,71 +454,6 @@ final class ProcessDisclosureTests: XCTestCase {
         XCTAssertTrue(
             memory.contains("gaugeBasis:.ramFraction"),
             "U4: the Memory card passes the RAM-fraction gauge basis"
-        )
-    }
-
-    func testHelperGapCaptionRendersInAllThreeExpandedSectionStates() {
-        let caption = "System daemons not included"
-        let populated = TopProcessesSectionView(
-            processes: [
-                ProcessMetricItem(pid: 1918, name: "fixture-burn", fraction: 1.918, valueLabel: "191.8%")
-            ],
-            tintColor: .blue,
-            isLoading: false,
-            gaugeBasis: .maxNormalized,
-            showsHelperGapCaption: true
-        )
-        XCTAssertTrue(
-            collectViewStrings(populated.body).contains(caption),
-            "U4: the populated state carries the caption"
-        )
-
-        let loading = TopProcessesSectionView(
-            processes: [],
-            tintColor: .blue,
-            isLoading: true,
-            gaugeBasis: .maxNormalized,
-            showsHelperGapCaption: true
-        )
-        let loadingStrings = collectViewStrings(loading.body)
-        XCTAssertTrue(loadingStrings.contains("Sampling top processes…"), "U4: the loading line still renders")
-        XCTAssertTrue(loadingStrings.contains(caption), "U4: the loading state carries the caption")
-
-        let empty = TopProcessesSectionView(
-            processes: [],
-            tintColor: .blue,
-            isLoading: false,
-            gaugeBasis: .maxNormalized,
-            showsHelperGapCaption: true
-        )
-        let emptyStrings = collectViewStrings(empty.body)
-        XCTAssertTrue(emptyStrings.contains("No process data available"), "U4: the empty line still renders")
-        XCTAssertTrue(emptyStrings.contains(caption), "U4: the empty state carries the caption")
-
-        let memoryStyle = TopProcessesSectionView(
-            processes: [
-                ProcessMetricItem(pid: 5, name: "Safari", fraction: 0.1, valueLabel: "1.2 GB")
-            ],
-            tintColor: .blue,
-            isLoading: false,
-            gaugeBasis: .ramFraction
-        )
-        XCTAssertFalse(
-            collectViewStrings(memoryStyle.body).contains(caption),
-            "U4: without the flag the section renders no caption (Memory path)"
-        )
-    }
-
-    func testCollapsedDisclosureButtonCarriesNoHelperGapCaption() {
-        let button = TopProcessesDisclosureButton(
-            isExpanded: false,
-            usageState: .normal,
-            metricTitle: "CPU Total",
-            action: {}
-        )
-        XCTAssertFalse(
-            collectViewStrings(button.body).contains("System daemons not included"),
-            "U4: the collapsed disclosure button never renders the caption (R3)"
         )
     }
 

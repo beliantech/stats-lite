@@ -61,8 +61,7 @@ struct CPUCardView: View {
                     processes: monitor.topCPUProcesses,
                     tintColor: processGaugeTint,
                     isLoading: monitor.isSamplingProcesses && monitor.topCPUProcesses.isEmpty,
-                    gaugeBasis: .maxNormalized,
-                    showsHelperGapCaption: true
+                    gaugeBasis: .maxNormalized
                 )
                 .transition(.opacity)
             }

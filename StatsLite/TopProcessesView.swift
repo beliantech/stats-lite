@@ -23,19 +23,12 @@ struct TopProcessesSectionView: View {
     /// normalize to the row max, Memory rows are fractions of total
     /// RAM. The shared view never guesses from values.
     let gaugeBasis: GaugeBasis
-    /// Renders the Phase-1 helper-gap caption below the last row /
-    /// loading / empty line (R3). CPU passes true; Memory omits it.
-    var showsHelperGapCaption: Bool = false
 
     /// How one row's gauge fill is derived (R3 §3 blueprint).
     enum GaugeBasis {
         case maxNormalized
         case ramFraction
     }
-
-    /// The R3 helper-gap caption: states that root/system daemons
-    /// are outside the unprivileged scan (Phase 2 territory).
-    static let helperGapCaption = "System daemons not included"
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -54,13 +47,6 @@ struct TopProcessesSectionView: View {
                 ForEach(Array(processes.prefix(5))) { process in
                     row(for: process)
                 }
-            }
-            if showsHelperGapCaption {
-                Text(Self.helperGapCaption)
-                    .font(.system(size: 9))
-                    .foregroundStyle(.tertiary)
-                    .lineLimit(1)
-                    .padding(.top, 8)
             }
         }
     }
