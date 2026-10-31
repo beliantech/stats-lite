@@ -17,6 +17,8 @@ private let settingsPreferencesKeys = [
     "showCPU",
     "showRAM",
     "showGPU",
+    "showTemperature",
+    "showNetwork",
     "refreshInterval",
     "historyDuration",
 ]
@@ -58,32 +60,43 @@ final class SettingsWindowTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - Sole-ON toggle lock (VAC-24)
+    // MARK: - Sole-ON toggle lock (plan 2026-10-31, VAC-7 to VAC-11)
 
     func testSoleEnabledToggleIsLocked() {
         let store = PreferencesStore()
         store.showRAM = false
         store.showGPU = false
+        store.showTemperature = false
+        store.showNetwork = false
 
         XCTAssertEqual(store.activeMetricCount, 1)
         XCTAssertTrue(store.isToggleLocked(store.showCPU))
         XCTAssertFalse(store.isToggleLocked(store.showRAM))
         XCTAssertFalse(store.isToggleLocked(store.showGPU))
+        XCTAssertFalse(store.isToggleLocked(store.showTemperature))
+        XCTAssertFalse(store.isToggleLocked(store.showNetwork))
     }
 
     func testSoleEnabledToggleIsRAMWhenOthersOff() {
         let store = PreferencesStore()
         store.showCPU = false
         store.showGPU = false
+        store.showTemperature = false
+        store.showNetwork = false
 
         XCTAssertEqual(store.activeMetricCount, 1)
         XCTAssertTrue(store.isToggleLocked(store.showRAM))
         XCTAssertFalse(store.isToggleLocked(store.showCPU))
+        XCTAssertFalse(store.isToggleLocked(store.showGPU))
+        XCTAssertFalse(store.isToggleLocked(store.showTemperature))
+        XCTAssertFalse(store.isToggleLocked(store.showNetwork))
     }
 
     func testNoToggleLockedWhileTwoMetricsEnabled() {
         let store = PreferencesStore()
         store.showGPU = false
+        store.showTemperature = false
+        store.showNetwork = false
 
         XCTAssertEqual(store.activeMetricCount, 2)
         XCTAssertFalse(store.isToggleLocked(store.showCPU))
@@ -91,13 +104,15 @@ final class SettingsWindowTests: XCTestCase {
         XCTAssertFalse(store.isToggleLocked(store.showGPU))
     }
 
-    func testNoToggleLockedWhenAllThreeEnabled() {
+    func testNoToggleLockedWhenAllFiveEnabled() {
         let store = PreferencesStore()
 
-        XCTAssertEqual(store.activeMetricCount, 3)
+        XCTAssertEqual(store.activeMetricCount, 5)
         XCTAssertFalse(store.isToggleLocked(store.showCPU))
         XCTAssertFalse(store.isToggleLocked(store.showRAM))
         XCTAssertFalse(store.isToggleLocked(store.showGPU))
+        XCTAssertFalse(store.isToggleLocked(store.showTemperature))
+        XCTAssertFalse(store.isToggleLocked(store.showNetwork))
     }
 
     // MARK: - No Show Category Labels toggle (showLabels removed)

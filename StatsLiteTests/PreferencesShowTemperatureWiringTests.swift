@@ -4,9 +4,10 @@
 //
 //  T3 red phase (plan 2026-10-23-temp-menu-bar-metric, Phase 3
 //  remainder): PreferencesStore.showTemperature, its insert into
-//  enabledMetrics (reviewer F1 critical), the network-style carve-out
-//  from the count guard, the @AppStorage key, and the store-to-sampler
-//  edge. One test per failure mode: FM-T3-1 .. FM-T3-5.
+//  enabledMetrics (reviewer F1 critical), its place in the
+//  five-metric count guard, the @AppStorage key, and the
+//  store-to-sampler edge. One test per failure mode: FM-T3-1 ..
+//  FM-T3-5.
 //
 //  These tests fail until T3 lands. Do not weaken them in green.
 //
@@ -90,48 +91,39 @@ final class PreferencesShowTemperatureWiringTests: XCTestCase {
         )
     }
 
-    // MARK: - FM-T3-3 (network carve-out: no count, no lock)
+    // MARK: - FM-T3-3 (five-metric count and lock participation)
 
-    /// Mirror of `PreferencesStoreGuardTests.
-    /// testShowNetworkDoesNotAffectStandardToggleLock` (F10 pattern):
-    /// like `showNetwork`, `showTemperature` stays out of
-    /// `activeMetricCount`, carries no last-one-enabled lock, and
-    /// changes no `isToggleLocked` result.
-    func testShowTemperatureStaysOutsideCountGuardAndToggleLock() {
+    /// Plan 2026-10-31 Option A: `showTemperature` enters
+    /// `activeMetricCount`, its toggle takes the last-one-enabled
+    /// lock as the sole enabled metric, and the didSet guard refuses
+    /// to turn off that last metric.
+    func testShowTemperatureParticipatesInCountGuardAndToggleLock() {
         let store = PreferencesStore()
+        XCTAssertEqual(store.activeMetricCount, 5, "all five defaults count")
 
-        // Temperature toggles never move the count.
+        // Temperature moves the count in both directions.
         store.showTemperature = false
-        XCTAssertEqual(store.activeMetricCount, 3, "showTemperature never enters the count")
+        XCTAssertEqual(store.activeMetricCount, 4, "temperature enters the five-metric count")
         store.showTemperature = true
-        XCTAssertEqual(store.activeMetricCount, 3, "showTemperature never enters the count")
+        XCTAssertEqual(store.activeMetricCount, 5, "re-enabling restores the full count")
 
-        // Sole standard metric on: turning temperature OFF must not
-        // hit the last-one-enabled lock.
+        // Temperature sole metric on: its toggle takes the lock.
+        store.showCPU = false
         store.showRAM = false
         store.showGPU = false
-        XCTAssertEqual(store.activeMetricCount, 1)
-
-        store.showTemperature = false
-        XCTAssertFalse(
-            store.showTemperature,
-            "no last-one-enabled lock applies to showTemperature"
+        store.showNetwork = false
+        XCTAssertFalse(store.showGPU, "setup: the four non-temperature metrics turn off")
+        XCTAssertEqual(store.activeMetricCount, 1, "temperature is the sole enabled metric")
+        XCTAssertTrue(
+            store.isToggleLocked(store.showTemperature),
+            "the sole temperature toggle locks"
         )
-        XCTAssertEqual(store.activeMetricCount, 1)
+        XCTAssertFalse(store.isToggleLocked(store.showCPU))
 
-        // Turning temperature ON must not weaken the guard's minimum:
-        // the count still counts only CPU/RAM/GPU, and the lock state
-        // of the standard toggles is unchanged.
-        store.showTemperature = true
-        XCTAssertEqual(store.activeMetricCount, 1, "count still counts only CPU/RAM/GPU")
-        XCTAssertTrue(store.isToggleLocked(store.showCPU), "the sole standard toggle stays locked")
-        XCTAssertFalse(store.isToggleLocked(store.showRAM))
-        XCTAssertFalse(store.isToggleLocked(store.showGPU))
-
-        // The guard still re-enables the last standard metric.
-        store.showCPU = false
-        XCTAssertTrue(store.showCPU)
-        XCTAssertEqual(store.activeMetricCount, 1)
+        // The guard refuses to turn off the last metric.
+        store.showTemperature = false
+        XCTAssertTrue(store.showTemperature, "didSet reverts the sole enabled metric")
+        XCTAssertEqual(store.activeMetricCount, 1, "the count stays at 1 after the refusal")
     }
 
     // MARK: - FM-T3-4 (own @AppStorage key, round-trip)
