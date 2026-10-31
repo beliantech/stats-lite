@@ -125,14 +125,10 @@ struct SettingsView: View {
                 .disabled(preferences.isToggleLocked(preferences.showGPU))
             Toggle("Memory Pressure (RAM)", isOn: $preferences.showRAM)
                 .disabled(preferences.isToggleLocked(preferences.showRAM))
-            // No .disabled on this row either: like network,
-            // temperature stays out of isToggleLocked (F10/plan
-            // Phase 3 carve-out).
             Toggle("Temperature", isOn: $preferences.showTemperature)
-            // No .disabled on this row: isToggleLocked counts only
-            // the three standard metrics, so the network toggle must
-            // never inherit the lock (F10).
+                .disabled(preferences.isToggleLocked(preferences.showTemperature))
             Toggle("Network Throughput", isOn: $preferences.showNetwork)
+                .disabled(preferences.isToggleLocked(preferences.showNetwork))
         } header: {
             Text("Visible Metrics")
         } footer: {

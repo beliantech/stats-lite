@@ -48,24 +48,19 @@ final class PreferencesStore {
         }
     }
 
-    /// Network block visibility (D3). Outside `enabledMetrics`: no
-    /// guard and no lock, so it never changes `activeMetricCount`.
-    var showNetwork: Bool = true {
-        didSet {
-            guard !isSeeding else { return }
-            showNetworkStorage = showNetwork
-        }
-    }
-
-    /// Temperature row visibility. Ships ON when the key is absent,
-    /// mirroring the `showNetwork` default (F2). Like `showNetwork`
-    /// it stays out of `activeMetricCount` and carries no
-    /// last-one-enabled lock, but it does join `enabledMetrics`:
-    /// temperature rides `collectSnapshot` through that set (F1).
     var showTemperature: Bool = true {
         didSet {
             guard !isSeeding else { return }
+            if !showTemperature && activeMetricCount == 0 { showTemperature = true }
             showTemperatureStorage = showTemperature
+        }
+    }
+
+    var showNetwork: Bool = true {
+        didSet {
+            guard !isSeeding else { return }
+            if !showNetwork && activeMetricCount == 0 { showNetwork = true }
+            showNetworkStorage = showNetwork
         }
     }
 
@@ -89,15 +84,20 @@ final class PreferencesStore {
 
     // MARK: - Derived state
 
-    /// Number of visible metrics. The guard uses this value; the
-    /// Settings UI disables the sole ON toggle at 1.
+    /// Number of visible metrics enabled. All five metrics count
+    /// toward visibility. The Settings UI disables the sole ON
+    /// toggle when this value is 1.
     var activeMetricCount: Int {
-        (showCPU ? 1 : 0) + (showRAM ? 1 : 0) + (showGPU ? 1 : 0)
+        (showCPU ? 1 : 0)
+            + (showGPU ? 1 : 0)
+            + (showRAM ? 1 : 0)
+            + (showTemperature ? 1 : 0)
+            + (showNetwork ? 1 : 0)
     }
 
     /// True when `isOn` reports the state of the only enabled metric
     /// toggle. The Settings UI renders that toggle disabled in the
-    /// ON position (VAC-24).
+    /// ON position.
     func isToggleLocked(_ isOn: Bool) -> Bool {
         activeMetricCount == 1 && isOn
     }
@@ -123,8 +123,8 @@ final class PreferencesStore {
     @ObservationIgnored @AppStorage("historyDuration") private var historyDurationStorage: Int = 60
 
     /// Seeds the observable state from UserDefaults while `isSeeding`
-    /// suppresses the didSet bodies. When all three keys are false,
-    /// the repair after seeding turns showCPU back on.
+    /// suppresses the didSet bodies. When all five metric keys are
+    /// false, the repair after seeding turns showCPU back on.
     init() {
         showCPU = showCPUStorage
         showRAM = showRAMStorage
