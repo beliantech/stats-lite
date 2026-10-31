@@ -36,6 +36,8 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1`, ...; `FM*` = failure mode
 - [ ] **VAC-13**: All-five-off refusal: clicking a disabled sole-ON toggle changes nothing; setting the sole-ON property to `false` is refused by the `didSet` guard (`activeMetricCount` stays 1); UserDefaults with all five keys `false` → `init()` restores `showCPU = true`.
 - [ ] **VAC-14**: All five labels stay single-line, no wrapping, no clipping at 380 pt width.
 
+Verification record (2026-10-31): VAC-4…VAC-11, VAC-13 (unit halves) verified by `StatsLiteTests/FiveMetricLockTests.swift` in the green run (537/537 pass). VAC-1/2/3/12/14 are layout/copy checks — the green diff changes no layout, row order, or footer text (`.disabled` only), so they hold structurally; visual spot check available on launch. VAC-13 init half verified by `testVAC13AllFiveFalseKeysRestoreShowCPUOnInit`.
+
 ### Failure modes (plan-scoped, each with falsification signature)
 
 - [ ] **FM1** (last-one lock misses a metric): With Network ON and the other four OFF, `isToggleLocked(showNetwork)` is true; same for each of the five. *Falsification:* any metric where sole-ON leaves its toggle clickable → dead.
@@ -68,9 +70,9 @@ Plan -> Phase (`## Phase N — <name>`) -> Task (`T1`, ...; `FM*` = failure mode
 
 ## Tasks
 
-- [ ] **T1** — `[red]` in worktree: author failing tests for the five-metric lock semantics — one per failure mode FM1–FM5 plus VAC-4/5/7/8/9/10/11/13 unit coverage; update the three pinned legacy test files to the new expectations; run the suite; report red output; touch no application code. red ⏳ · green ⏳ · review ⏳
-- [ ] **T2** — green in the same worktree: implement Option A (`PreferencesStore` count + didSet guards + init repair; `SettingsView` `.disabled` on all five rows; rewrite carve-out comments) until the whole suite is green; then refactor. red `T1` · green ⏳ · review ⏳
-- [ ] **T3** — verify + review + merge: typecheck/lint errors on changed files = 0; full test suite green in the worktree; reviewer code review against `git diff main...HEAD` (checks red = test-only, green = implementation); `git merge --ff-only` (or `--squash`) into `main`, clean up worktree; update docs if the turn touched `ARCHITECTURE.md`/`DESIGN.md` areas, else "No doc updates needed". green ⏳ · review ⏳ · merged ⏳
+- [x] **T1** — `[red]` in worktree: author failing tests for the five-metric lock semantics — one per failure mode FM1–FM5 plus VAC-4/5/7/8/9/10/11/13 unit coverage; update the three pinned legacy test files to the new expectations; run the suite; report red output; touch no application code. red `417a696` (22 expected failures, 0 unexpected, test-only) · green n/a (T2) · review PASS (`[code-review]` verified red test-only)
+- [x] **T2** — green in the same worktree: implement Option A (`PreferencesStore` count + didSet guards + init repair; `SettingsView` `.disabled` on all five rows; rewrite carve-out comments) until the whole suite is green; then refactor. red `417a696` · green `80c1617` (537/537 tests pass, 0 LSP diagnostics) · review GO
+- [x] **T3** — verify + review + merge: typecheck/lint errors on changed files = 0; full test suite green in the worktree; reviewer code review against `git diff main...HEAD` (checks red = test-only, green = implementation); `git merge --ff-only` (or `--squash`) into `main`, clean up worktree; update docs if the turn touched `ARCHITECTURE.md`/`DESIGN.md` areas, else "No doc updates needed". green `80c1617` · review GO (verdict `### VERDICT: GO`, code review, 2026-10-31) · merged `80c1617` (ff-only; worktree + branch removed). Docs: No doc updates needed (DESIGN.md states no toggle-lock rules).
 
 ## Docs
 
